@@ -1,8 +1,8 @@
 Package: remoteSensing
-Title: What the package does (short line)
-Version: 0.1
-Authors@R: "First Last <first.last@example.com> [aut, cre]"
-Description: What the package does (paragraph)
+Title: Remote Sensing Toolbox
+Version: 0.01
+Authors@R: "Benjamin Leutner <benjamin.leutner@uni-wuerzburg.de> [aut, cre]"
+Description: remoteSensing provides some fundamental remote sensing tools
 Depends: R (>= 3.1.0)
 License: What license is it under?
 LazyData: true
