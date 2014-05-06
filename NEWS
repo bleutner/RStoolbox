@@ -1,0 +1,4 @@
+RStoolbox 0.01
+=====================================
+
+* new function `superClass()` for random forest based supervised classification 

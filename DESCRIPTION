@@ -1,8 +1,15 @@
-Package: remoteSensing
-Title: Remote Sensing Toolbox
+Package: RStoolbox
+Type: Package
+Title: RStoolbox: A Collection of Remote Sensing Tools
 Version: 0.01
-Authors@R: "Benjamin Leutner <benjamin.leutner@uni-wuerzburg.de> [aut, cre]"
-Description: remoteSensing provides some fundamental remote sensing tools
-Depends: R (>= 3.1.0)
-License: What license is it under?
+Date: 2014-5-6
+Authors@R: c( person("Benjamin", "Leutner", role = c("cre", "aut"), email =
+    "benjamin.leutner@uni-wuerzburg.de"), person("Ned", "Horning", role =
+    c("aut"), email = "horning@amnh.org"), person("Martin", "Wegmann", role =
+    c("aut"), email = "martin.wegmann@uni-wuerzburg.de"))
+Description: RStoolbox provides classic remote sensing tools for image
+    processing and classification.
+Depends:
+    R (>= 3.1.0)
+License: GPL (>=3)
 LazyData: true
