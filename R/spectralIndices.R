@@ -15,7 +15,7 @@ spectralIndices <- function(inputRaster, index, filename = NULL, maskRaster = NU
   # required packages: raster   
   
   
-  listOfIndices <-  list(
+  RedNirIndices <-  list(
                           ratio = (NIR/RED),
                           dvi = NIR-RED,
                           ndvi = (NIR-RED)/(NIR+RED), 
@@ -28,7 +28,8 @@ spectralIndices <- function(inputRaster, index, filename = NULL, maskRaster = NU
                                                
                                                  
                          
-                          
-
-
-  
+  ThreeBandIndices <- list(
+                          slavi = NIR / (RED + MIR),
+                          EVI = G * ((NIR - RED) / (NIR + C1 * RED - C2 * BLUE + L))# include a G or L specification in command
+                  
+                          )                      
