@@ -1,2 +1,5 @@
 ^\.travis\.yml$
 inst/demo
+.project
+.git
+.gitignore 	

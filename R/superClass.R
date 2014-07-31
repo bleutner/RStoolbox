@@ -18,6 +18,7 @@ superClass <- function(inputRaster, trainingData, classAttributes = NULL, nSampl
 	# TODO: cross-validation
 	# TODO: make classifier modular
 	# TODO: add examples
+	# TODO: check applicability of raster:::.intersectExtent 
 	# DISCUSS: demo data
 	
 	## Filetypes

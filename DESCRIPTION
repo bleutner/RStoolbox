@@ -11,5 +11,9 @@ Description: RStoolbox provides classic remote sensing tools for image
     processing and classification.
 Depends:
     R (>= 3.1.0)
+Imports:
+    stringr,
+    raster,
+    randomForest
 License: GPL (>=3)
 LazyData: true

@@ -1,3 +1,11 @@
+RStoolbox 0.02
+=====================================
+
+* new family of functions for Landsat processing: 
+	`readMeta()` reads Landsat Metadata from MTL files
+   	`stackLS()` loads all Landsat bands into a raster stack in one go based on MTL metadata
+   	`radCor()` performs radiometric calibration and correction for LS5 TM, LS7 TM and LS8 TM
+
 RStoolbox 0.01
 =====================================
 
