@@ -32,4 +32,5 @@ spectralIndices <- function(inputRaster, index, filename = NULL, maskRaster = NU
                           slavi = NIR / (RED + MIR),
                           EVI = G * ((NIR - RED) / (NIR + C1 * RED - C2 * BLUE + L))# include a G or L specification in command
                   
-                          )                      
+                          )
+					  }

@@ -7,8 +7,9 @@ Authors@R: c( person("Benjamin", "Leutner", role = c("cre", "aut"), email =
     "benjamin.leutner@uni-wuerzburg.de"), person("Ned", "Horning", role =
     c("aut"), email = "horning@amnh.org"), person("Martin", "Wegmann", role =
     c("aut"), email = "martin.wegmann@uni-wuerzburg.de"))
-Description: RStoolbox provides remote sensing methods for image
-    processing and classification such as spectral indices, supervised classification or fractional cover.
+Description: RStoolbox provides remote sensing methods for image processing and
+    classification such as spectral indices, supervised classification or
+    fractional cover.
 Depends:
     R (>= 3.1.0)
 Imports:

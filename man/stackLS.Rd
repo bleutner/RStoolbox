@@ -4,7 +4,7 @@
 \title{Import separate Landsat files into single stack}
 \usage{
 stackLS(file, allResolutions = FALSE, resampleTIR = FALSE,
-  resamplingMethod = "ngb")
+  resamplingMethod = "ngb", products = c("image", "index", "qa"))
 }
 \arguments{
 \item{file}{character. Path to Landsat MTL metadata file.}
@@ -14,12 +14,14 @@ stackLS(file, allResolutions = FALSE, resampleTIR = FALSE,
 \item{resampleTIR}{logical. As of  the USGS resamples TIR bands to 30m. Use this option if you use data processed prior to February 25, 2010 which has not been resampled.}
 
 \item{resamplingMethod}{character. Method to use for TUR resampling ('ngb' or 'bilinear'). Defaults to 'ngb' (nearest neighbor).}
+
+\item{products}{character vector. Which products should be returned in the stack? (only relevant for LS8 and LEDAPS processed products). 'image': image data, 'index': multiband indices, 'qa' quality flag bands.}
 }
 \value{
 Either a list of rasterStacks comprising all resolutions or only one rasterStack comprising only 30m resolution imagery
 }
 \description{
-Reads Landsat MTL metadata file and loads single Landsat Tiffs into a rasterStack.
+Reads Landsat MTL or XML metadata files and loads single Landsat Tiffs into a rasterStack.
 Be aware that by default stackLS() does NOT import panchromatic bands nor thermal bands with resolutions != 30m.
 }
 \note{

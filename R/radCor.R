@@ -222,10 +222,26 @@ LANDSAT.db <- list(
 						spatRes1 = c(rep(30, 7), 15, rep(30,4)),
 						spatRes2 = c(rep(30, 7), 15, rep(30,4)),  ## ETM+ Band 6 is acquired at 60-meter resolution. Products processed after February 25, 2010 are resampled to 30-meter pixels.
 						centerWavl = c(0.44,0.48,0.56,0.655,0.865,1.61,2.2,0.59,1.37,10.6,11.5, NA), 
-						esun = rep(NA,12)##http://landsat.usgs.gov/Landsat8_Using_Product.php
+						esun = c(NA, 2067, 1893, 1603, 972.6, 245, 79.72, NA, 399.7, NA, NA, NA ) ## http://www.gisagmaps.com/landsat-8-atco/ ##http://landsat.usgs.gov/Landsat8_Using_Product.php
 				)
 		)
 
-)
+) 
 
+exponents <- c(-4, -2, -1, -.7, -.5)
+for(s in names(LANDSAT.db)){
+	centerWavl <- LANDSAT.db[[s]][[1]][,"centerWavl"] 
+	bands <- LANDSAT.db[[s]][[1]][,"band"]
+	TAB1 <- sapply(exponents, function(x) centerWavl ^ x)
+	colnames(TAB1) <-  c("veryClear", "clear", "moderate", "hazy", "veryHazy")
+	TAB1b <- sweep(TAB1, 2, apply(TAB1, 2, sum), "/")
+	
+	
+	lapply( bands, function(b){
+				
+				#TAB1[which(bands == b),]
+			} )          
+	
+	LANDSAT.db[[s]][[1]] <- data.frame( LANDSAT.db[[s]][[1]] , TAB1)
+}
 
