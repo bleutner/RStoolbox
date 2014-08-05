@@ -211,7 +211,7 @@ getNumeric <- function(x, returnNumeric = TRUE) {
 #' Therefore the default method in this implementation is nearest neighbor. Keep this in mind if you plan to compare TIR bands created by differing resampling routines.
 #' Typically, however, you will already have the USGS 30m TIR products, so no need to worry...
 #' @export
-stackLS <- function(file, allResolutions = FALSE,  resampleTIR = FALSE, resamplingMethod = "ngb", products = c("image", "index", "qa")){
+stackMeta <- function(file, allResolutions = FALSE,  resampleTIR = FALSE, resamplingMethod = "ngb", products = c("image", "index", "qa")){
 	
 	## Read metadata and extract layer file names
 	meta  <- readMeta(file)
