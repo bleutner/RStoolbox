@@ -53,7 +53,7 @@ readMeta <- function(file, unifiedMetadata = TRUE){
 					PROCESSING_DATE		= if(!legacy) meta$METADATA_FILE_INFO["FILE_DATE",] else meta$METADATA_FILE_INFO["PRODUCT_CREATION_TIME",], 
 					PATH				= as.numeric(meta$PRODUCT_METADATA["WRS_PATH",]),
 					ROW					= if(!legacy) as.numeric(meta$PRODUCT_METADATA["WRS_ROW",]) else as.numeric(meta$PRODUCT_METADATA["STARTING_ROW",]),
-					
+					RADIOMETRIC_RES		= if(SAT == "LANDSAT8") 16 else 8,				
 					FILES				= {files <- row.names(meta[["PRODUCT_METADATA"]])[grep("^.*FILE_NAME", row.names(meta$PRODUCT_METADATA))]
 						files <- files[grep("^.*BAND",files)]
 						files <- meta[["PRODUCT_METADATA"]][files,]	},

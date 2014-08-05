@@ -10,8 +10,13 @@
 #' @return rasterBrick or rasterStack
 #' @seealso \code{\link[raster]{overlay}} 
 #' @export
-#' @example
-#' 
+#' @examples
+#' r <- raster(ncol=10,nrow=10)
+#' r[] <- sample(1:155, 100, TRUE)
+#' r <- stack(r, r + 90 + rnorm(100, 10)) 
+#' names(r) <- c("red", "nir")
+#' SI <- spectralIndices(r, indices = c("SR", "NDVI"), bands = list(NIR = "nir", RED = "red"))
+#' plot(SI)
 spectralIndices <- function(inputRaster, indices = "NDVI", sensor, bands , maskRaster = NULL, verbose = FALSE, ... ) {
 	# TODO: add indices
 	# TODO: add examples

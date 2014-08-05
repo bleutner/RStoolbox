@@ -5,7 +5,7 @@
 \usage{
 radCor(x, metaData, reflectance = TRUE, satellite, bandSet = "full", gain,
   offset, G_rescale, B_rescale, sunelev, satzenith = 0, edist, Esun, date,
-  Lhaze, method = "apparentreflectance")
+  SHV, SHVB, atHaze, method = "apparentreflectance")
 }
 \arguments{
 \item{x}{raster object}
@@ -35,7 +35,7 @@ radCor(x, metaData, reflectance = TRUE, satellite, bandSet = "full", gain,
 \item{Lhaze}{Haze value, such as SHV from DOS() function. Not needed for apparent reflectance.}
 
 \item{Radiometric}{correction method to be used. There are currently four methods available:
-"apparentreflectance", "DOS" (Chavez 1989), "COSTZ" (Chavez 1996), "DOS4" (SWS+2001).}
+"apparentreflectance", "DOS" (Chavez 1989), "COSTZ" (Chavez 1996).}
 }
 \description{
 Implements several different methods for absolute radiometric correction of Landsat data.
