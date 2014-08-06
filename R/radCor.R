@@ -1,7 +1,7 @@
-#' Radiometric calibration and correction for Landsat data
+#' Radiometric calibration and correction
 #' 
 #' Implements several different methods for absolute radiometric correction of Landsat data.
-#' You can either specify a metadata file, or supply all neccesary values manually.
+#' You can either specify a metadata file, or supply all neccesary values manually. With proper parametrization APREF and SDOS should work for other sensors as well.
 #' 
 #' @param x raster object
 #' @param metaData either the result of \code{readMeta} or a path to the meta data (MCL) file. 
@@ -11,23 +11,23 @@
 #' @param offset Band-specific sensor offset. Require either gain and offset or Grescale and Brescale to convert DN to radiance.
 #' @param Grescale Band-specific sensor Grescale (gain). Require either gain and offset or Grescale and Brescale to convert DN to radiance.
 #' @param Brescale Band-specific sensor Brescale (bias). Require either gain and offset or Grescale and Brescale to convert DN to radiance.
-#' @param sunelev Sun elevation in degrees
-#' @param satzenith Satellite sensor zenith angle (0 for Landsat)
+#' @param sunElev Sun elevation in degrees
+#' @param satZenith Satellite sensor zenith angle (0 for Landsat)
 #' @param edist Earth-Sun distance in AU.
-#' @param Esun Mean exo-atmospheric solar irradiance, as given by Chandler et al. 2009 or others.
+#' @param esun Mean exo-atmospheric solar irradiance, as given by Chandler et al. 2009 or others.
 #' @param Lhaze Haze value, such as SHV from DOS() function. Not needed for apparent reflectance.
 #' @param Radiometric correction method to be used. There are currently four methods available:
-#'  "apparentreflectance", "DOS" (Chavez 1989), "COSTZ" (Chavez 1996).
-#' @note This is a fork of randcorr in the landsat package, it differs mainly in that it works on raster objects and hence is memory-safe.  
+#'  "APREF", "DOS" (Chavez 1989), "COSTZ" (Chavez 1996).
+#' @note This is a fork of randcorr in the landsat package. It may be slower, however it works on Raster* objects and hence is memory-safe.  
 #' @references S. Goslee (2011): Analyzing Remote Sensing Data in R: The landsat Package. Journal of Statistical Software 43(4).
 #' @export
-#' @seealso \link[landsat]{radiocorr}
+#' @seealso \link[landsat]{radiocorr} 
 radCor <-	function(x, metaData, reflectance = TRUE, satellite, bandSet = "full", gain, offset, G_rescale, B_rescale,
-		sunelev, satzenith = 0, edist, Esun, date, SHV, SHVB, atHaze,  method = "apparentreflectance"){
+		sunElev, satZenith = 0, edist, esun, date, SHV, hazeBand, atHaze,  method = "APREF"){
 	# DISCUSS: Should we apply for a "processing level" slot in raster?
 	# http://landsat.usgs.gov/Landsat8_Using_Product.php
 	
-	if(!method %in% c("apparentreflectance", "DOS", "COSTZ", "DOS4")) stop("method must be one of 'apparentreflectance', 'DOS', 'COSTZ' ", call.=FALSE)
+	if(!method %in% c("APREF", "DOS", "COSTZ", "SDOS")) stop("method must be one of 'APREF', 'DOS', 'COSTZ' 'SDOS'", call.=FALSE)
 	
 	if(!missing(metaData)) {
 		
@@ -39,11 +39,14 @@ radCor <-	function(x, metaData, reflectance = TRUE, satellite, bandSet = "full",
 		offset 		<- metaData$UNIFIED_METADATA$RAD_OFFSET
 		gain 		<- metaData$UNIFIED_METADATA$RAD_GAIN
 		edist		<- metaData$UNIFIED_METADATA$EARTH_SUN_DISTANCE
-		sunelev		<- metaData$UNIFIED_METADATA$SUN_ELEVATION
+		sunElev		<- metaData$UNIFIED_METADATA$SUN_ELEVATION
 		rad 		<- metaData$UNIFIED_METADATA$RADIOMETRIC_RES
 		
 	} else {
-		
+		### HARD CODED > FIX!!
+		sensor = 1
+		rad = 8
+		###
 		if(missing(offset) | missing(gain)) {
 			if(missing(G_rescale) | missing(B_rescale)) { stop("Please specify either a) metaData, b) gain and offset, c) B_rescale and G_rescale", call. = FALSE )
 			} else {
@@ -51,94 +54,136 @@ radCor <-	function(x, metaData, reflectance = TRUE, satellite, bandSet = "full",
 				gain 	<-  1 / G_rescale
 			}
 		}
-		if(missing(edist)) {
-			if(missing(date)) stop("Please specify either a) edist or b)date", call. = FALSE)
-		} else {
-			edist <- ESdist(date) 
-		}
 		
+		
+		if(missing(edist)) {
+			if(missing(date)) { 
+				stop("Please specify either a) edist or b)date", call. = FALSE) 
+			} else {
+				edist <- ESdist(date) 
+			}
+		}
 	}
-	satzenith	<- satzenith * pi / 180
-	satphi 		<- cos(satzenith)
-	suntheta 	<- cos((90 - sunelev) * pi / 180)	
+	satZenith	<- satZenith * pi / 180
+	satphi 		<- cos(satZenith)
+	suntheta 	<- cos((90 - sunElev) * pi / 180)	
 	
 	## Query internal db	
 	sDB <- LANDSAT.db[[satellite]][[sensor]]
 	
 	## We use getNumeric to deal with band name appendices (e.g. LS7 can have to versions of band 6: B6_VCID_1 and B6_VCID_2
 	## which would not match the database name B6
-	sDB <- sDB[match(paste0("B", sapply(getNumeric(names(x)),"[",1)), sDB$band),]	
-	sDB <- sDB[match(sDB$band, paste0("B",sapply(getNumeric(names(x)),"[",1))),]
-	ignore <- sDB$bandtype %in% c("TIR", "PAN")
-	original_bands <- names(x)  
-
-	if(missing(Esun)) Esun <- sDB[,"esun"]
+	sDB 	<- sDB[match(paste0("B", sapply(getNumeric(names(x)),"[",1)), sDB$band),]	
+	sDB		<- sDB[match(sDB$band, paste0("B",sapply(getNumeric(names(x)),"[",1))),]
 	
 	if(any(bandSet == "full")) {
 		bandSet <- names(x)
 	} else {
 		if(is.numeric(bandSet)) bandSet <- paste0("B", bandSet)
 	}	
-	#Lhaze 	<- Lhaze[bandSet[!ignore]]
-	offset	<- offset[bandSet[!ignore]]
-	gain 	<- gain[bandSet[!ignore]]
+	corBands <- sDB[!sDB$bandtype %in% c("TIR", "PAN"), "band"]
+	bandSet 	<- bandSet[bandSet %in% corBands]
+	exclBands <- names(x)[!names(x) %in% bandSet]
+	
+	original_bands <- names(x)  
+	
+	if(missing(esun)) {
+		esun <- sDB[,"esun"] 
+		names(esun) <- sDB$band
+	}
+	
+	if(missing(metaData))	names(offset) <- names(gain) <- bandSet
 	
 	
 	## Create subset with rasters to process and rasters not to process
-	if(any(ignore)) {
+	if(any(!names(x) %in% corBands)) {
 		message("x contains thermal and/or panchromatic bands, which will not be processed")	
-		xna <- x[[which(ignore)]] 
+		xna <- x[[which(!names(x) %in% bandSet)]] 
 	}
-	x <- x[[which(!ignore)]]
+	x <- x[[bandSet]]
 	
-	message("Processing bands: ", paste(bandSet[!ignore], collapse = ", "))
-	if(any(ignore)) message("Excluding bands: ", paste(bandSet[ignore], collapse = ", "))
+	message("Processing bands: ", paste(bandSet, collapse = ", "))
+	if(length(exclBands) > 0) message("Excluding bands: ", paste(exclBands, collapse = ", "))
 	
 	
-	if(method == "apparentreflectance") {
+	if(method == "APREF") {
 		TAUz <- 1
 		TAUv <- 1
 		Edown <- 0
 		Lhaze <- 0
 	} else {
-		if(method %in% "DOS") {
+		
+		if(missing(SHV)){
+			if(missing(hazeBand))  hazeBand <- 1
+			if(length(hazeBand) > 1) {
+				warning("Automatic search for SHV values is intended for one band only. For more bands please estimate hzae DNs manually using estimateSHV() \nhazeBand was automatically reset to 1")
+				hazeBand <- 1 }
+			message("SHV was not provided -> Estimating SHV automatically")
+			dP <- 0.02
+			## We suppress warnings because we search for a possible value autimatically in case we missed the first time
+			SHV <- suppressWarnings(estimateSHV(x, hazeBand = hazeBand, darkProp = dP , plot = FALSE, returnTables = TRUE))
+			while(is.na(SHV[[1]])){
+				dP <- dP * 0.9
+				SHV <- suppressWarnings(estimateSHV(SHV, hazeBand = hazeBand, darkProp = dP, plot = T, returnTables = TRUE))
+			}
+			message(paste0("SHV estimated as: ", SHV[[1]]))
+			SHV <- SHV[[1]]
+		}
+		
+		
+		# For SDOS gain, offset, Lhaze and Esun must be provided as coresponding vectors of equal length
+		if(method == "SDOS"){
+			hazeBand <- bandSet
+		} 
+		
+		## 1% correction and conversion to radiance
+		SHV  <- SHV - gain[hazeBand] * 0.01 * esun[hazeBand] / edist ^ 2 * suntheta / pi
+		SHV	 <- SHV - offset[hazeBand]
+		
+		if(method %in% c("DOS", "COSTZ")) {
+			
 			TAUz <- 1
 			TAUv <- 1
 			Edown <- 0
-		}	
-		if (method == "COSTZ") {
-			TAUz <- suntheta
-			TAUv <- satphi
-			Edown <- 0
-			if(missing(Lhaze)) stop("This model requires Lhaze to be specified.\n")
-		} 
+			
+			if (method == "COSTZ") {
+				TAUz <- suntheta
+				TAUv <- satphi
+			} 
+			
+			## Pick atmoshpere type
+			if(missing(atHaze)) {
+				atHaze.db <- data.frame(min = c(1,56,76,96,116), max = c(55,75,95,115,255)) / 255 * (2^rad-1)
+				atHaze <- c("veryClear", "clear", "moderate", "hazy", "veryHazy")[SHV > atHaze.db[,1] & SHV <= atHaze.db[,2]]
+				message("Selcting atmosphere: '", atHaze, "'")
+			}		
+			SHV	  <- SHV * 	sDB[match(bandSet,sDB$band), paste0(hazeBand,"_", atHaze)]
+			
+			## Calculate corrected RAD_haze
+			NORM <- gain[bandSet] / gain[hazeBand]
+			Lhaze <- SHV * NORM + offset[bandSet]	
+		}
+		# In case Lhaze becomes negative we reset it to zero to prevent artefacts.
+		Lhaze [Lhaze < 0] <- 0
 		
-		## 1% correction
-		SHV  <- SHV - gain[SHVB] * 0.01 * Esun[sDB$band == SHVB] / edist ^ 2 * suntheta / pi
-		SHV	 <- SHV - offset[SHVB]
-		
-		if(missing(atHaze)) {
-			atHaze.db <- data.frame(min = c(1,56,76,96,116), max = c(55,75,95,115,255)) / 255 * (2^rad-1)
-			atHaze <- c("veryClear", "clear", "moderate", "hazy", "veryHazy")[SHV > atHaze.db[,1] & SHV <= atHaze.db[,2]]
-		}		
-		SHV	  <- SHV * sDB[!ignore,paste0(SHVB,"_", atHaze)]
-		
-		## Calculate corrected RAD_haze
-		NORM <- gain / gain[SHVB]
-		Lhaze <- SHV * NORM + offset	
 		
 	}
 	
+	offset	<- offset[bandSet]
+	gain 	<- gain[bandSet]
+	esun <- esun[bandSet]
+	
 	if(satellite != "LANDSAT8"){
-		## Haze correction	
-		## Lhaze output from DOS() is in DN, so this is done as a separate step
-		if(any(Lhaze != 0)) x <- x - Lhaze
 		
-		## At-sensor radiance	
-		x <- (x - offset[bandSet[!ignore]]) / gain[bandSet[!ignore]]
-		
-		## At-surface reflectance	
-		if(reflectance) x <-  (pi * edist^2 * x) / (TAUv * (Esun[!ignore] * suntheta * TAUz + Edown))	
+		if(!reflectance) {
+			## TOA Radiance
+			x <-  (gain * x + offset) / suntheta
+		} else {
+			## At-surface reflectance (precalculate coefficients to speed up raster processing)
+			a <- (pi * edist ^ 2)/(TAUv * (esun * suntheta * TAUz + Edown) * gain)	
+			b <- a * (- Lhaze - offset)
+			x <- a * x  + b
+		}
 		
 	} else {
 		
@@ -149,14 +194,15 @@ radCor <-	function(x, metaData, reflectance = TRUE, satellite, bandSet = "full",
 			offset 		<- metaData$UNIFIED_METADATA$RAD_OFFSET
 			gain 		<- metaData$UNIFIED_METADATA$RAD_GAIN
 		}
-		## At sensor reflectance
+		## At sensor radiance / reflectance
 		x <-  (gain * x + offset) / suntheta
 		
 		## At-surface reflectance?
 		
 	}
 	
-	if(any(ignore)) {
+	
+	if(any(!original_bands %in% bandSet)) {
 		x <- stack(x,xna)
 		x <- x[[original_bands]]
 	}
@@ -182,7 +228,7 @@ LANDSAT.db <- list(
 						bandtype = c(rep("REF", 5), "TIR", "REF", "PAN"),
 						spatRes1 = c(rep(30, 7), 15),
 						spatRes2 = c(rep(30,5), 60, 30, 15),  ## ETM+ Band 6 is acquired at 60-meter resolution. Products processed after February 25, 2010 are resampled to 30-meter pixels.
-						centerWavl = c(0.485, 0.560, 0.660, 0.830, 1.650,11.335,2.215,0.706),
+						centerWavl = c(0.485, 0.560, 0.660, 0.835, 1.650,11.335,2.220,0.706),
 						esun = c(1997,1812,1533,1039,230.8,NA,84.9,1362)
 				)
 		),

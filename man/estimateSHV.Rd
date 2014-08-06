@@ -3,10 +3,11 @@
 \alias{estimateSHV}
 \title{Estimate image haze for dark object subtraction procedures}
 \usage{
-estimateSHV(x, band, darkProp = 0.001, plot = FALSE, returnTable = FALSE)
+estimateSHV(x, hazeBand, darkProp = 0.02, plot = FALSE,
+  returnTables = TRUE)
 }
 \arguments{
-\item{x}{raster object from which to estimate haze}
+\item{x}{raster object or a previous result from \code{estimateSHV(x , returnTables = TRUE} from which to estimate haze}
 
 \item{band}{character. Band or bandname from which to estimate SHV (optinal if x contains only one layer)}
 
@@ -14,7 +15,7 @@ estimateSHV(x, band, darkProp = 0.001, plot = FALSE, returnTable = FALSE)
 
 \item{plot}{display histograms and haze values}
 
-\item{returnTable}{return the table per layer}
+\item{returnTables}{return the frequency table per layer. Only takes effect if x is a Raster* object. If x is a result of estimateSHV tables will always be returned.}
 }
 \description{
 Estimate image haze for dark object subtraction procedures
