@@ -4,5 +4,5 @@ RStoolbox is in initial development. We aim to provide fundamental remote sensin
 analysis tools for R, such as supervised classification or image regression.
 
 ## Installation
-library(devtools)
-install_github("bleutner/RStoolbox")
+    library(devtools)
+    install_github("bleutner/RStoolbox")
