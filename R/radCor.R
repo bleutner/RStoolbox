@@ -16,7 +16,7 @@
 #' @param satZenith sensor zenith angle (0 for Landsat)
 #' @param edist Earth-Sun distance in AU.
 #' @param esun Mean exo-atmospheric solar irradiance, as given by Chandler et al. 2009 or others.
-#' @param SHV starting haze value, can be estimated using estimateSHV(). if not provided and method is "DOS" or "COST" SHV will be estimated in an automated fashion. Not needed for apparent reflectance.
+#' @param SHV starting haze value, can be estimated using estimateSHV(). if not provided and method is "DOS" or "COSTZ" SHV will be estimated in an automated fashion. Not needed for apparent reflectance.
 #' @param hazeBand band from which SHV was estimated.
 #' @param method Radiometric correction method to be used. There are currently four methods available (see Details):
 #'  "APREF", "DOS" (Chavez 1989), "COSTZ" (Chavez 1996), SDOS.
@@ -80,7 +80,7 @@ radCor <-	function(x, metaData, reflectance = TRUE, thermal = TRUE, satellite, b
 	}
 	
 	if(satellite == "LANDSAT8" & method != "APREF") {
-		warning("DOS, COST and SDOS are currently not implemented for Landsat 8. Using official reflectance calibration coefficients, i.e. output corresponds to method = 'APREF'", call. = FALSE) 
+		warning("DOS, COSTZ and SDOS are currently not implemented for Landsat 8. Using official reflectance calibration coefficients, i.e. output corresponds to method = 'APREF'", call. = FALSE) 
 		method <- "APREF"
 	}
 	
