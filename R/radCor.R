@@ -6,28 +6,40 @@
 #' @param x raster object
 #' @param metaData either the result of \code{readMeta} or a path to the meta data (MCL) file. 
 #' @param reflectance logical. If \code{TRUE} output will be reflectance, if \code{FALSE} it will be radiance
+#' @param thermal logical. If \code{TRUE} thermal bands will be converted to brightness temperature (Kelvin).
 #' @param bandSet numeric or character. original Landsat band numbers or names in the form of ("B1", "B2" etc). If set to 'full' all bands in the solar region will be processed.
 #' @param gain Band-specific sensor gain. Require either gain and offset or Grescale and Brescale to convert DN to radiance.
 #' @param offset Band-specific sensor offset. Require either gain and offset or Grescale and Brescale to convert DN to radiance.
 #' @param Grescale Band-specific sensor Grescale (gain). Require either gain and offset or Grescale and Brescale to convert DN to radiance.
 #' @param Brescale Band-specific sensor Brescale (bias). Require either gain and offset or Grescale and Brescale to convert DN to radiance.
 #' @param sunElev Sun elevation in degrees
-#' @param satZenith Satellite sensor zenith angle (0 for Landsat)
+#' @param satZenith sensor zenith angle (0 for Landsat)
 #' @param edist Earth-Sun distance in AU.
 #' @param esun Mean exo-atmospheric solar irradiance, as given by Chandler et al. 2009 or others.
-#' @param Lhaze Haze value, such as SHV from DOS() function. Not needed for apparent reflectance.
-#' @param Radiometric correction method to be used. There are currently four methods available:
-#'  "APREF", "DOS" (Chavez 1989), "COSTZ" (Chavez 1996).
-#' @note This is a fork of randcorr in the landsat package. It may be slower, however it works on Raster* objects and hence is memory-safe.  
+#' @param SHV starting haze value, can be estimated using estimateSHV(). if not provided and method is "DOS" or "COST" SHV will be estimated in an automated fashion. Not needed for apparent reflectance.
+#' @param hazeBand band from which SHV was estimated.
+#' @param method Radiometric correction method to be used. There are currently four methods available (see Details):
+#'  "APREF", "DOS" (Chavez 1989), "COSTZ" (Chavez 1996), SDOS.
+#' @note This was originally a fork of randcorr in the landsat package. It may be slower, however it works on Raster* objects and hence is memory-safe.
+#' @details  \describe{
+#' \item{APREF}{Apparent reflectance}
+#' \item{DOS}{Dark object subtratction following Chavez (1989)}
+#' \item{COSTZ}{Dark object subtraction following Chaves(1996)}
+#' \item{SDOS}{Simple dark object subtraction. Classical DOS, Lhaze must be estimated for each band separately.}
+#' }
 #' @references S. Goslee (2011): Analyzing Remote Sensing Data in R: The landsat Package. Journal of Statistical Software 43(4).
 #' @export
 #' @seealso \link[landsat]{radiocorr} 
-radCor <-	function(x, metaData, reflectance = TRUE, satellite, bandSet = "full", gain, offset, G_rescale, B_rescale,
+radCor <-	function(x, metaData, reflectance = TRUE, thermal = TRUE, satellite, bandSet = "full", gain, offset, G_rescale, B_rescale,
 		sunElev, satZenith = 0, edist, esun, date, SHV, hazeBand, atHaze,  method = "APREF"){
-	# DISCUSS: Should we apply for a "processing level" slot in raster?
 	# http://landsat.usgs.gov/Landsat8_Using_Product.php
 	
 	if(!method %in% c("APREF", "DOS", "COSTZ", "SDOS")) stop("method must be one of 'APREF', 'DOS', 'COSTZ' 'SDOS'", call.=FALSE)
+	
+	if(!reflectance & method != "APREF"){
+		warning("For radiance calculations the 'method' argument is ignored")
+		method <- "APREF"
+	}
 	
 	if(!missing(metaData)) {
 		
@@ -41,9 +53,11 @@ radCor <-	function(x, metaData, reflectance = TRUE, satellite, bandSet = "full",
 		edist		<- metaData$UNIFIED_METADATA$EARTH_SUN_DISTANCE
 		sunElev		<- metaData$UNIFIED_METADATA$SUN_ELEVATION
 		rad 		<- metaData$UNIFIED_METADATA$RADIOMETRIC_RES
+		K1			<- metaData$UNIFIED_METADATA$K1
+		K2			<- metaData$UNIFIED_METADATA$K2
 		
 	} else {
-		### HARD CODED > FIX!!
+		###  FIXME: HARD CODED !!
 		sensor = 1
 		rad = 8
 		###
@@ -60,10 +74,16 @@ radCor <-	function(x, metaData, reflectance = TRUE, satellite, bandSet = "full",
 			if(missing(date)) { 
 				stop("Please specify either a) edist or b)date", call. = FALSE) 
 			} else {
-				edist <- ESdist(date) 
+				edist <- .ESdist(date) 
 			}
 		}
 	}
+	
+	if(satellite == "LANDSAT8" & method != "APREF") {
+		warning("DOS, COST and SDOS are currently not implemented for Landsat 8. Using official reflectance calibration coefficients, i.e. output corresponds to method = 'APREF'", call. = FALSE) 
+		method <- "APREF"
+	}
+	
 	satZenith	<- satZenith * pi / 180
 	satphi 		<- cos(satZenith)
 	suntheta 	<- cos((90 - sunElev) * pi / 180)	
@@ -71,48 +91,71 @@ radCor <-	function(x, metaData, reflectance = TRUE, satellite, bandSet = "full",
 	## Query internal db	
 	sDB <- LANDSAT.db[[satellite]][[sensor]]
 	
-	## We use getNumeric to deal with band name appendices (e.g. LS7 can have to versions of band 6: B6_VCID_1 and B6_VCID_2
+	## We use .getNumeric to deal with band name appendices (e.g. LS7 can have to versions of band 6: B6_VCID_1 and B6_VCID_2
 	## which would not match the database name B6
-	sDB 	<- sDB[match(paste0("B", sapply(getNumeric(names(x)),"[",1)), sDB$band),]	
-	sDB		<- sDB[match(sDB$band, paste0("B",sapply(getNumeric(names(x)),"[",1))),]
+	sDB 	<- sDB[match(paste0("B", sapply(.getNumeric(names(x)),"[",1)), sDB$band),]	
+	sDB		<- sDB[match(sDB$band, paste0("B",sapply(.getNumeric(names(x)),"[",1))),]
 	
 	if(any(bandSet == "full")) {
 		bandSet <- names(x)
 	} else {
 		if(is.numeric(bandSet)) bandSet <- paste0("B", bandSet)
 	}	
-	corBands <- sDB[!sDB$bandtype %in% c("TIR", "PAN"), "band"]
-	bandSet 	<- bandSet[bandSet %in% corBands]
-	exclBands <- names(x)[!names(x) %in% bandSet]
 	
-	original_bands <- names(x)  
+	if(missing(metaData))	names(offset) <- names(gain) <- bandSet
+	
+	origBands 	<- names(x)   
+	corBands 	<- sDB[!sDB$bandtype %in% c("TIR", "PAN"), "band"]
+	bandSet 	<- bandSet[bandSet %in% corBands]
+	if(thermal){
+		tirBands	<- if(satellite=="LANDSAT8") c("B10", "B11") else c("B6", "B6_VCID_1", "B6_VCID_2")	
+		tirBands 	<- origBands[origBands %in% tirBands]
+	} else {
+		tirBands <- NULL
+	}
+	exclBands	<- origBands[!origBands %in% c(bandSet, tirBands)]
+	
+	if(length(exclBands) > 0) {
+		xexc <- x[[exclBands]] 
+	} else {
+		xexc <- NULL
+	}
 	
 	if(missing(esun)) {
 		esun <- sDB[,"esun"] 
 		names(esun) <- sDB$band
 	}
+	xref <- x[[bandSet]]
 	
-	if(missing(metaData))	names(offset) <- names(gain) <- bandSet
-	
-	
-	## Create subset with rasters to process and rasters not to process
-	if(any(!names(x) %in% corBands)) {
-		message("x contains thermal and/or panchromatic bands, which will not be processed")	
-		xna <- x[[which(!names(x) %in% bandSet)]] 
+	if(reflectance) {
+		message("Bands to convert to reflectance: ", paste(bandSet, collapse = ", "))
+		if(length(tirBands) > 0 & thermal) message("Thermal bands to convert to brightness temperatures: ", paste(tirBands, collapse=", "))
+		if(length(exclBands) > 0) message("Excluding bands: ", paste(exclBands, collapse = ", "))	
+	} else {
+		bandSet <- c(bandSet, tirBands)
+		message("Bands to convert to toa radiance: ", paste(bandSet, collapse = ", "))
 	}
-	x <- x[[bandSet]]
 	
-	message("Processing bands: ", paste(bandSet, collapse = ", "))
-	if(length(exclBands) > 0) message("Excluding bands: ", paste(exclBands, collapse = ", "))
+	## Thermal processing
+	if(thermal & reflectance) {
+		## Convert to radiance
+		L <- gain[tirBands] * x[[tirBands]] + offset[tirBands]
+		## Convert to temperature
+		xtir <- K2 / log(K1/L + 1) 
+	} else {
+		xtir <- NULL
+	}
 	
-	
+	## Radiance and reflectance processing
 	if(method == "APREF") {
 		TAUz <- 1
 		TAUv <- 1
 		Edown <- 0
 		Lhaze <- 0
+		
 	} else {
 		
+		## Estimate SHV automatically
 		if(missing(SHV)){
 			if(missing(hazeBand))  hazeBand <- 1
 			if(length(hazeBand) > 1) {
@@ -123,8 +166,8 @@ radCor <-	function(x, metaData, reflectance = TRUE, satellite, bandSet = "full",
 			## We suppress warnings because we search for a possible value autimatically in case we missed the first time
 			SHV <- suppressWarnings(estimateSHV(x, hazeBand = hazeBand, darkProp = dP , plot = FALSE, returnTables = TRUE))
 			while(is.na(SHV[[1]])){
-				dP <- dP * 0.9
-				SHV <- suppressWarnings(estimateSHV(SHV, hazeBand = hazeBand, darkProp = dP, plot = T, returnTables = TRUE))
+				dP	<- dP * 0.9
+				SHV <- suppressWarnings(estimateSHV(SHV, hazeBand = hazeBand, darkProp = dP, plot = FALSE, returnTables = TRUE))
 			}
 			message(paste0("SHV estimated as: ", SHV[[1]]))
 			SHV <- SHV[[1]]
@@ -140,12 +183,10 @@ radCor <-	function(x, metaData, reflectance = TRUE, satellite, bandSet = "full",
 		SHV  <- SHV - gain[hazeBand] * 0.01 * esun[hazeBand] / edist ^ 2 * suntheta / pi
 		SHV	 <- SHV - offset[hazeBand]
 		
-		if(method %in% c("DOS", "COSTZ")) {
-			
+		if(method %in% c("DOS", "COSTZ")) {		
 			TAUz <- 1
 			TAUv <- 1
-			Edown <- 0
-			
+			Edown <- 0	
 			if (method == "COSTZ") {
 				TAUz <- suntheta
 				TAUv <- satphi
@@ -165,8 +206,6 @@ radCor <-	function(x, metaData, reflectance = TRUE, satellite, bandSet = "full",
 		}
 		# In case Lhaze becomes negative we reset it to zero to prevent artefacts.
 		Lhaze [Lhaze < 0] <- 0
-		
-		
 	}
 	
 	offset	<- offset[bandSet]
@@ -177,43 +216,38 @@ radCor <-	function(x, metaData, reflectance = TRUE, satellite, bandSet = "full",
 		
 		if(!reflectance) {
 			## TOA Radiance
-			x <-  (gain * x + offset) / suntheta
+			xref <-  (gain * xref + offset) / suntheta
 		} else {
 			## At-surface reflectance (precalculate coefficients to speed up raster processing)
 			a <- (pi * edist ^ 2)/(TAUv * (esun * suntheta * TAUz + Edown) * gain)	
 			b <- a * (- Lhaze - offset)
-			x <- a * x  + b
+			xref <- a * xref  + b
 		}
 		
 	} else {
 		
 		if(reflectance) {
-			offset 		<- metaData$UNIFIED_METADATA$REF_OFFSET
-			gain 		<- metaData$UNIFIED_METADATA$REF_GAIN
-		} else {
-			offset 		<- metaData$UNIFIED_METADATA$RAD_OFFSET
-			gain 		<- metaData$UNIFIED_METADATA$RAD_GAIN
-		}
+			offset 		<- metaData$UNIFIED_METADATA$REF_OFFSET[bandSet]
+			gain 		<- metaData$UNIFIED_METADATA$REF_GAIN[bandSet]
+		} 
+		
 		## At sensor radiance / reflectance
-		x <-  (gain * x + offset) / suntheta
+		xref <-  (gain * xref + offset) / suntheta
 		
 		## At-surface reflectance?
-		
 	}
 	
+	## Re-combine thermal, solar and excluded imagery
+	xref <- stack(xref,xtir, xexc)
+	xref <- xref[[origBands]]
 	
-	if(any(!original_bands %in% bandSet)) {
-		x <- stack(x,xna)
-		x <- x[[original_bands]]
-	}
-	
-	
-	return(x)
+	return(xref)
 }
 
 
 #' Landsat auxilliary data. Taken from Chander et al 2009
 #' spatRes resampling: http://landsat.usgs.gov/band_designations_landsat_satellites.php
+#' @keywords internal
 LANDSAT.db <- list(
 		LANDSAT5 = list (
 				TM = data.frame(band = paste0("B", 1:7),

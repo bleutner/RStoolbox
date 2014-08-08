@@ -97,5 +97,5 @@ LANDSAT.db
 Landsat auxilliary data. Taken from Chander et al 2009
 spatRes resampling: http://landsat.usgs.gov/band_designations_landsat_satellites.php
 }
-\keyword{datasets}
+\keyword{internal}
 

@@ -45,7 +45,7 @@ readMeta <- function(file, unifiedMetadata = TRUE){
 		if(unifiedMetadata){
 			
 			meta[["UNIFIED_METADATA"]] <- list(
-					SPACECRAFT_ID 		= {SAT <- paste0("LANDSAT", getNumeric(meta$PRODUCT_METADATA["SPACECRAFT_ID",]))},
+					SPACECRAFT_ID 		= {SAT <- paste0("LANDSAT", .getNumeric(meta$PRODUCT_METADATA["SPACECRAFT_ID",]))},
 					SENSOR_ID 			= meta$PRODUCT_METADATA["SENSOR_ID",]	,			
 					SCENE_ID 			= meta$METADATA_FILE_INFO["LANDSAT_SCENE_ID",],  ## could assemble name for legacy files: http://landsat.usgs.gov/naming_conventions_scene_identifiers.php
 					DATA_TYPE			= if(!legacy) meta$PRODUCT_METADATA["DATA_TYPE",] else meta$PRODUCT_METADATA["PRODUCT_TYPE",],
@@ -71,7 +71,7 @@ readMeta <- function(file, unifiedMetadata = TRUE){
 					SUN_AZIMUTH			= if(!legacy) as.numeric(meta$IMAGE_ATTRIBUTES["SUN_AZIMUTH",]) else as.numeric(meta$PRODUCT_PARAMETERS["SUN_AZIMUTH",]),
 					SUN_ELEVATION		= if(!legacy) as.numeric(meta$IMAGE_ATTRIBUTES["SUN_ELEVATION",]) else as.numeric(meta$PRODUCT_PARAMETERS["SUN_ELEVATION",]),
 					EARTH_SUN_DISTANCE  = {es <- meta$IMAGE_ATTRIBUTES["EARTH_SUN_DISTANCE",]
-						if(is.null(es) || is.na(es)) es <- ESdist(date)
+						if(is.null(es) || is.na(es)) es <- .ESdist(date)
 						as.numeric(es)}
 			)
 			
@@ -97,9 +97,10 @@ readMeta <- function(file, unifiedMetadata = TRUE){
 									ro 			<- r[go,]
 									names(ro)	<- bandnames[go]
 									ro})
+										
 					} else {
 						
-						bandnames <- paste0("B", getNumeric(rownames(meta$MIN_MAX_RADIANCE)))
+						bandnames <- paste0("B", .getNumeric(rownames(meta$MIN_MAX_RADIANCE)))
 						bandnames <- bandnames[seq(1, length(bandnames), 2)]
 						
 						L <- diff(as.numeric(meta$MIN_MAX_RADIANCE[,1]))
@@ -115,10 +116,31 @@ readMeta <- function(file, unifiedMetadata = TRUE){
 						RAD_GAIN	 <- 1 / G_rescale
 						
 						names(RAD_OFFSET) <- names(RAD_GAIN) <- bandnames
-						
+												
 						list(RAD_OFFSET = RAD_OFFSET, RAD_GAIN = RAD_GAIN)
 						
 					}
+			
+	 if(SAT == "LANDSAT8"){
+				RADCOR$K1 ={ r <- meta$TIRS_THERMAL_CONSTANTS
+					r[,1]		<- as.numeric(r[,1])
+					bandnames	<- str_c("B", str_replace(rownames(r), "^.*_BAND_", ""))
+					go			<- grep("K1", rownames(r))
+					ro 			<- r[go,]
+					names(ro)	<- bandnames[go]
+					ro}
+				RADCOR$K2 = {go			<- grep("K2", rownames(r))
+					ro 			<- r[go,]
+					names(ro)	<- bandnames[go]
+					ro}				
+			} else {
+				TAB7 <- list(LANDSAT4 = c(B6=671.62,B6=1284.3), # TAB7 from Chander 2009
+						LANDSAT5 = c(B6=607.76,B6=1260.56),
+						LANDSAT7 = c(B6=666.09,B6=1282.71))
+					
+				RADCOR$K1 <- TAB7[[SAT]][1]
+				RADCOR$K2 <- TAB7[[SAT]][2]
+			}
 			
 			meta[["UNIFIED_METADATA"]] <- c(meta[["UNIFIED_METADATA"]], RADCOR)
 		}
@@ -133,7 +155,7 @@ readMeta <- function(file, unifiedMetadata = TRUE){
 			atts <- sapply(meta$bands, "[", ".attrs")
 			
 			meta[["UNIFIED_METADATA"]] <- list(
-					SPACECRAFT_ID 		= {SAT <- paste0("LANDSAT", getNumeric(meta$global_metadata$satellite))},
+					SPACECRAFT_ID 		= {SAT <- paste0("LANDSAT", .getNumeric(meta$global_metadata$satellite))},
 					SENSOR_ID 			= meta$global_metadata$instrument,			
 					SCENE_ID 			= SID <- str_replace(meta$global_metadata$lpgs_metadata_file, "_MTL.txt", ""),  ## could assemble name for legacy files: http://landsat.usgs.gov/naming_conventions_scene_identifiers.php
 					DATA_TYPE			= if(meta$bands[[1]]$.attrs["product"] == "sr_refl") "SR", 
@@ -150,7 +172,7 @@ readMeta <- function(file, unifiedMetadata = TRUE){
 						toa <- grepl("_toa_", files)
 						qas <- grepl("qa", files)	
 						bnames				<- toupper(str_replace(nams, paste0(SID, "_"), ""))					
-						bnames[bds]			<- paste0("B", getNumeric(bnames[bds]))
+						bnames[bds]			<- paste0("B", .getNumeric(bnames[bds]))
 						bnames[bds & qas] 	<- paste0(bnames[bds & qas], "_QA")
 						bnames				<- str_replace(str_replace(str_replace(bnames, "\\.TIF", ""), "SR_", ""), "TOA_", "")
 						bnames[toa] 		<- paste0(bnames[toa], "_TOA")
@@ -166,7 +188,7 @@ readMeta <- function(file, unifiedMetadata = TRUE){
 					
 					SUN_AZIMUTH			= as.numeric(meta$global_metadata$solar_angles["azimuth"]),
 					SUN_ELEVATION		= 90 - as.numeric(meta$global_metadata$solar_angles["zenith"]),
-					EARTH_SUN_DISTANCE  = {ESdist(date)}
+					EARTH_SUN_DISTANCE  = {.ESdist(date)}
 			)
 			
 		}
@@ -175,20 +197,6 @@ readMeta <- function(file, unifiedMetadata = TRUE){
 	return(meta)
 }
 
-
-#' Extract numbers from strings
-#' 
-#' @param x string or vector of strings
-#' @param returnNumeric logical. should results be formatted \code{as.numeric}? If so, "05" will be converted to 5. Set returnNumeric to \code{FALSE} to keep preceeding zeros.
-#' @note decimal numbers will be returned as two separate numbers
-#' 
-getNumeric <- function(x, returnNumeric = TRUE) {
-	sapply(x, function(xi){
-				d <- strsplit(xi, "[^[:digit:]]")[[1]]
-				d <- if(returnNumeric) as.numeric(d[d!=""]) else d[d!=""]
-				d
-			})
-}
 
 
 

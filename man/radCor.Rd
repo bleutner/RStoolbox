@@ -3,9 +3,9 @@
 \alias{radCor}
 \title{Radiometric calibration and correction}
 \usage{
-radCor(x, metaData, reflectance = TRUE, satellite, bandSet = "full", gain,
-  offset, G_rescale, B_rescale, sunElev, satZenith = 0, edist, esun, date,
-  SHV, hazeBand, atHaze, method = "APREF")
+radCor(x, metaData, reflectance = TRUE, thermal = TRUE, satellite,
+  bandSet = "full", gain, offset, G_rescale, B_rescale, sunElev,
+  satZenith = 0, edist, esun, date, SHV, hazeBand, atHaze, method = "APREF")
 }
 \arguments{
 \item{x}{raster object}
@@ -13,6 +13,8 @@ radCor(x, metaData, reflectance = TRUE, satellite, bandSet = "full", gain,
 \item{metaData}{either the result of \code{readMeta} or a path to the meta data (MCL) file.}
 
 \item{reflectance}{logical. If \code{TRUE} output will be reflectance, if \code{FALSE} it will be radiance}
+
+\item{thermal}{logical. If \code{TRUE} thermal bands will be converted to brightness temperature (Kelvin).}
 
 \item{bandSet}{numeric or character. original Landsat band numbers or names in the form of ("B1", "B2" etc). If set to 'full' all bands in the solar region will be processed.}
 
@@ -26,23 +28,33 @@ radCor(x, metaData, reflectance = TRUE, satellite, bandSet = "full", gain,
 
 \item{sunElev}{Sun elevation in degrees}
 
-\item{satZenith}{Satellite sensor zenith angle (0 for Landsat)}
+\item{satZenith}{sensor zenith angle (0 for Landsat)}
 
 \item{edist}{Earth-Sun distance in AU.}
 
 \item{esun}{Mean exo-atmospheric solar irradiance, as given by Chandler et al. 2009 or others.}
 
-\item{Lhaze}{Haze value, such as SHV from DOS() function. Not needed for apparent reflectance.}
+\item{SHV}{starting haze value, can be estimated using estimateSHV(). if not provided and method is "DOS" or "COST" SHV will be estimated in an automated fashion. Not needed for apparent reflectance.}
 
-\item{Radiometric}{correction method to be used. There are currently four methods available:
-"APREF", "DOS" (Chavez 1989), "COSTZ" (Chavez 1996).}
+\item{hazeBand}{band from which SHV was estimated.}
+
+\item{method}{Radiometric correction method to be used. There are currently four methods available (see Details):
+"APREF", "DOS" (Chavez 1989), "COSTZ" (Chavez 1996), SDOS.}
 }
 \description{
 Implements several different methods for absolute radiometric correction of Landsat data.
 You can either specify a metadata file, or supply all neccesary values manually. With proper parametrization APREF and SDOS should work for other sensors as well.
 }
+\details{
+\describe{
+\item{APREF}{Apparent reflectance}
+\item{DOS}{Dark object subtratction following Chavez (1989)}
+\item{COSTZ}{Dark object subtraction following Chaves(1996)}
+\item{SDOS}{Simple dark object subtraction. Classical DOS, Lhaze must be estimated for each band separately.}
+}
+}
 \note{
-This is a fork of randcorr in the landsat package. It may be slower, however it works on Raster* objects and hence is memory-safe.
+This was originally a fork of randcorr in the landsat package. It may be slower, however it works on Raster* objects and hence is memory-safe.
 }
 \references{
 S. Goslee (2011): Analyzing Remote Sensing Data in R: The landsat Package. Journal of Statistical Software 43(4).

@@ -47,7 +47,7 @@ estimateSHV <- function(x, hazeBand, darkProp = 0.02, plot = FALSE, returnTables
 	## Run estimation for each band separately
 	out   <- lapply(hazeBand, function(bi) {
 				if(inherits(x, "Raster")) {
-					tf <- freq(x[[bi]]) 
+					tf <- freq(x[[bi]], useNA = "no") 
 				} else {
 					if(is.list(x) & "table" %in% names(x)) {
 						preCalc <- TRUE

@@ -42,14 +42,14 @@ spectralIndices <- function(inputRaster, indices = "NDVI", sensor, bands , maskR
 	## Internal db
 	INDICES <-  list(
 			SR 		= function(NIR, RED) {NIR / RED},
-			DVI		= function(NIR, RED) NIR-RED,
-			NDVI	= function(NIR, RED) (NIR-RED)/(NIR+RED), 
-			TVI 	= function(NIR, RED) (((NIR-RED)/(NIR+RED))+0.5)^0.5, 
-			MSAVI	= function(NIR, RED) NIR + 0.5 - (0.5 * sqrt((2 * NIR + 1)^2 - 8 * (NIR - (2 * RED)))),
-			MSAVI2	= function(NIR, RED) (2 * (NIR + 1) - sqrt((2 * NIR + 1)^2 - 8 * (NIR - RED))) / 2,
-			GEMI	= function(NIR, RED) (((NIR^2 - RED^2) * 2 + (NIR * 1.5) + (RED * 0.5) ) / (NIR + RED + 0.5)) * (1 - ((((NIR^2 - RED^2) * 2 + (NIR * 1.5) + (RED * 0.5) ) / (NIR + RED + 0.5)) * 0.25)) - ((RED - 0.125) / (1 - RED)),                   
-			SLAVI	= function(RED, MIR) NIR / (RED + MIR),
-			EVI		= function(NIR, RED, BLUE) G * ((NIR - RED) / (NIR + C1 * RED - C2 * BLUE + L))# include a G or L specification in command
+			DVI		= function(NIR, RED) {NIR-RED},
+			NDVI	= function(NIR, RED) {(NIR-RED)/(NIR+RED)}, 
+			TVI 	= function(NIR, RED) {(((NIR-RED)/(NIR+RED))+0.5)^0.5}, 
+			MSAVI	= function(NIR, RED) {NIR + 0.5 - (0.5 * sqrt((2 * NIR + 1)^2 - 8 * (NIR - (2 * RED))))},
+			MSAVI2	= function(NIR, RED) {(2 * (NIR + 1) - sqrt((2 * NIR + 1)^2 - 8 * (NIR - RED))) / 2},
+			GEMI	= function(NIR, RED) {(((NIR^2 - RED^2) * 2 + (NIR * 1.5) + (RED * 0.5) ) / (NIR + RED + 0.5)) * (1 - ((((NIR^2 - RED^2) * 2 + (NIR * 1.5) + (RED * 0.5) ) / (NIR + RED + 0.5)) * 0.25)) - ((RED - 0.125) / (1 - RED))},                   
+			SLAVI	= function(RED, MIR) {NIR / (RED + MIR)},
+			EVI		= function(NIR, RED, BLUE) {G * ((NIR - RED) / (NIR + C1 * RED - C2 * BLUE + L))}# include a G or L specification in command
 	)
 	
 	## Get arguments and check for mising arguments
@@ -64,7 +64,7 @@ spectralIndices <- function(inputRaster, indices = "NDVI", sensor, bands , maskR
 	## We do this in a separate step, so we can throw an error before we start the calculations
 	inList <- lapply(indices, function(index) {
 				if(verbose) print(paste0("Calculating ", index))
-				overlay(inputRaster[[args[[index]]]], fun = INDICES[[index]])
+			m<-	overlay(inputRaster[[args[[index]]]], fun = INDICES[[index]])
 			})
 	
 	## Combine and return
