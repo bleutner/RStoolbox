@@ -142,6 +142,7 @@ radCor <-	function(x, metaData, reflectance = TRUE, thermal = TRUE, satellite, b
 		L <- gain[tirBands] * x[[tirBands]] + offset[tirBands]
 		## Convert to temperature
 		xtir <- K2 / log(K1/L + 1) 
+		names(xtir) <- tirBands
 	} else {
 		xtir <- NULL
 	}
@@ -157,7 +158,7 @@ radCor <-	function(x, metaData, reflectance = TRUE, thermal = TRUE, satellite, b
 		
 		## Estimate SHV automatically
 		if(missing(SHV)){
-			if(missing(hazeBand))  hazeBand <- 1
+			if(missing(hazeBand))  hazeBand <- "B1"
 			if(length(hazeBand) > 1) {
 				warning("Automatic search for SHV values is intended for one band only. For more bands please estimate hzae DNs manually using estimateSHV() \nhazeBand was automatically reset to 1")
 				hazeBand <- 1 }
@@ -238,10 +239,10 @@ radCor <-	function(x, metaData, reflectance = TRUE, thermal = TRUE, satellite, b
 	}
 	
 	## Re-combine thermal, solar and excluded imagery
-	xref <- stack(xref,xtir, xexc)
-	xref <- xref[[origBands]]
+	x <- stack(xref,xtir, xexc)
+	x <- x[[origBands]]
 	
-	return(xref)
+	return(x)
 }
 
 
