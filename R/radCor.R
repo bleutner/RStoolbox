@@ -14,7 +14,7 @@
 #' @param Brescale Band-specific sensor Brescale (bias). Require either gain and offset or Grescale and Brescale to convert DN to radiance.
 #' @param sunElev Sun elevation in degrees
 #' @param satZenith sensor zenith angle (0 for Landsat)
-#' @param edist Earth-Sun distance in AU.
+#' @param d Earth-Sun distance in AU.
 #' @param esun Mean exo-atmospheric solar irradiance, as given by Chandler et al. 2009 or others.
 #' @param SHV starting haze value, can be estimated using estimateSHV(). if not provided and method is "DOS" or "COSTZ" SHV will be estimated in an automated fashion. Not needed for apparent reflectance.
 #' @param hazeBand band from which SHV was estimated.
@@ -31,7 +31,7 @@
 #' @export
 #' @seealso \link[landsat]{radiocorr} 
 radCor <-	function(x, metaData, reflectance = TRUE, thermal = TRUE, satellite, bandSet = "full", gain, offset, G_rescale, B_rescale,
-		sunElev, satZenith = 0, edist, esun, date, SHV, hazeBand, atHaze,  method = "APREF"){
+		sunElev, satZenith = 0, d, esun, date, SHV, hazeBand, atHaze,  method = "APREF"){
 	# http://landsat.usgs.gov/Landsat8_Using_Product.php
 	
 	if(!method %in% c("APREF", "DOS", "COSTZ", "SDOS")) stop("method must be one of 'APREF', 'DOS', 'COSTZ' 'SDOS'", call.=FALSE)
@@ -48,9 +48,9 @@ radCor <-	function(x, metaData, reflectance = TRUE, thermal = TRUE, satellite, b
 		
 		satellite 	<- metaData$UNIFIED_METADATA$SPACECRAFT_ID
 		sensor 		<- metaData$UNIFIED_METADATA$SENSOR_ID
-		offset 		<- metaData$UNIFIED_METADATA$RAD_OFFSET
-		gain 		<- metaData$UNIFIED_METADATA$RAD_GAIN
-		edist		<- metaData$UNIFIED_METADATA$EARTH_SUN_DISTANCE
+		B_rescale	<- metaData$UNIFIED_METADATA$RAD_OFFSET
+		G_rescale	<- metaData$UNIFIED_METADATA$RAD_GAIN
+		d			<- metaData$UNIFIED_METADATA$EARTH_SUN_DISTANCE
 		sunElev		<- metaData$UNIFIED_METADATA$SUN_ELEVATION
 		rad 		<- metaData$UNIFIED_METADATA$RADIOMETRIC_RES
 		K1			<- metaData$UNIFIED_METADATA$K1
@@ -61,20 +61,21 @@ radCor <-	function(x, metaData, reflectance = TRUE, thermal = TRUE, satellite, b
 		sensor = 1
 		rad = 8
 		###
-		if(missing(offset) | missing(gain)) {
-			if(missing(G_rescale) | missing(B_rescale)) { stop("Please specify either a) metaData, b) gain and offset, c) B_rescale and G_rescale", call. = FALSE )
+		if(missing(G_rescale) | missing(B_rescale)){
+			if(missing(offset) | missing(gain)) {
+				stop("Please specify either a) metaData, b) gain and offset, c) B_rescale and G_rescale", call. = FALSE )
 			} else {
-				offset 	<- -1 * B_rescale / G_rescale  
-				gain 	<-  1 / G_rescale
+				B_rescale <- 1/gain
+				G_rescale <- -offset/gain
 			}
 		}
 		
 		
-		if(missing(edist)) {
+		if(missing(d)) {
 			if(missing(date)) { 
 				stop("Please specify either a) edist or b)date", call. = FALSE) 
 			} else {
-				edist <- .ESdist(date) 
+				d <- .ESdist(date) 
 			}
 		}
 	}
@@ -102,7 +103,7 @@ radCor <-	function(x, metaData, reflectance = TRUE, thermal = TRUE, satellite, b
 		if(is.numeric(bandSet)) bandSet <- paste0("B", bandSet)
 	}	
 	
-	if(missing(metaData))	names(offset) <- names(gain) <- bandSet
+	if(missing(metaData))	names(B_rescale) <- names(G_rescale) <- bandSet
 	
 	origBands 	<- names(x)   
 	corBands 	<- sDB[!sDB$bandtype %in% c("TIR", "PAN"), "band"]
@@ -137,9 +138,9 @@ radCor <-	function(x, metaData, reflectance = TRUE, thermal = TRUE, satellite, b
 	}
 	
 	## Thermal processing
-	if(thermal & reflectance) {
+	if(thermal & reflectance & length(tirBands) > 0) {
 		## Convert to radiance
-		L <- gain[tirBands] * x[[tirBands]] + offset[tirBands]
+		L <- G_rescale[tirBands] * x[[tirBands]] + B_rescale[tirBands]
 		## Convert to temperature
 		xtir <- K2 / log(K1/L + 1) 
 		names(xtir) <- tirBands
@@ -176,64 +177,62 @@ radCor <-	function(x, metaData, reflectance = TRUE, thermal = TRUE, satellite, b
 		
 		
 		# For SDOS gain, offset, Lhaze and Esun must be provided as coresponding vectors of equal length
-		if(method == "SDOS"){
-			hazeBand <- bandSet
-		} 
+		if(method == "SDOS") hazeBand <- bandSet 
+		TAUz <- 1
+		TAUv <- 1
+		Edown <- 0				
+		if (method == "COSTZ") {
+			TAUz <- suntheta
+			TAUv <- satphi
+		}  
 		
 		## 1% correction and conversion to radiance
-		SHV  <- SHV - gain[hazeBand] * 0.01 * esun[hazeBand] / edist ^ 2 * suntheta / pi
-		SHV	 <- SHV - offset[hazeBand]
+		Ldo <- 0.01 * ((esun[hazeBand] * suntheta * TAUz) + Edown) * TAUv / (pi * d ^ 2)
+		Lhaze <- (SHV * G_rescale[hazeBand] + B_rescale[hazeBand]) - Ldo
 		
 		if(method %in% c("DOS", "COSTZ")) {		
-			TAUz <- 1
-			TAUv <- 1
-			Edown <- 0	
-			if (method == "COSTZ") {
-				TAUz <- suntheta
-				TAUv <- satphi
-			} 
-			
 			## Pick atmoshpere type
 			if(missing(atHaze)) {
 				atHaze.db <- data.frame(min = c(1,56,76,96,116), max = c(55,75,95,115,255)) / 255 * (2^rad-1)
-				atHaze <- c("veryClear", "clear", "moderate", "hazy", "veryHazy")[SHV > atHaze.db[,1] & SHV <= atHaze.db[,2]]
+				atHaze <- c("veryClear", "clear", "moderate", "hazy", "veryHazy")[Lhaze > atHaze.db[,1] & Lhaze <= atHaze.db[,2]]
 				message("Selcting atmosphere: '", atHaze, "'")
 			}		
-			SHV	  <- SHV * 	sDB[match(bandSet,sDB$band), paste0(hazeBand,"_", atHaze)]
+			Lhaze	  <- Lhaze  * sDB[match(bandSet,sDB$band), paste0(hazeBand,"_", atHaze)]
 			
 			## Calculate corrected RAD_haze
-			NORM <- gain[bandSet] / gain[hazeBand]
-			Lhaze <- SHV * NORM + offset[bandSet]	
+			NORM  <- G_rescale[bandSet] / G_rescale[hazeBand]
+			Lhaze <- Lhaze * NORM + B_rescale[bandSet]	
 		}
 		# In case Lhaze becomes negative we reset it to zero to prevent artefacts.
 		Lhaze [Lhaze < 0] <- 0
 	}
 	
-	offset	<- offset[bandSet]
-	gain 	<- gain[bandSet]
+	B_rescale	<- B_rescale[bandSet]
+	G_rescale 	<- G_rescale[bandSet]
 	esun <- esun[bandSet]
 	
 	if(satellite != "LANDSAT8"){
 		
 		if(!reflectance) {
 			## TOA Radiance
-			xref <-  (gain * xref + offset) / suntheta
+			xref <-  ( xref * G_rescale + B_rescale) / suntheta
 		} else {
 			## At-surface reflectance (precalculate coefficients to speed up raster processing)
-			a <- (pi * edist ^ 2)/(TAUv * (esun * suntheta * TAUz + Edown) * gain)	
-			b <- a * (- Lhaze - offset)
-			xref <- a * xref  + b
+			C <- (pi * d ^ 2)/(TAUv * (esun * suntheta * TAUz + Edown))	
+			b <- C * (B_rescale - Lhaze)
+			a <- C * G_rescale 
+			xref <-  a * xref  + b
 		}
 		
 	} else {
 		
 		if(reflectance) {
-			offset 		<- metaData$UNIFIED_METADATA$REF_OFFSET[bandSet]
-			gain 		<- metaData$UNIFIED_METADATA$REF_GAIN[bandSet]
+			B_rescale 		<- metaData$UNIFIED_METADATA$REF_OFFSET[bandSet]
+			G_rescale 		<- metaData$UNIFIED_METADATA$REF_GAIN[bandSet]
 		} 
 		
 		## At sensor radiance / reflectance
-		xref <-  (gain * xref + offset) / suntheta
+		xref <-  (G_rescale * xref + B_rescale) / suntheta
 		
 		## At-surface reflectance?
 	}

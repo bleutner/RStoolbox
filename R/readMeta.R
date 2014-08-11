@@ -109,11 +109,8 @@ readMeta <- function(file, unifiedMetadata = TRUE){
 						Q <- diff(as.numeric(meta$MIN_MAX_PIXEL_VALUE[,1]))  
 						Q <- Q[seq(1, length(Q), 2)]
 						
-						G_rescale <- L/Q
-						B_rescale <- as.numeric(meta$MIN_MAX_RADIANCE[,1])[seq(2,nrow(meta$MIN_MAX_RADIANCE),2)] - (G_rescale) * 1
-						
-						RAD_OFFSET 	<- -1 * B_rescale / G_rescale  
-						RAD_GAIN	 <- 1 / G_rescale
+						RAD_GAIN	<- L/Q
+						RAD_OFFSET 	<- as.numeric(meta$MIN_MAX_RADIANCE[,1])[seq(2,nrow(meta$MIN_MAX_RADIANCE),2)] - (RAD_GAIN) * 1
 						
 						names(RAD_OFFSET) <- names(RAD_GAIN) <- bandnames
 												
@@ -171,7 +168,7 @@ readMeta <- function(file, unifiedMetadata = TRUE){
 						bds <- grepl("_band", files)
 						toa <- grepl("_toa_", files)
 						qas <- grepl("qa", files)	
-						bnames				<- toupper(str_replace(nams, paste0(SID, "_"), ""))					
+						bnames				<- toupper(str_replace(files, paste0(SID, "_"), ""))					
 						bnames[bds]			<- paste0("B", .getNumeric(bnames[bds]))
 						bnames[bds & qas] 	<- paste0(bnames[bds & qas], "_QA")
 						bnames				<- str_replace(str_replace(str_replace(bnames, "\\.TIF", ""), "SR_", ""), "TOA_", "")

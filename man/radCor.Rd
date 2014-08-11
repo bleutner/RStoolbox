@@ -5,7 +5,7 @@
 \usage{
 radCor(x, metaData, reflectance = TRUE, thermal = TRUE, satellite,
   bandSet = "full", gain, offset, G_rescale, B_rescale, sunElev,
-  satZenith = 0, edist, esun, date, SHV, hazeBand, atHaze, method = "APREF")
+  satZenith = 0, d, esun, date, SHV, hazeBand, atHaze, method = "APREF")
 }
 \arguments{
 \item{x}{raster object}
@@ -30,11 +30,11 @@ radCor(x, metaData, reflectance = TRUE, thermal = TRUE, satellite,
 
 \item{satZenith}{sensor zenith angle (0 for Landsat)}
 
-\item{edist}{Earth-Sun distance in AU.}
+\item{d}{Earth-Sun distance in AU.}
 
 \item{esun}{Mean exo-atmospheric solar irradiance, as given by Chandler et al. 2009 or others.}
 
-\item{SHV}{starting haze value, can be estimated using estimateSHV(). if not provided and method is "DOS" or "COST" SHV will be estimated in an automated fashion. Not needed for apparent reflectance.}
+\item{SHV}{starting haze value, can be estimated using estimateSHV(). if not provided and method is "DOS" or "COSTZ" SHV will be estimated in an automated fashion. Not needed for apparent reflectance.}
 
 \item{hazeBand}{band from which SHV was estimated.}
 
