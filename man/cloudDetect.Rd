@@ -10,7 +10,7 @@ cloudDetect(x, threshold, minCloudSize, windowSize1 = 5, windowSize2 = 11,
 \arguments{
 \item{x}{RasterBrick or RasterStack}
 
-\item{threshold}{cloud detection threshold. If not provided it will be guessed.}
+\item{threshold}{cloud detection threshold. If not provided it will be guessed. Everything *above* this threshold will be considered a cloud pixel (unless it is removed by filtering afterwards).}
 
 \item{minCloudSize}{minimum number of cloud pixels in window1}
 
@@ -36,8 +36,12 @@ cloudDetect(x, threshold, minCloudSize, windowSize1 = 5, windowSize2 = 11,
 Very simple cloud detection for imagery with blue and thermal bands
 }
 \note{
-Typically clouds are cold in the thermal (high value) and have high reflectance in short wavelengths. By ratioing the two bands an rough cloud mask can be obtained.
-More precise approaches can be found elsewhere, e.g. \link[fmask]{https://code.google.com/p/fmask/}.
+Typically clouds are cold in the thermal region and have high reflectance in short wavelengths (blue). By differencing the two bands and thresholding a rough cloud mask can be obtained.
+More sophisticated approaches can be found elsewhere, e.g. \link[fmask]{https://code.google.com/p/fmask/}.
+
+It can make sense to find a suitable threshold on a cropped version of the scene. Also make sure you make use of the \code{returnDiffLayer} argument to save yourself one processing step.
+Sanitizing and region growing can be seen as final polishing, i.e. as long as the pure cloud centers are not detected properly, you can turn those two arguments off if they take too long to calculate.
+Once your mask detects obvious cloud pixels properly re-enable sanitizing and regionGrowing for fine tuning if desired. Finally, once a suitable threshold is established re-run cloudDetect on the whole scene with this threshold and go get a coffee.
 }
 \examples{
 \dontrun{

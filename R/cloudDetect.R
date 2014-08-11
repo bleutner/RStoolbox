@@ -1,7 +1,7 @@
 #' Very simple cloud detection for imagery with blue and thermal bands
 #' 
 #' @param x RasterBrick or RasterStack
-#' @param threshold cloud detection threshold. If not provided it will be guessed.
+#' @param threshold cloud detection threshold. If not provided it will be guessed. Everything *above* this threshold will be considered a cloud pixel (unless it is removed by filtering afterwards).
 #' @param minCloudSize minimum number of cloud pixels in window1 
 #' @param windowSize1 odd number, rectangular moving window to remove clouds which arre too small (likely artefacts)
 #' @param windowSize2 odd number, rectangular buffer around cluster centers
@@ -12,8 +12,12 @@
 #' @param plot logical. Provides plots of the cloud mask for all sub-steps (sanitizing etc.) Helpful to find proper parametrization.
 #' @param verbose logical. Print messages or supress.
 #' @param returnDiffLayer logical. If \code{TRUE}, the difference layer will be returned along with the cloudmask. This option allows to re-use the difference layer in cloudDetect.
-#' @note Typically clouds are cold in the thermal (high value) and have high reflectance in short wavelengths. By ratioing the two bands an rough cloud mask can be obtained.
-#' More precise approaches can be found elsewhere, e.g. \link[fmask]{https://code.google.com/p/fmask/}.
+#' @note Typically clouds are cold in the thermal region and have high reflectance in short wavelengths (blue). By differencing the two bands and thresholding a rough cloud mask can be obtained.
+#' More sophisticated approaches can be found elsewhere, e.g. \link[fmask]{https://code.google.com/p/fmask/}.
+#' 
+#' It can make sense to find a suitable threshold on a cropped version of the scene. Also make sure you make use of the \code{returnDiffLayer} argument to save yourself one processing step.
+#' Sanitizing and region growing can be seen as final polishing, i.e. as long as the pure cloud centers are not detected properly, you can turn those two arguments off if they take too long to calculate.
+#' Once your mask detects obvious cloud pixels properly re-enable sanitizing and regionGrowing for fine tuning if desired. Finally, once a suitable threshold is established re-run cloudDetect on the whole scene with this threshold and go get a coffee.
 #' @export
 #' @examples 
 #' \dontrun{
@@ -47,6 +51,7 @@ cloudDetect <- function(x, threshold, minCloudSize, windowSize1 = 5, windowSize2
 	if(plot) plot(cdiff, main = "Cloud layer: blue - tir difference")
 	
 	## Thresholding
+	if(verbose) message("Begin thresholding")
 	cmask <- cdiff > threshold
 	cmask <- mask(cmask, cmask, maskvalue = 0)
 	
@@ -55,6 +60,7 @@ cloudDetect <- function(x, threshold, minCloudSize, windowSize1 = 5, windowSize2
 	
 	## Remove "clouds" smaller than minCloudSize
 	if(sanitize) {
+		if(verbose) message("Begin sanitzing")
 		if(missing(minCloudSize)) minCloudSize <- windowSize1 ^ 2
 		w <- matrix(ncol = windowSize1, nrow = windowSize1, 1)
 		if(minCloudSize >= windowSize^2) {
@@ -71,6 +77,7 @@ cloudDetect <- function(x, threshold, minCloudSize, windowSize1 = 5, windowSize2
 	
 	## Buffer cloud centers (we could also do a circular buffer, but for now this should suffice)
 	if(maskGrowing){
+		if(verbose) message("Begin region-growing")
 		w <- matrix(ncol = windowSize2, nrow = windowSize2, 1)
 		cmod <- focal(cmod, w, na.rm = TRUE )
 		cmod[!is.na(cmod)] <- 1L

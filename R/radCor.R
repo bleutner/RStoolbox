@@ -139,6 +139,7 @@ radCor <-	function(x, metaData, reflectance = TRUE, thermal = TRUE, satellite, b
 	
 	## Thermal processing
 	if(thermal & reflectance & length(tirBands) > 0) {
+		message("Processing thermal band(s)")
 		## Convert to radiance
 		L <- G_rescale[tirBands] * x[[tirBands]] + B_rescale[tirBands]
 		## Convert to temperature
@@ -147,6 +148,8 @@ radCor <-	function(x, metaData, reflectance = TRUE, thermal = TRUE, satellite, b
 	} else {
 		xtir <- NULL
 	}
+	
+	message("Processing radiance / reflectance")
 	
 	## Radiance and reflectance processing
 	if(method == "APREF") {
