@@ -1,7 +1,7 @@
 Package: RStoolbox
 Type: Package
 Title: RStoolbox: A Collection of Remote Sensing Tools
-Version: 0.01
+Version: 0.02
 Date: 2014-5-6
 Authors@R: c( person("Benjamin", "Leutner", role = c("cre", "aut"), email =
     "benjamin.leutner@uni-wuerzburg.de"), person("Ned", "Horning", role =

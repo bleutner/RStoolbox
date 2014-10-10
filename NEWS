@@ -1,5 +1,6 @@
 RStoolbox 0.02
 =====================================
+* new functions `readSLI` and `writeSLI` to read and write binary ENVI spectral libraries
 
 * new family of functions for Landsat processing: 
 	`readMeta()` reads Landsat Metadata from MTL files

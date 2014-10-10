@@ -35,7 +35,7 @@ superClass <- function(inputRaster, trainingData, classAttributes = NULL, nSampl
 		}
 	} 
 	if(!classAttributes %in% colnames(trainingData@data)) 
-		stop(paste0("The column ", classAttributes, " does not exist in trainingData. \nAvailable columns are: ", colnames(trainingData@data,collapse=", ")), call. = FALSE) 
+		stop(paste0("The column ", classAttributes, " does not exist in trainingData. \nAvailable columns are: ", paste0(colnames(trainingData@data)),collapse=", "), call. = FALSE) 
 		
 	## Check projections
 	if(!compareCRS(inputRaster, trainingData)) 
@@ -60,30 +60,41 @@ superClass <- function(inputRaster, trainingData, classAttributes = NULL, nSampl
 	trainingData@data <- weights[order(weights$order),]
 		
 	## Get random coordinates within polygons
-	xy  <- lapply(seq_along(trainingData), function(i_poly){	
-				pts <- spsample(trainingData[i_poly, ], type = "random", n = trainingData@data[i_poly,"nSamplesClass"], iter = 20) 
-			})
-	xy <- do.call("rbind", xy)
-	
+#	xy  <- lapply(seq_along(trainingData), function(i_poly){	
+#				pts <- spsample(trainingData[i_poly, ], type = "random", n = trainingData@data[i_poly,"nSamplesClass"], iter = 20) 
+#			})
+    ## We do this differently now in order to avoid duplicate samples
+    xy <- cellFromPolygon(inputRaster, trainingData)
+    xy <- sapply(seq_along(trainingData), function(i_poly){
+                nsam <- trainingData@data[i_poly, "nSamplesClass"]
+                if(nsam < length(xy[i_poly])) sample(xy[i_poly], nsam, replace = FALSE) else xy[i_poly]
+                
+            })
+    names(xy) <- trainingData[[classAttributes]]
+    xy <- melt(xy)
+    colnames(xy) <- c("cellID", "class")
+    
+    
 	### Display, verbose only
 	if(verbose) {
 		plot(inputRaster,1)
 		plot(trainingData, add = T)
-		points(xy, pch = 3, cex = 0.5)
+        xypts <- xyFromCell(inputRaster, xy$cellID, spatial = TRUE)
+		points(xypts, pch = 3, cex = 0.5)
 	}	
 	
 	## Extract response and predictors and combine in final training set
 	if(verbose) print("Begin extract")
 	dataSet <- data.frame(
-			response = as.factor(over(x = xy, y = trainingData)[[classAttributes]]),
-			extract(inputRaster, xy, cellnumbers = TRUE))
+			response = as.factor(xy$class),
+			extract(inputRaster, xy$cellID))
 	
-	## Discard duplicate cells
-	dataSet <- dataSet[!duplicated(dataSet[,"cells"]),]
-	dataSet <- dataSet[,colnames(dataSet) != "cells"]
-	
+#	## Discard duplicate cells
+#	dataSet <- dataSet[!duplicated(dataSet[,"cells"]),]
+#	dataSet <- dataSet[,colnames(dataSet) != "cells"]
+#	
 	## Unique classes
-	classes <- unique(trainingData[[classAttributes]])
+	classes <- unique(dataSet$response)
 	classMapping <- data.frame(classID = as.numeric(classes), class = levels(classes))
 	
 	## TRAIN ######################### 
