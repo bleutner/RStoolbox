@@ -1,5 +1,7 @@
 RStoolbox 0.02
 =====================================
+* new function ggRGB as an raster::plotRGB equivalent for ggplot2
+
 * new functions `readSLI` and `writeSLI` to read and write binary ENVI spectral libraries
 
 * new family of functions for Landsat processing: 
