@@ -32,12 +32,18 @@ ggRGB <- function(x, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = N
     # Version 0.9
     # Licence GPL v3
     # partly based on functions in the pixmap package by Friedrich Leisch
-   
+    
     ## Subsample raster
     rr 	<- sampleRegular(x[[c(r,g,b)]], maxpixels, ext=ext, asRaster=TRUE, useGDAL=TRUE)
     RGB <- getValues(rr)
-    
-    if(missing(scale)){ scale <- max(RGB, 255, na.rm = TRUE) }
+        
+    rangeRGB <- range(RGB, na.rm = TRUE)
+    if(missing(scale)){ scale <- max(rangeRGB, 255) }
+    if(rangeRGB[1] < 0){
+        RGB 	<- RGB - rangeRGB[1]
+        scale 	<- scale - rangeRGB[1] 
+        if(!missing(minMax)) minMax <- minMax - rangeRGB[1] 
+    }   
     
     ## 
     if (!is.null(minMax)) {
