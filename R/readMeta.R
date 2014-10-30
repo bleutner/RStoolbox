@@ -3,15 +3,14 @@
 #' Besides reading metadata, readMeta deals with legacy versions of Landsat metadata files and where possible adds missing information (radiometric gain and offset, earth-sun distance).
 #' 
 #' @param file path to Landsat MTL file (...MTL.txt)
-#' @param unifiedMetadata logical. If \code{TRUE} some relevant etadata of Landsat 5:8 are homogenized into a standard format and appended to the original metadata.
-#' @return Returns a list containing the Metadata of the MTL file, structured by the original grouping.
+#' @param unifiedMetadata Logical. If \code{TRUE} some relevant etadata of Landsat 5:8 are homogenized into a standard format and appended to the original metadata.
+#' @param unifiedOnly Logical. Return only unified (pretty) metadata. 
+#' @return Returns a list containing the Metadata of the MTL or XML file, structured by the original grouping.
 #' 
 #' @import landsat
 #' @export 
 #' 
-#' 
-#' 
-readMeta <- function(file, unifiedMetadata = TRUE){
+readMeta <- function(file, unifiedMetadata = TRUE, unifiedOnly = FALSE){
 	if(!grepl("MTL", file) & !grepl("xml", file)) warning("The Landsat metadata file you have specified looks unusual. Typically the filename contains the string 'MTL' or 'xml'. Are you sure you specified the right file? \n I'll try to read it but check the results!")
 	
 	## Read mtl file
@@ -191,7 +190,7 @@ readMeta <- function(file, unifiedMetadata = TRUE){
 		}
 		
 	}
-	return(meta)
+	if(unifiedOnly) return(meta$UNIFIED_METADATA) else return(meta)
 }
 
 
