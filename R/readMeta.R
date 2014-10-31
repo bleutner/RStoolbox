@@ -58,8 +58,12 @@ readMeta <- function(file, unifiedMetadata = TRUE, unifiedOnly = FALSE){
                         files <- meta[["PRODUCT_METADATA"]][files,]	},
                     
                     BANDS 				= {junk <- unique(sapply(str_split(files, "_B"), "[" ,1 ))
-                        bds <- str_replace(str_replace(files, paste0(junk,"_"), ""), {if(SAT=="LANDSAT5") "0.TIF" else ".TIF"}, "")
+                        bds <- str_replace(files, paste0(junk,"_"), "")
+                        trailingZeros <- length(grep("0.TIF", bds)) > 1
+                        bds <- str_replace(str_replace(files, paste0(junk,"_"), ""), {if(trailingZeros) "0.TIF" else ".TIF"}, "")
+                        bds <- paste0(bds, "_DN")
                     },
+                    PRODUCT = rep("DN", length(bds)),
                     BAND_TYPE 			= {
                         ty <- rep("image", length(bds))
                         ty[grepl("QA", bds)] <- "qa"
@@ -79,28 +83,28 @@ readMeta <- function(file, unifiedMetadata = TRUE, unifiedOnly = FALSE){
                                 RAD_OFFSET				= {
                                     r <- meta$RADIOMETRIC_RESCALING
                                     r[,1]		<- as.numeric(r[,1])
-                                    bandnames	<- str_c("B", str_replace(rownames(r), "^.*_BAND_", ""))
+                                   # bandnames	<- str_c("B", str_replace(rownames(r), "^.*_BAND_", ""))
                                     go			<- grep("RADIANCE_ADD*", rownames(r))
                                     ro 			<- r[go,]
-                                    names(ro)	<- bandnames[go]
+                                    names(ro)	<- bds
                                     ro},
                                 RAD_GAIN				= {go			<- grep("RADIANCE_MULT*", rownames(r))
                                     ro 			<- r[go,]
-                                    names(ro)	<- bandnames[go]
+                                    names(ro)	<- bds
                                     ro},
                                 REF_OFFSET				= {	go			<- grep("REFLECTANCE_ADD*", rownames(r))
-                                    ro 			<- r[go,]
-                                    names(ro)	<- bandnames[go]
+                                    ro <- if(length(go)==0) rep(NA, length(bds)) else r[go,]   
+                                    names(ro)	<- bds
                                     ro},
                                 REF_GAIN				= {go			<- grep("REFLECTANCE_MULT*", rownames(r))
-                                    ro 			<- r[go,]
-                                    names(ro)	<- bandnames[go]
+                                    ro <- if(length(go)==0) rep(NA, length(bds)) else r[go,]   
+                                    names(ro)	<- bds
                                     ro})
                         
                     } else {
-                        
-                        bandnames <- paste0("B", .getNumeric(rownames(meta$MIN_MAX_RADIANCE)))
-                        bandnames <- bandnames[seq(1, length(bandnames), 2)]
+                         
+                        bds <- paste0("B", .getNumeric(rownames(meta$MIN_MAX_RADIANCE)))
+                        bds <- bds[seq(1, length(bds), 2)]
                         
                         L <- diff(as.numeric(meta$MIN_MAX_RADIANCE[,1]))
                         L <- L[seq(1, length(L), 2)] 
@@ -111,7 +115,7 @@ readMeta <- function(file, unifiedMetadata = TRUE, unifiedOnly = FALSE){
                         RAD_GAIN	<- L/Q
                         RAD_OFFSET 	<- as.numeric(meta$MIN_MAX_RADIANCE[,1])[seq(2,nrow(meta$MIN_MAX_RADIANCE),2)] - (RAD_GAIN) * 1
                         
-                        names(RAD_OFFSET) <- names(RAD_GAIN) <- bandnames
+                        names(RAD_OFFSET) <- names(RAD_GAIN) <- bds
                         
                         list(RAD_OFFSET = RAD_OFFSET, RAD_GAIN = RAD_GAIN)
                         
@@ -120,14 +124,14 @@ readMeta <- function(file, unifiedMetadata = TRUE, unifiedOnly = FALSE){
             if(SAT == "LANDSAT8"){
                 RADCOR$K1 ={ r <- meta$TIRS_THERMAL_CONSTANTS
                     r[,1]		<- as.numeric(r[,1])
-                    bandnames	<- str_c("B", str_replace(rownames(r), "^.*_BAND_", ""))
+                    bds	<- str_c("B", str_replace(rownames(r), "^.*_BAND_", ""))
                     go			<- grep("K1", rownames(r))
                     ro 			<- r[go,]
-                    names(ro)	<- bandnames[go]
+                    names(ro)	<- bds[go]
                     ro}
                 RADCOR$K2 = {go			<- grep("K2", rownames(r))
                     ro 			<- r[go,]
-                    names(ro)	<- bandnames[go]
+                    names(ro)	<- bds[go]
                     ro}				
             } else {
                 TAB7 <- list(LANDSAT4 = c(B6=671.62,B6=1284.3), # TAB7 from Chander 2009
@@ -142,8 +146,7 @@ readMeta <- function(file, unifiedMetadata = TRUE, unifiedOnly = FALSE){
         }
     } else {
         ## PROCESS ESPA LEDAPS XML FILES
-        meta <- xmlParse(file)
-        meta <- xmlToList(meta)
+        meta <- xmlToList(xmlParse(file))
         names(meta$bands) <- str_replace_all(unlist(sapply(meta$bands, "[", "long_name")), " ", "_")
         
         if(unifiedMetadata){
@@ -169,8 +172,8 @@ readMeta <- function(file, unifiedMetadata = TRUE, unifiedOnly = FALSE){
                         sr <- grepl("_sr_", files)
                         qas <- grepl("qa", files)	
                         PROD <- rep(NA, length(files))
-                        PROD[toa] <- "TOA"
-                        PROD[sr]  <- "SR"
+                        PROD[toa] <- "TRF"
+                        PROD[sr]  <- "SRF"
                         PROD[bds & !sr & !toa] <- "DN" 
                         PROD[grepl("cfmask", files)] <- "CM" ## TODO: think about alternative type 
                         bnames				<- toupper(str_replace(files, paste0(SID, "_"), ""))					
@@ -209,12 +212,12 @@ readMeta <- function(file, unifiedMetadata = TRUE, unifiedOnly = FALSE){
 #' Reads Landsat MTL or XML metadata files and loads single Landsat Tiffs into a rasterStack.
 #' Be aware that by default stackLS() does NOT import panchromatic bands nor thermal bands with resolutions != 30m.
 #' 
-#' @param file character. Path to Landsat MTL metadata file.
+#' @param file character. Path to Landsat MTL metadata file (not an XML file!).
 #' @param allResolutions logical. if \code{TRUE} a list will be returned with length = unique spatial resolutions.
 #' @param resampleTIR logical. As of  the USGS resamples TIR bands to 30m. Use this option if you use data processed prior to February 25, 2010 which has not been resampled.
 #' @param resamplingMethod character. Method to use for TUR resampling ('ngb' or 'bilinear'). Defaults to 'ngb' (nearest neighbor).
 #' @param type character vector. Which type of data should be returned in the stack? (only relevant for LS8 and LEDAPS processed products). 'image': image data, 'index': multiband indices, 'qa' quality flag bands.
-#' @param product Character vector. Which products should be returned. Options: digital numbers ('DN'), top of atmosphere reflectance ('TOA'), surface reflectance ('SR')
+#' @param product Character vector. Which products should be returned. Options: digital numbers ('DN'), top of atmosphere reflectance ('TRF'), surface reflectance ('SRF'). Only relevant for xml metadata from ESPA.
 #' @param thermal Logical. Force return of thermal band, even if product only selects surface reclectance.
 #' @return Either a list of rasterStacks comprising all resolutions or only one rasterStack comprising only 30m resolution imagery
 #' @note 
@@ -224,9 +227,10 @@ readMeta <- function(file, unifiedMetadata = TRUE, unifiedOnly = FALSE){
 #' Therefore the default method in this implementation is nearest neighbor. Keep this in mind if you plan to compare TIR bands created by differing resampling routines.
 #' Typically, however, you will already have the USGS 30m TIR products, so no need to worry...
 #' @export 
-stackMeta <- function(file, allResolutions = FALSE,  resampleTIR = FALSE, resamplingMethod = "ngb", type = c("image", "index", "qa"), product = c("DN", "TOA", "SR"), thermal = TRUE){
+stackMeta <- function(file, allResolutions = FALSE,  resampleTIR = FALSE, resamplingMethod = "ngb", type = c("image", "index", "qa"), product = c("DN", "TRF", "SRF"), thermal = TRUE){
     ## TODO: check arguments
     
+    stopifnot(type %in%  c("image", "index", "qa") & product %in% c("DN", "TRF", "SRF"))
     
     ## Read metadata and extract layer file names
     meta  <- readMeta(file)
@@ -263,7 +267,7 @@ stackMeta <- function(file, allResolutions = FALSE,  resampleTIR = FALSE, resamp
                     meta$UNIFIED_METADATA$PRODUCT %in% product
     ]               
     ## If someone asks for SR, but wants brightness temperature as well
-    if(thermal & !any(product %in% c("TOA", "DN"))) select <- c(select, "B6_TOA")
+    if(thermal & !any(c("TRF", "DN") %in% product)) select <- c(select, "B6_TRF")
     
     LS 	<- lapply(returnRes, function(x){
                 s			<- stack(rl[resL == x])
