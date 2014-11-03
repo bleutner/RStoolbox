@@ -175,7 +175,7 @@ readMeta <- function(file, unifiedMetadata = TRUE, unifiedOnly = FALSE){
                         PROD[toa] <- "TRF"
                         PROD[sr]  <- "SRF"
                         PROD[bds & !sr & !toa] <- "DN" 
-                        PROD[grepl("cfmask", files)] <- "CM" ## TODO: think about alternative type 
+                        PROD[grepl("cfmask", files)] <- "SRF"  
                         bnames				<- toupper(str_replace(files, paste0(SID, "_"), ""))					
                         bnames[bds]			<- paste0("B", .getNumeric(bnames[bds]))
                         bnames[qas & bds]   <- paste0(bnames[qas & bds], "_QA" )
@@ -191,7 +191,7 @@ readMeta <- function(file, unifiedMetadata = TRUE, unifiedOnly = FALSE){
                     NA_VALUE 			= as.numeric(sapply(atts, "[" , "fill_value")),
                     SATURATE_VALUE 		= as.numeric(sapply(atts, "[" , "saturate_value")),
                     SCALE_FACTOR 		= as.numeric(sapply(atts, "[" , "scale_factor")),
-                    
+                    DATA_TYPE 			= as.character(sapply(atts, "[" , "data_type")),
                     SUN_AZIMUTH			= as.numeric(meta$global_metadata$solar_angles["azimuth"]),
                     SUN_ELEVATION		= 90 - as.numeric(meta$global_metadata$solar_angles["zenith"]),
                     EARTH_SUN_DISTANCE  = {.ESdist(date)}
