@@ -6,8 +6,6 @@
 #' @param unifiedMetadata Logical. If \code{TRUE} some relevant etadata of Landsat 5:8 are homogenized into a standard format and appended to the original metadata.
 #' @param unifiedOnly Logical. Return only unified (pretty) metadata. 
 #' @return Returns a list containing the Metadata of the MTL or XML file, structured by the original grouping.
-#' 
-#' @import landsat
 #' @export 
 #' 
 readMeta <- function(file, unifiedMetadata = TRUE, unifiedOnly = FALSE){
@@ -47,7 +45,7 @@ readMeta <- function(file, unifiedMetadata = TRUE, unifiedOnly = FALSE){
                     SPACECRAFT_ID 		= {SAT <- paste0("LANDSAT", .getNumeric(meta$PRODUCT_METADATA["SPACECRAFT_ID",]))},
                     SENSOR_ID 			= meta$PRODUCT_METADATA["SENSOR_ID",]	,			
                     SCENE_ID 			= meta$METADATA_FILE_INFO["LANDSAT_SCENE_ID",],  ## could assemble name for legacy files: http://landsat.usgs.gov/naming_conventions_scene_identifiers.php
-                    DATA_TYPE			= if(!legacy) meta$PRODUCT_METADATA["DATA_TYPE",] else meta$PRODUCT_METADATA["PRODUCT_TYPE",],
+                   # DATA_TYPE			= if(!legacy) meta$PRODUCT_METADATA["DATA_TYPE",] else meta$PRODUCT_METADATA["PRODUCT_TYPE",],
                     ACQUISITION_DATE	= {date <- if(!legacy) meta$PRODUCT_METADATA["DATE_ACQUIRED",] else meta$PRODUCT_METADATA["ACQUISITION_DATE",]},
                     PROCESSING_DATE		= if(!legacy) meta$METADATA_FILE_INFO["FILE_DATE",] else meta$METADATA_FILE_INFO["PRODUCT_CREATION_TIME",], 
                     PATH				= as.numeric(meta$PRODUCT_METADATA["WRS_PATH",]),
@@ -157,7 +155,6 @@ readMeta <- function(file, unifiedMetadata = TRUE, unifiedOnly = FALSE){
                     SPACECRAFT_ID 		= {SAT <- paste0("LANDSAT", .getNumeric(meta$global_metadata$satellite))},
                     SENSOR_ID 			= meta$global_metadata$instrument,			
                     SCENE_ID 			= SID <- str_replace(meta$global_metadata$lpgs_metadata_file, "_MTL.txt", ""),  ## could assemble name for legacy files: http://landsat.usgs.gov/naming_conventions_scene_identifiers.php
-                    DATA_TYPE			= if(meta$bands[[1]]$.attrs["product"] == "sr_refl") "SR", 
                     ACQUISITION_DATE	= {date <- meta$global_metadata$acquisition_date},
                     PROCESSING_DATE		= meta$bands[[1]]$production_date, 
                     PATH				= as.numeric(meta$global_metadata$wrs["path"]),
@@ -170,7 +167,7 @@ readMeta <- function(file, unifiedMetadata = TRUE, unifiedOnly = FALSE){
                         bds <- grepl("_band", files)
                         toa <- grepl("_toa_", files)
                         sr <- grepl("_sr_", files)
-                        qas <- grepl("qa", files)	
+                        qas <- grepl("qa", files) | grepl("cfmask", files)	
                         PROD <- rep(NA, length(files))
                         PROD[toa] <- "TRF"
                         PROD[sr]  <- "SRF"
