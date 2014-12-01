@@ -5,7 +5,7 @@
 \title{Image to Image Contrast Matching}
 \usage{
 histMatch(x, ref, nsamp = 1e+05, intersectOnly = TRUE, precise = TRUE,
-  ...)
+  forceInteger = FALSE, ...)
 }
 \arguments{
 \item{x}{RasterLayer. Source raster which is to be modified.}
@@ -17,6 +17,8 @@ histMatch(x, ref, nsamp = 1e+05, intersectOnly = TRUE, precise = TRUE,
 \item{intersectOnly}{logical. If \code{TRUE} sampling will only take place in the overlap extent of the two rasters. Otherwise the full rasters will be used for sampling.}
 
 \item{precise}{logical. If \code{TRUE} the exact same pixels will be used in the overlap.}
+
+\item{forceInteger}{logical. Force integer output.}
 
 \item{...}{Further arguments to be passed to \link[raster]{writeRaster}.}
 }

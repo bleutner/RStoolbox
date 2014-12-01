@@ -8,6 +8,7 @@
 #' @param intersectOnly logical. If \code{TRUE} sampling will only take place in the overlap extent of the two rasters. Otherwise the full rasters will be used for sampling.
 #' @param precise logical. If \code{TRUE} the exact same pixels will be used in the overlap.
 #' @param ... Further arguments to be passed to \link[raster]{writeRaster}.
+#' @param forceInteger logical. Force integer output.
 #' @return A RasterLayer of x adjusted to the histogram of ref.
 #' @references Richards and Jia: Remote Sensing Digital Image Analysis. Springer, Berlin, Heidelberg, Germany, 439pp.
 #' @export
@@ -24,7 +25,7 @@
 #' r.match <- histMatch(r0, r1)
 #' rcmatch <- merge(r1, r.match)
 #' plot(rcmatch, main = "merge r0+r1 with histMatch")
-histMatch <- function(x, ref, nsamp = 100000, intersectOnly = TRUE, precise = TRUE, ...){
+histMatch <- function(x, ref, nsamp = 100000, intersectOnly = TRUE, precise = TRUE, forceInteger = FALSE, ...){
     if(nsamp > ncell(ref)) nsamp <- ncell(ref)
     
     ## Define intersecting extent if required. Returns NULL if FALSE
