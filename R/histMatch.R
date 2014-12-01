@@ -9,6 +9,7 @@
 #' @param precise logical. If \code{TRUE} the exact same pixels will be used in the overlap.
 #' @param ... Further arguments to be passed to \link[raster]{writeRaster}.
 #' @return A RasterLayer of x adjusted to the histogram of ref.
+#' @references Richards and Jia: Remote Sensing Digital Image Analysis. Springer, Berlin, Heidelberg, Germany, 439pp.
 #' @export
 #' @examples 
 #' 
