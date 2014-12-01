@@ -57,7 +57,7 @@ histMatch <- function(x, ref, nsamp = 100000, intersectOnly = TRUE, precise = TR
     inverse.ref.ecdf <- approxfun(y, kn, method = "linear", yleft = limits[1] , yright = limits[2], ties = "ordered")
     
     ## Function definition
-    histMatchFun <- if(grepl("INT", dataType(ref)))
+    histMatchFun <- if(grepl("INT", dataType(ref)) | forceInteger)
                 function(values, na.rm = FALSE){round( inverse.ref.ecdf( source.ecdf(values)))}
             else {
                 function(values, na.rm = FALSE){       inverse.ref.ecdf( source.ecdf(values))}
