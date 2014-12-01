@@ -39,4 +39,7 @@ r.match <- histMatch(r0, r1)
 rcmatch <- merge(r1, r.match)
 plot(rcmatch, main = "merge r0+r1 with histMatch")
 }
+\references{
+Richards and Jia: Remote Sensing Digital Image Analysis. Springer, Berlin, Heidelberg, Germany, 439pp.
+}
 
