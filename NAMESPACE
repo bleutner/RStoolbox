@@ -3,6 +3,7 @@
 export(cloudMask)
 export(estimateSHV)
 export(ggRGB)
+export(histMatch)
 export(radCor)
 export(readMeta)
 export(readSLI)
