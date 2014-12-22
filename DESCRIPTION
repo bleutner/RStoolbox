@@ -11,10 +11,11 @@ Description: RStoolbox provides remote sensing methods for image processing and
     classification such as spectral indices, supervised classification or
     fractional cover.
 Depends:
-    R (>= 3.1.0)
+    R (>= 3.1.0),
+    raster
 Imports:
     stringr,
     raster,
-    randomForest
+    caret
 License: GPL (>=3)
 LazyData: true
