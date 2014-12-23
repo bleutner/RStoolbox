@@ -16,6 +16,6 @@ Depends:
 Imports:
     stringr,
     raster,
-    randomForest
+    caret
 License: GPL (>=3)
 LazyData: true
