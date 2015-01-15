@@ -124,10 +124,8 @@ ggRGB <- function(x, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = N
                 p <- ggplot() + p + scale_fill_identity() 
             }
         }   
-        if(coordEqual) p <- p + coord_equal() 
-        
-        if(ggLayer)  p <- annotation_raster(raster = dz, xmin=exe[1], xmax=exe[2], ymin=exe[3], ymax=exe[4], interpolate = interpolate)
-        
+        if(coordEqual & !ggLayer) p <- p + coord_equal() 
+                
         return(p)
         
     } else {
