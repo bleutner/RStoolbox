@@ -17,8 +17,8 @@
 #' @param clipToMinMax Logical. If \code{TRUE}, values > scale will be set to NA. if \code{FALSE} they will be set to scale. Defaults to \code{FALSE}.
 #' @param ggObj Logical. If \code{TRUE} a ggplot2 object is returned. If \code{FALSE} a data.frame with coordinates and color will be returned.
 #' @param ggLayer Logical. If \code{TRUE} a ggplot2 layer is returned. This is usefull if you want to add it to an existing ggplot2 object. Note that if \code{TRUE} & \code{annotate = FALSE} you have to add a scale_fill_identity() manually in your call to ggplot().
-#' @param coordEqual Logical. Uses coord_equal, i.e. aspect ratio of 1:1.
-#' @param interpolate Logical. Interpolate the raster during plotting. 
+#' @param coord_equal Logical. Uses coord_equal, i.e. aspect ratio of 1:1.
+#' @param interpolate Logical. Interpolate the raster during plotting. Defaults to \code{FALSE}.
 #' @param annotation Logical. If \code{TRUE} annotation_raster is used, otherwise geom_raster()+scale_fill_identity is used. Note that you can't use scale_fill* in addition to the latter, because it alread requires scale_fill_identity().
 #' @return A ggplot2 object, or a three column data frame with coordinates and fill colour.
 #' @export
@@ -26,9 +26,9 @@
 #' br <- brick(system.file("external/rlogo.grd", package="raster"))
 #' ggRGB(br, 1, 2, 3)
 #' ggRGB(br, r=1,g=2,b=3, minMax = matrix(c(100,150,10,200,50,255),  ncol = 2, by = TRUE))
-ggRGB <- function(x, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = NULL, ext = NULL,  minMax = NULL, clipToMinMax = FALSE, ggObj = TRUE, ggLayer = FALSE, coordEqual = TRUE, interpolate = TRUE, annotation = TRUE) { 
+ggRGB <- function(x, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = NULL, ext = NULL,  minMax = NULL, clipToMinMax = FALSE, ggObj = TRUE, ggLayer = FALSE, coord_equal = TRUE, interpolate = FALSE, annotation = TRUE) { 
     # Originally forked from raster:::plotRGB
-    # Author: Robert J. Hijmans
+    # Author: Robert J. Hijmans 
     # Date :  April 2010
     # Version 0.9
     # Licence GPL v3
@@ -124,7 +124,7 @@ ggRGB <- function(x, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = N
                 p <- ggplot() + p + scale_fill_identity() 
             }
         }   
-        if(coordEqual & !ggLayer) p <- p + coord_equal() 
+        if(coord_equal & !ggLayer) p <- p + coord_equal() 
                 
         return(p)
         
