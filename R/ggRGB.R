@@ -16,6 +16,7 @@
 #' a 3x2 matrix with separate min and max values (columns) for each layer (rows).  
 #' @param clipToMinMax Logical. If \code{TRUE}, values > scale will be set to NA. if \code{FALSE} they will be set to scale. Defaults to \code{FALSE}.
 #' @param ggObj Logical. If \code{TRUE} a ggplot2 object is returned. If \code{FALSE} a data.frame with coordinates and color will be returned.
+#' @param ggLayer Logical. If \code{TRUE} a ggplot2 layer is returned. This is usefull if you want to add it to an existing ggplot2 object.
 #' @param coordEqual Logical. Uses coord_equal, i.e. aspect ratio of 1:1.
 #' @param interpolate Logical. Interpolate the raster during plotting. 
 #' @param annotation Logical. If \code{TRUE} annotation_raster is used, otherwise geom_raster()+scale_fill_identity is used. Note that you can't use scale_fill* in addition to the latter, because it alread requires scale_fill_identity().
@@ -25,7 +26,7 @@
 #' br <- brick(system.file("external/rlogo.grd", package="raster"))
 #' ggRGB(br, 1, 2, 3)
 #' ggRGB(br, r=1,g=2,b=3, minMax = matrix(c(100,150,10,200,50,255),  ncol = 2, by = TRUE))
-ggRGB <- function(x, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = NULL, ext = NULL,  minMax = NULL, clipToMinMax = FALSE, ggObj = TRUE, coordEqual = TRUE, interpolate = TRUE, annotation = TRUE) { 
+ggRGB <- function(x, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = NULL, ext = NULL,  minMax = NULL, clipToMinMax = FALSE, ggObj = TRUE, ggLayer = FALSE, coordEqual = TRUE, interpolate = TRUE, annotation = TRUE) { 
     # Originally forked from raster:::plotRGB
     # Author: Robert J. Hijmans
     # Date :  April 2010
@@ -33,10 +34,11 @@ ggRGB <- function(x, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = N
     # Licence GPL v3
     # partly based on functions in the pixmap package by Friedrich Leisch
     
+    
     ## Subsample raster
     rr 	<- sampleRegular(x[[c(r,g,b)]], maxpixels, ext=ext, asRaster=TRUE, useGDAL=TRUE)
     RGB <- getValues(rr)
-        
+    
     rangeRGB <- range(RGB, na.rm = TRUE)
     if(missing(scale)){ scale <- max(rangeRGB, 255) }
     if(rangeRGB[1] < 0){
@@ -101,14 +103,22 @@ ggRGB <- function(x, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = N
         
         ## Set-up plot       
         ## I prefer annotate_raster instead of geom_raster or tile to keep the fill scale free for additional rasters        
-        if(annotation) {      
-            dz <- matrix(z, nrow=nrow(rr), ncol=ncol(rr), byrow=TRUE)
-            p <- ggplot( df, aes(x=x,y=y)) +  
-                    annotation_raster(raster = dz, xmin=exe[1], xmax=exe[2], ymin=exe[3], ymax=exe[4], interpolate = interpolate)
+        if(annotation) {    
+            
+            dz <- matrix(z, nrow=nrow(rr), ncol=ncol(rr), byrow=TRUE)  
+            p <- annotation_raster(raster = dz, xmin=exe[1], xmax=exe[2], ymin=exe[3], ymax=exe[4], interpolate = interpolate)
+            if(!ggLayer) {
+                p <- ggplot(df, aes(x=x,y=y)) + p
+            }
         } else {
-            p <- ggplot() + geom_raster(data = df_raster, aes(x = x, y = y, fill = fill)) + scale_fill_identity() 
+            p <- geom_raster(data = df_raster, aes(x = x, y = y, fill = fill)) + scale_fill_identity() 
+            if(!ggLayer) {
+                p <- ggplot() + p
+            }
         }   
         if(coordEqual) p <- p + coord_equal() 
+        
+        if(ggLayer)  p <- annotation_raster(raster = dz, xmin=exe[1], xmax=exe[2], ymin=exe[3], ymax=exe[4], interpolate = interpolate)
         
         return(p)
         
