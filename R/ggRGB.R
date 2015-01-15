@@ -5,9 +5,9 @@
 #' Functionality is based on \code{\link[raster]{plotRGB}} from the raster package.
 #' 
 #' @param x RasterStack or RasterBrick
-#' @param r Integer or character. Red layer in x
-#' @param g Integer or character. Green layer in x
-#' @param b Integer or character. Blue layer in x
+#' @param r Integer or character. Red layer in x. Can be set to \code{NULL}, in which case the red channel will be set to zero.
+#' @param g Integer or character. Green layer in x. Can be set to \code{NULL}, in which case the green channel will be set to zero.
+#' @param b Integer or character. Blue layer in x. Can be set to \code{NULL}, in which case the blue channel will be set to zero.
 #' @param scale Numeric. Maximum possible pixel value (optional). Defaults to 255 or to the maximum value of x if that is larger than 255
 #' @param maxpixels Integer. Maximal number of pixels used for plotting.
 #' @param stretch Character. Either 'lin' or 'hist' for linear or histogram stretch of the data
@@ -16,7 +16,7 @@
 #' a 3x2 matrix with separate min and max values (columns) for each layer (rows).  
 #' @param clipToMinMax Logical. If \code{TRUE}, values > scale will be set to NA. if \code{FALSE} they will be set to scale. Defaults to \code{FALSE}.
 #' @param ggObj Logical. If \code{TRUE} a ggplot2 object is returned. If \code{FALSE} a data.frame with coordinates and color will be returned.
-#' @param ggLayer Logical. If \code{TRUE} a ggplot2 layer is returned. This is usefull if you want to add it to an existing ggplot2 object.
+#' @param ggLayer Logical. If \code{TRUE} a ggplot2 layer is returned. This is usefull if you want to add it to an existing ggplot2 object. Note that if \code{TRUE} & \code{annotate = FALSE} you have to add a scale_fill_identity() manually in your call to ggplot().
 #' @param coordEqual Logical. Uses coord_equal, i.e. aspect ratio of 1:1.
 #' @param interpolate Logical. Interpolate the raster during plotting. 
 #' @param annotation Logical. If \code{TRUE} annotation_raster is used, otherwise geom_raster()+scale_fill_identity is used. Note that you can't use scale_fill* in addition to the latter, because it alread requires scale_fill_identity().
@@ -34,10 +34,11 @@ ggRGB <- function(x, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = N
     # Licence GPL v3
     # partly based on functions in the pixmap package by Friedrich Leisch
     
-    
     ## Subsample raster
-    rr 	<- sampleRegular(x[[c(r,g,b)]], maxpixels, ext=ext, asRaster=TRUE, useGDAL=TRUE)
+    rgb <- c(r,g,b)
+    rr 	<- sampleRegular(x[[rgb]], maxpixels, ext=ext, asRaster=TRUE, useGDAL=TRUE)
     RGB <- getValues(rr)
+    if(!is.matrix(RGB)) RGB <- as.matrix(RGB)
     
     rangeRGB <- range(RGB, na.rm = TRUE)
     if(missing(scale)){ scale <- max(rangeRGB, 255) }
@@ -80,7 +81,7 @@ ggRGB <- function(x, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = N
     ## Perform data stretch
     if (!is.null(stretch)) {
         stretch = tolower(stretch)
-        for(i in 1:3){
+        for(i in seq_along(rgb)){
             RGB[,i] <- .stretch(RGB[,i], method = stretch)
         }
         scale <- 255		
@@ -88,6 +89,14 @@ ggRGB <- function(x, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = N
     
     ## Assemble colors
     naind <- as.vector( attr(RGB, "na.action") )
+    nullbands <- sapply(list(r,g,b), is.null)       
+    
+    if(any(nullbands)) {
+        RGBm <- matrix(0, ncol = 3, nrow = NROW(RGB))
+        RGBm[,!nullbands] <- RGB
+        RGB <- RGBm      
+    }
+    
     if (!is.null(naind)) {
         z <- rep( NA, times=ncell(rr))
         z[-naind] <- rgb(RGB[,1], RGB[,2], RGB[,3],  max = scale)
@@ -103,17 +112,16 @@ ggRGB <- function(x, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = N
         
         ## Set-up plot       
         ## I prefer annotate_raster instead of geom_raster or tile to keep the fill scale free for additional rasters        
-        if(annotation) {    
-            
+        if(annotation) {           
             dz <- matrix(z, nrow=nrow(rr), ncol=ncol(rr), byrow=TRUE)  
             p <- annotation_raster(raster = dz, xmin=exe[1], xmax=exe[2], ymin=exe[3], ymax=exe[4], interpolate = interpolate)
             if(!ggLayer) {
                 p <- ggplot(df, aes(x=x,y=y)) + p
             }
         } else {
-            p <- geom_raster(data = df_raster, aes(x = x, y = y, fill = fill)) + scale_fill_identity() 
+            p <- geom_raster(data = df_raster, aes(x = x, y = y, fill = fill))  
             if(!ggLayer) {
-                p <- ggplot() + p
+                p <- ggplot() + p + scale_fill_identity() 
             }
         }   
         if(coordEqual) p <- p + coord_equal() 
