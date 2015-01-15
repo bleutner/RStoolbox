@@ -6,17 +6,17 @@
 \usage{
 ggRGB(x, r = 3, g = 2, b = 1, scale, maxpixels = 5e+05,
   stretch = NULL, ext = NULL, minMax = NULL, clipToMinMax = FALSE,
-  ggObj = TRUE, coordEqual = TRUE, interpolate = TRUE,
-  annotation = TRUE)
+  ggObj = TRUE, ggLayer = FALSE, coord_equal = TRUE,
+  interpolate = FALSE, annotation = TRUE)
 }
 \arguments{
 \item{x}{RasterStack or RasterBrick}
 
-\item{r}{Integer or character. Red layer in x}
+\item{r}{Integer or character. Red layer in x. Can be set to \code{NULL}, in which case the red channel will be set to zero.}
 
-\item{g}{Integer or character. Green layer in x}
+\item{g}{Integer or character. Green layer in x. Can be set to \code{NULL}, in which case the green channel will be set to zero.}
 
-\item{b}{Integer or character. Blue layer in x}
+\item{b}{Integer or character. Blue layer in x. Can be set to \code{NULL}, in which case the blue channel will be set to zero.}
 
 \item{scale}{Numeric. Maximum possible pixel value (optional). Defaults to 255 or to the maximum value of x if that is larger than 255}
 
@@ -33,9 +33,11 @@ a 3x2 matrix with separate min and max values (columns) for each layer (rows).}
 
 \item{ggObj}{Logical. If \code{TRUE} a ggplot2 object is returned. If \code{FALSE} a data.frame with coordinates and color will be returned.}
 
-\item{coordEqual}{Logical. Uses coord_equal, i.e. aspect ratio of 1:1.}
+\item{ggLayer}{Logical. If \code{TRUE} a ggplot2 layer is returned. This is usefull if you want to add it to an existing ggplot2 object. Note that if \code{TRUE} & \code{annotate = FALSE} you have to add a scale_fill_identity() manually in your call to ggplot().}
 
-\item{interpolate}{Logical. Interpolate the raster during plotting.}
+\item{coord_equal}{Logical. Uses coord_equal, i.e. aspect ratio of 1:1.}
+
+\item{interpolate}{Logical. Interpolate the raster during plotting. Defaults to \code{FALSE}.}
 
 \item{annotation}{Logical. If \code{TRUE} annotation_raster is used, otherwise geom_raster()+scale_fill_identity is used. Note that you can't use scale_fill* in addition to the latter, because it alread requires scale_fill_identity().}
 }

@@ -36,7 +36,7 @@ histMatch <- function(x, ref, nsamp = 100000, intersectOnly = TRUE, precise = TR
     }
     
     ## Sample histogram data
-    ref.sample  <- sampleRandom(ref, nsamp, na.rm = T, ext = ext, xy = precise)
+    ref.sample  <- sampleRandom(ref, nsamp, na.rm = TRUE, ext = ext, xy = precise)
     if(precise) {
         x.sample   <- extract(x, ref.sample[,c("x","y")])
         ref.sample <- ref.sample[!is.na(x.sample),3] 
