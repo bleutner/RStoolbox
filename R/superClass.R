@@ -88,7 +88,7 @@ superClass <- function(inputRaster, trainingData, responseCol = NULL, nSamples =
     mode <- if(is.numeric(trainingData[[responseCol]])) "regression" else "classification"
     
     ## Extract response and predictors and combine in final training set
-    if(verbose) print("Begin extract")
+    if(verbose) message("Begin extract")
     dataSet <- data.frame(
             response = if(classType == "polygons") over(x = xy, y = trainingData)[[responseCol]] else trainingData[[responseCol]],
             extract(inputRaster, xy, cellnumbers = TRUE))
@@ -98,20 +98,30 @@ superClass <- function(inputRaster, trainingData, responseCol = NULL, nSamples =
     dataSet <- dataSet[,colnames(dataSet) != "cells"]
     
     ## Unique classes
-    if(mode == "classification"){
+    if(mode == "classification"){   
+        if(!is.factor(dataSet$response)) dataSet$response <- as.factor(dataSet$response)
         classes 	 <- unique(dataSet$response)
         classMapping <- data.frame(classID = as.numeric(classes), class = levels(classes))
     }
     
+    ## Meaningless predictors
+    uniqueVals  <- apply(dataSet, 2, function(x){length(unique(x))}) == 1
+    if(uniqueVals[1]) stop("Response (responseCol in trainingData) contains only one value. Classification doesn't make sense in this case.")
+    if(any(uniqueVals)) {
+        warning( "Samples from", paste0(colnames(dataSet)[uniqueVals], collapse = ", "), " contain only one value. 
+                        The variable will be omitted from model training.")
+        dataSet <- dataSet[, !uniqueVals, drop=FALSE]
+    }
+    
     ## TRAIN ######################### 
-    if(verbose) print("Starting to calculate random forest model") 
+    if(verbose) message("Starting to calculate random forest model") 
     modelFit 	 <- train(response ~ ., data = dataSet, method = model, tuneLength = tuneLength,  trControl = trainControl(method = "cv"))
     
     
     ## PREDICT ######################### 
     progress <- "none"
     if(verbose) { 
-        print("Starting spatial predict")
+        message("Starting spatial predict")
         progress <- "text"
     }
     
