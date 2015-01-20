@@ -23,7 +23,6 @@ superClass <- function(inputRaster, trainingData, responseCol = NULL, nSamples =
     # TODO: polygon based cross-validation
     # TODO: add examples
     # TODO: check applicability of raster:::.intersectExtent 
-    # DISCUSS: demo data
     
     ## Object types
     if(!inherits(inputRaster, 'Raster')) stop("inputRaster must be a raster object (RasterLayer,RasterBrick or RasterStack)", call.=FALSE)
@@ -58,7 +57,7 @@ superClass <- function(inputRaster, trainingData, responseCol = NULL, nSamples =
         stop("inputRaster and trainingData do not overlap")
     
     ## Calculate area weighted number of samples per polygon
-    ## this way we'll end up with n > nSamples, but make sure to sample each polygon at least once
+    ## we'll end up with n > nSamples, but make sure to sample each polygon at least once
     if(classType == "polygons"){
         if (areaWeightedSampling){
             if(is.projected(trainingData)){
@@ -83,12 +82,6 @@ superClass <- function(inputRaster, trainingData, responseCol = NULL, nSamples =
     } else {
         xy <- trainingData
     }
-    ### Display, verbose only
-    if(verbose) {
-        plot(inputRaster,1)
-        plot(trainingData, add = T)
-        points(xy, pch = 3, cex = 0.5)
-    }	
     
     ## What's happening
     mode <- if(is.numeric(trainingData[[responseCol]])) "regression" else "classification"
@@ -100,15 +93,24 @@ superClass <- function(inputRaster, trainingData, responseCol = NULL, nSamples =
             extract(inputRaster, xy, cellnumbers = TRUE))
     
     ## Discard duplicate cells
-    dataSet <- dataSet[!duplicated(dataSet[,"cells"]),]
+    dubs 	<- duplicated(dataSet[,"cells"])
+    dataSet <- dataSet[!dubs,]
     dataSet <- dataSet[,colnames(dataSet) != "cells"]
-    
+   
+
     ## Unique classes
     if(mode == "classification"){   
         if(!is.factor(dataSet$response)) dataSet$response <- as.factor(dataSet$response)
         classes 	 <- unique(dataSet$response)
         classMapping <- data.frame(classID = as.numeric(classes), class = levels(classes))
     }
+   
+    ### Display, verbose only
+    if(verbose) {
+        plot(inputRaster,1)
+        plot(trainingData, add = T)
+        points(xy[!dubs,], pch = 3, cex = 0.5, col = dataSet$response)
+    }	
     
     ## Meaningless predictors
     uniqueVals  <- apply(dataSet, 2, function(x){length(unique(x))}) == 1
