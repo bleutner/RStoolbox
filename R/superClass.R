@@ -18,7 +18,7 @@
 #' @param ... further arguments to be passed to \code{\link[caret]{train}}
 #' @note 
 #' Validation on a separate (not used for training) set of polygons/points is highly advised. Automatic validation is performed either by specifying 
-#' \code{valData} or by specifying \code{trainPartition}, the amount of \code{trainData} which is to be held out for validation.
+#' \code{valData} or by specifying \code{trainPartition}, the amount of \code{trainData} which is to be held out for validation. 
 #' @return A list containing [[1]] the model, [[2]] the predicted raster and [[3]] the class mapping  
 #' @seealso \code{\link[caret]{train}} 
 #' @export
