@@ -148,7 +148,7 @@ superClass <- function(inputRaster, trainData, valData = NULL, responseCol = NUL
     }
     
     ## TRAIN ######################### 
-    if(verbose) message("Starting to calculate random forest model")   
+    if(verbose) message("Starting to fit model")   
     indexIn <- if(polygonBasedCV) lapply(1:kfold, function(x) which(x != indexOut)) 
     model 	<- train(response ~ ., data = dataSet, method = model, tuneLength = tuneLength, 
             trControl = trainControl(method = "cv", number = kfold, index = indexIn), ...)   
