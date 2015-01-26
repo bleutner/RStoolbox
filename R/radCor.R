@@ -7,6 +7,7 @@
 #' @param metaData either the result of \code{readMeta} or a path to the meta data (MTL) file. 
 #' @param reflectance logical. If \code{TRUE} output will be reflectance, if \code{FALSE} it will be radiance
 #' @param thermal logical. If \code{TRUE} thermal bands will be converted to brightness temperature (Kelvin).
+#' @param satellite character. Required if metaData is not provided. One of LANDSAT8, LANDSAT7, LANDSAT5.
 #' @param bandSet numeric or character. original Landsat band numbers or names in the form of ("B1", "B2" etc). If set to 'full' all bands in the solar region will be processed.
 #' @param gain Band-specific sensor gain. Require either gain and offset or Grescale and Brescale to convert DN to radiance.
 #' @param offset Band-specific sensor offset. Require either gain and offset or Grescale and Brescale to convert DN to radiance.
@@ -16,8 +17,10 @@
 #' @param satZenith sensor zenith angle (0 for Landsat)
 #' @param d Earth-Sun distance in AU.
 #' @param esun Mean exo-atmospheric solar irradiance, as given by Chandler et al. 2009 or others.
+#' @param date Date of data aquisition. Ignored if esun or satellite is provided.
 #' @param SHV starting haze value, can be estimated using estimateSHV(). if not provided and method is "DOS" or "COSTZ" SHV will be estimated in an automated fashion. Not needed for apparent reflectance.
 #' @param hazeBand band from which SHV was estimated.
+#' @param atHaze character. Scene haze characteristics. Will be estimated if not expicilty provided. Must be one of \code{"veryClear", "clear", "moderate", "hazy"} or \code{"veryHazy"}.
 #' @param method Radiometric correction method to be used. There are currently four methods available (see Details):
 #'  "APREF", "DOS" (Chavez 1989), "COSTZ" (Chavez 1996), SDOS.
 #' @note This was originally a fork of randcorr in the landsat package. It may be slower, however it works on Raster* objects and hence is memory-safe.
@@ -78,7 +81,7 @@ radCor <-	function(x, metaData, reflectance = TRUE, thermal = TRUE, satellite, b
         
         if(missing(d)) {
             if(missing(date)) { 
-                stop("Please specify either a) edist or b)date", call. = FALSE) 
+                stop("Please specify either a) edist or b) date", call. = FALSE) 
             } else {
                 d <- .ESdist(date) 
             }

@@ -9,8 +9,9 @@
 #' @export 
 #' @examples
 #' ## Create fake spectra
-#' data <- data.frame(wavelength=350:2500, spectrumA=cumsum(abs(rnorm(2151))), spectrumB=cumsum(abs(rnorm(2151))))
-#' pathToFile <- str_c(tempdir(),"/specLib.sli")
+#' data <- data.frame(wavelength=350:2500, spectrumA=cumsum(abs(rnorm(2151))), 
+#' 						spectrumB=cumsum(abs(rnorm(2151))))
+#' pathToFile <- paste0(tempdir(),"/specLib.sli")
 #' 
 #' ## Write to binary spectral library
 #' writeSLI(x = data, path = pathToFile)
@@ -87,8 +88,9 @@ readSLI <- function(path) {
 #' @export
 #' @examples
 #' ## Create fake spectra
-#' data <- data.frame(wavelength=350:2500, spectrumA=cumsum(abs(rnorm(2151))), spectrumB=cumsum(abs(rnorm(2151))))
-#' pathToFile <- str_c(tempdir(),"/specLib.sli")
+#' data <- data.frame(wavelength=350:2500, spectrumA=cumsum(abs(rnorm(2151))),
+#' 					 spectrumB=cumsum(abs(rnorm(2151))))
+#' pathToFile <- paste0(tempdir(),"/specLib.sli")
 #' 
 #' ## Write to binary spectral library
 #' writeSLI(x = data, path = pathToFile)

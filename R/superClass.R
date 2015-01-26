@@ -18,6 +18,7 @@
 #' @param filename path to output file (optional). If \code{NULL}, standard raster handling will apply, i.e. storage either in memory or in the raster temp directory.
 #' @param verbose logical. prints progress and statistics during execution
 #' @param predict logical. \code{TRUE} (default) will return a classified map, \code{FALSE} will only train the classifier
+#' @param overwrite logical. Overwrite spatial prediction raster if it already exists.
 #' @param ... further arguments to be passed to \code{\link[caret]{train}}
 #' @note 
 #' Validation on a separate (not used for training) set of polygons/points is highly advised. Automatic validation is performed either by specifying 
@@ -56,9 +57,9 @@ superClass <- function(inputRaster, trainData, valData = NULL, responseCol = NUL
         }
     }    
     if(!responseCol %in% colnames(trainData@data))
-        stop(paste0("The column ", responseCol, " does not exist in trainData. \nAvailable columns are: ", colnames(trainData@data,collapse=", ")), call. = FALSE) 
+        stop(paste0("The column ", responseCol, " does not exist in trainData. \nAvailable columns are: ", paste0(colnames(trainData@data),collapse=", ")), call. = FALSE) 
     if(!is.null(valData) && !responseCol %in% colnames(valData@data)) 
-        stop(paste0("The column ", responseCol, " does not exist in valData. \nAvailable columns are: ", colnames(valData@data,collapse=", ")), call. = FALSE) 
+        stop(paste0("The column ", responseCol, " does not exist in valData. \nAvailable columns are: ", paste0(colnames(valData@data),collapse=", ")), call. = FALSE) 
     if(!is.null(valData) && !all.equal(class(trainData), class(valData)))
         stop("trainData and valData must be of the same class. Either SpatialPointsDataFrame or SpatialPolygonsDataFrame.")
     
@@ -202,12 +203,10 @@ superClass <- function(inputRaster, trainData, valData = NULL, responseCol = NUL
         modelFit <- list(modelFit, confusionMatrix(caretModel, norm = "average"))     
     } 
     
-    if(is.null(filename)){
-        spatPred <- predict(inputRaster, caretModel, progress = progress, datatype = dataType, overwrite = overwrite)
-    } else {
-        spatPred <- predict(inputRaster, caretModel, filename = filename, progress = progress, datatype = dataType, overwrite = overwrite)
-    }
-    
+    args <- list(object = inputRaster, model = caretModel, filename = filename, progress = progress, datatype = dataType, overwrite = overwrite)
+    args$filename <- filename
+    spatPred <- do.call("predict", args)
+  
     ## VALIDATION ########################
     if(!is.null(valData)){
         valiSet <- .samplePixels(valData, spatPred)

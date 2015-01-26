@@ -14,8 +14,14 @@ Depends:
     R (>= 3.1.0),
     raster
 Imports:
+    sp,
     stringr,
-    raster,
-    caret
+    caret,
+    XML,
+    geosphere,
+    ggplot2,
+    plyr,
+    reshape2,
+    rgeos
 License: GPL (>=3)
 LazyData: true

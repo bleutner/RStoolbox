@@ -60,11 +60,9 @@ ggRGB <- function(x, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = N
             } 
         } else if (NROW(minMax) == 3 & NCOL(minMax) == 2) {
             for (i in 1:3) {
-                
-                if(zmin < min(RGB[,i], na.rm = T) | zmax > max(RGB[,i], na.rm = T)) warning("The provided minMax values of ", c("red","green","blue")[i]," layer exceed range of actual values in this band.")
-                
                 zmin <- min(minMax[i,])		
                 zmax <- max(minMax[i,])
+                if(zmin < min(RGB[,i], na.rm = T) | zmax > max(RGB[,i], na.rm = T)) warning("The provided minMax values of ", c("red","green","blue")[i]," layer exceed range of actual values in this band.")
                 if (!clipToMinMax) {
                     RGB[RGB[,i] < zmin, i] <- zmin
                     RGB[RGB[,i] > zmax, i] <- zmax

@@ -17,7 +17,7 @@ readMeta <- function(file, unifiedMetadata = TRUE, unifiedOnly = FALSE){
     if(metaDataFormat == "MTL") {
         ## PROCESS LPS MTL FILES
         
-        meta <- read.delim(file, sep = "=", head = FALSE, stringsAsFactors = FALSE, strip.white = TRUE, skip = 1, skipNul = TRUE)
+        meta <- read.delim(file, sep = "=", header = FALSE, stringsAsFactors = FALSE, strip.white = TRUE, skip = 1, skipNul = TRUE)
         meta <- meta[-(nrow(meta)-c(1,0)),]
         
         ## Retrieve groups

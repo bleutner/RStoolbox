@@ -1,7 +1,7 @@
 #' Estimate image haze for dark object subtraction procedures
 #' 
 #' @param x raster object or a previous result from \code{estimateSHV(x , returnTables = TRUE} from which to estimate haze
-#' @param band character. Band or bandname from which to estimate SHV (optinal if x contains only one layer)
+#' @param hazeBand character. Band or bandname from which to estimate SHV (optinal if x contains only one layer)
 #' @param darkProp proportion of pixels estimated to be dark
 #' @param plot display histograms and haze values
 #' @param returnTables return the frequency table per layer. Only takes effect if x is a Raster* object. If x is a result of estimateSHV tables will always be returned.
@@ -64,7 +64,7 @@ estimateSHV <- function(x, hazeBand, darkProp = 0.02, plot = FALSE, returnTables
 				if(is.na(SHV)) warning(paste("darkProp for band", bi, "was chosen too high. It exceeds the value range."), call. = FALSE)
 				
 				if(plot){
-					if(multiple) x11()
+					if(multiple) dev.new()
 					par(mfrow = c(1,2))
 					
 					plot(tf, xlab = "DN", ylab = "Frequency", type = "l", main = bi)

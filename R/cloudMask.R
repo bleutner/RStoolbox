@@ -3,7 +3,7 @@
 #' @param x RasterBrick or RasterStack with reflectance and brightness temperature OR the mask of a previous run of \code{cloudMask} with \code{returnDiffLayer=TRUE}. 
 #' @param threshold cloud detection threshold. If not provided it will be guessed. Everything *above* this threshold will be considered a cloud pixel (unless it is removed by filtering afterwards).
 #' @param minCloudSize minimum number of cloud pixels in window1 
-#' @param windowSize1 odd number, rectangular moving window to remove clouds which arre too small (likely artefacts)
+#' @param windowSize1 odd number, rectangular moving window to remove clouds which are too small (likely artefacts)
 #' @param windowSize2 odd number, rectangular buffer around cluster centers
 #' @param sanitize logical. Should small clouds (possibly false positives) be removed by filtering? If \code{TRUE} windowSize1 must be specified.
 #' @param maskGrowing logical. Applies simple region-growing (rectangular buffering) to the cloud mask. If \code{TRUE} windowSize2 must be specified.
@@ -63,7 +63,7 @@ cloudMask <- function(x, threshold, minCloudSize, windowSize1 = 5, windowSize2 =
 		if(verbose) message("Begin sanitzing")
 		if(missing(minCloudSize)) minCloudSize <- windowSize1 ^ 2
 		w <- matrix(ncol = windowSize1, nrow = windowSize1, 1)
-		if(minCloudSize >= windowSize^2) {
+		if(minCloudSize >= windowSize1^2) {
 			cmod <- focal(cmask, w, na.rm = FALSE)
 		} else {
 			cmod <- focal(cmask, w, na.rm = TRUE)	
