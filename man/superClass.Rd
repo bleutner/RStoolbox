@@ -17,7 +17,7 @@ superClass(inputRaster, trainData, valData = NULL, responseCol = NULL,
 
 \item{valData}{SpatialPolygonsDataFrame or SpatialPointsDataFrame containing the validation locations (optional).}
 
-\item{responseCol}{Character giving the column in \code{trainData}, which contains the response variable. Can be omitted, when \code{trainData} has only one column.}
+\item{responseCol}{Character or integer giving the column in \code{trainData}, which contains the response variable. Can be omitted, when \code{trainData} has only one column.}
 
 \item{nSamples}{Integer. Number of samples per land cover class.}
 
@@ -56,6 +56,28 @@ Supervised classification both for classification and regression mode based on v
 \note{
 Validation on a separate (not used for training) set of polygons/points is highly advised. Automatic validation is performed either by specifying
 \code{valData} or by specifying \code{trainPartition}, the amount of \code{trainData} which is to be held out for validation.
+}
+\examples{
+input <- brick(system.file("external/rlogo.grd", package="raster"))
+train <- readRDS(system.file("external/training.rds", package="RStoolbox"))
+
+## Plot training data
+olpar <- par(no.readonly = TRUE) # back-up par
+par(mfrow=c(1,2))
+colors <- c("yellow", "green", "deeppink")
+plotRGB(input)
+plot(train, add = TRUE, col =  colors[train$class], pch = 19)
+
+## Fit classifier (splitting training into 70\\\% training data, 30\\\% validation data)
+SC 	  <- superClass(input, trainData = train, responseCol = "class",
+						tuneLength = 1, trainPartition = 0.7)
+SC
+
+## Plots
+plot(SC$map, col = colors, legend = FALSE, axes = FALSE, box = FALSE)
+legend(1,1, legend = levels(train$class), fill = colors , title = "Classes",
+		  horiz = TRUE,  bty = "n")
+par(olpar) # reset par
 }
 \seealso{
 \code{\link[caret]{train}}

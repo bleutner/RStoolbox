@@ -98,7 +98,7 @@ radCor <-	function(x, metaData, reflectance = TRUE, thermal = TRUE, satellite, b
     suntheta 	<- cos((90 - sunElev) * pi / 180)	
     
     ## Query internal db	
-    sDB <- LANDSAT.db[[satellite]][[sensor]]
+    sDB <- .LANDSATdb[[satellite]][[sensor]]
     
     ## LS7 can have to versions of band 6: B6_VCID_1 and B6_VCID_2 which would not match the database name B6
     sDB 	<- sDB[match(gsub("_VCID_[12]", "", names(x)), sDB$band),]	
@@ -274,7 +274,8 @@ radCor <-	function(x, metaData, reflectance = TRUE, thermal = TRUE, satellite, b
 #' Landsat auxilliary data. Taken from Chander et al 2009
 #' spatRes resampling: http://landsat.usgs.gov/band_designations_landsat_satellites.php
 #' @keywords internal
-LANDSAT.db <- list(
+#' 
+.LANDSATdb <- list(
         LANDSAT5 = list (
                 TM = data.frame(band = paste0("B", 1:7, "_DN"),
                         bandtype = c(rep("REF", 5), "TIR", "REF"),
@@ -305,10 +306,10 @@ LANDSAT.db <- list(
 ) 
 
 exponents <- c(-4, -2, -1, -.7, -.5)
-for(s in names(LANDSAT.db)){
-    bandType		<- LANDSAT.db[[s]][[1]][,"bandtype"] == "REF"
-    centerWavl		<- LANDSAT.db[[s]][[1]][bandType, "centerWavl"] 
-    bands 			<- LANDSAT.db[[s]][[1]][bandType, "band"]
+for(s in names(.LANDSATdb)){
+    bandType		<- .LANDSATdb[[s]][[1]][,"bandtype"] == "REF"
+    centerWavl		<- .LANDSATdb[[s]][[1]][bandType, "centerWavl"] 
+    bands 			<- .LANDSATdb[[s]][[1]][bandType, "band"]
     
     ## Calc Chavez Tab 1
     TAB1			<- sapply(exponents, function(x) centerWavl ^ x)
@@ -320,7 +321,7 @@ for(s in names(LANDSAT.db)){
     TAB2 <- do.call("cbind", TAB2)
     colnames(TAB2) <- paste0(rep(paste0("B", 1:4, "_DN"), each = 5),"_", colnames(TAB2))
     
-    LANDSAT.db[[s]][[1]] <-  merge(LANDSAT.db[[s]][[1]] , TAB2, by.x = "band", by.y = "row.names", all.x = TRUE, sort = FALSE)
+    .LANDSATdb[[s]][[1]] <-  merge(.LANDSATdb[[s]][[1]] , TAB2, by.x = "band", by.y = "row.names", all.x = TRUE, sort = FALSE)
 }
 
 

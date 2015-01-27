@@ -5,7 +5,7 @@
 #' @param inputRaster Raster* object. Typically remote sensing imagery, which is to be classified.
 #' @param trainData SpatialPolygonsDataFrame or SpatialPointsDataFrame containing the training locations.
 #' @param valData  SpatialPolygonsDataFrame or SpatialPointsDataFrame containing the validation locations (optional).
-#' @param responseCol Character giving the column in \code{trainData}, which contains the response variable. Can be omitted, when \code{trainData} has only one column.
+#' @param responseCol Character or integer giving the column in \code{trainData}, which contains the response variable. Can be omitted, when \code{trainData} has only one column.
 #' @param nSamples Integer. Number of samples per land cover class.
 #' @param areaWeightedSampling logical. If \code{TRUE} scales sample size per polygon area. The bigger the polygon the more samples are taken.
 #' @param polygonBasedCV Logical. If \code{TRUE} model tuning during cross-validation is conducted on a per-polygon base. Use this to combat overfitting.
@@ -26,13 +26,33 @@
 #' @return A list containing [[1]] the model, [[2]] the predicted raster and [[3]] the class mapping  
 #' @seealso \code{\link[caret]{train}} 
 #' @export
+#' @examples 
+#' input <- brick(system.file("external/rlogo.grd", package="raster"))
+#' train <- readRDS(system.file("external/training.rds", package="RStoolbox"))
+#' 
+#' ## Plot training data
+#' olpar <- par(no.readonly = TRUE) # back-up par
+#' par(mfrow=c(1,2))
+#' colors <- c("yellow", "green", "deeppink")
+#' plotRGB(input)
+#' plot(train, add = TRUE, col =  colors[train$class], pch = 19)
+#' 
+#' ## Fit classifier (splitting training into 70\% training data, 30\% validation data)
+#' SC 	  <- superClass(input, trainData = train, responseCol = "class", 
+#' 						tuneLength = 1, trainPartition = 0.7)
+#' SC
+#' 
+#' ## Plots
+#' plot(SC$map, col = colors, legend = FALSE, axes = FALSE, box = FALSE)
+#' legend(1,1, legend = levels(train$class), fill = colors , title = "Classes", 
+#' 		  horiz = TRUE,  bty = "n")
+#' par(olpar) # reset par
 superClass <- function(inputRaster, trainData, valData = NULL, responseCol = NULL, nSamples = 100,
         areaWeightedSampling = TRUE, polygonBasedCV = FALSE, trainPartition = NULL,
         model = "rf", tuneLength = 3,  kfold = 5,
         minDist = 2, forceBuffer = FALSE,
         filename = NULL, verbose = FALSE,
         predict = TRUE, overwrite = TRUE, ...) {
-    # TODO: add examples
     # TODO: check applicability of raster:::.intersectExtent 
     
     ## Object types
@@ -48,6 +68,7 @@ superClass <- function(inputRaster, trainData, valData = NULL, responseCol = NUL
     } 
     
     ## Attribute column
+    if(is.numeric(responseCol)) responseCol <- colnames(trainData@data)[responseCol]
     if(is.null(responseCol)){
         if(ncol(trainData) == 1) {
             responseCol <- 1
@@ -76,7 +97,7 @@ superClass <- function(inputRaster, trainData, valData = NULL, responseCol = NUL
     
     ## Split into training and validation data (polygon basis)
     if(is.null(valData) & !is.null(trainPartition)){
-        training  <- createDataPartition(trainData[[responseCol]], p = trainPartition)[[1]]
+        training  <- createDataPartition(trainData[[responseCol]], p = trainPartition)[[1]] ## this works for polygons as well because every polygon has only one entry in the attribnute table @data
         valData   <- trainData[-training,]
         trainData <- trainData[training,]
     }
@@ -90,7 +111,7 @@ superClass <- function(inputRaster, trainData, valData = NULL, responseCol = NUL
         nValOrig <- nrow(valData)
         if(trainDataType == "polygons"){
             ## Clip validation data to training data + 2 pixel buffer 
-           #dissolve(gUnionCascaded(trainData, trainData[[responseCol]]))        
+            #dissolve(gUnionCascaded(trainData, trainData[[responseCol]]))        
             inter <- gIntersection(valData, trainData, byid = TRUE) ## again both steps needed to deal with poor poly data potentially arising from manually digitizing training areas
             inter <- gUnionCascaded(inter)
             if(minDist != 0) inter <- gBuffer(inter, width = res(inputRaster)[1] * minDist)
@@ -206,7 +227,8 @@ superClass <- function(inputRaster, trainData, valData = NULL, responseCol = NUL
     args <- list(object = inputRaster, model = caretModel, filename = filename, progress = progress, datatype = dataType, overwrite = overwrite)
     args$filename <- filename
     spatPred <- do.call("predict", args)
-  
+    names(spatPred) <- responseCol
+    
     ## VALIDATION ########################
     if(!is.null(valData)){
         valiSet <- .samplePixels(valData, spatPred)
@@ -236,6 +258,17 @@ superClass <- function(inputRaster, trainData, valData = NULL, responseCol = NUL
     out <- list(model = caretModel, modelFit = modelFit, validation = validation, map = spatPred)
     if(exists("training")) out <- c(out, trainingPartitionIndices = training)
     if(mode == "classification") out <- c(out, classMapping = classMapping) 
-    return(out)
+    structure(out, class = "superClass")
+}
+
+#' @export 
+print.superClass <- function(x){
+    cat("superClass results\n")
+    cat("************ Validation **************\n")
+    cat("$validation\n")   
+    print(x$validation[[1]])
+    cat("\n*************** Map ******************\n")
+    cat("$map\n")
+    show(x$map)
 }
 
