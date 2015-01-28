@@ -39,13 +39,13 @@
 #' 
 #' ## Fit classifier (splitting training into 70\% training data, 30\% validation data)
 #' SC 	  <- superClass(input, trainData = train, responseCol = "class", 
-#' 						tuneLength = 1, trainPartition = 0.7)
+#' tuneLength = 1, trainPartition = 0.7)
 #' SC
 #' 
 #' ## Plots
 #' plot(SC$map, col = colors, legend = FALSE, axes = FALSE, box = FALSE)
 #' legend(1,1, legend = levels(train$class), fill = colors , title = "Classes", 
-#' 		  horiz = TRUE,  bty = "n")
+#' horiz = TRUE,  bty = "n")
 #' par(olpar) # reset par
 superClass <- function(inputRaster, trainData, valData = NULL, responseCol = NULL, nSamples = 100,
         areaWeightedSampling = TRUE, polygonBasedCV = FALSE, trainPartition = NULL,
