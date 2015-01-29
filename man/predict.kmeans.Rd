@@ -4,7 +4,7 @@
 \alias{predict.kmeans}
 \title{Predict method for kmeans objects}
 \usage{
-predict.kmeans(model, newdata)
+\method{predict}{kmeans}(model, newdata)
 }
 \arguments{
 \item{model}{\link[stats]{kmeans} object}

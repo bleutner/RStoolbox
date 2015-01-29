@@ -27,6 +27,10 @@
 #' @seealso \code{\link[caret]{train}} 
 #' @export
 #' @examples 
+#' \dontshow{
+#' library(randomForest)
+#' library(e1071)
+#' }
 #' input <- brick(system.file("external/rlogo.grd", package="raster"))
 #' train <- readRDS(system.file("external/training.rds", package="RStoolbox"))
 #' 
@@ -39,7 +43,7 @@
 #' 
 #' ## Fit classifier (splitting training into 70\% training data, 30\% validation data)
 #' SC 	  <- superClass(input, trainData = train, responseCol = "class", 
-#' tuneLength = 1, trainPartition = 0.7)
+#' model = "rf", tuneLength = 1, trainPartition = 0.7)
 #' SC
 #' 
 #' ## Plots

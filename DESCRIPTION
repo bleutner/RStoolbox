@@ -22,6 +22,10 @@ Imports:
     ggplot2,
     plyr,
     reshape2,
-    rgeos
+    rgeos,
+    proxy
+Suggests:
+	randomForest,
+	e1071  
 License: GPL (>=3)
 LazyData: true

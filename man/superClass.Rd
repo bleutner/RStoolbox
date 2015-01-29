@@ -58,6 +58,10 @@ Validation on a separate (not used for training) set of polygons/points is highl
 \code{valData} or by specifying \code{trainPartition}, the amount of \code{trainData} which is to be held out for validation.
 }
 \examples{
+\dontshow{
+library(randomForest)
+library(e1071)
+}
 input <- brick(system.file("external/rlogo.grd", package="raster"))
 train <- readRDS(system.file("external/training.rds", package="RStoolbox"))
 
@@ -70,7 +74,7 @@ plot(train, add = TRUE, col =  colors[train$class], pch = 19)
 
 ## Fit classifier (splitting training into 70\\\% training data, 30\\\% validation data)
 SC 	  <- superClass(input, trainData = train, responseCol = "class",
-tuneLength = 1, trainPartition = 0.7)
+model = "rf", tuneLength = 1, trainPartition = 0.7)
 SC
 
 ## Plots

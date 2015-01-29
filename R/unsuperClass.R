@@ -53,7 +53,7 @@ unsuperClass <- function(inputRaster, nSamples = 1000, nClasses = 5, nStarts = 2
         model     <- kmeans(trainData, centers = nClasses, nstart = nStarts, algorithm = algorithm)
         out 	  <- raster::predict(inputRaster, model, na.rm = TRUE, ...)
     }
-    structure(list(model = model, map = out), class = "unsuperClass")
+    structure(list(call = match.call(), model = model, map = out), class = "unsuperClass")
 }
 
 #' Predict method for kmeans objects
@@ -62,6 +62,7 @@ unsuperClass <- function(inputRaster, nSamples = 1000, nClasses = 5, nStarts = 2
 #' 
 #' @param model \link[stats]{kmeans} object
 #' @param newdata matrix 
+#' @method predict kmeans
 #' @export 
 predict.kmeans <- function(model, newdata){
     stopifnot(colnames(newdata) %in% colnames(model$centers)) 
