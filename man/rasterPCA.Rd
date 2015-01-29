@@ -53,9 +53,5 @@ summary(rpc$model)
 plotRGB(rpc$map, stretch="lin")
 
 par(olpar) # reset par
-
-## Poor
-input[[1]][40:50,]<-NA
-inputRaster <- mask(inputRaster, !sum(calc(inputRaster, is.na)), maskvalue = 0)
 }
 

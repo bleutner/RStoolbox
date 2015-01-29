@@ -37,10 +37,6 @@
 #' plotRGB(rpc$map, stretch="lin")
 #' 
 #' par(olpar) # reset par
-#' 
-#' ## Poor 
-#' input[[1]][40:50,]<-NA
-#' inputRaster <- mask(inputRaster, !sum(calc(inputRaster, is.na)), maskvalue = 0)
 rasterPCA <- function(inputRaster, nSamples = NULL, nComp = nlayers(inputRaster),  maskCheck = TRUE, ...){      
     
     if(nlayers(inputRaster) <= 1) stop("Need at least two layers to calculate PCA.")    
