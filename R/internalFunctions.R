@@ -2,7 +2,7 @@
 #' 
 #' Function taken from the landsat package: S. Goslee (2012)
 #' 
-#' @param adate character. date in format "YYYY-MM-DD"
+#' @param adate character. date in format "YYYY-MM-DD" 
 #' @keywords internal
 .ESdist <- function(adate){	
 	edist <- julian(as.Date(adate), origin=as.Date(paste(substring(adate, 1, 4), "12", "31", sep="-")))[[1]]

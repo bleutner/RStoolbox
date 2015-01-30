@@ -13,7 +13,7 @@
 #' @param verbose logical. Print messages or supress.
 #' @param returnDiffLayer logical. If \code{TRUE}, the difference layer will be returned along with the cloudmask. This option allows to re-use the difference layer in cloudMask.
 #' @note Typically clouds are cold in the thermal region and have high reflectance in short wavelengths (blue). By differencing the two bands and thresholding a rough cloud mask can be obtained.
-#' More sophisticated approaches can be found elsewhere, e.g. \link[code.google.com/p/fmask/]{fmask}.
+#' More sophisticated approaches can be found elsewhere, e.g. \href{http://code.google.com/p/fmask}{fmask}.
 #' 
 #' It can make sense to find a suitable threshold on a cropped version of the scene. Also make sure you make use of the \code{returnDiffLayer} argument to save yourself one processing step.
 #' Sanitizing and region growing can be seen as final polishing, i.e. as long as the pure cloud centers are not detected properly, you can turn those two arguments off if they take too long to calculate.

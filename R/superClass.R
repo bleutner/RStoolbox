@@ -265,8 +265,9 @@ superClass <- function(inputRaster, trainData, valData = NULL, responseCol = NUL
     structure(out, class = "superClass")
 }
 
+#' @method print superClass
 #' @export 
-print.superClass <- function(x){
+print.superClass <- function(x,...){
     cat("superClass results\n")
     cat("************ Validation **************\n")
     cat("$validation\n")   

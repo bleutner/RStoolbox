@@ -60,19 +60,20 @@ unsuperClass <- function(inputRaster, nSamples = 1000, nClasses = 5, nStarts = 2
 #' 
 #' Prediction for kmeans models based on minimum distance to cluster centers
 #' 
-#' @param model \link[stats]{kmeans} object
+#' @param object \link[stats]{kmeans} object
 #' @param newdata matrix 
+#' @param ... further arguments. None implemented.
 #' @method predict kmeans
 #' @export 
-predict.kmeans <- function(model, newdata){
-    stopifnot(colnames(newdata) %in% colnames(model$centers)) 
-    distance <- proxy::dist(newdata, model$centers, method = "Euclidean")
+predict.kmeans <- function(object, newdata, ...){
+    stopifnot(colnames(newdata) %in% colnames(object$centers)) 
+    distance <- proxy::dist(newdata, object$centers, method = "Euclidean")
     apply(distance, 1, which.min)
 }
 
-
+#' @method print unsuperClass
 #' @export 
-print.unsuperClass <- function(x){
+print.unsuperClass <- function(x, ...){
     cat("unsuperClass results\n")    
     cat("\n*************** Map ******************\n")
     cat("$map\n")

@@ -4,12 +4,14 @@
 \alias{predict.kmeans}
 \title{Predict method for kmeans objects}
 \usage{
-\method{predict}{kmeans}(model, newdata)
+\method{predict}{kmeans}(object, newdata, ...)
 }
 \arguments{
-\item{model}{\link[stats]{kmeans} object}
+\item{object}{\link[stats]{kmeans} object}
 
 \item{newdata}{matrix}
+
+\item{...}{further arguments. None implemented.}
 }
 \description{
 Prediction for kmeans models based on minimum distance to cluster centers
