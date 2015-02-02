@@ -56,7 +56,8 @@ rasterPCA <- function(inputRaster, nSamples = NULL, nComp = nlayers(inputRaster)
         model  <- princomp(covmat = covMat$covariance)
         model$center <- covMat$mean
     }
-    out   <- raster::predict(inputRaster, model = model, na.rm = TRUE, index = 1:nComp, ...)  
+    ## Predict
+    out   <- .paraPred(inputRaster, model = model, na.rm = TRUE, index = 1:nComp, ...)  
     names(out) <- paste0("PC", 1:nComp)
     structure(list(call = match.call(), model = model, map = out), class = "rasterPCA")  
     

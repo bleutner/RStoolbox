@@ -24,3 +24,28 @@
 			})
 }
 
+
+#' Run raster::predict in parallel if possible
+#' @param raster Raster* Object
+#' @param model model. E.g. randomForest model
+#' @param na.rm logical.
+#' @param further arguments to be passed to raster::predict
+#' @keywords internal
+#' @examples 
+#' system.time(single <- paraPred(input, SC$model))
+#' beginCluster(4, type="SOCK")
+#' system.time(multi <- paraPred(input, SC$model))
+#' endCluster()
+#' all.equal(single, multi)
+.paraPred <- function(object, model = model, na.rm = TRUE, ...){
+    if (isTRUE(getOption("rasterCluster"))) {
+        message("multicore")
+        clusterR(x = object, fun = raster::predict, args=list(model = model, na.rm = na.rm, ...))
+    } else {
+        message("single core")
+        raster::predict(object = object, model = model, na.rm = na.rm, ...)
+    }
+}
+
+
+
