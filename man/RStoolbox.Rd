@@ -8,12 +8,14 @@
 \description{
 The RStoolbox package provides a set of functions which simplify performing standard remote sensing tasks in R.
 }
-\section{Data import}{
+\section{Data Import and Export}{
 
 
 \itemize{
  \item \code{\link{readMeta}}: import Landsat metadata from MTL or XML files
  \item \code{\link{stackMeta}}: load Landsat bands based on metadata
+ \item \code{\link{readSLI} & \link{writeSLI}}: read and write ENVI spectral libraries
+ \item \code{\link{saveRSTBX} & \link{readRSTBX}}: save and re-import RStoolbox classification objects (model and map)
 }
 }
 

@@ -7,7 +7,8 @@
 #' @param red Character or integer. Red band. 
 #' @param nir Character or integer. Near-infrared band. 
 #' @param mir Character or integer. Midwave-infrared band. 
-#' @param indices Character or NULL. One or more spectral indices to calculate (see Details). NULL will calculate all implemented indices given the spectral bands which are provided,  
+#' @param indices Character or NULL. One or more spectral indices to calculate (see Details). NULL will calculate all implemented indices given the spectral bands which are provided,
+#' @param L soil brightness factor for SAVI (0.5 by default)  
 #' @param ... further arguments such as filename etc. passed to \link[raster]{writeRaster}
 #' @return rasterBrick 
 #' @seealso \code{\link[raster]{overlay}} 
@@ -17,7 +18,7 @@
 #' r[] <- sample(1:155, 100, TRUE)
 #' r <- stack(r, r + 90 + rnorm(100, 10)) 
 #' names(r) <- c("red", "nir")
-#' SI <- spectralIndices(inputRaster = r, red = 1, nir = 2)
+#' SI <- spectralIndices(r, red = 1, nir = 2)
 #' plot(SI)
 spectralIndices <- function(inputRaster, blue=NULL, red=NULL, nir=NULL, mir=NULL, indices=NULL, L = 0.5, ... ) {
     # TODO: add indices

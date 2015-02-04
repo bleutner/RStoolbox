@@ -4,36 +4,38 @@
 \alias{spectralIndices}
 \title{Spectral indices}
 \usage{
-spectralIndices(inputRaster, indices = "NDVI", sensor, bands,
-  maskRaster = NULL, verbose = FALSE, ...)
+spectralIndices(inputRaster, blue = NULL, red = NULL, nir = NULL,
+  mir = NULL, indices = NULL, L = 0.5, ...)
 }
 \arguments{
 \item{inputRaster}{Raster* object. Typically remote sensing imagery, which is to be classified.}
 
-\item{indices}{character. one or more spectral indices}
+\item{blue}{Character or integer. Blue band.}
 
-\item{sensor}{if a sensor is specified \code{bands} is populated automatically. Specifying a sensor requires the layernames in inputRaster to match the official band designations formatted as "B1", "B2" etc.}
+\item{red}{Character or integer. Red band.}
 
-\item{bands}{list of band designations. See notes for details}
+\item{nir}{Character or integer. Near-infrared band.}
 
-\item{maskRaster}{Raster layer containing a binary mask to exclude areas from prediction.}
+\item{mir}{Character or integer. Midwave-infrared band.}
 
-\item{verbose}{logical. prints progress, statistics and graphics during execution}
+\item{indices}{Character or NULL. One or more spectral indices to calculate (see Details). NULL will calculate all implemented indices given the spectral bands which are provided,}
+
+\item{L}{soil brightness factor for SAVI (0.5 by default)}
 
 \item{...}{further arguments such as filename etc. passed to \link[raster]{writeRaster}}
 }
 \value{
-rasterBrick or rasterStack
+rasterBrick
 }
 \description{
-Spectral indices
+Calculate a suite of multispectral indices such as NDVI, SAVI etc. in an efficient way.
 }
 \examples{
 r <- raster(ncol=10,nrow=10)
 r[] <- sample(1:155, 100, TRUE)
 r <- stack(r, r + 90 + rnorm(100, 10))
 names(r) <- c("red", "nir")
-SI <- spectralIndices(r, indices = c("SR", "NDVI"), bands = list(NIR = "nir", RED = "red"))
+SI <- spectralIndices(r, red = 1, nir = 2)
 plot(SI)
 }
 \seealso{

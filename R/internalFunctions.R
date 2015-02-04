@@ -39,10 +39,8 @@
 #' all.equal(single, multi)
 .paraPred <- function(object, model = model, na.rm = TRUE, ...){
     if (isTRUE(getOption("rasterCluster"))) {
-        message("multicore")
         clusterR(x = object, fun = raster::predict, args=list(model = model, na.rm = na.rm, ...))
     } else {
-        message("single core")
         raster::predict(object = object, model = model, na.rm = na.rm, ...)
     }
 }
