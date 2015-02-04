@@ -1,5 +1,7 @@
 #' Spectral indices
 #' 
+#' Calculate a suite of multispectral indices such as NDVI, SAVI etc. in an efficient way.
+#' 
 #' @param inputRaster Raster* object. Typically remote sensing imagery, which is to be classified.
 #' @param blue Character or integer. Blue band. 
 #' @param red Character or integer. Red band. 
@@ -15,7 +17,7 @@
 #' r[] <- sample(1:155, 100, TRUE)
 #' r <- stack(r, r + 90 + rnorm(100, 10)) 
 #' names(r) <- c("red", "nir")
-#' SI <- spectralIndices(r, indices = c("SR", "NDVI"), nir = 1, red = 2)
+#' SI <- spectralIndices(inputRaster = r, red = 1, nir = 2)
 #' plot(SI)
 spectralIndices <- function(inputRaster, blue=NULL, red=NULL, nir=NULL, mir=NULL, indices=NULL, L = 0.5, ... ) {
     # TODO: add indices
@@ -62,9 +64,9 @@ spectralIndices <- function(inputRaster, blue=NULL, red=NULL, nir=NULL, mir=NULL
     bdys  <- lapply(INDICES.db[ind], body) ## get the bodies   
     funSlaves  <- lapply(bdys, function(x) eval(call("function", args=args , body = x))) ## make functions     
     funMaster <- function(...){
-        vapply(funSlaves, function(f, ...) f(...), ..., numeric(1))
+        sapply(funSlaves, function(f, ...) f(...), ...)
     } 
-    
+
     ## Get designated bands
     bands <- as.list(environment())[bands]
     ## Treat mixture of character and integer band assignment
@@ -73,7 +75,7 @@ spectralIndices <- function(inputRaster, blue=NULL, red=NULL, nir=NULL, mir=NULL
         bands[chr] <- match(bands[chr], names(inputRaster))
         bands <- unlist(bands)
     }
-    
+
     # Perform calculations (each pixel must be read only once due to the function assembly above)
     # this should save some significant time for large Rasters   
     indexMagic    <- overlay(inputRaster[[bands]], fun = funMaster, ...)
