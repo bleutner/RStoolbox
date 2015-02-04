@@ -1,4 +1,4 @@
-RStoolbox 0.02
+RStoolbox 0.0.0.9000
 =====================================
 * new function ggRGB as an raster::plotRGB equivalent for ggplot2
 
@@ -8,8 +8,5 @@ RStoolbox 0.02
 	`readMeta()` reads Landsat Metadata from MTL files
    	`stackLS()` loads all Landsat bands into a raster stack in one go based on MTL metadata
    	`radCor()` performs radiometric calibration and correction for LS5 TM, LS7 TM and LS8 TM
-
-RStoolbox 0.01
-=====================================
 
 * new function `superClass()` for random forest based supervised classification 
