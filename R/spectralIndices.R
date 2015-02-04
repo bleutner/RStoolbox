@@ -1,11 +1,8 @@
 #' Spectral indices
 #' 
 #' @param inputRaster Raster* object. Typically remote sensing imagery, which is to be classified.
+#' @param blue 
 #' @param indices character. one or more spectral indices 
-#' @param sensor if a sensor is specified \code{bands} is populated automatically. Specifying a sensor requires the layernames in inputRaster to match the official band designations formatted as "B1", "B2" etc.
-#' @param bands list of band designations. See notes for details
-#' @param maskRaster Raster layer containing a binary mask to exclude areas from prediction.
-#' @param verbose logical. prints progress, statistics and graphics during execution
 #' @param ... further arguments such as filename etc. passed to \link[raster]{writeRaster}
 #' @return rasterBrick or rasterStack
 #' @seealso \code{\link[raster]{overlay}} 
@@ -15,67 +12,92 @@
 #' r[] <- sample(1:155, 100, TRUE)
 #' r <- stack(r, r + 90 + rnorm(100, 10)) 
 #' names(r) <- c("red", "nir")
-#' SI <- spectralIndices(r, indices = c("SR", "NDVI"), bands = list(NIR = "nir", RED = "red"))
+#' SI <- spectralIndices(r, indices = c("SR", "NDVI"), nir = 1, red = 2)
 #' plot(SI)
-spectralIndices <- function(inputRaster, indices = "NDVI", sensor, bands , maskRaster = NULL, verbose = FALSE, ... ) {
-	# TODO: add indices
-	# TODO: add examples
-	# TODO: add formulas to help file
-	# TODO: internal sensor db
-	# TODO: value checks?
-	# TODO: check sensor list for correctness and extend it 
-	
-	## Sensor db
-	SENSORS <- list(
-			LANDSAT5 = list(BLUE = "B1", GREEN = "B2", RED = "B3", NIR = "B4", MIR = "B7"),
-			LANDSAT7 = list(BLUE = "B1", GREEN = "B2", RED = "B3", NIR = "B4"),
-			LANDSAT8 = list(BLUE = "B2", GREEN = "B3", RED = "B4", NIR = "B5")
-	)
-	
-	if(!missing(sensor)){
-		if(!sensor %in% names(SENSORS)) stop(paste0("Unknown sensor. Please provide the 'bands' argument or 'sensor' as one of ", names(SENSORS)))
-		bands <- SENSORS[[sensor]]
-		if(any(!bands %in% names(inputRaster))) stop("Bandnames of inputRaster do not match the required format or are missing. Please provide 'bands' argument manually or make sure the names(inputRaster) follow the 'B1' 'B2'  ... format if you want to make use of the 'sensor' argument.")
-	}
-	bands <- lapply(bands, function(x) if(is.character(x)) which(names(inputRaster) == x) else x )
-	
-	## Internal db
-	INDICES <-  list(
-			SR 		= function(NIR, RED) {NIR / RED},
-			DVI		= function(NIR, RED) {NIR-RED},
-			NDVI	= function(NIR, RED) {(NIR-RED)/(NIR+RED)}, 
-			TVI 	= function(NIR, RED) {(((NIR-RED)/(NIR+RED))+0.5)^0.5}, 
-			MSAVI	= function(NIR, RED) {NIR + 0.5 - (0.5 * sqrt((2 * NIR + 1)^2 - 8 * (NIR - (2 * RED))))},
-			MSAVI2	= function(NIR, RED) {(2 * (NIR + 1) - sqrt((2 * NIR + 1)^2 - 8 * (NIR - RED))) / 2},
-			GEMI	= function(NIR, RED) {(((NIR^2 - RED^2) * 2 + (NIR * 1.5) + (RED * 0.5) ) / (NIR + RED + 0.5)) * (1 - ((((NIR^2 - RED^2) * 2 + (NIR * 1.5) + (RED * 0.5) ) / (NIR + RED + 0.5)) * 0.25)) - ((RED - 0.125) / (1 - RED))},                   
-			SLAVI	= function(RED, MIR) {NIR / (RED + MIR)},
-			EVI		= function(NIR, RED, BLUE) {G * ((NIR - RED) / (NIR + C1 * RED - C2 * BLUE + L))}# include a G or L specification in command
-	)
-	
-	## Get arguments and check for mising arguments
-	args <- lapply(indices, function(index) {
-				need <- names(formals(INDICES[[index]]))	
-				if(any(!need %in% names(bands))) stop("Band specification(s) of >> ", paste(names(bands)[!names(bands) %in% need], collapse = ","), 
-							" << are missing or do not match layer names in the brick/stack. \nPlease specify the correct layer number or name in a list, e.g. bands = list(RED = 'B4', NIR = 'B5')", call. = FALSE)
-				need <- unlist(bands[need])
-			})
-	names(args) <- indices 
-	
-	## We do this in a separate step, so we can throw an error before we start the calculations
-	inList <- lapply(indices, function(index) {
-				if(verbose) print(paste0("Calculating ", index))
-			m<-	overlay(inputRaster[[args[[index]]]], fun = INDICES[[index]])
-			})
-	
-	## Combine and return
-	outStack <- stack(inList)
-		
-	## Write file if filename is provided. Doing it this way we write the file twice. We could provide filenames to overlay instead and return a stack so we only write once. 
-	## But then we have an output of n single files instead of one multi-layer file containing all indices.
-	## Maybe we should make this optional
-	if(any(grepl("file", names(list(...))))) outStack <-  writeRaster(outStack, ...)
-	
-	names(outStack) <- indices	 
+spectralIndices <- function(inputRaster, blue=NULL, red=NULL, nir=NULL, mir=NULL, indices=NULL, L = 0.5, ... ) {
+    # TODO: add indices
+    # TODO: add examples
+    # TODO: add formulas to help file  
+   
+    ## EVI coefficients
+    G = 2.5
+    L_evi = 1
+    C1 = 6
+    C2 = 7.5 
+ 
+    ind <- if(is.null(indices)) names(INDICES.db) else indices  
+    if(!any(ind %in% names(INDICES.db))) stop("indices must either be NULL to calculate all indices",
+                "\nor element of c(", paste0(names(INDICES.db),collapse=","),") for specific indices.", call. = FALSE)
+    
+    
+    ## Gather function arguments (all provided bands) and create args
+    args    <- alist(blue=, red=, nir=, mir=)
+    potArgs <- names(args) ## potential bands
+    actArgs <- vapply(potArgs, function(x) is.null(get(x)), logical(1))
+    args[actArgs]  <- NULL      ## keep only provided args      
+   # args    <- as.pairlist(c(args, alist(...=))) 
+    args    <- as.pairlist(args)  
 
-	return(outStack)
+    ## Get bands
+    bands <- names(actArgs)[!actArgs]
+    
+    ## Subset calculated indices to possible based on band inputs and / or user request
+    frmls    <- lapply(lapply(INDICES.db, formals), names)
+    canCalc  <- names(frmls)[!vapply(frmls, function(x) any(!x %in% bands), logical(1))]
+    ind  <- ind[ind %in% canCalc]   
+    if(length(ind) == 0) stop("No index could be calculated. At least for one index you must specify *all* required bands.",
+                "\n  See ?spectralIndices for information on required bands per index.")
+    if(length(ind) < length(indices)){
+        not <- setdiff(indices,ind)
+        notbands <- setdiff(unlist(frmls[not]), bands)
+        warning("The following indices were requested but cannot be calculated: ", not,
+                "\n  To following required bands are not specified: ",
+                notbands,
+                "\n  The remaining fully specified indices are calculated nevertheless.")
+    }
+  
+    ## Finally make functions with args and bodies
+    bdys  <- lapply(INDICES.db[ind], body) ## get the bodies   
+    funSlaves  <- lapply(bdys, function(x) eval(call("function", args=args , body = x))) ## make functions     
+    funMaster <- function(...){
+        vapply(funSlaves, function(f, ...) f(...), ..., numeric(1))
+    } 
+
+    # Perform calculations (each pixel must be read only once due to the function assembly above)
+    # this should save some significant time for large Rasters   
+    bands <- as.list(environment())[bands]
+    ## Treat mixture of character and integer band assignment
+    if(is.list(bands)){
+        chr <- sapply(bands, is.character)
+        bands[chr] <- match(bands[chr], names(inputRaster))
+        bands <- unlist(bands)
+    }
+    
+    indexMagic    <- raster::overlay(inputRaster[[bands]], fun = funMaster)
+    names(indexMagic) <- names(bdys)      
+    
+    ## Write file if filename is provided. Doing it this way we write the file twice. We could provide filenames to overlay instead and return a stack so we only write once. 
+    ## But then we have an output of n single files instead of one multi-layer file containing all indices.
+    ## Maybe we should make this optional
+    #if(any(grepl("file", names(list(...))))) outStack <-  writeRaster(outStack, ...)
+    
+    
+    
+    return(indexMagic)
 }
+
+
+
+## Internal db
+INDICES.db <-  list(        
+        SR 		= function(red, nir) {nir / red},
+        DVI		= function(red, nir) {nir-red},
+        NDVI	= function(red, nir) {(nir-red)/(nir+red)}, 
+        TVI 	= function(red, nir) {(((nir-red)/(nir+red))+0.5)^0.5}, 
+        SAVI    = function(red, nir) {(nir - red) * (1+L) / (nir + red + L)}, 
+        MSAVI	= function(red, nir) {nir + 0.5 - (0.5 * sqrt((2 * nir + 1)^2 - 8 * (nir - (2 * red))))},
+        MSAVI2	= function(red, nir) {(2 * (nir + 1) - sqrt((2 * nir + 1)^2 - 8 * (nir - red))) / 2},
+        GEMI	= function(red, nir) {(((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5) ) / (nir + red + 0.5)) * (1 - ((((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5) ) / (nir + red + 0.5)) * 0.25)) - ((red - 0.125) / (1 - red))},                   
+        SLAVI	= function(red, nir, mir) {nir / (red + mir)},
+        EVI		= function(red, nir, blue) {G * ((nir - red) / (nir + C1 * red - C2 * blue + L_evi))}
+)
