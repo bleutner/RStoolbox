@@ -1,10 +1,13 @@
 #' Spectral indices
 #' 
 #' @param inputRaster Raster* object. Typically remote sensing imagery, which is to be classified.
-#' @param blue 
-#' @param indices character. one or more spectral indices 
+#' @param blue Character or integer. Blue band. 
+#' @param red Character or integer. Red band. 
+#' @param nir Character or integer. Near-infrared band. 
+#' @param mir Character or integer. Midwave-infrared band. 
+#' @param indices Character or NULL. One or more spectral indices to calculate (see Details). NULL will calculate all implemented indices given the spectral bands which are provided,  
 #' @param ... further arguments such as filename etc. passed to \link[raster]{writeRaster}
-#' @return rasterBrick or rasterStack
+#' @return rasterBrick 
 #' @seealso \code{\link[raster]{overlay}} 
 #' @export
 #' @examples
@@ -25,6 +28,7 @@ spectralIndices <- function(inputRaster, blue=NULL, red=NULL, nir=NULL, mir=NULL
     C1 = 6
     C2 = 7.5 
  
+    ## Check indices
     ind <- if(is.null(indices)) names(INDICES.db) else indices  
     if(!any(ind %in% names(INDICES.db))) stop("indices must either be NULL to calculate all indices",
                 "\nor element of c(", paste0(names(INDICES.db),collapse=","),") for specific indices.", call. = FALSE)
@@ -37,8 +41,6 @@ spectralIndices <- function(inputRaster, blue=NULL, red=NULL, nir=NULL, mir=NULL
     args[actArgs]  <- NULL      ## keep only provided args      
    # args    <- as.pairlist(c(args, alist(...=))) 
     args    <- as.pairlist(args)  
-
-    ## Get bands
     bands <- names(actArgs)[!actArgs]
     
     ## Subset calculated indices to possible based on band inputs and / or user request
@@ -62,9 +64,8 @@ spectralIndices <- function(inputRaster, blue=NULL, red=NULL, nir=NULL, mir=NULL
     funMaster <- function(...){
         vapply(funSlaves, function(f, ...) f(...), ..., numeric(1))
     } 
-
-    # Perform calculations (each pixel must be read only once due to the function assembly above)
-    # this should save some significant time for large Rasters   
+    
+    ## Get designated bands
     bands <- as.list(environment())[bands]
     ## Treat mixture of character and integer band assignment
     if(is.list(bands)){
@@ -73,7 +74,9 @@ spectralIndices <- function(inputRaster, blue=NULL, red=NULL, nir=NULL, mir=NULL
         bands <- unlist(bands)
     }
     
-    indexMagic    <- raster::overlay(inputRaster[[bands]], fun = funMaster)
+    # Perform calculations (each pixel must be read only once due to the function assembly above)
+    # this should save some significant time for large Rasters   
+    indexMagic    <- overlay(inputRaster[[bands]], fun = funMaster, ...)
     names(indexMagic) <- names(bdys)      
     
     ## Write file if filename is provided. Doing it this way we write the file twice. We could provide filenames to overlay instead and return a stack so we only write once. 
