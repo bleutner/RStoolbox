@@ -8,15 +8,15 @@ Authors@R: c(
     person("Ned", "Horning", role ="ctb", email="horning@amnh.org"),
     person("Martin", "Wegmann", role="ctb", email="martin.wegmann@uni-wuerzburg.de")
     )
-Description: Tools for remote sensing image processing and classification such
+Description: Toolbox for remote sensing image processing and analysis such
     as calculating spectral indices, principal component analysis, unsupervised
     and supervised classification or fractional cover analyses.
 URL: https://github.com/bleutner/RStoolbox    
 BugReports: https://github.com/bleutner/RStoolbox/issues    
-Depends:
+Depends: 
     R (>= 3.1.0),
     raster
-Imports:
+Imports: 
     sp,
     stringr,
     caret,
@@ -27,7 +27,7 @@ Imports:
     reshape2,
     rgeos,
     proxy
-Suggests:
+Suggests: 
     randomForest,
     e1071
 License: GPL (>=3)

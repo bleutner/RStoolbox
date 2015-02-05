@@ -19,20 +19,22 @@ spectralIndices(inputRaster, blue = NULL, red = NULL, nir = NULL,
 
 \item{mir}{Character or integer. Midwave-infrared band.}
 
-\item{indices}{Character or NULL. One or more spectral indices to calculate (see Details). NULL will calculate all implemented indices given the spectral bands which are provided,}
+\item{indices}{Character. One or more spectral indices to calculate (see Details). By default (NULL) all implemented indices given the spectral bands which are provided will be calculated.}
 
 \item{coefs}{List of coefficients (see Details).}
 
 \item{...}{further arguments such as filename etc. passed to \link[raster]{writeRaster}}
 }
 \value{
-RasterBrick or a RasterLayer if length(indices) = 1
+RasterBrick or a RasterLayer if length(indices) == 1
 }
 \description{
 Calculate a suite of multispectral indices such as NDVI, SAVI etc. in an efficient way.
 }
 \details{
 \code{spectralIndices} calculates all indices in one go, i.e. one call to overlay, which is far more efficient, than calculating each index separately (for large rasters).
+By default all indices which can be calculated given the specified indices will be calcultated. If you don't want all indices, use the \code{indices} argument to specify exactly which indices are to be calculated.
+See the table bellow for index names and required bands.
 
 \code{coefs} can be used to redefine additional coefficients used to calculate \code{EVI} (\code{L_evi, C1, C2, G}), and \code{SAVI} (\code{L}).
 Although the defaults are sensible values, it can make sense to adjust the SAVI soil brigthness factor \code{L} depending on the characteristics of the vegetation cover in your scene.
@@ -46,7 +48,7 @@ r <- raster(ncol=10,nrow=10)
 r[] <- sample(1:155, 100, TRUE)
 r <- stack(r, r + 90 + rnorm(100, 10))
 names(r) <- c("red", "nir")
-SI <- spectralIndices(r, red = 1, nir = 2)
+SI <- spectralIndices(r, red = 1, nir = 2, indices = "NDVI")
 plot(SI)
 }
 \seealso{

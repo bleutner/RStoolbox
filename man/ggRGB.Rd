@@ -6,8 +6,8 @@
 \usage{
 ggRGB(x, r = 3, g = 2, b = 1, scale, maxpixels = 5e+05,
   stretch = NULL, ext = NULL, minMax = NULL, clipToMinMax = FALSE,
-  ggObj = TRUE, ggLayer = FALSE, coord_equal = TRUE,
-  interpolate = FALSE, annotation = TRUE)
+  quantileStretch = c(0.02, 0.98), ggObj = TRUE, ggLayer = FALSE,
+  coord_equal = TRUE, interpolate = FALSE, annotation = TRUE)
 }
 \arguments{
 \item{x}{RasterStack or RasterBrick}
@@ -26,20 +26,24 @@ ggRGB(x, r = 3, g = 2, b = 1, scale, maxpixels = 5e+05,
 
 \item{ext}{extent object tp crop the image}
 
-\item{minMax}{Vector or matrix. Can be used to reduce the range of values. Either a vector of two values for all bands (c(min, max)) or
-a 3x2 matrix with separate min and max values (columns) for each layer (rows).}
+\item{minMax}{Vector or matrix. Can be used to reduce the range of values. Either a vector of two values for all bands (c(min, max))
+or a 3x2 matrix with separate min and max values (columns) for each layer (rows).}
 
 \item{clipToMinMax}{Logical. If \code{TRUE}, values > scale will be set to NA. if \code{FALSE} they will be set to scale. Defaults to \code{FALSE}.}
 
+\item{quantileStretch}{Numeric vector with two elements. Min and max quantiles to stretch to. Defaults to 2\% stretch, i.e. c(0.02,0.98).}
+
 \item{ggObj}{Logical. If \code{TRUE} a ggplot2 object is returned. If \code{FALSE} a data.frame with coordinates and color will be returned.}
 
-\item{ggLayer}{Logical. If \code{TRUE} a ggplot2 layer is returned. This is usefull if you want to add it to an existing ggplot2 object. Note that if \code{TRUE} & \code{annotate = FALSE} you have to add a scale_fill_identity() manually in your call to ggplot().}
+\item{ggLayer}{Logical. If \code{TRUE} a ggplot2 layer is returned. This is usefull if you want to add it to an existing ggplot2 object.
+Note that if \code{TRUE} & \code{annotate = FALSE} you have to add a scale_fill_identity() manually in your call to ggplot().}
 
 \item{coord_equal}{Logical. Uses coord_equal, i.e. aspect ratio of 1:1.}
 
 \item{interpolate}{Logical. Interpolate the raster during plotting. Defaults to \code{FALSE}.}
 
-\item{annotation}{Logical. If \code{TRUE} annotation_raster is used, otherwise geom_raster()+scale_fill_identity is used. Note that you can't use scale_fill* in addition to the latter, because it alread requires scale_fill_identity().}
+\item{annotation}{Logical. If \code{TRUE} annotation_raster is used, otherwise geom_raster()+scale_fill_identity is used.
+Note that you can't use scale_fill* in addition to the latter, because it already requires scale_fill_identity().}
 }
 \value{
 A ggplot2 object, or a three column data frame with coordinates and fill colour.

@@ -12,21 +12,25 @@
 #' @param maxpixels Integer. Maximal number of pixels used for plotting.
 #' @param stretch Character. Either 'lin' or 'hist' for linear or histogram stretch of the data
 #' @param ext extent object tp crop the image
-#' @param minMax Vector or matrix. Can be used to reduce the range of values. Either a vector of two values for all bands (c(min, max)) or 
-#' a 3x2 matrix with separate min and max values (columns) for each layer (rows).  
+#' @param minMax Vector or matrix. Can be used to reduce the range of values. Either a vector of two values for all bands (c(min, max))
+#'  or a 3x2 matrix with separate min and max values (columns) for each layer (rows).
+#' @param quantileStretch Numeric vector with two elements. Min and max quantiles to stretch to. Defaults to 2\% stretch, i.e. c(0.02,0.98). 
 #' @param clipToMinMax Logical. If \code{TRUE}, values > scale will be set to NA. if \code{FALSE} they will be set to scale. Defaults to \code{FALSE}.
 #' @param ggObj Logical. If \code{TRUE} a ggplot2 object is returned. If \code{FALSE} a data.frame with coordinates and color will be returned.
-#' @param ggLayer Logical. If \code{TRUE} a ggplot2 layer is returned. This is usefull if you want to add it to an existing ggplot2 object. Note that if \code{TRUE} & \code{annotate = FALSE} you have to add a scale_fill_identity() manually in your call to ggplot().
+#' @param ggLayer Logical. If \code{TRUE} a ggplot2 layer is returned. This is usefull if you want to add it to an existing ggplot2 object.
+#'  Note that if \code{TRUE} & \code{annotate = FALSE} you have to add a scale_fill_identity() manually in your call to ggplot().
 #' @param coord_equal Logical. Uses coord_equal, i.e. aspect ratio of 1:1.
 #' @param interpolate Logical. Interpolate the raster during plotting. Defaults to \code{FALSE}.
-#' @param annotation Logical. If \code{TRUE} annotation_raster is used, otherwise geom_raster()+scale_fill_identity is used. Note that you can't use scale_fill* in addition to the latter, because it alread requires scale_fill_identity().
+#' @param annotation Logical. If \code{TRUE} annotation_raster is used, otherwise geom_raster()+scale_fill_identity is used.
+#'  Note that you can't use scale_fill* in addition to the latter, because it already requires scale_fill_identity().
 #' @return A ggplot2 object, or a three column data frame with coordinates and fill colour.
 #' @export
 #' @examples  
 #' br <- brick(system.file("external/rlogo.grd", package="raster"))
 #' ggRGB(br, 1, 2, 3)
 #' ggRGB(br, r=1,g=2,b=3, minMax = matrix(c(100,150,10,200,50,255),  ncol = 2, by = TRUE))
-ggRGB <- function(x, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = NULL, ext = NULL,  minMax = NULL, clipToMinMax = FALSE, ggObj = TRUE, ggLayer = FALSE, coord_equal = TRUE, interpolate = FALSE, annotation = TRUE) { 
+ggRGB <- function(x, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = NULL, ext = NULL,  minMax = NULL, clipToMinMax = FALSE, quantileStretch = c(0.02,0.98),
+        ggObj = TRUE, ggLayer = FALSE, coord_equal = TRUE, interpolate = FALSE, annotation = TRUE) { 
     # Originally forked from raster:::plotRGB
     # Author: Robert J. Hijmans 
     # Date :  April 2010
@@ -80,7 +84,7 @@ ggRGB <- function(x, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = N
     if (!is.null(stretch)) {
         stretch = tolower(stretch)
         for(i in seq_along(rgb)){
-            RGB[,i] <- .stretch(RGB[,i], method = stretch)
+            RGB[,i] <- .stretch(RGB[,i], method = stretch, quantileStretch=quantileStretch)
         }
         scale <- 255		
     }
@@ -101,7 +105,8 @@ ggRGB <- function(x, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = N
     } else {
         z <- rgb(RGB[,1], RGB[,2], RGB[,3], max = scale)
     }
-    df_raster <- data.frame(coordinates(rr), fill = z)
+    df_raster <- data.frame(coordinates(rr), fill = z, stringsAsFactors = FALSE)
+    
     if(ggObj){ 
         
         ## We need to set up ggplot with at least the minimum aestetics x and y
@@ -111,10 +116,10 @@ ggRGB <- function(x, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = N
         ## Set-up plot       
         ## I prefer annotate_raster instead of geom_raster or tile to keep the fill scale free for additional rasters        
         if(annotation) {           
-            dz <- matrix(z, nrow=nrow(rr), ncol=ncol(rr), byrow=TRUE)  
-            p <- annotation_raster(raster = dz, xmin=exe[1], xmax=exe[2], ymin=exe[3], ymax=exe[4], interpolate = interpolate)
+            dz <- matrix(z, nrow=nrow(rr), ncol=ncol(rr), byrow = TRUE)  
+            p <- annotation_raster(raster = dz, xmin = exe[1], xmax = exe[2], ymin = exe[3], ymax = exe[4], interpolate = interpolate)
             if(!ggLayer) {
-                p <- ggplot(df, aes(x=x,y=y)) + p
+                p <- ggplot(df, aes(x = x,y = y)) + p
             }
         } else {
             p <- geom_raster(data = df_raster, aes(x = x, y = y, fill = fill))  
@@ -135,9 +140,9 @@ ggRGB <- function(x, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = N
 
 
 ## Perform histogram and 98% linear stretching
-.stretch <- function (x, method = "lin") {
+.stretch <- function (x, method = "lin", quantileStretch) {
     if(method == "lin"){
-        v <- quantile(x, c(0.02, 0.98), na.rm = TRUE)
+        v <- quantile(x, quantileStretch, na.rm = TRUE)
         temp <- (255 * (x - v[1]))/(v[2] - v[1])
         temp[temp < 0] <- 0
         temp[temp > 255] <- 255 
