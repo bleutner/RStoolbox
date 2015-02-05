@@ -3,3 +3,5 @@ inst/demo
 .project
 .git
 .gitignore 	
+.Rprofile
+man-roxygen

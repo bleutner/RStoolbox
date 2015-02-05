@@ -1,6 +1,6 @@
 Package: RStoolbox
 Type: Package
-Title: RStoolbox: A Collection of Remote Sensing Tools
+Title: Tools for Remote Sensing Data Analysis 
 Version: 0.0.0.9000
 Date: 2015-02-04
 Authors@R: c(
