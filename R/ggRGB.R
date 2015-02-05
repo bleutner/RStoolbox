@@ -107,6 +107,7 @@ ggRGB <- function(x, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = N
     }
     df_raster <- data.frame(coordinates(rr), fill = z, stringsAsFactors = FALSE)
     
+    y <- fill <- NULL ## workaround for a R CMD check 'note' about non-visible global variable in call to ggplot (variables are column names created earlier within 'data' and hence not visible to check). This does not in any way affect ggRGB,
     if(ggObj){ 
         
         ## We need to set up ggplot with at least the minimum aestetics x and y
