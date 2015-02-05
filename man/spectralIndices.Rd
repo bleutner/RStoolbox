@@ -5,7 +5,8 @@
 \title{Spectral indices}
 \usage{
 spectralIndices(inputRaster, blue = NULL, red = NULL, nir = NULL,
-  mir = NULL, indices = NULL, L = 0.5, ...)
+  mir = NULL, indices = NULL, coefs = list(L = 0.5, G = 2.5, L_evi = 1, C1
+  = 6, C2 = 7.5), ...)
 }
 \arguments{
 \item{inputRaster}{Raster* object. Typically remote sensing imagery, which is to be classified.}
@@ -20,15 +21,25 @@ spectralIndices(inputRaster, blue = NULL, red = NULL, nir = NULL,
 
 \item{indices}{Character or NULL. One or more spectral indices to calculate (see Details). NULL will calculate all implemented indices given the spectral bands which are provided,}
 
-\item{L}{soil brightness factor for SAVI (0.5 by default)}
+\item{coefs}{List of coefficients (see Details).}
 
 \item{...}{further arguments such as filename etc. passed to \link[raster]{writeRaster}}
 }
 \value{
-rasterBrick
+RasterBrick or a RasterLayer if length(indices) = 1
 }
 \description{
 Calculate a suite of multispectral indices such as NDVI, SAVI etc. in an efficient way.
+}
+\details{
+\code{spectralIndices} calculates all indices in one go, i.e. one call to overlay, which is far more efficient, than calculating each index separately (for large rasters).
+
+\code{coefs} can be used to redefine additional coefficients used to calculate \code{EVI} (\code{L_evi, C1, C2, G}), and \code{SAVI} (\code{L}).
+Although the defaults are sensible values, it can make sense to adjust the SAVI soil brigthness factor \code{L} depending on the characteristics of the vegetation cover in your scene.
+
+
+
+\tabular{lll}{ \strong{Index } \tab \strong{Bands } \tab \strong{Formula }\cr \code{ DVI } \tab \code{red, nir} \tab \eqn{nir - red} \cr \code{ EVI } \tab \code{red, nir, blue} \tab \eqn{G * ((nir - red)/(nir + C1 * red - C2 * blue + L_evi))} \cr \code{ GEMI } \tab \code{red, nir} \tab \eqn{(((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5))/(nir + red + 0.5)) * (1 - ((((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5))/(nir + red + 0.5)) * 0.25)) - ((red - 0.125)/(1 - red))} \cr \code{ MSAVI } \tab \code{red, nir} \tab \eqn{nir + 0.5 - (0.5 * sqrt((2 * nir + 1)^2 - 8 * (nir - (2 * red))))} \cr \code{ MSAVI2 } \tab \code{red, nir} \tab \eqn{(2 * (nir + 1) - sqrt((2 * nir + 1)^2 - 8 * (nir - red)))/2} \cr \code{ NDVI } \tab \code{red, nir} \tab \eqn{(nir - red)/(nir + red)} \cr \code{ SAVI } \tab \code{red, nir} \tab \eqn{(nir - red) * (1 + L)/(nir + red + L)} \cr \code{ SLAVI } \tab \code{red, nir, mir} \tab \eqn{nir/(red + mir)} \cr \code{ SR } \tab \code{red, nir} \tab \eqn{nir/red} \cr \code{ TVI } \tab \code{red, nir} \tab \eqn{(((nir - red)/(nir + red)) + 0.5)^0.5} \cr \code{ DVI } \tab \code{red, nir} \tab \eqn{nir - red} }
 }
 \examples{
 r <- raster(ncol=10,nrow=10)
