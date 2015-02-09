@@ -102,7 +102,7 @@ spectralIndices <- function(inputRaster, blue=NULL, red=NULL, nir=NULL, mir=NULL
         SLAVI	= function(red, nir, mir) {nir / (red + mir)},
         SR 		= function(red, nir) {nir / red},     
         TVI 	= function(red, nir) {sqrt(((nir-red)/(nir+red))+0.5)},
-   #     CTVI	= function(red, nir) {}
+        #CTVI	= function(red, nir) {}
         WDVI    = function(red, nir) {nir - s * red}
 )
 

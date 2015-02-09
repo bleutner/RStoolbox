@@ -6,7 +6,11 @@
 #' \code{coefs} can be used to redefine additional coefficients used to calculate \code{EVI} (\code{L_evi, C1, C2, G}), and \code{SAVI} (\code{L}).
 #' Although the defaults are sensible values, it can make sense to adjust the SAVI soil brigthness factor \code{L} depending on the characteristics of the vegetation cover in your scene.
 #'   
-#' <% fr <- lapply(.IDXdb, function(x) paste0("\\code{",paste0(names(formals(x)), collapse=", "),"}")) %>
-#' <% dl <- lapply(.IDXdb, function(x) paste0("\\eqn", paste0(body(x), collapse=""), "}")) %>
-#' <%= c("\\tabular{lll}{","\\strong{Index } \\tab \\strong{Bands } \\tab \\strong{Formula }\\cr", paste(paste(paste("\\code{",names(dl),"}"), fr, unlist(dl), sep = " \\tab "), c(rep("\\cr",length(fr)),"}"))) %>
+#' <% fr <- sapply(.IDXdb, function(x) paste0("\\code{",paste0(names(formals(x)), collapse=", "),"}")) %>
+#' <% dl <- sapply(.IDXdb, function(x) paste0("\\eqn", paste0(body(x), collapse=""), "}")) %>
+#' <% fn <- sapply(.IDX.REFdb[names(.IDXdb)],"[",2) %>
+#' <% sr <- sapply(.IDX.REFdb[names(.IDXdb)],"[",1) %>
+#' <% df <- data.frame(Index = names(.IDXdb), Description = fn, Source = sr, Bands = fr, Formula = dl) %>
+#' <%= .df2tab(df, "lllll") %>
+
 
