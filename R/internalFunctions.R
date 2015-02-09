@@ -45,6 +45,20 @@
     }
 }
 
+#' Run raster functions in parallel if possible
+#' @param raster Raster* Object
+#' @param rasterFun function. E.g. predict, calc, overlay 
+#' @param ... further arguments to be passed to rasterFun
+#' @keywords internal
+#' @examples 
+.paraRasterFun <- function(raster, rasterFun, ...){
+    args <- list(...)
+    if (isTRUE(getOption("rasterCluster"))) {
+        clusterR(x = raster, fun = rasterFun, args=args)
+    } else {
+        do.call("rasterFun", args =c(raster, args))
+    }
+}
 
 #' Get file extension for writeRaster
 #' @param x character. Format driver.
@@ -68,6 +82,7 @@
 #' .fullPath("~/test.grd") 
 #' .fullPath("/tmp/test.grd")
 .fullPath <- function(x){
+    ## TODO: add single dot / current directory treatment
     x <- path.expand(x)   
     x <- gsub("\\\\", "/", x) ## anti-win
     x <- gsub("//", "/", x)   ## anti-win
@@ -83,4 +98,15 @@
     }
     x           
 }   
+
+
+#' Print data.frame in roxygen2 table format
+#' @param x data.frame
+#' @param align Character. Column aligntment in the form "llrc" 
+#' @keywords internal
+.df2tab <- function(x, align){
+    c(paste0("\\tabular{", align, "}{"),
+            paste(paste("\\strong{", colnames(x), "}", collapse = " \\tab "), "\\cr" ),
+            paste(apply(x, 1, paste, collapse = " \\tab "), c(rep("\\cr", nrow(x)), "}")))
+}
 

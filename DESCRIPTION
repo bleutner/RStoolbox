@@ -29,6 +29,7 @@ Imports:
     proxy
 Suggests: 
     randomForest,
-    e1071
+    e1071,
+    testthat
 License: GPL (>=3)
 LazyData: true
