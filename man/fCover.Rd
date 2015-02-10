@@ -4,16 +4,16 @@
 \alias{fCover}
 \title{Estimate fractional cover using image regression}
 \usage{
-fCover(classImage, predImage, n = 5000, classes = 1, model = "rf",
+fCover(classImage, predImage, nSample = 5000, classes = 1, model = "rf",
   tuneLength = 3, tuneGrid = NULL, method = "cv", maxNA = 0.1,
-  verbose = FALSE, ...)
+  filename = NULL, verbose = FALSE, ...)
 }
 \arguments{
 \item{classImage}{high resolution RasterLayer containing a landcover classification, e.g. as obtained by \link{superClass}.}
 
 \item{predImage}{coearse resolution RasterLayer for which fractional cover will be estimated.}
 
-\item{n}{Integer. Number of pixels to sample from predImage to train the regression model}
+\item{nSample}{Integer. Number of pixels to sample from predImage to train the regression model}
 
 \item{classes}{Integer. Classes for which fractional cover should be estimated.}
 
@@ -27,9 +27,11 @@ fCover(classImage, predImage, n = 5000, classes = 1, model = "rf",
 
 \item{maxNA}{Numeric. Maximal proportion of NAs allowed in training pixels.}
 
+\item{filename}{Character. Raster filename.}
+
 \item{verbose}{Logical. Print progress information.}
 
-\item{...}{further arguments to be passed to \link[caret]{trainControl}}
+\item{...}{further arguments to be passed to \link[caret]{trainControl} and \code{\link[raster]{writeRaster}}}
 }
 \value{
 Returns a list with two elements: models contains the fitted models evaluated in tenfold cross-validation (caret train objects);

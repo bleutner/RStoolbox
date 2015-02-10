@@ -5,7 +5,7 @@
 #' 
 #' @param classImage high resolution RasterLayer containing a landcover classification, e.g. as obtained by \link{superClass}.
 #' @param predImage coearse resolution RasterLayer for which fractional cover will be estimated.
-#' @param n Integer. Number of pixels to sample from predImage to train the regression model
+#' @param nSample Integer. Number of pixels to sample from predImage to train the regression model
 #' @param classes Integer. Classes for which fractional cover should be estimated. 
 #' @param model Character. Which model to fit for image regression. See \link[caret]{train} for options. Defaults to randomForest ('rf')
 #' @param maxNA Numeric. Maximal proportion of NAs allowed in training pixels.
@@ -13,7 +13,8 @@
 #' @param tuneGrid Optional data.frame with exact tuning values. The columns are named the same as the tuning parameters. 
 #' @param method Character. Resampling method for parameter tuning. Defaults to 10 fold cross-validation. See \link[caret]{trainControl} for options.
 #' @param verbose Logical. Print progress information.
-#' @param ... further arguments to be passed to \link[caret]{trainControl}
+#' @param filename Character. Raster filename.
+#' @param ... further arguments to be passed to \link[caret]{trainControl} and \code{\link[raster]{writeRaster}}
 #' @details 
 #' fCover gets the pixel values in a high resolution classified image that correspond to 
 #' individual randomly selected moderate resolution pixels and then calculates the percent of 
@@ -42,7 +43,9 @@
 #' fCover contains a RasterStack with a fractional cover layer for each requested \code{class}
 #' @export 
 #' @seealso \link{superClass}
-fCover <- function(classImage, predImage, n = 5000, classes = 1, model = "rf", tuneLength = 3, tuneGrid = NULL, method = "cv",  maxNA = 0.1, verbose = FALSE, ...){
+#' 
+fCover <- function(classImage, predImage, nSample = 5000, classes = 1, model = "rf", tuneLength = 3, 
+        tuneGrid = NULL, method = "cv",  maxNA = 0.1, filename = NULL, verbose = FALSE, ...){
       
     ## Resolution check
     r1 		<- res(predImage)[1]
@@ -50,49 +53,59 @@ fCover <- function(classImage, predImage, n = 5000, classes = 1, model = "rf", t
     if(r2 >= r1) stop("Resolution of classImage must be smaller than the resolution of predImage")
     resFact <- r1/r2
     
+    ## Subset ellipsis to separate caret::trainControl
+    ## This is not needed for raster::writeRaster, which has ellipsis itself and swallows everything
+    frmls_train <- names(formals(caret::trainControl))
+    args  <- c(list(...), method = method)
+    args_trainControl  <- args[names(args) %in% frmls_train]
+    args_writeRaster   <- args[!names(args) %in% frmls_train]
+    args_writeRaster$filename <- if(length(classes) == 1) filename else NULL ## write raster here already during predict if only one layer is output
+    
+     
     ## Draw random sample from coarse res image
     if(verbose) message("Collecting random samples")
-    ranSam   <- sampleRandom(predImage, size = n, ext = extent(classImage), xy = TRUE)
+    ranSam   <- sampleRandom(predImage, size = nSample, ext = extent(classImage), xy = TRUE, na.rm = TRUE)
     
-    ## Extract corresponding pixels from high res image
-    cells 	 <- cellFromXY(classImage, ranSam[,c("x","y")]) 
-    nbhood 	 <- matrix(1, resFact, resFact) 
-    nbhood[resFact/2,resFact/2] <- 0
-    find 	 <- adjacent(classImage, cells = cells, directions = nbhood, pairs = FALSE, include = TRUE, sorted =FALSE )
-    
+    ## Extract classified (high res) values
+    if(verbose) message("Extracting classified pixels")
+    d 	 <- ranSam[,c("x","y")]
+    exts <- apply(cbind(d - r1/2, d + r1/2)[,c(1,3,2,4)], 1, extent)
+    vals <- lapply(exts, function(x) extract(classImage,x, na.rm=F))
+   
     ## Calculate fractional cover
     if(verbose) message("Calculating fractional cover")
-    findVal  <- extract(classImage, find)
-    fCovNA 	 <- vaggregate(findVal, rep(1:n, each = resFact^2), .fun = function(x) sum(is.na(x))/(resFact^2))
-    fCov 	 <- lapply(classes, function(cl){
-                fV <- findVal == cl
-                vaggregate(fV, rep(1:n, each = resFact^2), .fun = function(x) sum(x, na.rm = TRUE)/(sum(!is.na(x))))
-            })
+    tabl <- lapply(vals, function(x) table(x, useNA = "always") / length(x))
+    fCov <- do.call("rbind", lapply(tabl, "[", as.character(classes)))
+    fCov[is.na(fCov)] <- 0
+    colnames(fCov) <- classes
+    fCovNA <- lapply(tabl, tail, 1)
+    include <- unlist(fCovNA < maxNA)        
     
     ## Fit regression model and predict
     fCL <- lapply(1:length(classes), function(cl){
-                if(verbose) message(paste0("Fitting regression model for class ", cl))
+                if(verbose) message("Fitting regression model for class ", cl)
                 
                 ## Assemble training data (and remove cells exceeding maxNA)
-                exclude 	 <- fCovNA > maxNA
-                trainingData <- data.frame(response = fCov[[cl]], ranSam[, -c(1:2)])[!exclude,]
-                
+                trainingData <- data.frame(response = fCov[include, cl], ranSam[include, -c(1:2)])
+                  
                 ## Fit model
-                if(verbose) message(paste0("Predicting fractional cover for class ", cl))               
-                modelFit 	 <- train(response ~ ., data = trainingData, method = model, tuneLength = 3,  trControl = trainControl(method = method, ...))
+                modelFit 	 <- train(response ~ ., data = trainingData, method = model,
+                        tuneLength = tuneLength,  
+                        trControl = do.call("trainControl", args_trainControl))
                 
-                ## Predict
-                out <- .paraRasterFun(predImage, rasterFun = raster::predict, model = modelFit)              
+                ## Predict  
+                if(verbose) message(paste0("Predicting fractional cover for class ", cl))               
+                out <- .paraRasterFun(predImage, rasterFun = raster::predict, model = modelFit, na.rm = TRUE, args=args_writeRaster)              
                 list(modelFit, out)                
             })
     
     ## Prepare output and return
     out 	<- stack(lapply(fCL, "[[", 2))
     models  <- lapply(fCL, "[[", 1)
-    atts 	<- attr(classImage@data, "attributes")[[1]]
-    names(models) <- names(out) <- paste0("fC_", if(length(atts) > 0) atts[classes,"value"] else paste0("class",classes))
+    atts 	<- attr(classImage@data, "attributes")
+    names(models) <- names(out) <- paste0("fC_", if(length(atts) > 0) atts[[1]][classes,"value"] else paste0("class",classes))
     
-    if(!is.null(filename)) out <- writeRaster(out, filename, datatype = "FLT4S")
-    return(list(models = models, fCover = out))
+    if(!is.null(filename) & length(classes) > 1) out <- writeRaster(out, filename, ...)
+    structure(list(model = models, map = out), class = "fCover")
     
 }
