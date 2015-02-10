@@ -72,14 +72,14 @@ spectralIndices <- function(inputRaster, blue=NULL, red=NULL, nir=NULL, mir=NULL
     bands <- as.list(environment())[bands]
     ## Treat mixture of character and integer band assignment
     if(is.list(bands)){
-        chr <- sapply(bands, is.character)
+        chr 	   <- sapply(bands, is.character)
         bands[chr] <- match(bands[chr], names(inputRaster))
-        bands <- unlist(bands)
+        bands 	   <- unlist(bands)
     }
     
     # Perform calculations (each pixel must be read only once due to the function assembly above)
     # this should save some significant time for large Rasters   
-    indexMagic    <- overlay(inputRaster[[bands]], fun = funMaster, ...)
+    indexMagic <- .paraRasterFun(inputRaster[[bands]], rasterFun = raster::overlay, fun = funMaster, ...)
     names(indexMagic) <- names(bdys)      
     
     return(indexMagic)

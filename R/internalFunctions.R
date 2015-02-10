@@ -24,15 +24,14 @@
             })
 }
 
-
 #' Run raster functions in parallel if possible
 #' @param raster Raster* Object
 #' @param rasterFun function. E.g. predict, calc, overlay 
-#' @param ... further arguments to be passed to rasterFun
+#' @param args list. arguments to be passed to rasterFun.
+#' @param ...  arguments to be passed to rasterFun. You can specify args, ... or both.
 #' @keywords internal
-#' @examples 
-.paraRasterFun <- function(raster, rasterFun, ...){
-    args <- list(...)
+.paraRasterFun <- function(raster, rasterFun, args = list(), ...){
+    args <- c(args, list(...))
     if (isTRUE(getOption("rasterCluster"))) {
         clusterR(x = raster, fun = rasterFun, args=args)
     } else {

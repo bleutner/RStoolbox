@@ -82,7 +82,7 @@ fCover <- function(classImage, predImage, n = 5000, classes = 1, model = "rf", t
                 modelFit 	 <- train(response ~ ., data = trainingData, method = model, tuneLength = 3,  trControl = trainControl(method = method, ...))
                 
                 ## Predict
-                out <- predict(predImage, modelFit)              
+                out <- .paraRasterFun(predImage, rasterFun = raster::predict, model = modelFit)              
                 list(modelFit, out)                
             })
     

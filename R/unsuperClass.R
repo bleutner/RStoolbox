@@ -51,7 +51,7 @@ unsuperClass <- function(inputRaster, nSamples = 1000, nClasses = 5, nStarts = 2
         if(!clusterMap) warning("Raster is > memory. Resetting clusterMap to TRUE")
         trainData <- sampleRandom(inputRaster, size = nSamples, na.rm = TRUE)
         model     <- kmeans(trainData, centers = nClasses, nstart = nStarts, algorithm = algorithm)
-        out 	  <- .paraPred(inputRaster, model, na.rm = TRUE, ...)
+        out 	  <- .paraRasterFun(inputRaster, rasterFun=raster::predict, model=model, na.rm = TRUE, ...)
     }
     structure(list(call = match.call(), model = model, map = out), class = "unsuperClass")
 }

@@ -228,9 +228,9 @@ superClass <- function(inputRaster, trainData, valData = NULL, responseCol = NUL
         modelFit <- list(modelFit, confusionMatrix(caretModel, norm = "average"))     
     } 
     
-    args <- list(object = inputRaster, model = caretModel, filename = filename, progress = progress, datatype = dataType, overwrite = overwrite)
-    args$filename <- filename
-    spatPred <- do.call(".paraPred", args)
+    args <- list(model = caretModel, filename = filename, progress = progress, datatype = dataType, overwrite = overwrite)
+    args$filename <- filename ## remove filename from args if is.null(filename) --> standard writeRaster handling applies
+    spatPred <- .paraRasterFun(inputRaster, rasterFun=raster::predict, args = args)
     names(spatPred) <- responseCol
     
     ## VALIDATION ########################
