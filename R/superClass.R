@@ -76,7 +76,7 @@ superClass <- function(inputRaster, trainData, valData = NULL, responseCol = NUL
     if(is.null(responseCol)){
         if(ncol(trainData) == 1) {
             responseCol <- 1
-            message("You did not specify the responseCol argument. \nSince your trainData only contains one column we assume this is it")
+            message("You did not specify the responseCol argument. \nSince your trainData only contains one column it is assumed this is it")
         } else {
             stop(paste("Dont't know which column in trainData contains the class attribute. \nPlease specify responseCol as one of: ", paste(colnames(trainData@data),collapse=", ")), call. = FALSE)
         }
