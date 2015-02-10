@@ -26,7 +26,8 @@ Imports:
     plyr,
     reshape2,
     rgeos,
-    proxy
+    proxy,
+    parallel
 Suggests: 
     randomForest,
     e1071,

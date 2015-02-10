@@ -4,7 +4,7 @@
 \alias{fCover}
 \title{Estimate fractional cover using image regression}
 \usage{
-fCover(classImage, predImage, nSample = 5000, classes = 1, model = "rf",
+fCover(classImage, predImage, nSamples = 5000, classes = 1, model = "rf",
   tuneLength = 3, tuneGrid = NULL, method = "cv", maxNA = 0.1,
   filename = NULL, verbose = FALSE, ...)
 }
@@ -13,7 +13,7 @@ fCover(classImage, predImage, nSample = 5000, classes = 1, model = "rf",
 
 \item{predImage}{coearse resolution RasterLayer for which fractional cover will be estimated.}
 
-\item{nSample}{Integer. Number of pixels to sample from predImage to train the regression model}
+\item{nSamples}{Integer. Number of pixels to sample from predImage to train the regression model}
 
 \item{classes}{Integer. Classes for which fractional cover should be estimated.}
 
