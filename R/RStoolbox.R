@@ -35,7 +35,12 @@
 #' \item \code{\link{ggRGB}}: efficient plotting of remote sensing imagery in RGB with ggplot2
 #' }
 #' 
-#' @import raster sp rgeos geosphere plyr caret stringr XML reshape2 ggplot2 proxy
+#' @import raster sp rgeos plyr caret stringr reshape2 ggplot2 
+#' @importFrom codetools findGlobals
+#' @importFrom geosphere areaPolygon
+#' @importFrom parallel parLapply parSapply parApply clusterExport
+#' @importFrom proxy dist
+#' @importFrom XML xmlParse xmlToList
 #' @docType package
 #' @name RStoolbox
 NULL

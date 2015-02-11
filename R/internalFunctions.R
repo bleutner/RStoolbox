@@ -32,7 +32,7 @@
 #' @keywords internal
 .paraRasterFun <- function(raster, rasterFun, args = list(), ...){
     args <- c(args, list(...))
-    if (.doCluster()) {
+    if (isTRUE( getOption('rasterCluster'))) {
         clusterR(x = raster, fun = rasterFun, args=args)
     } else {
         do.call("rasterFun", args =c(raster, args))
@@ -45,7 +45,6 @@
 #' @param MARGIN integer. Margin for apply.
 #' @param FUN function to be ?applied
 #' @param ... further arguments passed to fun
-#' @importFrom codetools findGlobals
 #' @keywords internal
 #' @examples
 #' xList <- lapply(rep(1000,10000), rnorm)
@@ -61,8 +60,7 @@
     
     call <- quote(f(cl = cl, X = X, FUN = FUN, MARGIN = MARGIN, ...))
     
-    if(.doCluster()) {
-        message("cluster")
+    if(isTRUE( getOption('rasterCluster'))) {
         cl <- getCluster()  
         on.exit(returnCluster()) 
         f  <- c(lapply=parLapply, sapply=parSapply, apply=parApply)[[XFUN]]
@@ -77,27 +75,12 @@
         clusterExport(cl, names(l), envir = list2env(l))
         if(XFUN == "lapply") names(call)[names(call)=="FUN"] <- "fun"
     } else {
-        message("nocluster")
         f <- get(XFUN)
         call[["cl"]] <- NULL
     }    
     if(XFUN != "apply") call[["MARGIN"]] <- NULL
     eval(call)
     
-}
-
-#' Check for snow backend registered with raster::beginCluster
-#' Copy of raster:::.doCluster
-#' @author Matteo Mattiuzzi and Robert J. Hijmans
-.doCluster <- function() {
-    #' Author: Matteo Mattiuzzi and Robert J. Hijmans
-    #' Date : November 2010
-    #' Version 1.0
-    #' Licence GPL v3
-    if ( isTRUE( getOption('rasterCluster')) ) {
-        return(TRUE)
-    } 
-    return(FALSE)
 }
 
 #' Get file extension for writeRaster

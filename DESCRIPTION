@@ -27,6 +27,7 @@ Imports:
     reshape2,
     rgeos,
     proxy,
+    codetools,
     parallel
 Suggests: 
     randomForest,
