@@ -6,14 +6,15 @@
 using namespace Rcpp;
 
 // whichColMinC
-IntegerVector whichColMinC(NumericMatrix x);
-RcppExport SEXP RStoolbox_whichColMinC(SEXP xSEXP) {
+IntegerVector whichColMinC(NumericMatrix x, NumericMatrix centers);
+RcppExport SEXP RStoolbox_whichColMinC(SEXP xSEXP, SEXP centersSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
         Rcpp::traits::input_parameter< NumericMatrix >::type x(xSEXP );
-        IntegerVector __result = whichColMinC(x);
+        Rcpp::traits::input_parameter< NumericMatrix >::type centers(centersSEXP );
+        IntegerVector __result = whichColMinC(x, centers);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);

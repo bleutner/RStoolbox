@@ -39,7 +39,6 @@
 #' @importFrom codetools findGlobals
 #' @importFrom geosphere areaPolygon
 #' @importFrom parallel parLapply parSapply parApply clusterExport
-#' @importFrom proxy dist
 #' @importFrom XML xmlParse xmlToList
 #' @useDynLib RStoolbox
 #' @importFrom Rcpp sourceCpp
