@@ -8,14 +8,14 @@ test_that(".paraRasterFun is equal to predict, calc, overlay, Both single and mu
             r <- stack(r, r^2)
             names(r) <- c("red", "nir")  
             m <- lm(red~nir, data = as.data.frame(r))
-            f <- function(a,b,...){a-b}            
+            f <- function(a,b){a-b}            
             
             beginCluster(2, type = "SOCK")
             cluster <- "multicore"
             for(i in 1:2){
-                expect_equal(.paraRasterFun(r, rasterFun = predict, model=m), predict(r, m), label = paste("predict:", cluster))
-                expect_equal(.paraRasterFun(r, rasterFun = calc, fun=sum), calc(r, fun = sum), label = paste("calc:", cluster))
-                expect_equal(.paraRasterFun(r, rasterFun = overlay, fun=f), overlay(r, fun = f), label = paste("overlay:", cluster))
+                expect_identical(.paraRasterFun(r, rasterFun = predict, model = m), predict(r, m), label = paste("predict:", cluster))
+                expect_identical(.paraRasterFun(r, rasterFun = calc, fun = sum), calc(r, fun = sum), label = paste("calc:", cluster))
+                expect_identical(.paraRasterFun(r, rasterFun = overlay, fun = f), overlay(r, fun = f), label = paste("overlay:", cluster))
                 endCluster()
                 cluster <- "singlecore"
             }
