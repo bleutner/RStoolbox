@@ -4,12 +4,12 @@
 \alias{spectralIndices}
 \title{Spectral indices}
 \usage{
-spectralIndices(inputRaster, blue = NULL, red = NULL, nir = NULL,
-  mir = NULL, indices = NULL, coefs = list(L = 0.5, G = 2.5, L_evi = 1, C1
-  = 6, C2 = 7.5), ...)
+spectralIndices(img, blue = NULL, red = NULL, nir = NULL, mir = NULL,
+  indices = NULL, coefs = list(L = 0.5, G = 2.5, L_evi = 1, C1 = 6, C2 =
+  7.5), ...)
 }
 \arguments{
-\item{inputRaster}{Raster* object. Typically remote sensing imagery, which is to be classified.}
+\item{img}{Raster* object. Typically remote sensing imagery, which is to be classified.}
 
 \item{blue}{Character or integer. Blue band.}
 

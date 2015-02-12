@@ -4,11 +4,11 @@
 \alias{rasterPCA}
 \title{Principal Component Analysis for Rasters}
 \usage{
-rasterPCA(inputRaster, nSamples = NULL, nComp = nlayers(inputRaster),
-  maskCheck = TRUE, ...)
+rasterPCA(img, nSamples = NULL, nComp = nlayers(img), maskCheck = TRUE,
+  ...)
 }
 \arguments{
-\item{inputRaster}{RasterBrick or RasterStack.}
+\item{img}{RasterBrick or RasterStack.}
 
 \item{nSamples}{integer or NULL. Number of pixels to sample for PCA fitting. If NULL, all pixels will be used.}
 

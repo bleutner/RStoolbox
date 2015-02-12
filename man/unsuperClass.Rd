@@ -4,11 +4,11 @@
 \alias{unsuperClass}
 \title{Unsupervised Classification}
 \usage{
-unsuperClass(inputRaster, nSamples = 1000, nClasses = 5, nStarts = 25,
+unsuperClass(img, nSamples = 1000, nClasses = 5, nStarts = 25,
   clusterMap = TRUE, algorithm = "Hartigan-Wong", ...)
 }
 \arguments{
-\item{inputRaster}{Raster* object.}
+\item{img}{Raster* object.}
 
 \item{nSamples}{integer. Number of random samples to draw to fit cluster map. Only relevant if clusterMap = FALSE.}
 
@@ -16,7 +16,7 @@ unsuperClass(inputRaster, nSamples = 1000, nClasses = 5, nStarts = 25,
 
 \item{nStarts}{integer. Number of random starts for kmeans algorithm.}
 
-\item{clusterMap}{logical. Fit kmeans model to a random subset of the inputRaster (see Details).}
+\item{clusterMap}{logical. Fit kmeans model to a random subset of the img (see Details).}
 
 \item{algorithm}{character. \link[stats]{kmeans} algorithm. One of c("Hartigan-Wong", "Lloyd", "MacQueen")}
 

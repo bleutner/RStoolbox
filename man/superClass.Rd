@@ -4,14 +4,14 @@
 \alias{superClass}
 \title{Supervised Classification}
 \usage{
-superClass(inputRaster, trainData, valData = NULL, responseCol = NULL,
+superClass(img, trainData, valData = NULL, responseCol = NULL,
   nSamples = 100, areaWeightedSampling = TRUE, polygonBasedCV = FALSE,
   trainPartition = NULL, model = "rf", tuneLength = 3, kfold = 5,
   minDist = 2, forceBuffer = FALSE, filename = NULL, verbose = FALSE,
   predict = TRUE, overwrite = TRUE, ...)
 }
 \arguments{
-\item{inputRaster}{Raster* object. Typically remote sensing imagery, which is to be classified.}
+\item{img}{Raster* object. Typically remote sensing imagery, which is to be classified.}
 
 \item{trainData}{SpatialPolygonsDataFrame or SpatialPointsDataFrame containing the training locations.}
 

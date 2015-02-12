@@ -2,7 +2,7 @@
 #' 
 #' Supervised classification both for classification and regression mode based on vector training data (points or polygons). 
 #' 
-#' @param inputRaster Raster* object. Typically remote sensing imagery, which is to be classified.
+#' @param img Raster* object. Typically remote sensing imagery, which is to be classified.
 #' @param trainData SpatialPolygonsDataFrame or SpatialPointsDataFrame containing the training locations.
 #' @param valData  SpatialPolygonsDataFrame or SpatialPointsDataFrame containing the validation locations (optional).
 #' @param responseCol Character or integer giving the column in \code{trainData}, which contains the response variable. Can be omitted, when \code{trainData} has only one column.
@@ -51,7 +51,7 @@
 #' legend(1,1, legend = levels(train$class), fill = colors , title = "Classes", 
 #' horiz = TRUE,  bty = "n")
 #' par(olpar) # reset par
-superClass <- function(inputRaster, trainData, valData = NULL, responseCol = NULL, nSamples = 100,
+superClass <- function(img, trainData, valData = NULL, responseCol = NULL, nSamples = 100,
         areaWeightedSampling = TRUE, polygonBasedCV = FALSE, trainPartition = NULL,
         model = "rf", tuneLength = 3,  kfold = 5,
         minDist = 2, forceBuffer = FALSE,
@@ -60,7 +60,7 @@ superClass <- function(inputRaster, trainData, valData = NULL, responseCol = NUL
     # TODO: check applicability of raster:::.intersectExtent 
     
     ## Object types
-    if(!inherits(inputRaster, 'Raster')) stop("inputRaster must be a raster object (RasterLayer,RasterBrick or RasterStack)", call.=FALSE)
+    if(!inherits(img, 'Raster')) stop("img must be a raster object (RasterLayer,RasterBrick or RasterStack)", call.=FALSE)
     if(inherits(trainData, 'SpatialPolygonsDataFrame')) {
         trainDataType <- "polygons"
     } else {
@@ -89,12 +89,12 @@ superClass <- function(inputRaster, trainData, valData = NULL, responseCol = NUL
         stop("trainData and valData must be of the same class. Either SpatialPointsDataFrame or SpatialPolygonsDataFrame.")
     
     ## Check projections
-    if(!compareCRS(inputRaster, trainData)) 
-        stop("Projection of trainData does not match inputRaster")
+    if(!compareCRS(img, trainData)) 
+        stop("Projection of trainData does not match img")
     
     ## Check overlap of vector and raster data	
-    if(!gIntersects(as(extent(inputRaster),"SpatialPolygons"), as(extent(trainData),"SpatialPolygons"))) 
-        stop("inputRaster and trainData do not overlap")
+    if(!gIntersects(as(extent(img),"SpatialPolygons"), as(extent(trainData),"SpatialPolygons"))) 
+        stop("img and trainData do not overlap")
     
     ## What's happening? Class or Reg
     mode <- if(is.numeric(trainData[[responseCol]])) "regression" else "classification"
@@ -107,7 +107,7 @@ superClass <- function(inputRaster, trainData, valData = NULL, responseCol = NUL
     }
     
     ## Check for and deal with overlapping training & validation data                 
-    if(forceBuffer || trainDataType == "points" & minDist != 0) dummy <- gBuffer(trainData, width = res(inputRaster)[1]*minDist, byid = TRUE)  
+    if(forceBuffer || trainDataType == "points" & minDist != 0) dummy <- gBuffer(trainData, width = res(img)[1]*minDist, byid = TRUE)  
     
     ## We need this cumbersome any(gDisjoint(byid=T)) action to circumvent TopologyExceptions
     if(!is.null(valData) && any(!gDisjoint(trainData, valData, byid =T)) || exists("dummy") &&  any(gIntersects(valData, dummy, byid=T))){
@@ -118,7 +118,7 @@ superClass <- function(inputRaster, trainData, valData = NULL, responseCol = NUL
             #dissolve(gUnionCascaded(trainData, trainData[[responseCol]]))        
             inter <- gIntersection(valData, trainData, byid = TRUE) ## again both steps needed to deal with poor poly data potentially arising from manually digitizing training areas
             inter <- gUnionCascaded(inter)
-            if(minDist != 0) inter <- gBuffer(inter, width = res(inputRaster)[1] * minDist)
+            if(minDist != 0) inter <- gBuffer(inter, width = res(img)[1] * minDist)
             clip  <- gDifference(valData, inter, byid = TRUE)
             if(is.null(clip)) stop("After clipping valData to trainData+minDist*pix buffer no validation polygons remain. Please provide non-overlapping trainData and valData.")
             classVec <- data.frame(x = valData[[responseCol]][over(clip, valData)])
@@ -187,7 +187,7 @@ superClass <- function(inputRaster, trainData, valData = NULL, responseCol = NUL
         dataSet
     }
     
-    dataSet  <- .samplePixels(SHAPE = trainData, RASTER=inputRaster, foldCol=foldCol)
+    dataSet  <- .samplePixels(SHAPE = trainData, RASTER=img, foldCol=foldCol)
     if(polygonBasedCV) {
         indexOut <- dataSet[[foldCol]]
         dataSet[[foldCol]] <- NULL
@@ -230,7 +230,7 @@ superClass <- function(inputRaster, trainData, valData = NULL, responseCol = NUL
     
     args <- list(model = caretModel, filename = filename, progress = progress, datatype = dataType, overwrite = overwrite)
     args$filename <- filename ## remove filename from args if is.null(filename) --> standard writeRaster handling applies
-    spatPred <- .paraRasterFun(inputRaster, rasterFun=raster::predict, args = args)
+    spatPred <- .paraRasterFun(img, rasterFun=raster::predict, args = args)
     names(spatPred) <- responseCol
     
     ## VALIDATION ########################

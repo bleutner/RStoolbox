@@ -11,7 +11,7 @@
 #' However, if you make sure or know beforehand that all pixels have either only valid values or only NAs throughout all layers you can disable this check
 #' by setting maskCheck=FALSE which speeds up the computation. 
 #' 
-#' @param inputRaster RasterBrick or RasterStack.
+#' @param img RasterBrick or RasterStack.
 #' @param nSamples integer or NULL. Number of pixels to sample for PCA fitting. If NULL, all pixels will be used.
 #' @param nComp integer. Number of PCA components to return.
 #' @param maskCheck logical. Masks all pixels which have at least one NA (default TRUE is reccomended but introduces a slowdown, see Details when it is wise to disable maskCheck). 
@@ -37,27 +37,27 @@
 #' plotRGB(rpc$map, stretch="lin")
 #' 
 #' par(olpar) # reset par
-rasterPCA <- function(inputRaster, nSamples = NULL, nComp = nlayers(inputRaster),  maskCheck = TRUE, ...){      
+rasterPCA <- function(img, nSamples = NULL, nComp = nlayers(img),  maskCheck = TRUE, ...){      
     
-    if(nlayers(inputRaster) <= 1) stop("Need at least two layers to calculate PCA.")    
-    if(nComp > nlayers(inputRaster)) nComp <- nlayers(inputRaster)
+    if(nlayers(img) <= 1) stop("Need at least two layers to calculate PCA.")    
+    if(nComp > nlayers(img)) nComp <- nlayers(img)
     
     if(!is.null(nSamples)){    
-        trainData <- sampleRandom(inputRaster, size = nSamples, na.rm = TRUE)
-        if(nrow(trainData) < nlayers(inputRaster)) stop("nSamples too small or inputRaster contains a layer with NAs only")
+        trainData <- sampleRandom(img, size = nSamples, na.rm = TRUE)
+        if(nrow(trainData) < nlayers(img)) stop("nSamples too small or img contains a layer with NAs only")
         model <- princomp(trainData, scores = FALSE)
     } else {
         if(maskCheck) {
-            totalMask <- !sum(calc(inputRaster, is.na))
-            if(cellStats(totalMask, sum) == 0) stop("inputRaster contains either a layer with NAs only or no single pixel with valid values across all layers")
-            inputRaster <- mask(inputRaster, totalMask , maskvalue = 0) ## NA areas must be masked from all layers, otherwise the covariance matrix is not non-negative definite   
+            totalMask <- !sum(calc(img, is.na))
+            if(cellStats(totalMask, sum) == 0) stop("img contains either a layer with NAs only or no single pixel with valid values across all layers")
+            img <- mask(img, totalMask , maskvalue = 0) ## NA areas must be masked from all layers, otherwise the covariance matrix is not non-negative definite   
         }
-        covMat <- layerStats(inputRaster, stat = "cov", na.rm = TRUE)
+        covMat <- layerStats(img, stat = "cov", na.rm = TRUE)
         model  <- princomp(covmat = covMat$covariance)
         model$center <- covMat$mean
     }
     ## Predict
-    out   <- .paraRasterFun(inputRaster, rasterFun=raster::predict, model = model, na.rm = TRUE, index = 1:nComp, ...)  
+    out   <- .paraRasterFun(img, rasterFun=raster::predict, model = model, na.rm = TRUE, index = 1:nComp, ...)  
     names(out) <- paste0("PC", 1:nComp)
     structure(list(call = match.call(), model = model, map = out), class = "rasterPCA")  
     

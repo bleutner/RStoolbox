@@ -7,11 +7,11 @@
 #' This means that a kmeans cluster map is calculated based on a random subset of pixels (nSamples). Then the distance of *all* pixels to the cluster centers 
 #' is calculated in a stepwise fashion using raster::predict. Class assignment is based on minimum distance to the cluster centers.   
 #' 
-#' @param inputRaster Raster* object. 
+#' @param img Raster* object. 
 #' @param nSamples integer. Number of random samples to draw to fit cluster map. Only relevant if clusterMap = FALSE.
 #' @param nClasses integer. Number of classes.
 #' @param nStarts  integer. Number of random starts for kmeans algorithm.
-#' @param clusterMap logical. Fit kmeans model to a random subset of the inputRaster (see Details).
+#' @param clusterMap logical. Fit kmeans model to a random subset of the img (see Details).
 #' @param algorithm character. \link[stats]{kmeans} algorithm. One of c("Hartigan-Wong", "Lloyd", "MacQueen")
 #' @param ... further arguments to be passed to \link[raster]{writeRaster}, e.g. filename
 #' @export
@@ -35,23 +35,23 @@
 #'        title = "Classes", horiz = TRUE,  bty = "n")
 #' 
 #' par(olpar) # reset par
-unsuperClass <- function(inputRaster, nSamples = 1000, nClasses = 5, nStarts = 25, clusterMap = TRUE, algorithm = "Hartigan-Wong", ...){      
-    if(atMax <- nSamples > ncell(inputRaster)) nSamples <- ncell(inputRaster)
+unsuperClass <- function(img, nSamples = 1000, nClasses = 5, nStarts = 25, clusterMap = TRUE, algorithm = "Hartigan-Wong", ...){      
+    if(atMax <- nSamples > ncell(img)) nSamples <- ncell(img)
     
-    if(!clusterMap | atMax && canProcessInMemory(inputRaster, n = 2)){
-        trainData <- inputRaster[]
+    if(!clusterMap | atMax && canProcessInMemory(img, n = 2)){
+        trainData <- img[]
         complete  <- complete.cases(trainData)
         model     <- kmeans(trainData[complete,], centers = nClasses, nstart = nStarts, algorithm = algorithm)
-        out   <- raster(inputRaster)
+        out   <- raster(img)
         out[] <- NA
         out[complete] <- model$cluster
         args <- list(...)
         if("filename" %in% names(args)) out <- writeRaster(out, ...)
     } else {
         if(!clusterMap) warning("Raster is > memory. Resetting clusterMap to TRUE")
-        trainData <- sampleRandom(inputRaster, size = nSamples, na.rm = TRUE)
+        trainData <- sampleRandom(img, size = nSamples, na.rm = TRUE)
         model     <- kmeans(trainData, centers = nClasses, nstart = nStarts, algorithm = algorithm)
-        out 	  <- .paraRasterFun(inputRaster, rasterFun=raster::predict, model=model, na.rm = TRUE, ...)
+        out 	  <- .paraRasterFun(img, rasterFun=raster::predict, model=model, na.rm = TRUE, ...)
     }
     structure(list(call = match.call(), model = model, map = out), class = "unsuperClass")
 }

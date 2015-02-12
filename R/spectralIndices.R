@@ -2,7 +2,7 @@
 #' 
 #' Calculate a suite of multispectral indices such as NDVI, SAVI etc. in an efficient way.
 #' 
-#' @param inputRaster Raster* object. Typically remote sensing imagery, which is to be classified.
+#' @param img Raster* object. Typically remote sensing imagery, which is to be classified.
 #' @param blue Character or integer. Blue band. 
 #' @param red Character or integer. Red band. 
 #' @param nir Character or integer. Near-infrared band. 
@@ -21,7 +21,7 @@
 #' names(r) <- c("red", "nir")
 #' SI <- spectralIndices(r, red = 1, nir = 2, indices = "NDVI")
 #' plot(SI)
-spectralIndices <- function(inputRaster, blue=NULL, red=NULL, nir=NULL, mir=NULL, indices=NULL, coefs = list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5),
+spectralIndices <- function(img, blue=NULL, red=NULL, nir=NULL, mir=NULL, indices=NULL, coefs = list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5),
         ... ) {
     # TODO: add further indices
     
@@ -73,13 +73,13 @@ spectralIndices <- function(inputRaster, blue=NULL, red=NULL, nir=NULL, mir=NULL
     ## Treat mixture of character and integer band assignment
     if(is.list(bands)){
         chr 	   <- sapply(bands, is.character)
-        bands[chr] <- match(bands[chr], names(inputRaster))
+        bands[chr] <- match(bands[chr], names(img))
         bands 	   <- unlist(bands)
     }
     
     # Perform calculations (each pixel must be read only once due to the function assembly above)
     # this should save some significant time for large Rasters   
-    indexMagic <- .paraRasterFun(inputRaster[[bands]], rasterFun = raster::overlay, fun = funMaster, ...)
+    indexMagic <- .paraRasterFun(img[[bands]], rasterFun = raster::overlay, fun = funMaster, ...)
     names(indexMagic) <- names(bdys)      
     
     return(indexMagic)
