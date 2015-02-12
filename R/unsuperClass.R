@@ -67,8 +67,8 @@ unsuperClass <- function(img, nSamples = 1000, nClasses = 5, nStarts = 25, clust
 #' @export 
 predict.kmeans <- function(object, newdata, ...){
     stopifnot(colnames(newdata) %in% colnames(object$centers)) 
-    distance <- proxy::dist(newdata, object$centers, method = "Euclidean")
-    whichColMinC(distance)
+    newdata <- as.matrix(newdata)
+    whichColMinC(newdata, centers=object$centers)
 }
 
 
