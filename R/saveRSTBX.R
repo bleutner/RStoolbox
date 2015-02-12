@@ -38,7 +38,7 @@
 #' all.equal(re_rpc, rpc)
 saveRSTBX <- function(x, filename, format ="raster", ...){
     
-    stopifnot(inherits(x, c("fCover", "rasterPCA", "superClass", "unsuperClass")))
+    stopifnot(inherits(x, "RStoolbox"))
     
     rdsFile <- rastFile <- .fullPath(filename)
     extension(rdsFile)  <- ".rds"

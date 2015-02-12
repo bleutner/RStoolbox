@@ -59,7 +59,7 @@ rasterPCA <- function(img, nSamples = NULL, nComp = nlayers(img),  maskCheck = T
     ## Predict
     out   <- .paraRasterFun(img, rasterFun=raster::predict, model = model, na.rm = TRUE, index = 1:nComp, ...)  
     names(out) <- paste0("PC", 1:nComp)
-    structure(list(call = match.call(), model = model, map = out), class = "rasterPCA")  
+    structure(list(call = match.call(), model = model, map = out), class = c("rasterPCA", "RStoolbox"))  
     
 }
 

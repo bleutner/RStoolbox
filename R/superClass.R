@@ -262,7 +262,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL, nSamp
     out <- list(model = caretModel, modelFit = modelFit, validation = validation, map = spatPred)
     if(exists("training")) out <- c(out, trainingPartitionIndices = training)
     if(mode == "classification") out <- c(out, classMapping = classMapping) 
-    structure(out, class = "superClass")
+    structure(out, class = c("superClass", "RStoolbox"))
 }
 
 #' @method print superClass

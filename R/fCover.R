@@ -148,6 +148,6 @@ fCover <- function(classImage, predImage, nSamples = 1000, classes = 1, model = 
     names(models) <- names(out) <- paste0("fC_", if(length(atts) > 0) atts[[1]][classes,"value"] else paste0("class",classes))
     
     if(!is.null(filename) & length(classes) > 1) out <- writeRaster(out, filename, ...)
-    structure(list(model = models, trainData = d[include,], map = out), class = "fCover")
+    structure(list(model = models, trainData = d[include,], map = out), class = c("fCover", "RStoolbox"))
     
 }

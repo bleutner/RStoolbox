@@ -53,7 +53,7 @@ unsuperClass <- function(img, nSamples = 1000, nClasses = 5, nStarts = 25, clust
         model     <- kmeans(trainData, centers = nClasses, nstart = nStarts, algorithm = algorithm)
         out 	  <- .paraRasterFun(img, rasterFun=raster::predict, model=model, na.rm = TRUE, ...)
     }
-    structure(list(call = match.call(), model = model, map = out), class = "unsuperClass")
+    structure(list(call = match.call(), model = model, map = out), class = c("unsuperClass", "RStoolbox"))
 }
 
 #' Predict method for kmeans objects
