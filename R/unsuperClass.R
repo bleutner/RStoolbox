@@ -37,7 +37,7 @@
 #' par(olpar) # reset par
 unsuperClass <- function(inputRaster, nSamples = 1000, nClasses = 5, nStarts = 25, clusterMap = TRUE, algorithm = "Hartigan-Wong", ...){      
     if(atMax <- nSamples > ncell(inputRaster)) nSamples <- ncell(inputRaster)
-
+    
     if(!clusterMap | atMax && canProcessInMemory(inputRaster, n = 2)){
         trainData <- inputRaster[]
         complete  <- complete.cases(trainData)
@@ -68,8 +68,9 @@ unsuperClass <- function(inputRaster, nSamples = 1000, nClasses = 5, nStarts = 2
 predict.kmeans <- function(object, newdata, ...){
     stopifnot(colnames(newdata) %in% colnames(object$centers)) 
     distance <- proxy::dist(newdata, object$centers, method = "Euclidean")
-    apply(distance, 1, which.min)
+    whichColMinC(distance)
 }
+
 
 #' @method print unsuperClass
 #' @export 

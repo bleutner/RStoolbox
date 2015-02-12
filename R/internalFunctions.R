@@ -133,3 +133,7 @@
             paste(apply(x, 1, paste, collapse = " \\tab "), c(rep("\\cr", nrow(x)), "}")))
 }
 
+#' Clean up on package unload
+.onUnload <- function (libpath) {
+    library.dynam.unload("RStoolbox", libpath)
+}

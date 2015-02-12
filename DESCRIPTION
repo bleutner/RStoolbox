@@ -28,10 +28,12 @@ Imports:
     rgeos,
     proxy,
     codetools,
-    parallel
+    parallel,
+    Rcpp
 Suggests: 
     randomForest,
     e1071,
     testthat
+LinkingTo: Rcpp    
 License: GPL (>=3)
 LazyData: true

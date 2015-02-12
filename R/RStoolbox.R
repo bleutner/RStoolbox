@@ -41,6 +41,8 @@
 #' @importFrom parallel parLapply parSapply parApply clusterExport
 #' @importFrom proxy dist
 #' @importFrom XML xmlParse xmlToList
+#' @useDynLib RStoolbox
+#' @importFrom Rcpp sourceCpp
 #' @docType package
 #' @name RStoolbox
 NULL
