@@ -21,12 +21,12 @@
 #' names(r) <- c("red", "nir")
 #' SI <- spectralIndices(r, red = 1, nir = 2, indices = "NDVI")
 #' plot(SI)
-spectralIndices <- function(img, blue=NULL, red=NULL, nir=NULL, mir=NULL, indices=NULL, coefs = list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5),
+spectralIndices <- function(img, blue=NULL, red=NULL, nir=NULL, mir=NULL, indices=NULL, coefs = list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5, s = 1),
         ... ) {
     # TODO: add further indices
     
     ## Coefficients
-    defaultCoefs <- list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5)     
+    defaultCoefs <- list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5, s = 1)     
     implem <- names(coefs) %in% names(defaultCoefs)
     if(any(!implem)) warning("Non-implemented coefficients are ignored: ", paste0(names(coefs)[!implem], collapse=", "),
                 "\nimplemented coefficients are: ", paste0(names(defaultCoefs), collapse = ", "))
@@ -79,7 +79,8 @@ spectralIndices <- function(img, blue=NULL, red=NULL, nir=NULL, mir=NULL, indice
     
     # Perform calculations (each pixel must be read only once due to the function assembly above)
     # this should save some significant time for large Rasters   
-    indexMagic <- .paraRasterFun(img[[bands]], rasterFun = raster::overlay, fun = funMaster, ...)
+    indexMagic <- RStoolbox:::.paraRasterFun(img[[bands]], rasterFun = raster::overlay, fun = funMaster, ...)
+	
     names(indexMagic) <- names(bdys)      
     
     return(indexMagic)
