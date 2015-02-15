@@ -38,8 +38,8 @@ ggRGB <- function(x, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = N
     # Licence GPL v3
     # partly based on functions in the pixmap package by Friedrich Leisch
     
-    ## Subsample raster
-    rgb <- c(r,g,b)
+    ## Subsample raster		
+    rgb <- unlist(.numBand(raster=x,r,g,b))
     rr 	<- sampleRegular(x[[rgb]], maxpixels, ext=ext, asRaster=TRUE, useGDAL=TRUE)
     RGB <- getValues(rr)
     if(!is.matrix(RGB)) RGB <- as.matrix(RGB)

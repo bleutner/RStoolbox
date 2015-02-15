@@ -133,6 +133,17 @@
             paste(apply(x, 1, paste, collapse = " \\tab "), c(rep("\\cr", nrow(x)), "}")))
 }
 
+#' Convert character to numric band
+#' @param raster Raster*
+#' @param ... Character or Numeric bands
+#' @keywords internal
+.numBand <- function(raster, ...){
+	bands <- list(...)
+	lapply(bands, function(band) if(is.character(band)) which(names(raster) == band) else band ) 
+}
+
+
+
 #' Clean up on package unload
 .onUnload <- function (libpath) {
     library.dynam.unload("RStoolbox", libpath)
