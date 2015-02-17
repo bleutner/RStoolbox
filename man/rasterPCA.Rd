@@ -4,17 +4,19 @@
 \alias{rasterPCA}
 \title{Principal Component Analysis for Rasters}
 \usage{
-rasterPCA(img, nSamples = NULL, nComp = nlayers(img), maskCheck = TRUE,
-  ...)
+rasterPCA(img, nSamples = NULL, nComp = nlayers(img), spca = FALSE,
+  maskCheck = TRUE, ...)
 }
 \arguments{
 \item{img}{RasterBrick or RasterStack.}
 
-\item{nSamples}{integer or NULL. Number of pixels to sample for PCA fitting. If NULL, all pixels will be used.}
+\item{nSamples}{Integer or NULL. Number of pixels to sample for PCA fitting. If NULL, all pixels will be used.}
 
-\item{nComp}{integer. Number of PCA components to return.}
+\item{nComp}{Integer. Number of PCA components to return.}
 
-\item{maskCheck}{logical. Masks all pixels which have at least one NA (default TRUE is reccomended but introduces a slowdown, see Details when it is wise to disable maskCheck).
+\item{spca}{Logical. If \code{TRUE}, perform standardized PCA.}
+
+\item{maskCheck}{Logical. Masks all pixels which have at least one NA (default TRUE is reccomended but introduces a slowdown, see Details when it is wise to disable maskCheck).
 Takes effect only if nSamples is NULL.}
 
 \item{...}{further arguments to be passed to \link[raster]{writeRaster}, e.g. filename.}
@@ -34,6 +36,9 @@ however, it may be slower than calculating the PCA only on a subset of pixels.
 Pixels with missing values in one or more bands will be set to NA. The built in check for such pixels can lead to a slow-down of rasterPCA.
 However, if you make sure or know beforehand that all pixels have either only valid values or only NAs throughout all layers you can disable this check
 by setting maskCheck=FALSE which speeds up the computation.
+
+Standardised PCA (SPCA) can be usefull if imagery or bands of different dynamic ranges are combined. SPC uses the correlation matrix instead of the covariance matrix, which
+has the same effect as using normalised bands of unit variance.
 }
 \examples{
 input <- brick(system.file("external/rlogo.grd", package="raster"))

@@ -123,6 +123,7 @@ fCover <- function(classImage, predImage, nSamples = 1000, classes = 1, model = 
     fCovNA  <- lapply(tabl, tail, 1)
     include <- unlist(fCovNA < maxNA)        
     
+    .registerDoSnow()
     ## Fit regression model and predict
     fCL <- lapply(1:length(classes), function(cl){
                 if(verbose) message("Fitting regression model for class ", cl)

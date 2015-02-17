@@ -28,6 +28,8 @@ Imports:
     rgeos,
     codetools,
     parallel,
+    doSNOW,
+    foreach,
     Rcpp
 Suggests: 
     randomForest,

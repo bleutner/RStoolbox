@@ -47,14 +47,15 @@
 #' @param ... further arguments passed to fun
 #' @keywords internal
 #' @examples
-#' xList <- lapply(rep(1000,10000), rnorm)
-#' for(i in 1:2) {
+#' \dontrun{
+#'  xList <- lapply(rep(1000,10000), rnorm)
+#'  for(i in 1:2) {
 #'     if(i == 2) raster::beginCluster(4, type="SOCK")
 #'     RStoolbox:::.parXapply(xList, XFUN = "lapply", FUN = sum, na.rm = TRUE),
 #'     RStoolbox:::.parXapply(xList, XFUN = "sapply", FUN = sum, na.rm = TRUE),
 #'     RStoolbox:::.parXapply(matrix(100^2, 100,100), XFUN = "apply", MAR = 1, FUN = sum, na.rm = TRUE),
-#'     print(x)
 #'     endCluster()
+#'  }
 #' }
 .parXapply <- function(X, XFUN, MARGIN, FUN,  ...){   
     
@@ -81,6 +82,18 @@
     if(XFUN != "apply") call[["MARGIN"]] <- NULL
     eval(call)
     
+}
+
+#' Set-up doSNOW backend when beginCluster has been called
+#' 
+#' this is to allow caret to run caret::train in parallel (via foreach) 
+#' stopCluster will take place automatically on call to raster::endCluster
+#' @keywords internal
+.registerDoSnow <- function(){
+    if(isTRUE(getOption('rasterCluster')) && !getDoParRegistered()) {
+        cl <- raster::getCluster()
+        registerDoSNOW(cl)
+    }
 }
 
 #' Get file extension for writeRaster
@@ -138,8 +151,8 @@
 #' @param ... Character or Numeric bands
 #' @keywords internal
 .numBand <- function(raster, ...){
-	bands <- list(...)
-	lapply(bands, function(band) if(is.character(band)) which(names(raster) == band) else band ) 
+    bands <- list(...)
+    lapply(bands, function(band) if(is.character(band)) which(names(raster) == band) else band ) 
 }
 
 

@@ -79,7 +79,7 @@ spectralIndices <- function(img, blue=NULL, red=NULL, nir=NULL, mir=NULL, indice
     
     # Perform calculations (each pixel must be read only once due to the function assembly above)
     # this should save some significant time for large Rasters   
-    indexMagic <- RStoolbox:::.paraRasterFun(img[[bands]], rasterFun = raster::overlay, fun = funMaster, ...)
+    indexMagic <- .paraRasterFun(img[[bands]], rasterFun = raster::overlay, fun = funMaster, ...)
 	
     names(indexMagic) <- names(bdys)      
     
