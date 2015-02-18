@@ -5,3 +5,4 @@ inst/demo
 .gitignore 	
 .Rprofile
 man-roxygen
+data-raw
