@@ -37,7 +37,6 @@
                         esun = c(NA, 2067, 1893, 1603, 972.6, 245, 79.72, NA, 399.7, NA, NA, NA ) ## http://www.gisagmaps.com/landsat-8-atco/ ##http://landsat.usgs.gov/Landsat8_Using_Product.php
                 )
         )
-
 ) 
 
 exponents <- c(-4, -2, -1, -.7, -.5)
