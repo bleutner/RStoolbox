@@ -32,9 +32,9 @@
 #' @keywords internal
 .paraRasterFun <- function(raster, rasterFun, args = list(), wrArgs = list()){
     if (isTRUE( getOption('rasterCluster'))) {
-       do.call("clusterR", args = c(list(x = raster, fun = rasterFun, args=args), wrArgs))
+        do.call("clusterR", args = c(list(x = raster, fun = rasterFun, args=args), wrArgs))
     } else {
-       do.call("rasterFun", args=c(raster, args, wrArgs))
+        do.call("rasterFun", args=c(raster, args, wrArgs))
     }
 }
 
@@ -56,7 +56,7 @@
 #'     endCluster()
 #'  }
 #' }
-.parXapply <- function(X, XFUN, MARGIN, FUN,  ...){   
+.parXapply <- function(X, XFUN, MARGIN, FUN, envir, ...){   
     
     call <- quote(f(cl = cl, X = X, FUN = FUN, MARGIN = MARGIN, ...))
     
@@ -65,14 +65,14 @@
         on.exit(returnCluster()) 
         f  <- c(lapply=parLapply, sapply=parSapply, apply=parApply)[[XFUN]]
         if(!is.primitive(FUN)){
-            g  <- findGlobals(FUN) 
-            gg <- lapply(g, get) 
+            g  <- findGlobals(FUN)
+            gg <- lapply(g, get, envir = envir) 
             names(gg) <- g
         } else {
             gg<-NULL
         }
         l  <- c(list(...),gg)
-        clusterExport(cl=cl, names(l), envir = list2env(l))
+        clusterExport(cl=cl, names(l), envir = envir)
         if(XFUN == "lapply") names(call)[names(call)=="FUN"] <- "fun"
     } else {
         f <- get(XFUN)
