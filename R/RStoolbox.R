@@ -37,7 +37,7 @@
 #' 
 #' @import raster sp rgeos plyr caret stringr reshape2 ggplot2 
 #' @importFrom foreach getDoParRegistered 
-#' @importFrom doSNOW registerDoSNOW
+#' @importFrom doParallel registerDoParallel
 #' @importFrom codetools findGlobals
 #' @importFrom geosphere areaPolygon
 #' @importFrom parallel parLapply parSapply parApply clusterExport

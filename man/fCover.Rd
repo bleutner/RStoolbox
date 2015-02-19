@@ -64,6 +64,7 @@ a reliable cover percentage. If the no-data proporton is less then maxNA the no-
 from the total number of pixels when calculating the percent cover.
 }
 \examples{
+\dontrun{
 ## Create fake input images
 lsat <- brick(system.file("external/rlogo.grd", package="raster"))
 agg.level <- 9
@@ -105,6 +106,7 @@ for(model in c("rf", "svmRadial")){
 
 ## Reset par
 par(mfrow=c(1,1))
+}
 }
 \seealso{
 \link{superClass}

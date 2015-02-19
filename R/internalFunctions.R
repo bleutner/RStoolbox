@@ -89,10 +89,10 @@
 #' this is to allow caret to run caret::train in parallel (via foreach) 
 #' stopCluster will take place automatically on call to raster::endCluster
 #' @keywords internal
-.registerDoSnow <- function(){
+.registerDoParallelllel <- function(){
     if(isTRUE(getOption('rasterCluster')) && !getDoParRegistered()) {
         cl <- raster::getCluster()
-        registerDoSNOW(cl)
+        registerDoParallel(cl)
     }
 }
 

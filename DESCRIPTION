@@ -28,7 +28,7 @@ Imports:
     rgeos,
     codetools,
     parallel,
-    doSNOW,
+    doParallel,
     foreach,
     Rcpp
 Suggests: 

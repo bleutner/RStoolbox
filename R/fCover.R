@@ -44,6 +44,7 @@
 #' @export 
 #' @seealso \link{superClass}
 #' @examples
+#' \dontrun{
 #' ## Create fake input images
 #' lsat <- brick(system.file("external/rlogo.grd", package="raster"))
 #' agg.level <- 9
@@ -85,6 +86,7 @@
 #'
 #' ## Reset par
 #' par(mfrow=c(1,1))
+#' }
 fCover <- function(classImage, predImage, nSamples = 1000, classes = 1, model = "rf", tuneLength = 3, 
         tuneGrid = NULL, method = "cv",  maxNA = 0.1, filename = NULL, verbose = FALSE, ...){
     
@@ -123,7 +125,7 @@ fCover <- function(classImage, predImage, nSamples = 1000, classes = 1, model = 
     fCovNA  <- lapply(tabl, tail, 1)
     include <- unlist(fCovNA < maxNA)        
     
-    .registerDoSnow()
+    .registerDoParallel()
     ## Fit regression model and predict
     fCL <- lapply(1:length(classes), function(cl){
                 if(verbose) message("Fitting regression model for class ", cl)
