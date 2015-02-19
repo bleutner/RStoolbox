@@ -43,6 +43,7 @@
 #' @param XFUN ?apply function. Currently c(sapply,lapply, apply)
 #' @param MARGIN integer. Margin for apply.
 #' @param FUN function to be ?applied
+#' @param envir Environment in which to look for objects to export. Usually this should be environment()
 #' @param ... further arguments passed to fun
 #' @keywords internal
 #' @examples
@@ -50,9 +51,9 @@
 #'  xList <- lapply(rep(1000,10000), rnorm)
 #'  for(i in 1:2) {
 #'     if(i == 2) raster::beginCluster(4, type="SOCK")
-#'     RStoolbox:::.parXapply(xList, XFUN = "lapply", FUN = sum, na.rm = TRUE),
-#'     RStoolbox:::.parXapply(xList, XFUN = "sapply", FUN = sum, na.rm = TRUE),
-#'     RStoolbox:::.parXapply(matrix(100^2, 100,100), XFUN = "apply", MAR = 1, FUN = sum, na.rm = TRUE),
+#'     RStoolbox:::.parXapply(xList, XFUN = "lapply", FUN = sum, na.rm = TRUE, envir = environment()),
+#'     RStoolbox:::.parXapply(xList, XFUN = "sapply", FUN = sum, na.rm = TRUE, envir = environment()),
+#'     RStoolbox:::.parXapply(matrix(100^2, 100,100), XFUN = "apply", MAR = 1, FUN = sum, na.rm = TRUE, envir = environment()),
 #'     endCluster()
 #'  }
 #' }
