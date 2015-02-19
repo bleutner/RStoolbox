@@ -4,24 +4,16 @@
 \alias{stackMeta}
 \title{Import separate Landsat files into single stack}
 \usage{
-stackMeta(file, allResolutions = FALSE, resampleTIR = FALSE,
-  resamplingMethod = "ngb", type = c("image", "index", "qa"),
-  product = c("DN", "TRF", "SRF"), thermal = TRUE)
+stackMeta(file, allResolutions = FALSE, product = "all", type = "image")
 }
 \arguments{
 \item{file}{character. Path to Landsat MTL metadata file (not an XML file!).}
 
 \item{allResolutions}{logical. if \code{TRUE} a list will be returned with length = unique spatial resolutions.}
 
-\item{resampleTIR}{logical. As of  the USGS resamples TIR bands to 30m. Use this option if you use data processed prior to February 25, 2010 which has not been resampled.}
-
-\item{resamplingMethod}{character. Method to use for TUR resampling ('ngb' or 'bilinear'). Defaults to 'ngb' (nearest neighbor).}
+\item{product}{Character vector. Which products should be returned. Options: digital numbers ('dn'), top of atmosphere reflectance ('tre'), surface reflectance ('sre'). Only relevant for xml metadata from ESPA.}
 
 \item{type}{character vector. Which type of data should be returned in the stack? (only relevant for LS8 and LEDAPS processed products). 'image': image data, 'index': multiband indices, 'qa' quality flag bands.}
-
-\item{product}{Character vector. Which products should be returned. Options: digital numbers ('DN'), top of atmosphere reflectance ('TRF'), surface reflectance ('SRF'). Only relevant for xml metadata from ESPA.}
-
-\item{thermal}{Logical. Force return of thermal band, even if product only selects surface reclectance.}
 }
 \value{
 Either a list of rasterStacks comprising all resolutions or only one rasterStack comprising only 30m resolution imagery

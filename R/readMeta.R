@@ -214,8 +214,7 @@ ImgMetaData <- function(file = NA, format = NA, sat = NA, sen = NA,scene = NA, p
 #' @param file character. Path to Landsat MTL metadata file (not an XML file!).
 #' @param allResolutions logical. if \code{TRUE} a list will be returned with length = unique spatial resolutions.
 #' @param type character vector. Which type of data should be returned in the stack? (only relevant for LS8 and LEDAPS processed products). 'image': image data, 'index': multiband indices, 'qa' quality flag bands.
-#' @param product Character vector. Which products should be returned. Options: digital numbers ('DN'), top of atmosphere reflectance ('TRF'), surface reflectance ('SRF'). Only relevant for xml metadata from ESPA.
-#' @param thermal Logical. Force return of thermal band, even if product only selects surface reclectance.
+#' @param product Character vector. Which products should be returned. Options: digital numbers ('dn'), top of atmosphere reflectance ('tre'), surface reflectance ('sre'). Only relevant for xml metadata from ESPA.
 #' @return Either a list of rasterStacks comprising all resolutions or only one rasterStack comprising only 30m resolution imagery
 #' @note 
 #' Be aware that by default stackLS() does NOT import panchromatic bands nor thermal bands with resolutions != 30m. Use the allResolutions argument to import all layers.
@@ -224,47 +223,44 @@ ImgMetaData <- function(file = NA, format = NA, sat = NA, sen = NA,scene = NA, p
 #' Therefore the default method in this implementation is nearest neighbor. Keep this in mind if you plan to compare TIR bands created by differing resampling routines.
 #' Typically, however, you will already have the USGS 30m TIR products, so no need to worry...
 #' @export 
-stackMeta <- function(file, allResolutions = FALSE,  resamplingMethod = "ngb", type = c("image", "index", "qa"), product = c("DN", "TRF", "SRF"), thermal = TRUE){
+stackMeta <- function(file, allResolutions = FALSE, product = "all", type = "image"){
     ## TODO: check arguments
-    
-    stopifnot(type %in%  c("image", "index", "qa") & product %in% c("dn", "tre", "sre"))
-    
+    stopifnot( !any(!type %in%  c("image", "index", "qa", "all")), !any(!product %in% c("all", "dn", "tra", "tre", "sre", "bt", "idx")))
+   
     ## Read metadata and extract layer file names
     meta  <- readMeta(file)
-    files <- meta$UNIFIED_METADATA$FILES
+    files <- meta$DATA$FILES   
     
-    ## If someone asks for quality layers, always return CMASK as well
-    if("qa" %in% type) product <- c(product, "CM")
-    
+    if("all" %in% product) product <- unique(meta$DATA$PRODUCT)
+    if("all" %in% type) type <- unique(meta$DATA$CATEGORY)
+    proAvail <- product %in% meta$DATA$PRODUCT
+    typAvail <- type %in% meta$DATA$CATEGORY
+    if(sum(proAvail)  == 0) stop("None of the specifed products exist according to the metadata. You specified:", paste0(product, collapse=", "), call.=FALSE )
+    if(any(!proAvail)) warning("The following specified products don't exist: ", paste0(product[!proAvail], collapse=", ") ,"\nReturning available products:", paste0(product[proAvail], collapse=", "), call.=FALSE)
+    if(sum(typAvail)  == 0) stop("None of the specifed types exists according to the metadata. You specified:", paste0(type, collapse=", "), call.=FALSE )
+    if(any(!typAvail)) warning("The following specified types don't exist: ", paste0(type[!typAvail], collapse=", ") ,"\nReturning available types:", paste0(type[typAvail], collapse=", "), call.=FALSE)
     
     ## Load layers
-    path  <- if(basename(file) != file)  str_replace(file, basename(file), "") else NULL
+    path  <- if(basename(file) != file)  gsub(basename(file), "", file) else NULL
     
     ## Import rasters
     rl <- lapply(paste0(path, files), raster)
     resL <- lapply(lapply(rl, res),"[", 1)
     
-    if(any(resL > 30)) {
-        message("Your Landsat data includes TIR band(s) which were not resampled to 30m.
-                        \nYou can set resampleTIR = TRUE to resample TIR bands to 30m if you want a single stack")
-        
-    }
+    if(any(resL > 30))     message("Your Landsat data includes TIR band(s) which were not resampled to 30m.")
     
     ## Stack
     returnRes <- if(allResolutions) unlist(unique(resL)) else 30
     
     ## Select products to return
-    select <- meta$UNIFIED_METADATA$BANDS[
-            meta$UNIFIED_METADATA$BAND_TYPE %in% type &
-                    meta$UNIFIED_METADATA$PRODUCT %in% product
+    select <- meta$DATA$BANDS[
+            meta$DATA$CATEGORY %in% type &
+                    meta$DATA$PRODUCT %in% product
     ]               
-    ## If someone asks for SR, but wants brightness temperature as well
-    if(thermal & !any(c("TRF", "DN") %in% product)) select <- c(select, "B6_TRF")
-    
+ 
     LS 	<- lapply(returnRes, function(x){
                 s			<- stack(rl[resL == x])
-                names(s) 	<- meta$UNIFIED_METADATA$BANDS[resL == x]
-                NAvalue(s)	<- meta$UNIFIED_METADATA$NA_VALUE[resL == x]	
+                names(s) 	<- meta$DATA$BANDS[resL == x]
                 s[[ which(names(s) %in% select)]]
             })
     

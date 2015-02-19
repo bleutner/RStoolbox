@@ -4,17 +4,15 @@
 \alias{readMeta}
 \title{Read landsat MTL metadata files}
 \usage{
-readMeta(file, unifiedMetadata = TRUE, unifiedOnly = FALSE)
+readMeta(file, raw = FALSE)
 }
 \arguments{
 \item{file}{path to Landsat MTL file (...MTL.txt)}
 
-\item{unifiedMetadata}{Logical. If \code{TRUE} some relevant etadata of Landsat 5:8 are homogenized into a standard format and appended to the original metadata.}
-
-\item{unifiedOnly}{Logical. Return only unified (pretty) metadata.}
+\item{raw}{Logical. If \code{TRUE} the full raw metadate will be returned as a list. All important metadata are homogenized into a standard format (ImgMetaData) and some information is added.}
 }
 \value{
-Returns a list containing the Metadata of the MTL or XML file, structured by the original grouping.
+Object of class ImgMetaData
 }
 \description{
 Besides reading metadata, readMeta deals with legacy versions of Landsat metadata files and where possible adds missing information (radiometric gain and offset, earth-sun distance).
