@@ -53,15 +53,16 @@ radCor <-	function(x, metaData, reflectance = TRUE, thermal = TRUE, satellite, b
         if(is.character(metaData)) metaData <- readMeta(metaData)
         
        
-        satellite 	<- metaData$UNIFIED_METADATA$SPACECRAFT_ID
-        sensor 		<- metaData$UNIFIED_METADATA$SENSOR_ID
-        B_rescale	<- metaData$UNIFIED_METADATA$RAD_OFFSET
-        G_rescale	<- metaData$UNIFIED_METADATA$RAD_GAIN
-        d			<- metaData$UNIFIED_METADATA$EARTH_SUN_DISTANCE
-        sunElev		<- metaData$UNIFIED_METADATA$SUN_ELEVATION
-        rad 		<- metaData$UNIFIED_METADATA$RADIOMETRIC_RES
-        K1			<- metaData$UNIFIED_METADATA$K1
-        K2			<- metaData$UNIFIED_METADATA$K2
+        satellite 	<- metaData$SATELLITE
+        sensor 		<- metaData$SENSOR
+        B_rescale	<- metaData$CALRAD[,"offset"]
+        G_rescale	<- metaData$CALRAD[,"gain"]
+        d			<- metaData$EARTH_SUN_DISTANCE
+        sunElev		<- metaData$SUN_ELEVATION
+        ## FIXME: add radRes to readMeta
+        rad 		<- metaData$RADIOMETRIC_RES
+        K1			<- metaData$CALBT$K1
+        K2			<- metaData$CALBT$K2
         
         
   } else {
