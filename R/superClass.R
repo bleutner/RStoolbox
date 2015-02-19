@@ -209,7 +209,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL, nSamp
     
     ## TRAIN ######################### 
     if(verbose) message("Starting to fit model")   
-    .registerDoSnow()
+    .registerDoParallel()
     indexIn <- if(polygonBasedCV) lapply(1:kfold, function(x) which(x != indexOut)) 
     caretModel 	<- train(response ~ ., data = dataSet, method = model, tuneLength = tuneLength, 
             trControl = trainControl(method = "cv", number = kfold, index = indexIn), ...)   
@@ -229,9 +229,9 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL, nSamp
         modelFit <- list(modelFit, confusionMatrix(caretModel, norm = "average"))     
     } 
     
-    args <- list(model = caretModel, filename = filename, progress = progress, datatype = dataType, overwrite = overwrite)
-    args$filename <- filename ## remove filename from args if is.null(filename) --> standard writeRaster handling applies
-    spatPred <- .paraRasterFun(img, rasterFun=raster::predict, args = args)
+    wrArgs <- list(model = caretModel, filename = filename, progress = progress, datatype = dataType, overwrite = overwrite)
+    wrArgs$filename <- filename ## remove filename from args if is.null(filename) --> standard writeRaster handling applies
+    spatPred <- .paraRasterFun(img, rasterFun=raster::predict, args = list(model=model), wrArgs = wrArgs)
     names(spatPred) <- responseCol
     
     ## VALIDATION ########################

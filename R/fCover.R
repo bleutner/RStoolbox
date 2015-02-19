@@ -113,7 +113,7 @@ fCover <- function(classImage, predImage, nSamples = 1000, classes = 1, model = 
     if(verbose) message("Extracting classified pixels")
     d 	 <- ranSam[,c("x","y")]
     exts <- apply(cbind(d - r1/2, d + r1/2)[,c(1,3,2,4)], 1, extent) ## tried this with SpatialPolygons but thats even slower
-    vals <- .parXapply(X = exts, XFUN = "lapply", FUN = function(x) extract(classImage, x, na.rm=FALSE))
+    vals <- .parXapply(X = exts, XFUN = "lapply", FUN = function(ext, classIm=classImage) extract(x = classIm, y = ext, na.rm=FALSE))
      
     ## Calculate fractional cover
     if(verbose) message("Calculating fractional cover")
@@ -140,7 +140,7 @@ fCover <- function(classImage, predImage, nSamples = 1000, classes = 1, model = 
                 
                 ## Predict  
                 if(verbose) message(paste0("Predicting fractional cover for class ", cl))               
-                out <- .paraRasterFun(predImage, rasterFun = raster::predict, model = modelFit, na.rm = TRUE, args=args_writeRaster)              
+                out <- .paraRasterFun(predImage, rasterFun = raster::predict, args = list(model = modelFit, na.rm = TRUE), wrArgs =  args_writeRaster)              
                 list(modelFit, out)                
             })
     

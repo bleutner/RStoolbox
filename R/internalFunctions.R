@@ -28,14 +28,13 @@
 #' @param raster Raster* Object
 #' @param rasterFun function. E.g. predict, calc, overlay 
 #' @param args list. arguments to be passed to rasterFun.
-#' @param ...  arguments to be passed to rasterFun. You can specify args, ... or both.
+#' @param wrArgs arguments to be passed to rasterFun, typically to writeRaster
 #' @keywords internal
-.paraRasterFun <- function(raster, rasterFun, args = list(), ...){
-    args <- c(args, list(...))
+.paraRasterFun <- function(raster, rasterFun, args = list(), wrArgs = list()){
     if (isTRUE( getOption('rasterCluster'))) {
-        clusterR(x = raster, fun = rasterFun, args=args)
+       do.call("clusterR", args = c(list(x = raster, fun = rasterFun, args=args), wrArgs))
     } else {
-        do.call("rasterFun", args =c(raster, args))
+       do.call("rasterFun", args=c(raster, args, wrArgs))
     }
 }
 
@@ -73,7 +72,7 @@
             gg<-NULL
         }
         l  <- c(list(...),gg)
-        clusterExport(cl, names(l), envir = list2env(l))
+        clusterExport(cl=cl, names(l), envir = list2env(l))
         if(XFUN == "lapply") names(call)[names(call)=="FUN"] <- "fun"
     } else {
         f <- get(XFUN)
@@ -84,12 +83,12 @@
     
 }
 
-#' Set-up doSNOW backend when beginCluster has been called
+#' Set-up doParallel backend when beginCluster has been called
 #' 
 #' this is to allow caret to run caret::train in parallel (via foreach) 
 #' stopCluster will take place automatically on call to raster::endCluster
 #' @keywords internal
-.registerDoParallelllel <- function(){
+.registerDoParallel <- function(){
     if(isTRUE(getOption('rasterCluster')) && !getDoParRegistered()) {
         cl <- raster::getCluster()
         registerDoParallel(cl)
