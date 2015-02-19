@@ -34,6 +34,8 @@ readMeta <- function(file, raw = FALSE){
         num <- grep("IMAGE_AT|MIN_MAX|RESCAL|THERMAL", names(meta))
         meta[num] <- lapply(meta[num], function(x) {x[,1] <- as.numeric(x[,1]);x})
         
+        if(raw) return(meta)
+        
         ## Legacy MTL? 
         legacy <- "PROCESSING_SOFTWARE" %in% rownames(meta$PRODUCT_METADATA)
         if(legacy) message("This scene was processed before August 29, 2012. Using MTL legacy format. Some minor infos such as SCENE_ID will be missing")
@@ -116,8 +118,10 @@ readMeta <- function(file, raw = FALSE){
         ## PROCESS ESPA LEDAPS XML FILES
         meta <- xmlToList(xmlParse(file))
         names(meta$bands) <- str_replace_all(unlist(sapply(meta$bands, "[", "long_name")), " ", "_")
+        
+        if(raw) return(meta)
+      
         luv		<- c(dn = "dn", toa_rad = "tra", toa_refl = "tre", toa_bt = "bt", sr_refl = "sre", spectral_indices = "idx", cfmask = "tre")
-
         atts 	<- sapply(meta$bands, "[", ".attrs") 
         sat		<- paste0("LANDSAT", .getNumeric(meta$global_metadata$satellite))
         sen 	<- meta$global_metadata$instrument
@@ -157,6 +161,8 @@ readMeta <- function(file, raw = FALSE){
     
 }   
 
+
+## TODO: document ImgMetaData
 ImgMetaData <- function(file = NA, format = NA, sat = NA, sen = NA,scene = NA, proj =NA, date = NA, pdate = NA,path = NA, row = NA, az = NA, selv = NA,
         esd = NA, files = NA, bands = NA, prod = NA, cat = NA, na = NA, vsat = NA, scal = NA, dtyp = NA, calrad = NA, calref = NA, calbt = NA){
     obj <- list(
@@ -207,8 +213,6 @@ ImgMetaData <- function(file = NA, format = NA, sat = NA, sen = NA,scene = NA, p
 #' 
 #' @param file character. Path to Landsat MTL metadata file (not an XML file!).
 #' @param allResolutions logical. if \code{TRUE} a list will be returned with length = unique spatial resolutions.
-#' @param resampleTIR logical. As of  the USGS resamples TIR bands to 30m. Use this option if you use data processed prior to February 25, 2010 which has not been resampled.
-#' @param resamplingMethod character. Method to use for TUR resampling ('ngb' or 'bilinear'). Defaults to 'ngb' (nearest neighbor).
 #' @param type character vector. Which type of data should be returned in the stack? (only relevant for LS8 and LEDAPS processed products). 'image': image data, 'index': multiband indices, 'qa' quality flag bands.
 #' @param product Character vector. Which products should be returned. Options: digital numbers ('DN'), top of atmosphere reflectance ('TRF'), surface reflectance ('SRF'). Only relevant for xml metadata from ESPA.
 #' @param thermal Logical. Force return of thermal band, even if product only selects surface reclectance.
@@ -220,10 +224,10 @@ ImgMetaData <- function(file = NA, format = NA, sat = NA, sen = NA,scene = NA, p
 #' Therefore the default method in this implementation is nearest neighbor. Keep this in mind if you plan to compare TIR bands created by differing resampling routines.
 #' Typically, however, you will already have the USGS 30m TIR products, so no need to worry...
 #' @export 
-stackMeta <- function(file, allResolutions = FALSE,  resampleTIR = FALSE, resamplingMethod = "ngb", type = c("image", "index", "qa"), product = c("DN", "TRF", "SRF"), thermal = TRUE){
+stackMeta <- function(file, allResolutions = FALSE,  resamplingMethod = "ngb", type = c("image", "index", "qa"), product = c("DN", "TRF", "SRF"), thermal = TRUE){
     ## TODO: check arguments
     
-    stopifnot(type %in%  c("image", "index", "qa") & product %in% c("DN", "TRF", "SRF"))
+    stopifnot(type %in%  c("image", "index", "qa") & product %in% c("dn", "tre", "sre"))
     
     ## Read metadata and extract layer file names
     meta  <- readMeta(file)
@@ -244,11 +248,6 @@ stackMeta <- function(file, allResolutions = FALSE,  resampleTIR = FALSE, resamp
         message("Your Landsat data includes TIR band(s) which were not resampled to 30m.
                         \nYou can set resampleTIR = TRUE to resample TIR bands to 30m if you want a single stack")
         
-        ## Resample TIR to 30m
-        if(resampleTIR){
-            for(i in which(resL > 30))
-                rl[[i]] <- resample(rl[[i]], rl[[which(resL == 30)[1]]], method = resamplingMethod)		
-        }
     }
     
     ## Stack
