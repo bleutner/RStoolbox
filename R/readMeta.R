@@ -3,22 +3,17 @@
 #' Besides reading metadata, readMeta deals with legacy versions of Landsat metadata files and where possible adds missing information (radiometric gain and offset, earth-sun distance).
 #' 
 #' @param file path to Landsat MTL file (...MTL.txt)
-#' @param unifiedMetadata Logical. If \code{TRUE} some relevant etadata of Landsat 5:8 are homogenized into a standard format and appended to the original metadata.
-#' @param unifiedOnly Logical. Return only unified (pretty) metadata. 
-#' @return Returns a list containing the Metadata of the MTL or XML file, structured by the original grouping.
+#' @param raw Logical. If \code{TRUE} the full raw metadate will be returned as a list. All important metadata are homogenized into a standard format (ImgMetaData) and some information is added.
+#' @return Object of class ImgMetaData 
 #' @export 
 #' 
-readMeta <- function(file, unifiedMetadata = TRUE, unifiedOnly = FALSE){
+readMeta <- function(file, raw = FALSE){
     if(!grepl("MTL", file) & !grepl("xml", file)) warning("The Landsat metadata file you have specified looks unusual. Typically the filename contains the string 'MTL' or 'xml'. Are you sure you specified the right file? \n I'll try to read it but check the results!")
-    
-   
     
     format <- if(grepl('xml', file)) "XML" else "MTL"
     
-    
-    if(format  == "MTL") {
+    if(format  == "MTL") {    
         ## PROCESS LPS MTL FILES
-        
         meta <- read.delim(file, sep = "=", header = FALSE, stringsAsFactors = FALSE, strip.white = TRUE, skip = 1, skipNul = TRUE)
         meta <- meta[-(nrow(meta)-c(1,0)),]
         
@@ -33,222 +28,174 @@ readMeta <- function(file, unifiedMetadata = TRUE, unifiedOnly = FALSE){
                     m <- m[ , 2, drop = FALSE]
                     colnames(m) <- "VALUE"
                     return(m)
-                })
-        
+                })   
         names(meta) <- unique(l[,2])
+        
+        num <- grep("IMAGE_AT|MIN_MAX|RESCAL|THERMAL", names(meta))
+        meta[num] <- lapply(meta[num], function(x) {x[,1] <- as.numeric(x[,1]);x})
         
         ## Legacy MTL? 
         legacy <- "PROCESSING_SOFTWARE" %in% rownames(meta$PRODUCT_METADATA)
         if(legacy) message("This scene was processed before August 29, 2012. Using MTL legacy format. Some minor infos such as SCENE_ID will be missing")
         
-        if(unifiedMetadata){
-            
-            
-            M$SATELLITE 		= {SAT <- paste0("LANDSAT", .getNumeric(meta$PRODUCT_METADATA["SPACECRAFT_ID",]))},
-            M$SENSOR 			= meta$PRODUCT_METADATA["SENSOR_ID",]	,			
-            M$SCENE_ID 			= meta$METADATA_FILE_INFO["LANDSAT_SCENE_ID",],  ## could assemble name for legacy files: http://landsat.usgs.gov/naming_conventions_scene_identifiers.php
-            # DATA_TYPE			= if(!legacy) meta$PRODUCT_METADATA["DATA_TYPE",] else meta$PRODUCT_METADATA["PRODUCT_TYPE",],
-            M$ACQUISITION_DATE	= {date <- if(!legacy) meta$PRODUCT_METADATA["DATE_ACQUIRED",] else meta$PRODUCT_METADATA["ACQUISITION_DATE",]},
-            M$PROCESSING_DATE		= if(!legacy) meta$METADATA_FILE_INFO["FILE_DATE",] else meta$METADATA_FILE_INFO["PRODUCT_CREATION_TIME",], 
-            M$PATH				= as.numeric(meta$PRODUCT_METADATA["WRS_PATH",]),
-            M$ROW					= if(!legacy) as.numeric(meta$PRODUCT_METADATA["WRS_ROW",]) else as.numeric(meta$PRODUCT_METADATA["STARTING_ROW",]),
-            M$RADIOMETRIC_RES		= if(SAT == "LANDSAT8") 16 else 8,				
-            M$FILES				= {files <- row.names(meta[["PRODUCT_METADATA"]])[grep("^.*FILE_NAME", row.names(meta$PRODUCT_METADATA))]
-                files <- files[grep("^.*BAND",files)]
-                files <- meta[["PRODUCT_METADATA"]][files,]	},
-            
-            M$DATA$BANDS 				= {junk <- unique(sapply(str_split(files, "_B"), "[" ,1 ))
-                bds <- str_replace(files, paste0(junk,"_"), "")
-                trailingZeros <- length(grep("0.TIF", bds)) > 1
-                bds <- str_replace(str_replace(files, paste0(junk,"_"), ""), {if(trailingZeros) "0.TIF" else ".TIF"}, "")
-                bds <- paste0(bds, "_DN")
-            },
-            M$DATA$PRODUCT = rep("DN", length(bds)),
-            M$DATA$BAND_TYPE 			= {
-                ty <- rep("image", length(bds))
-                ty[grepl("QA", bds)] <- "qa"
-                ty
-            },
-            ## INSOLATION
-            M$DATA$NA_VALUE 			= rep(0, length(ty)),
-            M$DATA$SUN_AZIMUTH			= if(!legacy) as.numeric(meta$IMAGE_ATTRIBUTES["SUN_AZIMUTH",]) else as.numeric(meta$PRODUCT_PARAMETERS["SUN_AZIMUTH",]),
-            M$DATA$SUN_ELEVATION		= if(!legacy) as.numeric(meta$IMAGE_ATTRIBUTES["SUN_ELEVATION",]) else as.numeric(meta$PRODUCT_PARAMETERS["SUN_ELEVATION",]),
-            M$DATA$EARTH_SUN_DISTANCE  = {es <- meta$IMAGE_ATTRIBUTES["EARTH_SUN_DISTANCE",]
-                if(is.null(es) || is.na(es)) es <- .ESdist(date)
-                as.numeric(es)}
-        )
-
-## RADIOMETRIC CORRECTION/RESCALING PARAMETERS
-RADCOR <-  if(!legacy) { list(		
-                    RAD_OFFSET				= {
-                        r <- meta$RADIOMETRIC_RESCALING
-                        r[,1]		<- as.numeric(r[,1])
-                        # bandnames	<- str_c("B", str_replace(rownames(r), "^.*_BAND_", ""))
-                        go			<- grep("RADIANCE_ADD*", rownames(r))
-                        ro 			<- r[go,]
-                        names(ro)	<- bds
-                        ro},
-                    RAD_GAIN				= {go			<- grep("RADIANCE_MULT*", rownames(r))
-                        ro 			<- r[go,]
-                        names(ro)	<- bds
-                        ro},
-                    REF_OFFSET				= {	go			<- grep("REFLECTANCE_ADD*", rownames(r))
-                        ro <- if(length(go)==0) rep(NA, length(bds)) else r[go,]   
-                        names(ro)	<- bds
-                        ro},
-                    REF_GAIN				= {go			<- grep("REFLECTANCE_MULT*", rownames(r))
-                        ro <- if(length(go)==0) rep(NA, length(bds)) else r[go,]   
-                        names(ro)	<- bds
-                        ro})
+        sat		<- paste0("LANDSAT", .getNumeric(meta$PRODUCT_METADATA["SPACECRAFT_ID",]))
+        sen		<- meta$PRODUCT_METADATA["SENSOR_ID",]				
+        scene	<- meta$METADATA_FILE_INFO["LANDSAT_SCENE_ID",]  ## could assemble name for legacy files: http://landsat.usgs.gov/naming_conventions_scene_identifiers.php
+        date	<- as.POSIXct(if(!legacy) meta$PRODUCT_METADATA["DATE_ACQUIRED",] else meta$PRODUCT_METADATA["ACQUISITION_DATE",])
+        date    <- strptime(paste0(date, meta$PRODUCT_METADATA["SCENE_CENTER_TIME",]), "%Y-%m-%d %H:%M:%S")
+        pdate	<- as.POSIXct(if(!legacy) meta$METADATA_FILE_INFO["FILE_DATE",] else meta$METADATA_FILE_INFO["PRODUCT_CREATION_TIME",])
+        path	<- as.numeric(meta$PRODUCT_METADATA["WRS_PATH",])
+        row		<- if(!legacy) as.numeric(meta$PRODUCT_METADATA["WRS_ROW",]) else as.numeric(meta$PRODUCT_METADATA["STARTING_ROW",])
+        
+        pars <- meta$PROJECTION_PARAMETERS[c("MAP_PROJECTION","UTM_ZONE","DATUM"),]
+        pars[1] <- tolower(pars[1])
+        proj 	<-  CRS(paste0(c("+proj=", "+zone=", "+units=m +datum="), pars, collapse=" "))
+        radRes	<- if(sat == "LANDSAT8") 16 else 8
+        spatRes <- 30
+        files	<- row.names(meta[["PRODUCT_METADATA"]])[grep("^.*BAND", row.names(meta$PRODUCT_METADATA))]
+        files	<- meta[["PRODUCT_METADATA"]][files,]
+        
+        bands <- gsub(paste0(scene,"_|.TIF"), "", files)
+        bands <- paste0(bands, "_dn")
+        bands <- gsub("BQA", "QA", bands )
+        
+        if(trailingZeros <- length(grep("0.TIF", bands)) > 1) stop("Trailing zeros")
+        
+        prod <- rep("dn", length(bands))
+        cat <-  rep("image", length(bands)) 
+        cat[grep("QA", bands)] <- "qa"
+        
+        na		<- rep(NA, length(cat))
+        az		<- if(!legacy) as.numeric(meta$IMAGE_ATTRIBUTES["SUN_AZIMUTH",]) else as.numeric(meta$PRODUCT_PARAMETERS["SUN_AZIMUTH",])
+        selv	<- if(!legacy) as.numeric(meta$IMAGE_ATTRIBUTES["SUN_ELEVATION",]) else as.numeric(meta$PRODUCT_PARAMETERS["SUN_ELEVATION",])
+        esd		<- meta$IMAGE_ATTRIBUTES["EARTH_SUN_DISTANCE",]
+        if(is.null(esd) || is.na(esd)) esd <- .ESdist(date)
+        esd		<- as.numeric(esd)
+        vsat 	<- NA ## or set to max?
+        scal 	<- 1
+        dtyp 	<- NA
+        ## RADIOMETRIC CORRECTION/RESCALING PARAMETERS     
+        if(!legacy) { 	            
+            r <- meta$RADIOMETRIC_RESCALING
+            rnr <- rownames(r)
+            calrad	<- data.frame(offset = r[grep("RADIANCE_ADD*", rownames(r)),], gain = r[grep("RADIANCE_MULT*", rownames(r)),])
+            calref	<- data.frame(offset = r[grep("REFLECTANCE_ADD*", rownames(r)),], gain = r[grep("REFLECTANCE_MULT*", rownames(r)),])
+            rownames(calrad) <-  paste0(gsub("^.*BAND_","B", rnr[grep("RADIANCE_MULT", rnr)]), "_dn")
+            if(nrow(calref) != 0)  rownames(calref) <-  paste0(gsub("^.*BAND_","B", rnr[grep("REFLECTANCE_MULT", rnr)]), "_dn") else calref <- NA
             
         } else {
             
-            bds <- paste0("B", .getNumeric(rownames(meta$MIN_MAX_RADIANCE)))
-            bds <- bds[seq(1, length(bds), 2)]
-            
-            L <- diff(as.numeric(meta$MIN_MAX_RADIANCE[,1]))
-            L <- L[seq(1, length(L), 2)] 
-            
-            Q <- diff(as.numeric(meta$MIN_MAX_PIXEL_VALUE[,1]))  
-            Q <- Q[seq(1, length(Q), 2)]
-            
-            RAD_GAIN	<- L/Q
-            RAD_OFFSET 	<- as.numeric(meta$MIN_MAX_RADIANCE[,1])[seq(2,nrow(meta$MIN_MAX_RADIANCE),2)] - (RAD_GAIN) * 1
-            
-            names(RAD_OFFSET) <- names(RAD_GAIN) <- bds
-            
-            list(RAD_OFFSET = RAD_OFFSET, RAD_GAIN = RAD_GAIN)
-            
-        }
-
-if(SAT == "LANDSAT8"){
-    RADCOR$K1 ={ r <- meta$TIRS_THERMAL_CONSTANTS
-        r[,1]		<- as.numeric(r[,1])
-        bds	<- str_c("B", str_replace(rownames(r), "^.*_BAND_", ""))
-        go			<- grep("K1", rownames(r))
-        ro 			<- r[go,]
-        names(ro)	<- bds[go]
-        ro}
-    RADCOR$K2 = {go			<- grep("K2", rownames(r))
-        ro 			<- r[go,]
-        names(ro)	<- bds[go]
-        ro}				
-} else {
-    TAB7 <- list(LANDSAT4 = c(B6=671.62,B6=1284.3), # TAB7 from Chander 2009
-            LANDSAT5 = c(B6=607.76,B6=1260.56),
-            LANDSAT7 = c(B6=666.09,B6=1282.71))
-    
-    RADCOR$K1 <- TAB7[[SAT]][1]
-    RADCOR$K2 <- TAB7[[SAT]][2]
-}
-
-meta[["UNIFIED_METADATA"]] <- c(meta[["UNIFIED_METADATA"]], RADCOR)
-}
-} else {
-    ## PROCESS ESPA LEDAPS XML FILES
-    meta <- xmlToList(xmlParse(file))
-    names(meta$bands) <- str_replace_all(unlist(sapply(meta$bands, "[", "long_name")), " ", "_")
-    
-    M <- makeImgMetaData(length(meta$bands))
-    M$METADATA_FILE <- file
-    M$METADATA_FORMAT <- format
-        atts <- sapply(meta$bands, "[", ".attrs")
-        
-        M$SATELLITE		=  paste0("LANDSAT", .getNumeric(meta$global_metadata$satellite))
-        M$SENSOR 		= meta$global_metadata$instrument
-        M$SCENE_ID 		= str_replace(meta$global_metadata$lpgs_metadata_file, "_MTL.txt", "")  ## could assemble name for legacy files: http://landsat.usgs.gov/naming_conventions_scene_identifiers.php
-        M$ACQUISITION_DATE	= as.POSIXct(meta$global_metadata$acquisition_date)
-        M$PROCESSING_DATE	= as.POSIXct(meta$bands[[1]]$production_date)
-        M$PATH				= as.numeric(meta$global_metadata$wrs["path"])
-        M$ROW				= as.numeric(meta$global_metadata$wrs["row"])
-        M$SUN_AZIMUTH			= as.numeric(meta$global_metadata$solar_angles["azimuth"])
-        M$SUN_ELEVATION		= 90 - as.numeric(meta$global_metadata$solar_angles["zenith"])
-        M$EARTH_SUN_DISTANCE  = {.ESdist(date)}
-        M$DATA$FILES		= {files <- sapply(meta$bands, "[[", "file_name")}	
-        
-        sapply(atts, "[", "product")
-        prod <- sapply(atts, "[", "product")
-        cate <- sapply(atts, "[", "category")
-      
-        bnames	<- .getNumeric(str_replace(files, paste0(M$SCENE_ID, "_"), ""))					
-        bds <- grepl("_band", files)
-        bbnames <- paste0("B", bnames[bds])
-        
-        luv <- c(dn = "DN", toa_rad = "TRA", toa_refl = "TRE", toa_bt = "BT", sr_refl = "SRE", spectral_indices = "IDX", cfmask = "TRE")
-        prod <- 
-        
-        M$DATA$PRODUCT   <- luv[prod]
-        M$DATA$BAND_TYPE <- 
-         
-        
-        M$DATA$BANDS 				= {	
-            bds <- grepl("_band", files)
-            toa <- grepl("_toa_", files)
-            sr 	<- grepl("_sr_", files)
-            qas <- grepl("qa|cfmask", files)
-            PROD <- rep(NA, length(files))
-            PROD[toa] <- "TRF"
-            PROD[sr]  <- "SRF"
-            PROD[bds & !sr & !toa] <- "DN" 
-            PROD[qas] <- "QA"  
-            bnames				<- toupper(str_replace(files, paste0(M$SCENE_ID, "_"), ""))					
-            bnames[bds]			<- paste0("B", .getNumeric(bnames[bds]))
-            bnames[qas & bds]   <- paste0(bnames[qas & bds], "_QA" )
-            bnames				<- str_replace(str_replace(str_replace(bnames, "\\.TIF", ""), "SR_", ""), "TOA_", "")               
-            bnames <- paste0(bnames,"_", PROD)
-        }
-        M$DATA$PRODUCT = PROD
-        M$DATA$BAND_TYPE			= {ty <- sapply(atts, "[" , "category")
-            ty[grep("atmos_opa", names(ty))] <- "qa"
-            names(ty) <- NULL
-           
+            r 		<- meta$MIN_MAX_RADIANCE
+            rp		<- meta$MIN_MAX_PIXEL_VALUE
+            rnr		<- rownames(r)
+            e2nd 	<- seq(1, nrow(r), 2)
+            L 		<- diff(r[,1])[e2nd]                        
+            Q 		<- diff(rp[,1])[e2nd]                         
+            radg	<- L/Q
+            rado 	<- r[seq(2,nrow(r),2),1] - radg                     
+            calrad 	<- data.frame(offset = rado, gain = radg)
+            calref	<- NA
+            rownames(calrad) <- paste0(gsub("^.*BAND_","B", rnr[grep("MAX", rnr)]), "_dn")                                  
         }
         
-        M$DATA$NA_VALUE 			= as.numeric(sapply(atts, "[" , "fill_value"))
-        M$DATA$SATURATE_VALUE 		= as.numeric(sapply(atts, "[" , "saturate_value"))
-        M$DATA$SCALE_FACTOR 		= as.numeric(sapply(atts, "[" , "scale_factor"))
-        M$DATA$DATA_TYPE 			= as.character(sapply(atts, "[" , "data_type"))
-
+        if(sat == "LANDSAT8"){
+            r <- meta$TIRS_THERMAL_CONSTANTS          
+            calbt <- data.frame(K1 = r[1:2,] , K2 = r[3:4,])
+            rownames(calbt) <- c("B10_dn", "B11_dn")
+            
+        } else {
+            TAB7 <- list(LANDSAT4 = data.frame(K1=671.62,K2=1284.3), # TAB7 from Chander 2009
+                    LANDSAT5 = data.frame(K1=607.76,K2=1260.56),
+                    LANDSAT7 = data.frame(K1=666.09,K2=1282.71))
+            
+            calbt <- TAB7[[sat]]
+            rownames(calbt)<-"B6_dn"
+        }
         
-    }
-    
-}
-if(unifiedOnly) return(meta$UNIFIED_METADATA) else return(meta)
-}
+    } else {
+        ## PROCESS ESPA LEDAPS XML FILES
+        meta <- xmlToList(xmlParse(file))
+        names(meta$bands) <- str_replace_all(unlist(sapply(meta$bands, "[", "long_name")), " ", "_")
+        luv		<- c(dn = "dn", toa_rad = "tra", toa_refl = "tre", toa_bt = "bt", sr_refl = "sre", spectral_indices = "idx", cfmask = "tre")
 
-makeImgMetaData <- function(nBands){
-    structure(list(
-                    METADATA_FILE = NA,
-                    METADATA_FORMAT = NA,
-                    SATELLITE = NA,
-                    SENSOR = NA,
-                    SCENE_ID = NA,
-                    ACQUISITION_DATE = NA,
-                    PROCESSING_DATE = NA,
-                    PATH = NA,
-                    ROW = NA, 
-                    SUN_AZIMUTH = NA,
-                    SUN_ELEVATION = NA,
-                    EARTH_SUN_DISTANCE = NA,
-                    DATA = data.frame(
-                            FILES = rep(NA,nBands),
-                            BANDS = NA,
-                            PRODUCT = NA,                         
-                            BAND_TYPE = NA,
-                            NA_VALUE =  NA,
-                            SATURATE_VALUE =  NA,
-                            SCALE_FACTOR =  NA,
-                            DATA_TYPE =  NA
-                    ),
-                    RADCOR = data.frame(
-                            RAD_OFFSET = rep(NA,nBands),
-                            RAD_GAIN = NA,
-                            REF_OFFSET = NA,
-                            REF_GAIN = NA 
-                    )   
+        atts 	<- sapply(meta$bands, "[", ".attrs") 
+        sat		<- paste0("LANDSAT", .getNumeric(meta$global_metadata$satellite))
+        sen 	<- meta$global_metadata$instrument
+        scene 	<- str_replace(meta$global_metadata$lpgs_metadata_file, "_MTL.txt", "")  ## could assemble name for legacy files: http://landsat.usgs.gov/naming_conventions_scene_identifiers.php
+        date	<- as.POSIXct(paste(meta$global_metadata$acquisition_date,meta$global_metadata$scene_center_time), "%Y%m%d %H:%M:%S" )
+        pdate	<- as.POSIXct(meta$bands[[1]]$production_date)
+        path	<- as.numeric(meta$global_metadata$wrs["path"])
+        row		<- as.numeric(meta$global_metadata$wrs["row"])
+        az		<- as.numeric(meta$global_metadata$solar_angles["azimuth"])
+        selv	<- 90 - as.numeric(meta$global_metadata$solar_angles["zenith"])        
+        proj <- CRS(paste0("+proj=utm +zone=",meta$global_metadata$projection_information$utm_proj_params," +datum=WGS84 +units=m"))
+        esd		<- .ESdist(date)
+        files	<- sapply(meta$bands, "[[", "file_name")   
+        prod	<- luv[sapply(atts, "[", "product")]
+        cat		<- sapply(atts, "[", "category") 
+        cat[grep("opacity", names(cat))] <- "qa"
+        
+        bands	<- gsub(paste0(scene, "_|.tif"), "", files)					
+        bs 	<- grepl("_band", files)
+        bands[bs] 	<- paste0("B", .getNumeric(bands[bs]), "_", prod[bs])
+        bands[cat == "qa"] <- paste0("QA_", gsub("sr_|_qa", "", bands[cat == "qa"]))
+        bands[cat == "index"] <- gsub("SR_", "", toupper(bands[cat == "index"]))
+        
+        na		<- as.numeric(sapply(atts, "[" , "fill_value"))
+        vsat	<- as.numeric(sapply(atts, "[" , "saturate_value"))
+        scal	<- as.numeric(sapply(atts, "[" , "scale_factor"))
+        dataTypes <- c(INT16 = "INT4S", UINT8 = "INT1U")
+        dtyp	<- dataTypes[as.character(sapply(atts, "[" , "data_type"))]
+        
+        ## Missing
+        calrad <- calref <- calbt <- NULL
+        
+    } 
+    ImgMetaData(file = file, format = format, sat = sat, sen = sen, scene = scene, date = date, pdate = pdate, path = path, row = row, az = az,
+            selv = selv, esd = esd, files = files, bands = bands, prod = prod, cat = cat, na = na, vsat = vsat, scal = scal, dtyp = dtyp, 
+            calrad=calrad, calref=calref, calbt=calbt, proj = proj)
+    
+}   
+
+ImgMetaData <- function(file = NA, format = NA, sat = NA, sen = NA,scene = NA, proj =NA, date = NA, pdate = NA,path = NA, row = NA, az = NA, selv = NA,
+        esd = NA, files = NA, bands = NA, prod = NA, cat = NA, na = NA, vsat = NA, scal = NA, dtyp = NA, calrad = NA, calref = NA, calbt = NA){
+    obj <- list(
+            METADATA_FILE = file,
+            METADATA_FORMAT = format,
+            SATELLITE = sat,
+            SENSOR = sen,
+            SCENE_ID = scene,
+            ACQUISITION_DATE = date,
+            PROCESSING_DATE = pdate,
+            PATH = path,
+            ROW = row, 
+            PROJECTION = proj,
+            SUN_AZIMUTH = az,
+            SUN_ELEVATION = selv,
+            EARTH_SUN_DISTANCE = esd,
+            DATA = data.frame(
+                    FILES = files,
+                    BANDS = bands,
+                    PRODUCT = prod,                         
+                    CATEGORY = cat,
+                    NA_VALUE =  na,
+                    SATURATE_VALUE =  vsat,
+                    SCALE_FACTOR =  scal,
+                    DATA_TYPE =  dtyp
             ),
-            class = c("ImageMetaData", "RStoolbox")
+            CALRAD = calrad,
+            CALREF = calref,
+            CALBT = calbt
+    
     )
+    
+    ## Re-order DATA
+    obj$DATA <- obj$DATA[with(obj$DATA, order(factor(CATEGORY, levels = c("image", "index", "qa")),
+                            factor(PRODUCT, levels = c("dn", "tra", "tre", "sre", "bt", "idx")),
+                            BANDS)),]
+    
+    structure(obj, class = c("ImageMetaData", "RStoolbox"))
+    
 }
 
 
