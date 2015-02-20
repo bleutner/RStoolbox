@@ -28,14 +28,13 @@
 #' @param raster Raster* Object
 #' @param rasterFun function. E.g. predict, calc, overlay 
 #' @param args list. arguments to be passed to rasterFun.
-#' @param ...  arguments to be passed to rasterFun. You can specify args, ... or both.
+#' @param wrArgs arguments to be passed to rasterFun, typically to writeRaster
 #' @keywords internal
-.paraRasterFun <- function(raster, rasterFun, args = list(), ...){
-    args <- c(args, list(...))
+.paraRasterFun <- function(raster, rasterFun, args = list(), wrArgs = list()){
     if (isTRUE( getOption('rasterCluster'))) {
-        clusterR(x = raster, fun = rasterFun, args=args)
+        do.call("clusterR", args = c(list(x = raster, fun = rasterFun, args=args), wrArgs))
     } else {
-        do.call("rasterFun", args =c(raster, args))
+        do.call("rasterFun", args=c(raster, args, wrArgs))
     }
 }
 
@@ -44,6 +43,7 @@
 #' @param XFUN ?apply function. Currently c(sapply,lapply, apply)
 #' @param MARGIN integer. Margin for apply.
 #' @param FUN function to be ?applied
+#' @param envir Environment in which to look for objects to export. Usually this should be environment()
 #' @param ... further arguments passed to fun
 #' @keywords internal
 #' @examples
@@ -51,13 +51,13 @@
 #'  xList <- lapply(rep(1000,10000), rnorm)
 #'  for(i in 1:2) {
 #'     if(i == 2) raster::beginCluster(4, type="SOCK")
-#'     RStoolbox:::.parXapply(xList, XFUN = "lapply", FUN = sum, na.rm = TRUE),
-#'     RStoolbox:::.parXapply(xList, XFUN = "sapply", FUN = sum, na.rm = TRUE),
-#'     RStoolbox:::.parXapply(matrix(100^2, 100,100), XFUN = "apply", MAR = 1, FUN = sum, na.rm = TRUE),
+#'     RStoolbox:::.parXapply(xList, XFUN = "lapply", FUN = sum, na.rm = TRUE, envir = environment()),
+#'     RStoolbox:::.parXapply(xList, XFUN = "sapply", FUN = sum, na.rm = TRUE, envir = environment()),
+#'     RStoolbox:::.parXapply(matrix(100^2, 100,100), XFUN = "apply", MAR = 1, FUN = sum, na.rm = TRUE, envir = environment()),
 #'     endCluster()
 #'  }
 #' }
-.parXapply <- function(X, XFUN, MARGIN, FUN,  ...){   
+.parXapply <- function(X, XFUN, MARGIN, FUN, envir, ...){   
     
     call <- quote(f(cl = cl, X = X, FUN = FUN, MARGIN = MARGIN, ...))
     
@@ -66,14 +66,14 @@
         on.exit(returnCluster()) 
         f  <- c(lapply=parLapply, sapply=parSapply, apply=parApply)[[XFUN]]
         if(!is.primitive(FUN)){
-            g  <- findGlobals(FUN) 
-            gg <- lapply(g, get) 
+            g  <- findGlobals(FUN)
+            gg <- lapply(g, get, envir = envir) 
             names(gg) <- g
         } else {
             gg<-NULL
         }
         l  <- c(list(...),gg)
-        clusterExport(cl, names(l), envir = list2env(l))
+        clusterExport(cl=cl, names(l), envir = envir)
         if(XFUN == "lapply") names(call)[names(call)=="FUN"] <- "fun"
     } else {
         f <- get(XFUN)
@@ -84,12 +84,12 @@
     
 }
 
-#' Set-up doSNOW backend when beginCluster has been called
+#' Set-up doParallel backend when beginCluster has been called
 #' 
 #' this is to allow caret to run caret::train in parallel (via foreach) 
 #' stopCluster will take place automatically on call to raster::endCluster
 #' @keywords internal
-.registerDoParallelllel <- function(){
+.registerDoParallel <- function(){
     if(isTRUE(getOption('rasterCluster')) && !getDoParRegistered()) {
         cl <- raster::getCluster()
         registerDoParallel(cl)

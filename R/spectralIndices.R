@@ -44,7 +44,7 @@ spectralIndices <- function(img, blue=NULL, red=NULL, nir=NULL, mir=NULL, indice
     args[actArgs]  <- NULL      ## keep only provided args      
     # args    <- as.pairlist(c(args, alist(...=))) 
     args    <- as.pairlist(args)  
-    bands <- names(actArgs)[!actArgs]
+    bands 	<- names(actArgs)[!actArgs]
     
     ## Subset calculated indices to possible based on band inputs and / or user request
     frmls    <- lapply(lapply(.IDXdb, formals), names)
@@ -79,7 +79,7 @@ spectralIndices <- function(img, blue=NULL, red=NULL, nir=NULL, mir=NULL, indice
     
     # Perform calculations (each pixel must be read only once due to the function assembly above)
     # this should save some significant time for large Rasters   
-    indexMagic <- .paraRasterFun(img[[bands]], rasterFun = raster::overlay, fun = funMaster, ...)
+    indexMagic <- .paraRasterFun(img[[bands]], rasterFun = raster::overlay, args = list(fun = funMaster), wrArgs = list(...))
 	
     names(indexMagic) <- names(bdys)      
     

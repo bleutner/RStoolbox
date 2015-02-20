@@ -37,21 +37,21 @@
 #' par(olpar) # reset par
 unsuperClass <- function(img, nSamples = 1000, nClasses = 5, nStarts = 25, clusterMap = TRUE, algorithm = "Hartigan-Wong", ...){      
     if(atMax <- nSamples > ncell(img)) nSamples <- ncell(img)
-    
+    wrArgs <- list(...)
+   
     if(!clusterMap | atMax && canProcessInMemory(img, n = 2)){
         trainData <- img[]
         complete  <- complete.cases(trainData)
         model     <- kmeans(trainData[complete,], centers = nClasses, nstart = nStarts, algorithm = algorithm)
         out   <- raster(img)
         out[] <- NA
-        out[complete] <- model$cluster
-        args <- list(...)
-        if("filename" %in% names(args)) out <- writeRaster(out, ...)
+        out[complete] <- model$cluster      
+        if("filename" %in% names(wrArgs)) out <- writeRaster(out, ...)
     } else {
         if(!clusterMap) warning("Raster is > memory. Resetting clusterMap to TRUE")
         trainData <- sampleRandom(img, size = nSamples, na.rm = TRUE)
         model     <- kmeans(trainData, centers = nClasses, nstart = nStarts, algorithm = algorithm)
-        out 	  <- .paraRasterFun(img, rasterFun=raster::predict, model=model, na.rm = TRUE, ...)
+        out 	  <- .paraRasterFun(img, rasterFun=raster::predict, args = list(model=model, na.rm = TRUE), wrArgs = wrArgs)
     }
     structure(list(call = match.call(), model = model, map = out), class = c("unsuperClass", "RStoolbox"))
 }

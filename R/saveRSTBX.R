@@ -23,6 +23,7 @@
 #' @param ... further arguments passed to writeRaster
 #' @export 
 #' @examples 
+#' \dontrun{
 #' input <- brick(system.file("external/rlogo.grd", package="raster"))
 #' ## Create filename
 #' file  <- paste0(tempdir(), "/test", runif(1))
@@ -36,6 +37,8 @@
 #' re_rpc <- readRSTBX(file)
 #' ## Compare 
 #' all.equal(re_rpc, rpc)
+#' file.remove(file)
+#' }
 saveRSTBX <- function(x, filename, format ="raster", ...){
     
     stopifnot(inherits(x, "RStoolbox"))
@@ -45,7 +48,7 @@ saveRSTBX <- function(x, filename, format ="raster", ...){
     extension(rastFile) <- .rasterExtension(format)          
     f <- raster::filename(x$map)
     
-    if(f==""){
+    if(inMemory(x$map)){
         ## In memory
         x$map <- writeRaster(x$map, filename = rastFile, format=format, ...)
     } else {
