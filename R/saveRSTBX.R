@@ -29,7 +29,7 @@
 #' ## Run PCA
 #' rpc   <- rasterPCA(input, filename = file, nSample = 100)
 #' ## Save object
-#' saveRSTBX(rpc, filename=file)
+#' saveRSTBX(rpc, filename=file, overwrite = TRUE)
 #' ## Which files were written?
 #' list.files(tempdir(), pattern = basename(file))
 #' ## Re-read files
@@ -45,7 +45,7 @@ saveRSTBX <- function(x, filename, format ="raster", ...){
     extension(rastFile) <- .rasterExtension(format)          
     f <- raster::filename(x$map)
     
-    if(f==""){
+    if(inMemory(x$map)){
         ## In memory
         x$map <- writeRaster(x$map, filename = rastFile, format=format, ...)
     } else {
