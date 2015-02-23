@@ -156,7 +156,14 @@
     lapply(bands, function(band) if(is.character(band)) which(names(raster) == band) else band ) 
 }
 
+.vMessage <- function(...){    
+    if(getOption("RStoolbox.verbose")){message(...)}
+}
 
+#' On package startup
+.onLoad <- function(libname, pkgname){
+    options(RStoolbox.verbose = FALSE)
+}
 
 #' Clean up on package unload
 .onUnload <- function (libpath) {

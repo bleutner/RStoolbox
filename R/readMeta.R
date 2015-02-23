@@ -187,7 +187,7 @@ ImgMetaData <- function(file = NA, format = NA, sat = NA, sen = NA,scene = NA, p
             PROCESSING_DATE = pdate,
             PATH_ROW = c(path=path,row=row), 
             PROJECTION = proj,
-            SOLAR_PARAMETERS = c(azimuth=az, evelation = selv, distance = esd),
+            SOLAR_PARAMETERS = c(azimuth=az, elevation = selv, distance = esd),
             DATA = data.frame(
                     FILES = files,
                     BANDS = bands,

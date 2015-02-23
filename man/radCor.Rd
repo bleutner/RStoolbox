@@ -4,40 +4,20 @@
 \alias{radCor}
 \title{Radiometric calibration and correction}
 \usage{
-radCor(x, metaData, reflectance = TRUE, thermal = TRUE, satellite,
-  bandSet = "full", gain, offset, G_rescale, B_rescale, sunElev,
-  satZenith = 0, d, esun, date, SHV, hazeBand, atHaze, method = "APREF")
+radCor(img, metaData, radianceOnly = FALSE, method = "APREF",
+  bandSet = "full", SHV, hazeBand, atHaze, darkProp, verbose = FALSE)
 }
 \arguments{
-\item{x}{raster object}
+\item{img}{raster object}
 
-\item{metaData}{either the result of \code{readMeta} or a path to the meta data (MTL) file.}
+\item{metaData}{object of class ImgMetaData or a path to the meta data (MTL) file.}
 
-\item{reflectance}{logical. If \code{TRUE} output will be reflectance, if \code{FALSE} it will be radiance}
+\item{radianceOnly}{Logical. If \code{TRUE} only radiance will be calculated. Otherwise reflectance and brightness temperature are calculated.}
 
-\item{thermal}{logical. If \code{TRUE} thermal bands will be converted to brightness temperature (Kelvin).}
-
-\item{satellite}{character. Required if metaData is not provided. One of LANDSAT8, LANDSAT7, LANDSAT5.}
+\item{method}{Radiometric correction method to be used. There are currently four methods available (see Details):
+"APREF", "SDOS", "DOS", "COSTZ".}
 
 \item{bandSet}{numeric or character. original Landsat band numbers or names in the form of ("B1", "B2" etc). If set to 'full' all bands in the solar region will be processed.}
-
-\item{gain}{Band-specific sensor gain. Require either gain and offset or Grescale and Brescale to convert DN to radiance.}
-
-\item{offset}{Band-specific sensor offset. Require either gain and offset or Grescale and Brescale to convert DN to radiance.}
-
-\item{G_rescale}{Band-specific sensor Grescale (gain). Require either gain and offset or Grescale and Brescale to convert DN to radiance.}
-
-\item{B_rescale}{Band-specific sensor Brescale (bias). Require either gain and offset or Grescale and Brescale to convert DN to radiance.}
-
-\item{sunElev}{Sun elevation in degrees}
-
-\item{satZenith}{sensor zenith angle (0 for Landsat)}
-
-\item{d}{Earth-Sun distance in AU.}
-
-\item{esun}{Mean exo-atmospheric solar irradiance, as given by Chandler et al. 2009 or others.}
-
-\item{date}{Date of data aquisition. Ignored if esun or satellite is provided.}
 
 \item{SHV}{starting haze value, can be estimated using estimateSHV(). if not provided and method is "DOS" or "COSTZ" SHV will be estimated in an automated fashion. Not needed for apparent reflectance.}
 
@@ -45,28 +25,22 @@ radCor(x, metaData, reflectance = TRUE, thermal = TRUE, satellite,
 
 \item{atHaze}{character. Scene haze characteristics. Will be estimated if not expicilty provided. Must be one of \code{"veryClear", "clear", "moderate", "hazy"} or \code{"veryHazy"}.}
 
-\item{method}{Radiometric correction method to be used. There are currently four methods available (see Details):
-"APREF", "DOS" (Chavez 1989), "COSTZ" (Chavez 1996), SDOS.}
+\item{verbose}{Logical. Print status information.}
 }
 \description{
 Implements several different methods for absolute radiometric correction of Landsat data.
 You can either specify a metadata file, or supply all neccesary values manually. With proper parametrization APREF and SDOS should work for other sensors as well.
 }
 \details{
-\describe{
-\item{APREF}{Apparent reflectance}
-\item{DOS}{Dark object subtratction following Chavez (1989)}
-\item{COSTZ}{Dark object subtraction following Chaves(1996)}
-\item{SDOS}{Simple dark object subtraction. Classical DOS, Lhaze must be estimated for each band separately.}
-}
+Conversion to top of atmosphere radiance (Watts/(m2 * srad * \eqn{\mu}m))
+Conversion to at-satellite brightness temperature (K)
+Conversion to top of atmosphere reflectance (unitless) corrected for the sun angle
+Estimation of at-surface spectral reflectance (unitless)
 }
 \note{
 This was originally a fork of randcorr in the landsat package. It may be slower, however it works on Raster* objects and hence is memory-safe.
 }
 \references{
 S. Goslee (2011): Analyzing Remote Sensing Data in R: The landsat Package. Journal of Statistical Software 43(4).
-}
-\seealso{
-\link[landsat]{radiocorr}
 }
 
