@@ -11,3 +11,7 @@ Apart from R itself, you'll also need to have r-base-dev (Linux) or Rtools (Wind
 
     library(devtools)
     install_github("bleutner/RStoolbox")
+    
+If you are on Windows and don't have Rtools installed, you can install a pre-compiled Windows binary build like so:
+
+	install.packages("RStoolbox", repos=c("http://bleutner.github.io/RStoolbox/miniCRAN", "http://cran.r-project.org"))     

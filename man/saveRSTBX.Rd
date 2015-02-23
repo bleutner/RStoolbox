@@ -42,6 +42,7 @@ you can read all files created this way also with base functionality as long as 
 This is because x$map is a Raster* object and hence contains only a static link to the file on disk.
 }
 \examples{
+\dontrun{
 input <- brick(system.file("external/rlogo.grd", package="raster"))
 ## Create filename
 file  <- paste0(tempdir(), "/test", runif(1))
@@ -55,5 +56,7 @@ list.files(tempdir(), pattern = basename(file))
 re_rpc <- readRSTBX(file)
 ## Compare
 all.equal(re_rpc, rpc)
+file.remove(file)
+}
 }
 
