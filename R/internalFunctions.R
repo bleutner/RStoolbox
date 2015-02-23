@@ -17,11 +17,12 @@
 #' @note decimal numbers will be returned as two separate numbers
 #' @keywords internal
 .getNumeric <- function(x, returnNumeric = TRUE) {
-    sapply(x, function(xi){
+    vapply(x, function(xi){
                 d <- strsplit(xi, "[^[:digit:]]")[[1]]
                 d <- if(returnNumeric) as.numeric(d[d!=""]) else d[d!=""]
-                d
-            })
+                if(length(d)==0) d <- NA_real_
+                d[1]
+            }, numeric(1))
 }
 
 #' Run raster functions in parallel if possible
