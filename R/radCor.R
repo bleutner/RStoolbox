@@ -4,7 +4,7 @@
 #' You can either specify a metadata file, or supply all neccesary values manually. With proper parametrization APREF and SDOS should work for other sensors as well.
 #' 
 #' @param img raster object
-#' @param metaData object of class ImgMetaData or a path to the meta data (MTL) file. 
+#' @param metaData object of class ImageMetaData or a path to the meta data (MTL) file. 
 #' @param radianceOnly Logical. If \code{TRUE} only radiance will be calculated. Otherwise reflectance and brightness temperature are calculated. 
 #' @param method Radiometric correction method to be used. There are currently four methods available (see Details):
 #' "APREF", "SDOS", "DOS", "COSTZ".
@@ -14,25 +14,36 @@
 #' @param atHaze character. Scene haze characteristics. Will be estimated if not expicilty provided. Must be one of \code{"veryClear", "clear", "moderate", "hazy"} or \code{"veryHazy"}.
 #' @param darkProp numeric. Estimated proportion of dark pixels in the scene. Used only for automatic guessing of SHV.
 #' @param verbose Logical. Print status information. 
+
+#' @note This was originally a fork of randcorr in the landsat package. It may be slower, however it works on Raster* objects and hence is memory-safe.
 #' @details 
-#' Conversion to top of atmosphere radiance (Watts/(m2 * srad * \eqn{\mu}m)) 
+#' 
+#' Conversion to top of atmosphere radiance (\eqn{W/m2 * srad * \eqn{\mu}m}) 
 #' Conversion to at-satellite brightness temperature (K)
 #' Conversion to top of atmosphere reflectance (unitless) corrected for the sun angle
 #' Estimation of at-surface spectral reflectance (unitless)
 #'  
-#' @note This was originally a fork of randcorr in the landsat package. It may be slower, however it works on Raster* objects and hence is memory-safe.
-#' @details  \describe{
+#' \describe{
 #' \item{APREF}{Apparent reflectance}
 #' \item{DOS}{Dark object subtratction following Chavez (1989)}
 #' \item{COSTZ}{Dark object subtraction following Chaves(1996)}
 #' \item{SDOS}{Simple dark object subtraction. Classical DOS, Lhaze must be estimated for each band separately.}
+#' }
+#'  
+#' Atmospheric haze decay model according to Chavez (1989)
+#' \describe{
+#' \item{veryClear}{\eqn{\lambda^{-4.0}}}
+#' \item{clear}{\eqn{\lambda^{-2.0}}}
+#' \item{moderate}{\eqn{\lambda^{-1.0}}}
+#' \item{hazy}{\eqn{\lambda^{-0.7}}}
+#' \item{veryHazy}{\eqn{\lambda^{-0.5}}}
 #' }
 #' @references S. Goslee (2011): Analyzing Remote Sensing Data in R: The landsat Package. Journal of Statistical Software 43(4).
 #' @export
 radCor <-	function(img, metaData, radianceOnly = FALSE,  method = "APREF", bandSet = "full", SHV, hazeBand, atHaze, darkProp = 0.02, verbose){
     # http://landsat.usgs.gov/Landsat8_Using_Product.php
     
-    if(!method %in% c("APREF", "DOS", "COSTZ", "SDOS", "VSDOS")) stop("method must be one of 'APREF', 'DOS', 'COSTZ' 'SDOS'", call.=FALSE)
+    if(!method %in% c("APREF", "DOS", "COSTZ", "SDOS")) stop("method must be one of 'APREF', 'DOS', 'COSTZ' 'SDOS'", call.=FALSE)
     
     if(!missing(verbose)) {verbold <- force(getOption("RStoolbox.verbose"))
         on.exit(options(RStoolbox.verbose = verbold))
@@ -125,21 +136,20 @@ radCor <-	function(img, metaData, radianceOnly = FALSE,  method = "APREF", bandS
             .vMessage("SHV was not provided -> Estimating SHV automatically")
             ## We suppress warnings because we search for a possible value autimatically in case we missed the first time
             SHV <- suppressWarnings(estimateHaze(img, hazeBand = hazeBand, darkProp = darkProp , plot = FALSE, returnTables = TRUE))
-            while(is.na(SHV[[1]])){
-                dP	<- dP * 0.95
+            while(is.na(SHV[[1]])){ 
+                darkProp	<- darkProp * 0.95
                 SHV <- suppressWarnings(estimateHaze(SHV, hazeBand = hazeBand, darkProp = darkProp, plot = FALSE, returnTables = TRUE))
             }
             .vMessage(paste0("SHV estimated as: ", SHV[[1]]))
             SHV <- SHV[[1]]
         }
         
-        # For SDOS gain, offset, Lhaze and Esun must be provided as coresponding vectors of equal length
-        if(method == "SDOS") hazeBand <- bandSet 
-        if(method == "VSDOS") {
-            hazeBands <- rep(0, length(bandSet))
-            names(hazeBands) <- bandSet
-            hazeBands[hazeBand] <- SHV[hazeBand]
-            SHV <- hazeBands
+   
+        if(method == "SDOS") {
+            SHVdummy <- rep(0, length(bandSet))  
+            names(SHVdummy) <- bandSet
+            SHVdummy[hazeBand] <- SHV[hazeBand]
+            SHV <- SHVdummy
             hazeBand <- bandSet
         }
         TAUz <- 1

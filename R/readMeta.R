@@ -3,8 +3,8 @@
 #' Besides reading metadata, readMeta deals with legacy versions of Landsat metadata files and where possible adds missing information (radiometric gain and offset, earth-sun distance).
 #' 
 #' @param file path to Landsat MTL file (...MTL.txt)
-#' @param raw Logical. If \code{TRUE} the full raw metadate will be returned as a list. All important metadata are homogenized into a standard format (ImgMetaData) and some information is added.
-#' @return Object of class ImgMetaData 
+#' @param raw Logical. If \code{TRUE} the full raw metadate will be returned as a list. All important metadata are homogenized into a standard format (ImageMetaData) and some information is added.
+#' @return Object of class ImageMetaData 
 #' @export 
 #' 
 readMeta <- function(file, raw = FALSE){
@@ -114,13 +114,13 @@ readMeta <- function(file, raw = FALSE){
             TAB7 <- list(LANDSAT4 = data.frame(K1=671.62,K2=1284.3), # TAB7 from Chander 2009
                     LANDSAT5 = data.frame(K1=607.76,K2=1260.56),
                     LANDSAT7 = data.frame(K1=666.09,K2=1282.71))
-           
+            
             calbt <- TAB7[[sat]]            
             tbds  <- bands[grep("B6", bands)]
             if(length(tbds)>1) calbt <- rbind(calbt, calbt)
             rownames(calbt)<-tbds
         }
-       
+        
     } else {
         ## PROCESS ESPA LEDAPS XML FILES
         meta <- xmlToList(xmlParse(file))
@@ -167,15 +167,15 @@ readMeta <- function(file, raw = FALSE){
     radRes	<- if(sat == "LANDSAT8") 16 else 8
     
     
-    obj <-  ImgMetaData(file = file, format = format, sat = sat, sen = sen, scene = scene, date = date, pdate = pdate, path = path, radRes=radRes, spatRes = spatRes, row = row, az = az,
+    obj <-  ImageMetaData(file = file, format = format, sat = sat, sen = sen, scene = scene, date = date, pdate = pdate, path = path, radRes=radRes, spatRes = spatRes, row = row, az = az,
             selv = selv, esd = esd, files = files, bands = bands, prod = prod, cat = cat, na = na, vsat = vsat, scal = scal, dtyp = dtyp, 
             calrad=calrad, calref=calref, calbt=calbt, proj = proj)
     
 }   
 
 
-## TODO: document ImgMetaData
-ImgMetaData <- function(file = NA, format = NA, sat = NA, sen = NA,scene = NA, proj =NA, date = NA, pdate = NA,path = NA, row = NA, az = NA, selv = NA,
+## TODO: document ImageMetaData
+ImageMetaData <- function(file = NA, format = NA, sat = NA, sen = NA,scene = NA, proj =NA, date = NA, pdate = NA,path = NA, row = NA, az = NA, selv = NA,
         esd = NA, files = NA, bands = NA, prod = NA, cat = NA, na = NA, vsat = NA, scal = NA, dtyp = NA, calrad = NA, calref = NA, calbt = NA, radRes=NA, spatRes = NA){
     obj <- list(
             METADATA_FILE = file,
@@ -212,6 +212,31 @@ ImgMetaData <- function(file = NA, format = NA, sat = NA, sen = NA,scene = NA, p
                             factor(PRODUCT, levels = c("dn", "tra", "tre", "sre", "bt", "idx")),
                             .getNumeric(BANDS))),]
     
-    structure(obj, class = c("ImageMetaData", "RStoolbox"))
+    structure(obj, class = c("ImageMetaData", "RStoolbox"))    
+}
+
+
+#' @method print ImageMetaData
+#' @export 
+print.ImageMetaData <- function(x) {    
     
+    cat("Scene:\t\t", x$SCENE_ID,
+            "\nSatellite:\t", x$SATELLITE, 
+            "\nSensor:\t\t", x$SENSOR,
+            "\nDate:\t\t", format(x$ACQUISITION_DATE, "%F"),
+            "\nPath/Row:\t", paste(x$PATH_ROW, collapse="/"),
+            "\nProjection:\t", projection(x$PROJECTION)
+    )
+    cat("\n\nData:\n") 
+    print(x$DATA[, c("FILES", "PRODUCT", "CATEGORY")])
+    
+    hasCal <- vapply(x[c("CALRAD", "CALREF", "CALBT")], is.data.frame, logical(1))
+    
+    cat("\nAvailable calibration parameters (gain and offset):\n") 
+    if(any(hasCal)) {
+        cat(c("\tdn -> radiance (toa)", "\tdn -> reflectance (toa)", "\tdn -> brightness temperature (toa)")[hasCal], sep = "\n")
+    }   else {
+        cat("\tnone")
+    }
+    invisible(x)
 }

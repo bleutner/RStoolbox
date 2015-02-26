@@ -17,7 +17,7 @@ stackMeta <- function(file, allResolutions = FALSE, product = "all", category = 
     stopifnot( !any(!category %in%  c("pan", "image", "index", "qa", "all")), !any(!product %in% c("all", "dn", "tra", "tre", "sre", "bt", "idx")))
     
     ## Read metadata and extract layer file names
-    meta <- if(!inherits(file, "ImgMetaData")){
+    meta <- if(!inherits(file, "ImageMetaData")){
                 readMeta(file)
             } else {
                 file

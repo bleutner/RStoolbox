@@ -5,12 +5,12 @@
 \title{Radiometric calibration and correction}
 \usage{
 radCor(img, metaData, radianceOnly = FALSE, method = "APREF",
-  bandSet = "full", SHV, hazeBand, atHaze, darkProp, verbose = FALSE)
+  bandSet = "full", SHV, hazeBand, atHaze, darkProp = 0.02, verbose)
 }
 \arguments{
 \item{img}{raster object}
 
-\item{metaData}{object of class ImgMetaData or a path to the meta data (MTL) file.}
+\item{metaData}{object of class ImageMetaData or a path to the meta data (MTL) file.}
 
 \item{radianceOnly}{Logical. If \code{TRUE} only radiance will be calculated. Otherwise reflectance and brightness temperature are calculated.}
 
@@ -25,6 +25,8 @@ radCor(img, metaData, radianceOnly = FALSE, method = "APREF",
 
 \item{atHaze}{character. Scene haze characteristics. Will be estimated if not expicilty provided. Must be one of \code{"veryClear", "clear", "moderate", "hazy"} or \code{"veryHazy"}.}
 
+\item{darkProp}{numeric. Estimated proportion of dark pixels in the scene. Used only for automatic guessing of SHV.}
+
 \item{verbose}{Logical. Print status information.}
 }
 \description{
@@ -32,10 +34,26 @@ Implements several different methods for absolute radiometric correction of Land
 You can either specify a metadata file, or supply all neccesary values manually. With proper parametrization APREF and SDOS should work for other sensors as well.
 }
 \details{
-Conversion to top of atmosphere radiance (Watts/(m2 * srad * \eqn{\mu}m))
+Conversion to top of atmosphere radiance (\eqn{W/m2 * srad * \eqn{\mu}m})
 Conversion to at-satellite brightness temperature (K)
 Conversion to top of atmosphere reflectance (unitless) corrected for the sun angle
 Estimation of at-surface spectral reflectance (unitless)
+
+\describe{
+\item{APREF}{Apparent reflectance}
+\item{DOS}{Dark object subtratction following Chavez (1989)}
+\item{COSTZ}{Dark object subtraction following Chaves(1996)}
+\item{SDOS}{Simple dark object subtraction. Classical DOS, Lhaze must be estimated for each band separately.}
+}
+
+Atmospheric haze decay model according to Chavez (1989)
+\describe{
+\item{veryClear}{\eqn{\lambda^{-4.0}}}
+\item{clear}{\eqn{\lambda^{-2.0}}}
+\item{moderate}{\eqn{\lambda^{-1.0}}}
+\item{hazy}{\eqn{\lambda^{-0.7}}}
+\item{veryHazy}{\eqn{\lambda^{-0.5}}}
+}
 }
 \note{
 This was originally a fork of randcorr in the landsat package. It may be slower, however it works on Raster* objects and hence is memory-safe.
