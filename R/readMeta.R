@@ -177,10 +177,35 @@ readMeta <- function(file, raw = FALSE){
 ## TODO: document ImageMetaData
 #' ImageMetaData Class
 #' 
-#' 
+#' @param file Character. Metadata file
+#' @param format Character. Metadata format, e.g. xml, mtl
+#' @param sat Character. Satellite platform
+#' @param sen Character. Sensor
+#' @param scene Character. Scene_ID
+#' @param proj CRS. Projection.
+#' @param date POSIXct. Aquosition date.
+#' @param pdate POSIXct. Processing date.
+#' @param path Integer. Path.
+#' @param row Integer. Row.
+#' @param az Numeric. Sun azimuth
+#' @param selv Numeric. Sun elevation
+#' @param esd Numeric. Earth-sun distance
+#' @param files Character vector. Files containing the data, e.g. tiff files
+#' @param bands Character vector. Band names
+#' @param quant Character vector. Quantity, one of c("dn", "tra", "tre", "sre", "bt", "idx")
+#' @param cat Character vector. Category, e.g. c("image", "pan", "index", "qa")
+#' @param na Numeric vector. No-data value per band
+#' @param vsat Numeric vector. Saturation value per band
+#' @param scal Numeric vector. Scale factor per band. e.g. if data was scaled to 1000*reflectance for integer conversion.
+#' @param dtyp Character vector. Data type per band. See \code{\link[raster]{dataType}} for options.
+#' @param radRes Numeric vector. Radiometric resolution per band.
+#' @param spatRes Numeric vector. Spatial resolution per band.
+#' @param calrad data.frame. Calibration coefficients for dn->radiance conversion. Must have columns 'gain' and 'offset'. Rows named according to \code{bands}.
+#' @param calref data.frame. Calibration coefficients for dn->reflectance conversion. Must have columns 'gain' and 'offset'. Rows named according to \code{bands}.
+#' @param calbt data.frame. Calibration coefficients for dn->brightness temperature conversion. Must have columns 'K1' and 'K2'. Rows named according to \code{bands}.
 #' @export
 ImageMetaData <- function(file = NA, format = NA, sat = NA, sen = NA,scene = NA, proj =NA, date = NA, pdate = NA,path = NA, row = NA, az = NA, selv = NA,
-        esd = NA, files = NA, bands = NA, prod = NA, cat = NA, na = NA, vsat = NA, scal = NA, dtyp = NA, calrad = NA, calref = NA, calbt = NA, radRes=NA, spatRes = NA){
+        esd = NA, files = NA, bands = NA, quant = NA, cat = NA, na = NA, vsat = NA, scal = NA, dtyp = NA, calrad = NA, calref = NA, calbt = NA, radRes=NA, spatRes = NA){
     obj <- list(
             METADATA_FILE = file,
             METADATA_FORMAT = format,
@@ -195,7 +220,7 @@ ImageMetaData <- function(file = NA, format = NA, sat = NA, sen = NA,scene = NA,
             DATA = data.frame(
                     FILES = files,
                     BANDS = bands,
-                    QUANTITY = prod,                         
+                    QUANTITY = quant,                         
                     CATEGORY = cat,
                     NA_VALUE =  na,
                     SATURATE_VALUE =  vsat,
@@ -213,7 +238,7 @@ ImageMetaData <- function(file = NA, format = NA, sat = NA, sen = NA,scene = NA,
     rownames(obj$DATA) <- bands
     
     ## Re-order DATA
-    obj$DATA <- obj$DATA[with(obj$DATA, order(factor(CATEGORY, levels = c("image", "index", "qa")),
+    obj$DATA <- obj$DATA[with(obj$DATA, order(factor(CATEGORY, levels = c("image", "pan", "index", "qa")),
                             factor(QUANTITY, levels = c("dn", "tra", "tre", "sre", "bt", "idx")),
                             .getNumeric(BANDS))),]
     

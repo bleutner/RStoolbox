@@ -4,6 +4,7 @@
 #' 
 #' @param date character. date in format "YYYY-MM-DD" 
 #' @keywords internal
+#' @noRd 
 .ESdist <- function(date){	
     doy <- as.numeric(format(as.POSIXct(date), "%j"))
     .ESdistance[doy]
@@ -16,6 +17,7 @@
 #' @param returnNumeric logical. should results be formatted \code{as.numeric}? If so, "05" will be converted to 5. Set returnNumeric to \code{FALSE} to keep preceeding zeros.
 #' @note decimal numbers will be returned as two separate numbers
 #' @keywords internal
+#' @noRd 
 .getNumeric <- function(x, returnNumeric = TRUE) {
     vapply(x, function(xi){
                 d <- strsplit(xi, "[^[:digit:]]")[[1]]
@@ -31,6 +33,7 @@
 #' @param args list. arguments to be passed to rasterFun.
 #' @param wrArgs arguments to be passed to rasterFun, typically to writeRaster
 #' @keywords internal
+#' @noRd 
 .paraRasterFun <- function(raster, rasterFun, args = list(), wrArgs = list()){
     if (isTRUE( getOption('rasterCluster'))) {
         do.call("clusterR", args = c(list(x = raster, fun = rasterFun, args=args), wrArgs))
@@ -58,6 +61,7 @@
 #'     endCluster()
 #'  }
 #' }
+#' @noRd 
 .parXapply <- function(X, XFUN, MARGIN, FUN, envir, ...){   
     
     call <- quote(f(cl = cl, X = X, FUN = FUN, MARGIN = MARGIN, ...))
@@ -90,6 +94,7 @@
 #' this is to allow caret to run caret::train in parallel (via foreach) 
 #' stopCluster will take place automatically on call to raster::endCluster
 #' @keywords internal
+#' @noRd 
 .registerDoParallel <- function(){
     if(isTRUE(getOption('rasterCluster')) && !getDoParRegistered()) {
         cl <- raster::getCluster()
@@ -100,6 +105,7 @@
 #' Get file extension for writeRaster
 #' @param x character. Format driver.
 #' @keywords internal
+#' @noRd 
 .rasterExtension <- function(x){ 
     fdb <- c(RASTER = ".grd", GTIFF = ".tif", CDF = ".nc", KML = ".kml", KMZ = ".kmz", BIG.MATRIX = ".big",
             BIL = ".bil", BSQ = ".bsq", BIP = ".bip",ASCII = ".asc", RST = ".rst",ILWIS = ".mpr", 
@@ -118,6 +124,7 @@
 #' .fullPath("../../../../../test.grd")
 #' .fullPath("~/test.grd") 
 #' .fullPath("/tmp/test.grd")
+#' @noRd 
 .fullPath <- function(x){
     ## TODO: add single dot / current directory treatment
     x <- path.expand(x)   
@@ -141,6 +148,7 @@
 #' @param x data.frame
 #' @param align Character. Column aligntment in the form "llrc" 
 #' @keywords internal
+#' @noRd 
 .df2tab <- function(x, align){
     c(paste0("\\tabular{", align, "}{"),
             paste(paste("\\strong{", colnames(x), "}", collapse = " \\tab "), "\\cr" ),
@@ -151,6 +159,7 @@
 #' @param raster Raster*
 #' @param ... Character or Numeric bands
 #' @keywords internal
+#' @noRd 
 .numBand <- function(raster, ...){
     bands <- list(...)
     lapply(bands, function(band) if(is.character(band)) which(names(raster) == band) else band ) 
@@ -161,11 +170,13 @@
 }
 
 #' On package startup
+#' @noRd 
 .onLoad <- function(libname, pkgname){
     options(RStoolbox.verbose = FALSE)
 }
 
 #' Clean up on package unload
+#' @noRd 
 .onUnload <- function (libpath) {
     library.dynam.unload("RStoolbox", libpath)
 }
