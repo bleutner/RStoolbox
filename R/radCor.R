@@ -18,7 +18,7 @@
 #' @note This was originally a fork of randcorr in the landsat package. It may be slower, however it works on Raster* objects and hence is memory-safe.
 #' @details 
 #' 
-#' Conversion to top of atmosphere radiance (\eqn{W/m2 * srad * \eqn{\mu}m}) 
+#' Conversion to top of atmosphere radiance (W/m2 * srad * \eqn{\mu}m) 
 #' Conversion to at-satellite brightness temperature (K)
 #' Conversion to top of atmosphere reflectance (unitless) corrected for the sun angle
 #' Estimation of at-surface spectral reflectance (unitless)

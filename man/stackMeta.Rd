@@ -4,7 +4,7 @@
 \alias{stackMeta}
 \title{Import separate Landsat files into single stack}
 \usage{
-stackMeta(file, allResolutions = FALSE, product = "all",
+stackMeta(file, allResolutions = FALSE, quantity = "all",
   category = "image")
 }
 \arguments{
@@ -12,7 +12,7 @@ stackMeta(file, allResolutions = FALSE, product = "all",
 
 \item{allResolutions}{logical. if \code{TRUE} a list will be returned with length = unique spatial resolutions.}
 
-\item{product}{Character vector. Which products should be returned. Options: digital numbers ('dn'), top of atmosphere reflectance ('tre'), at surface reflectance ('sre'), brightness temperature ('bt'), spectral index ('idx').}
+\item{quantity}{Character vector. Which quantity should be returned. Options: digital numbers ('dn'), top of atmosphere reflectance ('tre'), at surface reflectance ('sre'), brightness temperature ('bt'), spectral index ('idx').}
 
 \item{category}{character vector. Which category of data to return. Options 'image': image data, 'pan': panchromatic image, 'index': multiband indices, 'qa' quality flag bands, 'all': all categories.}
 }

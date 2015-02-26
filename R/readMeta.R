@@ -175,6 +175,10 @@ readMeta <- function(file, raw = FALSE){
 
 
 ## TODO: document ImageMetaData
+#' ImageMetaData Class
+#' 
+#' 
+#' @export
 ImageMetaData <- function(file = NA, format = NA, sat = NA, sen = NA,scene = NA, proj =NA, date = NA, pdate = NA,path = NA, row = NA, az = NA, selv = NA,
         esd = NA, files = NA, bands = NA, prod = NA, cat = NA, na = NA, vsat = NA, scal = NA, dtyp = NA, calrad = NA, calref = NA, calbt = NA, radRes=NA, spatRes = NA){
     obj <- list(
@@ -191,7 +195,7 @@ ImageMetaData <- function(file = NA, format = NA, sat = NA, sen = NA,scene = NA,
             DATA = data.frame(
                     FILES = files,
                     BANDS = bands,
-                    PRODUCT = prod,                         
+                    QUANTITY = prod,                         
                     CATEGORY = cat,
                     NA_VALUE =  na,
                     SATURATE_VALUE =  vsat,
@@ -206,10 +210,11 @@ ImageMetaData <- function(file = NA, format = NA, sat = NA, sen = NA,scene = NA,
             CALBT = calbt
     
     )
+    rownames(obj$DATA) <- bands
     
     ## Re-order DATA
     obj$DATA <- obj$DATA[with(obj$DATA, order(factor(CATEGORY, levels = c("image", "index", "qa")),
-                            factor(PRODUCT, levels = c("dn", "tra", "tre", "sre", "bt", "idx")),
+                            factor(QUANTITY, levels = c("dn", "tra", "tre", "sre", "bt", "idx")),
                             .getNumeric(BANDS))),]
     
     structure(obj, class = c("ImageMetaData", "RStoolbox"))    
@@ -218,18 +223,14 @@ ImageMetaData <- function(file = NA, format = NA, sat = NA, sen = NA,scene = NA,
 
 #' @method print ImageMetaData
 #' @export 
-print.ImageMetaData <- function(x) {    
+print.ImageMetaData <- function(x) { 
     
-    cat("Scene:\t\t", x$SCENE_ID,
-            "\nSatellite:\t", x$SATELLITE, 
-            "\nSensor:\t\t", x$SENSOR,
-            "\nDate:\t\t", format(x$ACQUISITION_DATE, "%F"),
-            "\nPath/Row:\t", paste(x$PATH_ROW, collapse="/"),
-            "\nProjection:\t", projection(x$PROJECTION)
-    )
-    cat("\n\nData:\n") 
-    print(x$DATA[, c("FILES", "PRODUCT", "CATEGORY")])
+    labs <- format(c("Scene:", "Satellite:", "Sensor:", "Date:", "Path/Row:", "Projection:")) 
+    vals <- c(x$SCENE_ID, x$SATELLITE,x$SENSOR,format(x$ACQUISITION_DATE, "%F"), paste(x$PATH_ROW, collapse="/"), projection(x$PROJECTION))
+    cat(paste(labs, vals), fill =1)
     
+    cat("\nData:\n") 
+    print(x$DATA[, c("FILES", "QUANTITY", "CATEGORY")])    
     hasCal <- vapply(x[c("CALRAD", "CALREF", "CALBT")], is.data.frame, logical(1))
     
     cat("\nAvailable calibration parameters (gain and offset):\n") 
