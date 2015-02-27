@@ -5,7 +5,7 @@
 #' 
 #' @param img raster object
 #' @param metaData object of class ImageMetaData or a path to the meta data (MTL) file. 
-#' @param radianceOnly Logical. If \code{TRUE} only radiance will be calculated. Otherwise reflectance and brightness temperature are calculated. 
+#' @param radiance Logical. If \code{TRUE} only radiance will be calculated. Otherwise reflectance and brightness temperature are calculated. 
 #' @param method Radiometric correction method to be used. There are currently four methods available (see Details):
 #' "APREF", "SDOS", "DOS", "COSTZ".
 #' @param bandSet numeric or character. original Landsat band numbers or names in the form of ("B1", "B2" etc). If set to 'full' all bands in the solar region will be processed.
@@ -18,7 +18,7 @@
 #' @note This was originally a fork of randcorr in the landsat package. It may be slower, however it works on Raster* objects and hence is memory-safe.
 #' @details 
 #' 
-#' Conversion to top of atmosphere radiance (W/m2 * srad * \eqn{\mu}m) 
+#' Conversion to top of atmosphere radiance (\eqn{W/(m^2 * srad * \mum)}) 
 #' Conversion to at-satellite brightness temperature (K)
 #' Conversion to top of atmosphere reflectance (unitless) corrected for the sun angle
 #' Estimation of at-surface spectral reflectance (unitless)
@@ -30,17 +30,20 @@
 #' \item{SDOS}{Simple dark object subtraction. Classical DOS, Lhaze must be estimated for each band separately.}
 #' }
 #'  
+#' The implemented sun-earth distances neglect the earth's eccentricity. Instead it uses a 100 year daily average (1979-2070).
+#' 
+#' 
 #' Atmospheric haze decay model according to Chavez (1989)
 #' \describe{
 #' \item{veryClear}{\eqn{\lambda^{-4.0}}}
 #' \item{clear}{\eqn{\lambda^{-2.0}}}
 #' \item{moderate}{\eqn{\lambda^{-1.0}}}
 #' \item{hazy}{\eqn{\lambda^{-0.7}}}
-#' \item{veryHazy}{\eqn{\lambda^{-0.5}}}
+#' \item{veryHazy}{\eqn{\lambda^{-0.5}}} 
 #' }
 #' @references S. Goslee (2011): Analyzing Remote Sensing Data in R: The landsat Package. Journal of Statistical Software 43(4).
 #' @export
-radCor <-	function(img, metaData, radianceOnly = FALSE,  method = "APREF", bandSet = "full", SHV, hazeBand, atHaze, darkProp = 0.02, verbose){
+radCor <-	function(img, metaData, radiance = FALSE,  method = "APREF", bandSet = "full", SHV, hazeBand, atHaze, darkProp = 0.02, verbose){
     # http://landsat.usgs.gov/Landsat8_Using_Product.php
     
     if(!method %in% c("APREF", "DOS", "COSTZ", "SDOS")) stop("method must be one of 'APREF', 'DOS', 'COSTZ' 'SDOS'", call.=FALSE)
@@ -49,7 +52,7 @@ radCor <-	function(img, metaData, radianceOnly = FALSE,  method = "APREF", bandS
         on.exit(options(RStoolbox.verbose = verbold))
         options(RStoolbox.verbose = verbose)
     }
-    if(radianceOnly & method != "APREF"){
+    if(radiance & method != "APREF"){
         .vMessage("For radiance calculations the 'method' argument is ignored")
         method <- "APREF"
     }
@@ -95,7 +98,7 @@ radCor <-	function(img, metaData, radianceOnly = FALSE,  method = "APREF", bandS
     exclBands	<- origBands[!origBands %in% c(bandSet, tirBands)]   
     excl 		<- if(length(exclBands) > 0) img[[exclBands]] else  NULL
     
-    if(radianceOnly) {
+    if(radiance) {
         bandSet <- c(bandSet, tirBands)
         .vMessage("Bands to convert to toa radiance: ", paste(bandSet, collapse = ", "))
     } else {
@@ -105,7 +108,7 @@ radCor <-	function(img, metaData, radianceOnly = FALSE,  method = "APREF", bandS
     } 
     
     ## Thermal processing
-    if(!radianceOnly & length(tirBands) > 0) {
+    if(!radiance & length(tirBands) > 0) {
         .vMessage("Processing thermal band(s)")
         K1  	<- metaData$CALBT[tirBands, "K1"]
         K2   	<- metaData$CALBT[tirBands, "K2"]
@@ -119,13 +122,13 @@ radCor <-	function(img, metaData, radianceOnly = FALSE,  method = "APREF", bandS
     
     ## Radiance and reflectance processing
     GAIN    <- metaData$CALRAD[bandSet,"gain"]
-    OFFSET  <- metaData$CALRAD[bandSet,"offset"] 
-    if(method == "APREF") {
-        TAUz <- 1
-        TAUv <- 1
-        Edown <- 0
-        Lhaze <- 0      
-    } else {   
+    OFFSET  <- metaData$CALRAD[bandSet,"offset"]  
+    TAUz <- 1
+    TAUv <- 1
+    Edown <- 0
+    Lhaze <- 0   
+    if(method != "APREF") {
+        
         ## Estimate SHV automatically
         if(missing(SHV)){
             if(missing(hazeBand))  hazeBand <- names(img)[1]
@@ -144,7 +147,7 @@ radCor <-	function(img, metaData, radianceOnly = FALSE,  method = "APREF", bandS
             SHV <- SHV[[1]]
         }
         
-   
+        
         if(method == "SDOS") {
             SHVdummy <- rep(0, length(bandSet))  
             names(SHVdummy) <- bandSet
@@ -152,15 +155,14 @@ radCor <-	function(img, metaData, radianceOnly = FALSE,  method = "APREF", bandS
             SHV <- SHVdummy
             hazeBand <- bandSet
         }
-        TAUz <- 1
-        TAUv <- 1
-        Edown <- 0				
+        
         if (method == "COSTZ") {
             TAUz <- suntheta
             TAUv <- satphi
         }  
         
         ## 1% correction and conversion to radiance
+        ## TODO: Calculate esun manually based on spectral response curves
         esun 	 <- sDB[hazeBand, "esun"]     
         GAIN_h 	 <- metaData$CALRAD[hazeBand,"gain"]
         OFFSET_h <- metaData$CALRAD[hazeBand,"offset"]
@@ -175,18 +177,19 @@ radCor <-	function(img, metaData, radianceOnly = FALSE,  method = "APREF", bandS
                 .vMessage("Selecting atmosphere: '", atHaze, "'")
             }	
             if(is.numeric(hazeBand)) hazeBand <- names(img)[hazeBand]
-            Lhaze	  <- Lhaze  * sDB[bandSet, paste0(hazeBand,"_", atHaze)]
+            Lhaze	  <- Lhaze  * sDB[bandSet, paste0(hazeBand,"_", atHaze)] 
+            ## Calculate corrected RAD_haze
+            NORM  <- GAIN / GAIN_h
+            Lhaze <- Lhaze * NORM + OFFSET
+            
         }    
-        ## Calculate corrected RAD_haze
-        NORM  <- GAIN / GAIN_h
-        Lhaze <- Lhaze * NORM + OFFSET
         
         # In case Lhaze becomes negative we reset it to zero to prevent artefacts.
         Lhaze [Lhaze < 0] <- 0
     }
     
     
-    if(radianceOnly)  { 
+    if(radiance)  { 
         ## Radiance
         layernames <- gsub("_dn", "_tra", bandSet)
     } else {

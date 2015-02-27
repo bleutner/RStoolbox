@@ -4,7 +4,7 @@
 \alias{radCor}
 \title{Radiometric calibration and correction}
 \usage{
-radCor(img, metaData, radianceOnly = FALSE, method = "APREF",
+radCor(img, metaData, radiance = FALSE, method = "APREF",
   bandSet = "full", SHV, hazeBand, atHaze, darkProp = 0.02, verbose)
 }
 \arguments{
@@ -12,7 +12,7 @@ radCor(img, metaData, radianceOnly = FALSE, method = "APREF",
 
 \item{metaData}{object of class ImageMetaData or a path to the meta data (MTL) file.}
 
-\item{radianceOnly}{Logical. If \code{TRUE} only radiance will be calculated. Otherwise reflectance and brightness temperature are calculated.}
+\item{radiance}{Logical. If \code{TRUE} only radiance will be calculated. Otherwise reflectance and brightness temperature are calculated.}
 
 \item{method}{Radiometric correction method to be used. There are currently four methods available (see Details):
 "APREF", "SDOS", "DOS", "COSTZ".}
@@ -34,7 +34,7 @@ Implements several different methods for absolute radiometric correction of Land
 You can either specify a metadata file, or supply all neccesary values manually. With proper parametrization APREF and SDOS should work for other sensors as well.
 }
 \details{
-Conversion to top of atmosphere radiance (W/m2 * srad * \eqn{\mu}m)
+Conversion to top of atmosphere radiance (\eqn{W/(m^2 * srad * \mum)})
 Conversion to at-satellite brightness temperature (K)
 Conversion to top of atmosphere reflectance (unitless) corrected for the sun angle
 Estimation of at-surface spectral reflectance (unitless)
@@ -45,6 +45,9 @@ Estimation of at-surface spectral reflectance (unitless)
 \item{COSTZ}{Dark object subtraction following Chaves(1996)}
 \item{SDOS}{Simple dark object subtraction. Classical DOS, Lhaze must be estimated for each band separately.}
 }
+
+The implemented sun-earth distances neglect the earth's eccentricity. Instead it uses a 100 year daily average (1979-2070).
+
 
 Atmospheric haze decay model according to Chavez (1989)
 \describe{

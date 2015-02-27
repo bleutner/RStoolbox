@@ -61,7 +61,7 @@ readMeta <- function(file, raw = FALSE){
         
         if(trailingZeros <- length(grep("0.TIF", bands)) > 1) stop("Trailing zeros")
         
-        prod  <- rep("dn", length(bands))
+        quant  <- rep("dn", length(bands))
         cat	  <-  rep("image", length(bands)) 
         cat[grep("QA", bands)] <- "qa"
         cat[grep("B8", bands)] <- "pan"
@@ -142,13 +142,13 @@ readMeta <- function(file, raw = FALSE){
         proj 	<- CRS(paste0("+proj=utm +zone=",meta$global_metadata$projection_information$utm_proj_params," +datum=WGS84 +units=m"))
         esd		<- .ESdist(date)
         files	<- sapply(meta$bands, "[[", "file_name")   
-        prod	<- luv[sapply(atts, "[", "product")]
+        quant	<- luv[sapply(atts, "[", "product")]
         cat		<- sapply(atts, "[", "category") 
         cat[grep("opacity", names(cat))] <- "qa"
         
         bands	<- gsub(paste0(scene, "_|.tif"), "", files)					
         bs 		<- grepl("_band", files)
-        bands[bs] 	<- paste0("B", .getNumeric(bands[bs]), "_", prod[bs])
+        bands[bs] 	<- paste0("B", .getNumeric(bands[bs]), "_", quant[bs])
         bands[cat == "qa"] <- paste0("QA_", gsub("sr_|_qa", "", bands[cat == "qa"]))
         bands[cat == "index"] <- gsub("SR_", "", toupper(bands[cat == "index"]))
         spatRes <-  vapply(meta$bands,function(x) x$pixel_size["x"], character(1))
@@ -156,7 +156,7 @@ readMeta <- function(file, raw = FALSE){
         vsat	<- as.numeric(sapply(atts, "[" , "saturate_value"))
         scal	<- as.numeric(sapply(atts, "[" , "scale_factor"))
         dataTypes <- c(INT16 = "INT4S", UINT8 = "INT1U")
-        dtyp	<- dataTypes[as.character(sapply(atts, "[" , "data_type"))]
+        dtyp	<- dataTypes[as.character(sapply(atts, "[" , "data_type"))] 
         
         ## Missing
         calrad <- calref <- calbt <- NA
@@ -168,13 +168,12 @@ readMeta <- function(file, raw = FALSE){
     
     
     obj <-  ImageMetaData(file = file, format = format, sat = sat, sen = sen, scene = scene, date = date, pdate = pdate, path = path, radRes=radRes, spatRes = spatRes, row = row, az = az,
-            selv = selv, esd = esd, files = files, bands = bands, prod = prod, cat = cat, na = na, vsat = vsat, scal = scal, dtyp = dtyp, 
+            selv = selv, esd = esd, files = files, bands = bands, quant = quant, cat = cat, na = na, vsat = vsat, scal = scal, dtyp = dtyp, 
             calrad=calrad, calref=calref, calbt=calbt, proj = proj)
     
 }   
 
 
-## TODO: document ImageMetaData
 #' ImageMetaData Class
 #' 
 #' @param file Character. Metadata file
@@ -248,7 +247,7 @@ ImageMetaData <- function(file = NA, format = NA, sat = NA, sen = NA,scene = NA,
 
 #' @method print ImageMetaData
 #' @export 
-print.ImageMetaData <- function(x) { 
+print.ImageMetaData <- function(x, ...) { 
     
     labs <- format(c("Scene:", "Satellite:", "Sensor:", "Date:", "Path/Row:", "Projection:")) 
     vals <- c(x$SCENE_ID, x$SATELLITE,x$SENSOR,format(x$ACQUISITION_DATE, "%F"), paste(x$PATH_ROW, collapse="/"), projection(x$PROJECTION))

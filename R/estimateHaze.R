@@ -6,7 +6,7 @@
 #' @param plot display histograms and haze values
 #' @param returnTables return the frequency table per layer. Only takes effect if x is a Raster* object. If x is a result of estimateSHV tables will always be returned.
 #' @export 
-estimateHaze <- function(x, hazeBand, darkProp = 0.02, plot = FALSE, returnTables = TRUE) {
+estimateHaze <- function(x, hazeBand, darkProp = 0.02, plot = FALSE, returnTables = FALSE) {
     
     ## Initial or repeated run?
     if(inherits(x, "Raster")) {
@@ -53,6 +53,7 @@ estimateHaze <- function(x, hazeBand, darkProp = 0.02, plot = FALSE, returnTable
     ## Run estimation for each band separately
     out   <- lapply(hazeBand, function(bi) {
                 if(!preCalc) {
+                    ## TODO: move freq out of loop
                     tf <- freq(x[[bi]], useNA = "no") 
                 } else {
                     tf <- x$table[[bi]]
