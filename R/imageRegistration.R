@@ -43,7 +43,7 @@ registerImages <- function(slave, master, shift = 3, shiftInc = 1, n = 500) {
                     if(i == 1) j <<- HA
                     MI  <- HA + HB - HAB              
                 } )
-        RStoolbox:::.vMessage("Corrected shift in map units (x/y): ", paste(shifts[which.max(sh),], collapse="/"))
+        .vMessage("Corrected shift in map units (x/y): ", paste(shifts[which.max(sh),], collapse="/"))
         d<-data.frame(shifts, mi=unlist(sh))
         print(ggplot(d) + geom_raster(aes(x,y,fill = mi)))
         slaveShifted <- shift(slave, shifts[which.max(sh),])

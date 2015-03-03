@@ -6,6 +6,18 @@
 ## resulting in this lookup vector ranging from DOY 1 : 336
 .ESdistance <- readRDS("data-raw/sun_earth_dists.rds")
 
+## Raster data type lookup table
+.DATATYPEdb <- read.table(text="datatype min max
+LOG1S 0 1
+INT1S -127 127
+INT1U 0 255
+INT2S 32767 32767
+INT2U 0 65534
+INT4S -2147483647 2147483647
+INT4U 0 4294967296
+FLT4S -3.4e+38 3.4e+38
+FLT8S -1.7e+308 1.7e+308", sep=" ", head=TRUE, row.names="datatype")
+
 
 ## *******************************************************************************************************************
 ## Landsat auxilliary data. Taken from Chander et al 2009
@@ -67,4 +79,4 @@ for(s in names(.LANDSATdb)){
 
 ## *******************************************************************************************************************
 ## Save internal data
-save(.ESdistance, .LANDSATdb, file = "R/sysdata.rda", compress = "gzip")
+save(.ESdistance, .LANDSATdb, .DATATYPEdb, file = "R/sysdata.rda", compress = "gzip")

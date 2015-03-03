@@ -86,7 +86,7 @@ cloudMask <- function(x, threshold, minCloudSize, windowSize1 = 5, windowSize2 =
 	}
 	
 	if(plot){
-		plotRGB(x, 1, 2, 3, title = "Final mask", stretch = "lin")
+		plotRGB(x, 1, 2, 3, stretch = "lin")
 		plot(cmod,  legend = FALSE, add = T, col = "yellow")
 	}
 	
