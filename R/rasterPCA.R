@@ -67,4 +67,4 @@ rasterPCA <- function(img, nSamples = NULL, nComp = nlayers(img), spca = FALSE, 
     structure(list(call = match.call(), model = model, map = out), class = c("rasterPCA", "RStoolbox"))  
     
 }
-
+  
