@@ -88,7 +88,9 @@
 #' par(mfrow=c(1,1))
 #' }
 fCover <- function(classImage, predImage, nSamples = 1000, classes = 1, model = "rf", tuneLength = 3, 
-        tuneGrid = NULL, method = "cv",  maxNA = 0.1, filename = NULL, verbose = FALSE, ...){
+        tuneGrid = NULL, method = "cv",  maxNA = 0.1, filename = NULL, verbose, ...){
+   
+    if(!missing("verbose")) .initVerbose(verbose)
     
     ## Resolution check
     r1 		<- res(predImage)[1]
@@ -104,19 +106,19 @@ fCover <- function(classImage, predImage, nSamples = 1000, classes = 1, model = 
     args_writeRaster$filename <- if(length(classes) == 1) filename else NULL ## write raster here already during predict if only one layer is output
     
     ## Draw random sample from coarse res image
-    if(verbose) message("Collecting random samples")
+    .vMessage("Collecting random samples")
     dummy   <- raster(predImage) 
     dummyEx <- extent(crop(dummy, classImage, snap = "in")) ## crop properly to avoid sampling in marginal pixels (otherwise sampleRandom uses sanp='near', potentially resulting in incomple pixels)
     ranSam  <- sampleRandom(predImage, size = nSamples, ext = dummyEx*0.8, xy = TRUE, na.rm = TRUE)
     
     ## Extract classified (high res) values
-    if(verbose) message("Extracting classified pixels")
+    .vMessage("Extracting classified pixels")
     d 	 <- ranSam[,c("x","y")]
     exts <- apply(cbind(d - r1/2, d + r1/2)[,c(1,3,2,4)], 1, extent) ## tried this with SpatialPolygons but thats even slower
     vals <- .parXapply(X = exts, XFUN = "lapply", FUN = function(ext, classIm=classImage) extract(x = classIm, y = ext, na.rm=FALSE), envir=environment())
      
     ## Calculate fractional cover
-    if(verbose) message("Calculating fractional cover")
+    .vMessage("Calculating fractional cover")
     
     tabl <- lapply(vals, function(x) table(x, useNA = "always") / length(x))
     fCov <- do.call("rbind", lapply(tabl, "[", as.character(classes)))
@@ -128,7 +130,7 @@ fCover <- function(classImage, predImage, nSamples = 1000, classes = 1, model = 
     .registerDoParallel()
     ## Fit regression model and predict
     fCL <- lapply(1:length(classes), function(cl){
-                if(verbose) message("Fitting regression model for class ", cl)
+                .vMessage("Fitting regression model for class ", cl)
                 
                 ## Assemble training data (and remove cells exceeding maxNA)
                 trainingData <- data.frame(response = fCov[include, cl], ranSam[include, -c(1:2)])
@@ -139,7 +141,7 @@ fCover <- function(classImage, predImage, nSamples = 1000, classes = 1, model = 
                         trControl = do.call("trainControl", args_trainControl))
                 
                 ## Predict  
-                if(verbose) message(paste0("Predicting fractional cover for class ", cl))               
+                .vMessage(paste0("Predicting fractional cover for class ", cl))               
                 out <- .paraRasterFun(predImage, rasterFun = raster::predict, args = list(model = modelFit, na.rm = TRUE), wrArgs =  args_writeRaster)              
                 list(modelFit, out)                
             })

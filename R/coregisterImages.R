@@ -10,16 +10,18 @@
 #' @param shiftInc Numeric. Shift increment (in pixels, but not restricted to integer). Ignored if \code{shift} is a matrix.
 #' @param n Integer. Number of samples to calculate mutual information. 
 #' @param doShift Logical. Perform shift with identifed parameters. If \code{FALSE} it will return the shifts with corresponing mutual information.
+#' @param verbose Logical. Print status messages. Overrides global RStoolbox.verbose option.
+#' @param ... further arguments passed to \code{\link[raster]{writeRaster}}.
 #' @details 
 #' Currently only a simple linear x - y shift is considered and tested. No higher order shifts (e.g. rotation, non-linear transformation) are performed. This means that your imagery
 #' should already be properly geometrically corrected.
 #' @return 
 #' \code{doShift=TRUE} returns a Raster* object (x-y shifted slave image).  \code{doShift=FALSE} returns a data.frame containing the shifts (columns x and y) and the corresponding mutual information (mi).
 #' @export 
-coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, n = 500, doShift = TRUE) {
+coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, n = 500, doShift = TRUE, verbose, ...) {
     #if(!swin%%2 | !mwin%%2) stop("swin and mwin must be odd numbers")
     method <- "mi" ## method choice disabled, currently only mi is ready
-    
+    if(!missing("verbose")) .initVerbose(verbose)
     if(!compareCRS(master,  slave)) stop("Projection must be the same for master and slave")
     
     if(method == "mi") {
@@ -56,7 +58,7 @@ coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, n = 500, do
                 }, envir = environment() )
         
         .vMessage("Corrected shift in map units (x/y): ", paste(shifts[which.max(sh),], collapse="/"))
-        if(doShift) return(shift(slave, shifts[which.max(sh),])) else return(data.frame(shifts, mi=unlist(sh)))
+        if(doShift) return(shift(slave, shifts[which.max(sh),], ...)) else return(data.frame(shifts, mi=unlist(sh)))
     }
     
 #    if(method == "areaCor"){

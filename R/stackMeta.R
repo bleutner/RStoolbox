@@ -41,7 +41,7 @@ stackMeta <- function(file, allResolutions = FALSE, quantity = "all", category =
     rl <- lapply(paste0(path, files), raster)
     resL <- lapply(rl, function(x) res(x)[1])
     
-    if(any(resL > 30)) message("Your Landsat data includes TIR band(s) which were not resampled to 30m.")
+    if(any(resL > 30)) .vMessage("Your Landsat data includes TIR band(s) which were not resampled to 30m.")
     
     ## Stack
     returnRes <- if(allResolutions) unlist(unique(resL)) else 30

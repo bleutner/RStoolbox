@@ -10,7 +10,7 @@
 #' @param lowBand bandname or number for the blue band
 #' @param tirBand bandname or number for the thermal band
 #' @param plot logical. Provides plots of the cloud mask for all sub-steps (sanitizing etc.) Helpful to find proper parametrization.
-#' @param verbose logical. Print messages or supress.
+#' @param verbose logical. Print messages or suppress.
 #' @param returnDiffLayer logical. If \code{TRUE}, the difference layer will be returned along with the cloudmask. This option allows to re-use the difference layer in cloudMask.
 #' @note Typically clouds are cold in the thermal region and have high reflectance in short wavelengths (blue). By differencing the two bands and thresholding a rough cloud mask can be obtained.
 #' More sophisticated approaches can be found elsewhere, e.g. \href{http://code.google.com/p/fmask}{fmask}.
@@ -27,12 +27,14 @@
 #' }
 cloudMask <- function(x, threshold, minCloudSize, windowSize1 = 5, windowSize2 = 11, maskGrowing = TRUE, sanitize = TRUE, lowBand = "B1", tirBand = "B6", plot = TRUE, verbose = TRUE, returnDiffLayer = FALSE){
 	
-	## Set-up graphics device
+	## Set-up graphics device 
+    if(!missing("verbose")) .initVerbose(verbose)
+
 	op <- par(mfrow = c(2, 1 + sum(sanitize, maskGrowing)))
-	
+    
 	## Calculate or re-reuse cloud difference layer	
 	if("CDIFF" %in% names(x)) {
-		if(verbose) message("Re-using CDIFF layer from previous run.")
+		.vMessage("Re-using CDIFF layer from previous run.")
 		cdiff <- x[["CDIFF"]]
 	} else {
 		cdiff <- x[[lowBand]] - x[[tirBand]]
@@ -42,16 +44,16 @@ cloudMask <- function(x, threshold, minCloudSize, windowSize1 = 5, windowSize2 =
 	## Guess threshold
 	if(missing(threshold)) {
 		threshold <- quantile(cdiff@data@max:cdiff@data@min, 0.45)
-		if(verbose) {message(paste0("Estimated cloud threshold should be between ", round(cdiff@data@min), " and ", round(cdiff@data@max)) )
-			message(paste0("Guessed threshold (rounded): ", round(threshold)))
-		}
+		.vMessage(paste0("Estimated cloud threshold should be between ", round(cdiff@data@min), " and ", round(cdiff@data@max)))
+	    .vMessage(paste0("Guessed threshold (rounded): ", round(threshold)))
+		
 	}
 	if(threshold < cdiff@data@min | threshold > cdiff@data@max) warning("Threshold is not within the estimated data range", call. = FALSE)
 	
 	if(plot) plot(cdiff, main = "Cloud layer: blue - tir difference")
 	
 	## Thresholding
-	if(verbose) message("Begin thresholding")
+	.vMessage("Begin thresholding")
 	cmask <- cdiff > threshold
 	cmask <- mask(cmask, cmask, maskvalue = 0)
 	
@@ -60,7 +62,7 @@ cloudMask <- function(x, threshold, minCloudSize, windowSize1 = 5, windowSize2 =
 	
 	## Remove "clouds" smaller than minCloudSize
 	if(sanitize) {
-		if(verbose) message("Begin sanitzing")
+		.vMessage("Begin sanitzing")
 		if(missing(minCloudSize)) minCloudSize <- windowSize1 ^ 2
 		w <- matrix(ncol = windowSize1, nrow = windowSize1, 1)
 		if(minCloudSize >= windowSize1^2) {
@@ -77,7 +79,7 @@ cloudMask <- function(x, threshold, minCloudSize, windowSize1 = 5, windowSize2 =
 	
 	## Buffer cloud centers (we could also do a circular buffer, but for now this should suffice)
 	if(maskGrowing){
-		if(verbose) message("Begin region-growing")
+		.vMessage("Begin region-growing")
 		w <- matrix(ncol = windowSize2, nrow = windowSize2, 1)
 		cmod <- focal(cmod, w, na.rm = TRUE )
 		cmod[!is.na(cmod)] <- 1L

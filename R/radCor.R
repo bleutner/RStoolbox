@@ -45,13 +45,11 @@
 #' @export
 radCor <-	function(img, metaData, radiance = FALSE,  method = "APREF", bandSet = "full", SHV, hazeBand, atHaze, darkProp = 0.02, verbose){
     # http://landsat.usgs.gov/Landsat8_Using_Product.php
-    
+     if(!missing("verbose")) .initVerbose(verbose)
+
     if(!method %in% c("APREF", "DOS", "COSTZ", "SDOS")) stop("method must be one of 'APREF', 'DOS', 'COSTZ' 'SDOS'", call.=FALSE)
     
-    if(!missing(verbose)) {verbold <- force(getOption("RStoolbox.verbose"))
-        on.exit(options(RStoolbox.verbose = verbold))
-        options(RStoolbox.verbose = verbose)
-    }
+    
     if(radiance & method != "APREF"){
         .vMessage("For radiance calculations the 'method' argument is ignored")
         method <- "APREF"

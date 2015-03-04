@@ -193,9 +193,23 @@
 #' On package startup
 #' @noRd 
 .onLoad <- function(libname, pkgname){
-    options(RStoolbox.verbose = FALSE)
+    if(is.null(getOption("RStoolbox.verbose")))  options(RStoolbox.verbose = FALSE)
 }
 
+#' Init verbosity within functions 
+#' 
+#' will restore global options after function has been called
+#' @param verbose Logical
+#' @keywords internal
+#' @noRd 
+.initVerbose <- function(verbose){
+    verbold <- force(getOption("RStoolbox.verbose"))
+    do.call("on.exit", list(substitute(options(RStoolbox.verbose = verbold))), envir=parent.frame())
+    options(RStoolbox.verbose = verbose)
+}
+
+ 
+ 
 #' Clean up on package unload
 #' @noRd 
 .onUnload <- function (libpath) {

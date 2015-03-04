@@ -55,10 +55,12 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL, nSamp
         areaWeightedSampling = TRUE, polygonBasedCV = FALSE, trainPartition = NULL,
         model = "rf", tuneLength = 3,  kfold = 5,
         minDist = 2, forceBuffer = FALSE,
-        filename = NULL, verbose = FALSE,
+        filename = NULL, verbose,
         predict = TRUE, overwrite = TRUE, ...) {
     # TODO: check applicability of raster:::.intersectExtent 
     
+    if(!missing("verbose")) .initVerbose(verbose)
+    verbose <- getOption("RStoolbox.verbose")
     ## Object types
     if(!inherits(img, 'Raster')) stop("img must be a raster object (RasterLayer,RasterBrick or RasterStack)", call.=FALSE)
     if(inherits(trainData, 'SpatialPolygonsDataFrame')) {
@@ -76,7 +78,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL, nSamp
     if(is.null(responseCol)){
         if(ncol(trainData) == 1) {
             responseCol <- 1
-            message("You did not specify the responseCol argument. \nSince your trainData only contains one column it is assumed this is it")
+            .vMessage("You did not specify the responseCol argument. \nSince your trainData only contains one column it is assumed this is it")
         } else {
             stop(paste("Dont't know which column in trainData contains the class attribute. \nPlease specify responseCol as one of: ", paste(colnames(trainData@data),collapse=", ")), call. = FALSE)
         }
@@ -174,7 +176,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL, nSamp
         }
         
         ## Extract response and predictors and combine in final training set
-        if(verbose) message("Begin sampling training data")
+        .vMessage("Begin sampling training data")
         dataSet <- data.frame(
                 if(trainDataType == "polygons") over(x = xy, y = SHAPE)[c(responseCol,foldCol)] else SHAPE[[responseCol]],
                 extract(RASTER, xy, cellnumbers = TRUE))
@@ -208,7 +210,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL, nSamp
     }
     
     ## TRAIN ######################### 
-    if(verbose) message("Starting to fit model")   
+    .vMessage("Starting to fit model")   
     .registerDoParallel()
     indexIn <- if(polygonBasedCV) lapply(1:kfold, function(x) which(x != indexOut)) 
     caretModel 	<- train(response ~ ., data = dataSet, method = model, tuneLength = tuneLength, 
@@ -216,10 +218,9 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL, nSamp
     
     ## PREDICT ######################### 
     progress <- "none"
-    if(verbose) { 
-        message("Starting spatial predict")
-        progress <- "text"
-    }
+    .vMessage("Starting spatial predict")
+    if(verbose)  progress <- "text"
+    
     
     ## Don't know whether we need this, who would be crazy enough to do more than 255 classes...
     modelFit <- getTrainPerf(caretModel)
