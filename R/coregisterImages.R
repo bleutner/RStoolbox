@@ -1,18 +1,26 @@
-#' Image to Image Registration based on Mutual Information
+#' Image to Image Co-Registration based on Mutual Information
 #' 
 #' Shifts a slave image to match the reference image (master). Match is based on maximum
-#' mutual information.
+#' mutual information. 
 #' 
 #' @param slave Raster* object. Slave image to shift to master.
 #' @param master Raster* object. Reference image.
-#' @param shift Numeric or matrix. If numeric, then shift is the maximal absolute radius (in pixels) which \code{slave} is shifted (\code{seq(-shift, shift, by=shiftInc)}). 
+#' @param shift Numeric or matrix. If numeric, then shift is the maximal absolute radius (in pixels of \code{master} resolution) which \code{slave} is shifted (\code{seq(-shift, shift, by=shiftInc)}). 
 #'  If shift is a matrix it must have two columns (x shift an y shift), then only these shift values will be tested.
 #' @param shiftInc Numeric. Shift increment (in pixels, but not restricted to integer). Ignored if \code{shift} is a matrix.
-#' @param n Integer. Number of samples to calculate mutual information.
+#' @param n Integer. Number of samples to calculate mutual information. 
+#' @param doShift Logical. Perform shift with identifed parameters. If \code{FALSE} it will return the shifts with corresponing mutual information.
+#' @details 
+#' Currently only a simple linear x - y shift is considered and tested. No higher order shifts (e.g. rotation, non-linear transformation) are performed. This means that your imagery
+#' should already be properly geometrically corrected.
+#' @return 
+#' \code{doShift=TRUE} returns a Raster* object (x-y shifted slave image).  \code{doShift=FALSE} returns a data.frame containing the shifts (columns x and y) and the corresponding mutual information (mi).
 #' @export 
-registerImages <- function(slave, master, shift = 3, shiftInc = 1, n = 500) {
+coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, n = 500, doShift = TRUE) {
     #if(!swin%%2 | !mwin%%2) stop("swin and mwin must be odd numbers")
     method <- "mi" ## method choice disabled, currently only mi is ready
+    
+    if(!compareCRS(master,  slave)) stop("Projection must be the same for master and slave")
     
     if(method == "mi") {
         
@@ -23,16 +31,19 @@ registerImages <- function(slave, master, shift = 3, shiftInc = 1, n = 500) {
             shifts <- expand.grid(shift * res(master)[1], shift * res(master)[2])
         } 
         names(shifts) <- c("x", "y")        
-                
-        XYslaves <- sampleRandom(master, size = n, xy = TRUE)
+
+        ran <- apply(shifts, 2, range)
+        minex <- extent(shift(slave, ran[1,1], ran[1,2]))
+        maxex <- extent(shift(slave, ran[2,1], ran[2,2]))   
+        
+        XYslaves <- sampleRandom(master, size = n, extent = .getExtentOverlap(minex, maxex), xy = TRUE)
         xy <- XYslaves[,c(1,2)]
         me <- XYslaves[,-c(1,2)]
         ta <- table(me)
         p  <- ta/sum(ta)
         HA <- -sum(p*log(p))
-        
-
-        sh <- lapply(1:nrow(shifts), function(i){
+    
+        sh <- .parXapply(X = 1:nrow(shifts), XFUN = "lapply", FUN = function(i){
                     se  <- extract(shift(slave, shifts[i,1], shifts[i,2]), xy)
                     tb  <- table(se)
                     p   <- tb/sum(tb)
@@ -42,12 +53,10 @@ registerImages <- function(slave, master, shift = 3, shiftInc = 1, n = 500) {
                     HAB <-  - sum(p*log(p))     
                     if(i == 1) j <<- HA
                     MI  <- HA + HB - HAB              
-                } )
+                }, envir = environment() )
+        
         .vMessage("Corrected shift in map units (x/y): ", paste(shifts[which.max(sh),], collapse="/"))
-        d<-data.frame(shifts, mi=unlist(sh))
-        print(ggplot(d) + geom_raster(aes(x,y,fill = mi)))
-        slaveShifted <- shift(slave, shifts[which.max(sh),])
-        return(slaveShifted)
+        if(doShift) return(shift(slave, shifts[which.max(sh),])) else return(data.frame(shifts, mi=unlist(sh)))
     }
     
 #    if(method == "areaCor"){

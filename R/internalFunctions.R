@@ -165,9 +165,30 @@
     lapply(bands, function(band) if(is.character(band)) which(names(raster) == band) else band ) 
 }
 
+#' Print message if global RStoolbox.verbose option is TRUE
+#' @keywords internal
+#' @noRd 
 .vMessage <- function(...){    
     if(getOption("RStoolbox.verbose")){message(...)}
 }
+
+
+#' Get overlap extent from multiple Extent objects (set union)
+#' 
+#' Can be achieved by raster::intersect as well, however .getExtentOverlap()
+#' can deal with more than two extents.
+#' 
+#' @param ... Extent objects to combine
+#' @return Extent object
+#' @noRd 
+.getExtentOverlap <- function(...){
+    el <- list(...)
+    if(any(!vapply(el, inherits, what = "Extent", logical(1)))) stop("You can only supply Extent objects to getExtentOverlap")
+    em <- do.call("rbind", lapply(el, as.vector))
+    extent(c(max(em[,1]), min(em[,2]), max(em[,3]), min(em[,4])))    
+}
+
+
 
 #' On package startup
 #' @noRd 
@@ -180,3 +201,5 @@
 .onUnload <- function (libpath) {
     library.dynam.unload("RStoolbox", libpath)
 }
+
+
