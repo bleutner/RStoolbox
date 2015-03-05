@@ -45,24 +45,12 @@ panSharpen <- function(img, pan, r, g, b, method = "pca", norm=TRUE) {
         Mbwd <- t(Mfwd)
         Mbwd[1,] <- 1  
         
-        Ivv   <- .paraRasterFun(img[[c(r,g,b)]], rasterFun = calc, args = list( fun = function(x) x %*% Mfwd))
+        Ivv   <- .paraRasterFun(img[[c(r,g,b)]], rasterFun = calc, args = list(fun = function(x) x %*% Mfwd))
         Ivvr  <- raster::resample(Ivv[[2:3]], pan, method = "bilinear")
         panMa <- histMatch(pan, Ivv[[1]])
-        panimg   <- .paraRasterFun(stack(panMa, Ivvr) , rasterFun = calc, args = list( fun = function(x) x %*% Mbwd))
+        panimg   <- .paraRasterFun(stack(panMa, Ivvr) , rasterFun = calc, args = list(fun = function(x) x %*% Mbwd))
         return(panimg)
     }
 }
 
 
-
-
-normImage <- function(x, y, xmin, xmax, ymin, ymax, forceMinMax = FALSE) {
-    if(forceMinMax)  x <- setMinMax(x)
-    if(!missing(y) && forceMinMax)  y <- setMinMax(y)
-    if(missing("ymin")) ymin <- y@data@min
-    if(missing("ymax")) ymax <- y@data@max
-    if(missing("xmin"))	xmin <- x@data@min 
-    if(missing("xmax")) xmax <- x@data@max
-    scal <- (ymax - ymin)/(xmax-xmin) 
-    .paraRasterFun(x, rasterFun = calc,  args = list(fun = function(x) {(x - xmin) * scal + ymin}))      
-}              

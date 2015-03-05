@@ -29,7 +29,7 @@ cloudMask(x, threshold, minCloudSize, windowSize1 = 5, windowSize2 = 11,
 
 \item{plot}{logical. Provides plots of the cloud mask for all sub-steps (sanitizing etc.) Helpful to find proper parametrization.}
 
-\item{verbose}{logical. Print messages or supress.}
+\item{verbose}{logical. Print messages or suppress.}
 
 \item{returnDiffLayer}{logical. If \code{TRUE}, the difference layer will be returned along with the cloudmask. This option allows to re-use the difference layer in cloudMask.}
 }

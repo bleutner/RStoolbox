@@ -7,7 +7,7 @@
 superClass(img, trainData, valData = NULL, responseCol = NULL,
   nSamples = 100, areaWeightedSampling = TRUE, polygonBasedCV = FALSE,
   trainPartition = NULL, model = "rf", tuneLength = 3, kfold = 5,
-  minDist = 2, forceBuffer = FALSE, filename = NULL, verbose = FALSE,
+  minDist = 2, forceBuffer = FALSE, filename = NULL, verbose,
   predict = TRUE, overwrite = TRUE, ...)
 }
 \arguments{

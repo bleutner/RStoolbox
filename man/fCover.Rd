@@ -6,7 +6,7 @@
 \usage{
 fCover(classImage, predImage, nSamples = 1000, classes = 1, model = "rf",
   tuneLength = 3, tuneGrid = NULL, method = "cv", maxNA = 0.1,
-  filename = NULL, verbose = FALSE, ...)
+  filename = NULL, verbose, ...)
 }
 \arguments{
 \item{classImage}{high resolution RasterLayer containing a landcover classification, e.g. as obtained by \link{superClass}.}

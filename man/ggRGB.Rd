@@ -7,7 +7,7 @@
 ggRGB(x, r = 3, g = 2, b = 1, scale, maxpixels = 5e+05,
   stretch = NULL, ext = NULL, minMax = NULL, clipToMinMax = FALSE,
   quantileStretch = c(0.02, 0.98), ggObj = TRUE, ggLayer = FALSE,
-  coord_equal = TRUE, interpolate = FALSE, annotation = TRUE)
+  alpha = 1, coord_equal = TRUE, interpolate = FALSE, annotation = TRUE)
 }
 \arguments{
 \item{x}{RasterStack or RasterBrick}
@@ -37,6 +37,8 @@ or a 3x2 matrix with separate min and max values (columns) for each layer (rows)
 
 \item{ggLayer}{Logical. If \code{TRUE} a ggplot2 layer is returned. This is usefull if you want to add it to an existing ggplot2 object.
 Note that if \code{TRUE} & \code{annotate = FALSE} you have to add a scale_fill_identity() manually in your call to ggplot().}
+
+\item{alpha}{Numeric. Transparency between 0 and 1.}
 
 \item{coord_equal}{Logical. Uses coord_equal, i.e. aspect ratio of 1:1.}
 

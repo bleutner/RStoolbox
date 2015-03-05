@@ -5,12 +5,12 @@
 \title{Image to Image Co-Registration based on Mutual Information}
 \usage{
 coregisterImages(slave, master, shift = 3, shiftInc = 1, n = 500,
-  doShift = TRUE)
+  reportStats = FALSE, verbose, nBins = 100, ...)
 }
 \arguments{
-\item{slave}{Raster* object. Slave image to shift to master.}
+\item{slave}{Raster* object. Slave image to shift to master. Slave and master must have equal numbers of bands.}
 
-\item{master}{Raster* object. Reference image.}
+\item{master}{Raster* object. Reference image. Slave and master must have equal numbers of bands.}
 
 \item{shift}{Numeric or matrix. If numeric, then shift is the maximal absolute radius (in pixels of \code{master} resolution) which \code{slave} is shifted (\code{seq(-shift, shift, by=shiftInc)}).
 If shift is a matrix it must have two columns (x shift an y shift), then only these shift values will be tested.}
@@ -19,10 +19,18 @@ If shift is a matrix it must have two columns (x shift an y shift), then only th
 
 \item{n}{Integer. Number of samples to calculate mutual information.}
 
-\item{doShift}{Logical. Perform shift with identifed parameters. If \code{FALSE} it will return the shifts with corresponing mutual information.}
+\item{reportStats}{Logical. If \code{FALSE} it will return only the shifted images. Otherwise it will return the shifted image in a list containing stats such as mutual information per shift and joint histograms.}
+
+\item{verbose}{Logical. Print status messages. Overrides global RStoolbox.verbose option.}
+
+\item{nBins}{Integer. Number of bins to calculate joint histogram.}
+
+\item{...}{further arguments passed to \code{\link[raster]{writeRaster}}.}
 }
 \value{
-\code{doShift=TRUE} returns a Raster* object (x-y shifted slave image).  \code{doShift=FALSE} returns a data.frame containing the shifts (columns x and y) and the corresponding mutual information (mi).
+\code{reportStats=FALSE} returns a Raster* object (x-y shifted slave image).
+\code{reportStats=TRUE} returns a list containing a data.frame with mutual information per shift ($MI), the shift of maximum MI ($bestShift),
+the joint histograms per shift in a list ($jointHist) and the shifted image ($coregImg).
 }
 \description{
 Shifts a slave image to match the reference image (master). Match is based on maximum
@@ -31,5 +39,33 @@ mutual information.
 \details{
 Currently only a simple linear x - y shift is considered and tested. No higher order shifts (e.g. rotation, non-linear transformation) are performed. This means that your imagery
 should already be properly geometrically corrected.
+}
+\examples{
+reference <- brick(system.file("external/rlogo.grd", package="raster"))
+## Shift reference 2 pixels to the right and 3 up
+miss_registered <- shift(reference, x = 2, y = 3)
+
+## Compare shift
+p <- ggRGB(reference, NULL, NULL, 3)
+p
+p + ggRGB(miss_registered, 3, NULL, NULL, alpha = 0.5, ggLayer=TRUE)
+
+## Coregister images (and report statistics)
+mrs_coregistered <- coregisterImages(slave = miss_registered, master = reference, reportStats = TRUE)
+
+## Plot mutual information per shift
+ggplot(mrs_coregistered$MI) + geom_raster(aes(x,y,fill=mi))
+
+## Plot joint histograms per shift (x/y shift in facet labels)
+df <- melt(mrs_coregistered$jointHist)
+df$L1 <- factor(df$L1, levels = names(mrs_coregistered$jointHist))
+df[df$value == 0, "value"] <- NA ## don't display p = 0
+ggplot(df) + geom_raster(aes(x = Var2, y = Var1,fill=value)) + facet_wrap(~L1) +
+       scale_fill_gradientn(name = "p", colours =  heat.colors(10), na.value = NA)
+
+## Compare correction
+p <- ggRGB(reference, NULL, NULL, 3)
+p
+p + ggRGB(mrs_coregistered$coregImg,3, NULL,NULL, alpha = 0.5, ggLayer=T)
 }
 

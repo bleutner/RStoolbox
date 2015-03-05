@@ -19,6 +19,7 @@
 #' @param ggObj Logical. If \code{TRUE} a ggplot2 object is returned. If \code{FALSE} a data.frame with coordinates and color will be returned.
 #' @param ggLayer Logical. If \code{TRUE} a ggplot2 layer is returned. This is usefull if you want to add it to an existing ggplot2 object.
 #'  Note that if \code{TRUE} & \code{annotate = FALSE} you have to add a scale_fill_identity() manually in your call to ggplot().
+#' @param alpha Numeric. Transparency between 0 and 1.
 #' @param coord_equal Logical. Uses coord_equal, i.e. aspect ratio of 1:1.
 #' @param interpolate Logical. Interpolate the raster during plotting. Defaults to \code{FALSE}.
 #' @param annotation Logical. If \code{TRUE} annotation_raster is used, otherwise geom_raster()+scale_fill_identity is used.
@@ -30,7 +31,7 @@
 #' ggRGB(br, 1, 2, 3)
 #' ggRGB(br, r=1,g=2,b=3, minMax = matrix(c(100,150,10,200,50,255),  ncol = 2, by = TRUE))
 ggRGB <- function(x, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = NULL, ext = NULL,  minMax = NULL, clipToMinMax = FALSE, quantileStretch = c(0.02,0.98),
-        ggObj = TRUE, ggLayer = FALSE, coord_equal = TRUE, interpolate = FALSE, annotation = TRUE) { 
+        ggObj = TRUE, ggLayer = FALSE, alpha = 1, coord_equal = TRUE, interpolate = FALSE, annotation = TRUE) { 
     # Originally forked from raster:::plotRGB
     # Author: Robert J. Hijmans 
     # Date :  April 2010
@@ -99,11 +100,12 @@ ggRGB <- function(x, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = N
         RGB <- RGBm      
     }
     
+   
     if (!is.null(naind)) {
         z <- rep( NA, times=ncell(rr))
-        z[-naind] <- rgb(RGB[,1], RGB[,2], RGB[,3],  max = scale)
+        z[-naind] <- rgb(RGB[,1], RGB[,2], RGB[,3],  max = scale, alpha = alpha*scale)
     } else {
-        z <- rgb(RGB[,1], RGB[,2], RGB[,3], max = scale)
+        z <- rgb(RGB[,1], RGB[,2], RGB[,3], max = scale, alpha = alpha*scale)
     }
     df_raster <- data.frame(coordinates(rr), fill = z, stringsAsFactors = FALSE)
     
