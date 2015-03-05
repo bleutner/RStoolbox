@@ -14,7 +14,8 @@ ggR <- function(x, layer = 1, maxpixels = 5000000, lowColor = "white", highColor
     colnames(df) <- c("x", "y", names(x[[layer]]))
     layer <- colnames(df)[3]
     
-    if(ggObj) {p <- ggplot(df) + geom_raster(aes_string(x = "x", y = "y", fill = layer)) +
+    if(ggObj) {
+        p <- ggplot(df) + geom_raster(aes_string(x = "x", y = "y", fill = layer)) +
                 scale_fill_gradient(low = lowColor, high = highColor, na.value = NA, name = legendName) +
                 coord_equal() 
                 
