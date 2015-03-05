@@ -5,7 +5,7 @@
 #' 
 #' @param slave Raster* object. Slave image to shift to master. Slave and master must have equal numbers of bands.
 #' @param master Raster* object. Reference image. Slave and master must have equal numbers of bands.
-#' @param shift Numeric or matrix. If numeric, then shift is the maximal absolute radius (in pixels of \code{master} resolution) which \code{slave} is shifted (\code{seq(-shift, shift, by=shiftInc)}). 
+#' @param shift Numeric or matrix. If numeric, then shift is the maximal absolute radius (in pixels of \code{slave} resolution) which \code{slave} is shifted (\code{seq(-shift, shift, by=shiftInc)}). 
 #'  If shift is a matrix it must have two columns (x shift an y shift), then only these shift values will be tested.
 #' @param shiftInc Numeric. Shift increment (in pixels, but not restricted to integer). Ignored if \code{shift} is a matrix.
 #' @param n Integer. Number of samples to calculate mutual information. 
@@ -55,10 +55,11 @@ coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, n = 500, re
     
     
     if(inherits(shift, "matrix") && ncol(shift)  == 2) { 
-        shifts <- shift * res(master) 
+        shifts <- shift * res(slave) 
     } else {
-        shift <- seq(-shift, shift, shiftInc)  
-        shifts <- expand.grid(shift * res(master)[1], shift * res(master)[2])
+        shift <-  seq(0, shift, shiftInc)
+        shift <- c(-rev(shift), shift[-1]) ## always include zero shift
+        shifts <- expand.grid(shift * res(slave)[1], shift * res(slave)[2])
     } 
     names(shifts) <- c("x", "y")        
     
@@ -82,12 +83,31 @@ coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, n = 500, re
    nml <- nlayers(master)
    if(nsl !=  nml)  stop("Currently slave and master must have the same number of layers")
 
+   
+   sep <- extract(slave, shiftPts(xy, x = -shifts[i,1], y = -shifts[i,2]))
+   se  <- extract(shift(slave, shifts[i,1], shifts[i,2]), xy, na.rm=F)                
+   
+   shiftPts <- function(o, x, y) {
+       o[,"x"] <- o[,"x"] + x
+       o[,"y"] <- o[,"y"] + y
+       o
+   }
+   
+   spts <- .parXapply(X = 1:nrow(shifts), XFUN = "lapply", FUN = function(i){
+                xt <- shiftPts(xy, x = -shifts[i,1], y = -shifts[i,2])
+                cellFromXY(slave, xt)
+           }, envir=environment())
+   
+   ucells <- sort(unique(unlist(spts)))
+   lut <- as.matrix(slave[ucells])
+   rownames(lut) <- ucells
+   spts <- lapply(spts, as.character)
 
     ## Shift and calculate mutual information
     sh <- .parXapply(X = 1:nrow(shifts), XFUN = "lapply", FUN = function(i){
-                se  <- extract(shift(slave, shifts[i,1], shifts[i,2]), xy, na.rm=F)                
+                se <- lut[spts[[i]], ]
                 se  <- cut(se, breaks = sbreax, labels = FALSE, include.lowest = TRUE)  
-                
+
                 pab  <- table(me,se)
                 pab  <- pab/sum(pab)
                 
@@ -107,10 +127,11 @@ coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, n = 500, re
             }, envir = environment() )
     
     ## Aggregate stats
+    if(reportStats){
     mi <- vapply(sh,"[[",i=1, numeric(1)) 
     jh <- lapply(sh, function(x) matrix(as.vector(x$joint), nrow=nrow(x$joint), ncol=ncol(x$joint)))   
     names(jh) <- paste(shifts[,"x"], shifts[,"y"], sep = "/")
-    
+}
     ## Find best shift and shift if doShift
     moveIt <- shifts[which.max(mi),]
     .vMessage("Identified shift in map units (x/y): ", paste(moveIt, collapse="/"))
@@ -120,8 +141,22 @@ coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, n = 500, re
     } else {
         return(moved)
     }
-    
-    
+ 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #    if(method == "areaCor"){
 #        mwin = 11, swin = 3, regbands = 3, 
 #    
@@ -153,6 +188,4 @@ coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, n = 500, re
 #    da <- da[da[,"m.cor"] > minCor,] 
 #    ggplot()+geom_segment(data = da, aes(x = s.x, xend = m.x, y=s.y, yend=m.y), arrow = arrow(length = unit(0.4,"cm")))
 #}
-    
-    
-}
+
