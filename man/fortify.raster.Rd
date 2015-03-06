@@ -19,8 +19,6 @@
 \item{maxpixels}{maximal number of pixels to sample}
 
 \item{...}{not used by this method}
-
-\item{data}{not used by this method}
 }
 \value{
 Returns a data.frame with coordinates (x,y) and corresponding raster values.

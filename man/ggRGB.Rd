@@ -38,7 +38,7 @@ or a 3x2 matrix with separate min and max values (columns) for each layer (rows)
 \item{ggLayer}{Logical. If \code{TRUE} a ggplot2 layer is returned. This is usefull if you want to add it to an existing ggplot2 object.
 Note that if \code{TRUE} & \code{annotate = FALSE} you have to add a scale_fill_identity() manually in your call to ggplot().}
 
-\item{alpha}{Numeric. Transparency between 0 and 1.}
+\item{alpha}{Numeric. Transparency (0-1).}
 
 \item{coordEqual}{Logical. Force addition of coord_equal, i.e. aspect ratio of 1:1. Typically usefull for remote sensing data (depending on your projection), hence it defaults to TRUE.
 Note howver, that this does not apply if (\code{ggLayer=FALSE}).}
@@ -61,6 +61,6 @@ ggRGB(br, 1, 2, 3)
 ggRGB(br, r=1,g=2,b=3, minMax = matrix(c(100,150,10,200,50,255),  ncol = 2, by = TRUE))
 }
 \seealso{
-\link{ggR}, \link[=fortify-raster]{fortify}
+\link{ggR}, \link[=fortify.raster]{fortify}
 }
 

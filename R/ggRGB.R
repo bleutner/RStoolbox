@@ -19,14 +19,14 @@
 #' @param ggObj Logical. If \code{TRUE} a ggplot2 object is returned. If \code{FALSE} a data.frame with coordinates and color will be returned.
 #' @param ggLayer Logical. If \code{TRUE} a ggplot2 layer is returned. This is usefull if you want to add it to an existing ggplot2 object.
 #'  Note that if \code{TRUE} & \code{annotate = FALSE} you have to add a scale_fill_identity() manually in your call to ggplot().
-#' @param alpha Numeric. Transparency between 0 and 1.
+#' @param alpha Numeric. Transparency (0-1).
 #' @param coordEqual Logical. Force addition of coord_equal, i.e. aspect ratio of 1:1. Typically usefull for remote sensing data (depending on your projection), hence it defaults to TRUE.
 #'         Note howver, that this does not apply if (\code{ggLayer=FALSE}).
 #' @param annotation Logical. If \code{TRUE} annotation_raster is used, otherwise geom_raster()+scale_fill_identity is used.
 #'  Note that you can't use scale_fill* in addition to the latter, because it already requires scale_fill_identity().
 #' @return A ggplot2 object, or a three column data frame with coordinates and fill colour.
 #' @export
-#' @seealso \link{ggR}, \link[=fortify-raster]{fortify}
+#' @seealso \link{ggR}, \link[=fortify.raster]{fortify}
 #' @examples   
 #' br <- brick(system.file("external/rlogo.grd", package="raster"))
 #' ggRGB(br, 1, 2, 3)

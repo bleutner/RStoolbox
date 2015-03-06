@@ -15,6 +15,10 @@ ggR(img, layer = 1, maxpixels = 5e+05, stretch, quantiles = c(0.02, 0.98),
 
 \item{maxpixels}{Integer. Maximal number of pixels to sample}
 
+\item{stretch}{Character. Either 'lin' or 'hist' for linear or histogram stretch of the data}
+
+\item{quantiles}{Numeric vector with two elements. Min and max quantiles to stretch to. Defaults to 2\% stretch, i.e. c(0.02,0.98).}
+
 \item{coordEqual}{Logical. Force addition of coord_equal, i.e. aspect ratio of 1:1. Typically usefull for remote sensing data (depending on your projection), hence it defaults to TRUE.
 Note howver, that this does not apply if (\code{ggLayer=FALSE}).}
 
@@ -24,7 +28,7 @@ Note howver, that this does not apply if (\code{ggLayer=FALSE}).}
 
 \item{ggObj}{Logical. Return a stand-alone ggplot object (TRUE) or just the data.frame with values and colors}
 
-\item{annotate}{Logical. Uses annotation_raster by default (good to keep aestetic mappings free). If \code{FALSE} uses geom_raster (and aes(fill)).}
+\item{annotation}{Logical. Uses annotation_raster by default (good to keep aestetic mappings free). If \code{FALSE} uses geom_raster (and aes(fill)).}
 }
 \description{
 aimed towards plotting single layer imagery in grey-scale (remote sensing data) but can be
@@ -35,6 +39,7 @@ When img contains factor values and annotation raster is \code{TRUE}, the values
 to numeric in order to proceed with the color calculation.
 }
 \examples{
+if(require(ggplot2)){
 r <- raster(system.file("external/rlogo.grd", package="raster"))
 
 ## Simple grey scale annotation
@@ -68,6 +73,7 @@ ggR(rc, annotation = FALSE)
 
 ## Legend cusomization etc. ...
 ggR(rc, annotation = FALSE) + scale_fill_discrete(labels=paste("Class", 1:6))
+}
 }
 \seealso{
 \link{ggRGB}, \link[=fortify.raster]{fortify}
