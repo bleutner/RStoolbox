@@ -81,11 +81,7 @@ coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, n = 500, re
    
    nsl <- nlayers(slave)
    nml <- nlayers(master)
-   if(nsl !=  nml)  stop("Currently slave and master must have the same number of layers")
-
-   
-   sep <- extract(slave, shiftPts(xy, x = -shifts[i,1], y = -shifts[i,2]))
-   se  <- extract(shift(slave, shifts[i,1], shifts[i,2]), xy, na.rm=F)                
+   if(nsl !=  nml)  stop("Currently slave and master must have the same number of layers")         
    
    shiftPts <- function(o, x, y) {
        o[,"x"] <- o[,"x"] + x

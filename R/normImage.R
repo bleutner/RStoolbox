@@ -14,12 +14,23 @@
 #' @seealso \link{histMatch}
 #' @export
 normImage <- function(x, y, xmin, xmax, ymin, ymax, forceMinMax = FALSE) {
-    if(forceMinMax)  x <- setMinMax(x)
-    if(!missing(y) && forceMinMax)  y <- setMinMax(y)
-    if(missing("ymin")) ymin <- y@data@min
-    if(missing("ymax")) ymax <- y@data@max
-    if(missing("xmin"))	xmin <- x@data@min 
-    if(missing("xmax")) xmax <- x@data@max
+    if(inherits(x, "Raster")){
+        if(forceMinMax)  x <- setMinMax(x)
+        if(!missing(y) && forceMinMax)  y <- setMinMax(y)
+        if(missing("ymin")) ymin <- y@data@min
+        if(missing("ymax")) ymax <- y@data@max
+        if(missing("xmin"))	xmin <- x@data@min 
+        if(missing("xmax")) xmax <- x@data@max
+    } else {
+        if(missing("xmin"))	xmin <- min(x, na.rm = T)
+        if(missing("xmax")) xmax <- max(x, na.rm = T)
+    }
     scal <- (ymax - ymin)/(xmax-xmin) 
-    .paraRasterFun(x, rasterFun = calc,  args = list(fun = function(x) {(x - xmin) * scal + ymin}))      
-}              
+    if(inherits(x, "Raster")){   
+        x <- .paraRasterFun(x, rasterFun = calc,  args = list(fun = function(x) {(x - xmin) * scal + ymin}))
+    } else {
+        x <- (x - xmin) * scal + ymin
+    }
+    
+    return(x)
+}

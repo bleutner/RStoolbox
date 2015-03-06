@@ -1,26 +1,109 @@
-#' Plot rasters in ggplot with greyscale
-#' @param x raster
+#' Plot RasterLayers in ggplot with greyscale
+#' 
+#' aimed towards plotting single layer imagery in grey-scale (remote sensing data) but can be 
+#' used with any Raster* object.
+#' 
+#' @param img raster
 #' @param layer layername
 #' @param maxpixels Integer. Maximal number of pixels to sample
-#' @param lowColor Character. Color for lowest value
-#' @param highColor Character. Color for highest value
-#' @param legendName Character. Layer name
-#' @param ggObj Logical. Return a ggplot2 object (TRUE) or just the data.frame
+#' @param ggObj Logical. Return a stand-alone ggplot object (TRUE) or just the data.frame with values and colors
+#' @param ggLayer Logical. Return only a ggplot layer which must be added to an existing ggplot. If \code{FALSE} s stand-alone ggplot will be returned.
+#' @param annotate Logical. Uses annotation_raster by default (good to keep aestetic mappings free). If \code{FALSE} uses geom_raster (and aes(fill)).
+#' @param coordEqual Logical. Force addition of coord_equal, i.e. aspect ratio of 1:1. Typically usefull for remote sensing data (depending on your projection), hence it defaults to TRUE.
+#'         Note howver, that this does not apply if (\code{ggLayer=FALSE}).
+#' @param alpha Numeric. Transparency (0-1).
+#' @seealso \link{ggRGB}, \link[=fortify.raster]{fortify}
+#' @note
+#' When img contains factor values and annotation raster is \code{TRUE}, the values will be automatically converted
+#' to numeric in order to proceed with the color calculation.
 #' 
-#'  @export 
-ggR <- function(x, layer = 1, maxpixels = 5000000, lowColor = "white", highColor = "black", legendName = "Legend", ggObj = TRUE) {  
-    drast <- sampleRegular(x[[layer]], maxpixels, asRaster = TRUE)
-    df <- data.frame(coordinates(drast), drast[])
-    colnames(df) <- c("x", "y", names(x[[layer]]))
-    layer <- colnames(df)[3]
-    
-    if(ggObj) {
-        p <- ggplot(df) + geom_raster(aes_string(x = "x", y = "y", fill = layer)) +
-                scale_fill_gradient(low = lowColor, high = highColor, na.value = NA, name = legendName) +
-                coord_equal() 
-                
-    } else {
-        p <- df
+#' @export 
+#' @examples
+#' r <- raster(system.file("external/rlogo.grd", package="raster"))
+#' 
+#' ## Simple grey scale annotation
+#' ggR(r)
+#' 
+#' ## With linear stretch contrast enhancement
+#' ggR(r, stretch = "lin", quantiles = c(0.1,0.9))
+#' 
+#' ## Don't plot, just return a data.frame
+#' df <- ggR(r, ggObj=F)
+#' head(df)
+#' 
+#' ## ggplot with geom_raster instead of annotation_raster
+#' ## and default scale_fill*
+#' ggR(r, annotation=FALSE)
+#' 
+#' ## with different scale
+#' ggR(r, annotation=FALSE) + scale_fill_gradientn(name = "mojo", colours = rainbow(10)) +
+#'         ggtitle("**Funkadelic**")
+#' 
+#' ## Layermode (ggLayer=TRUE)
+#' data <- fdata <- data.frame(x = c(0, 0:100,100), y = c(0,sin(seq(0,2*pi,pi/50))*10+20, 0))
+#' ggplot(data, aes(x, y)) +  ggR(r, annotation= TRUE, ggLayer = TRUE) +
+#'        geom_polygon(aes(x, y), fill = "blue", alpha = 0.4) +
+#'        coord_equal(ylim=c(0,75))
+#' 
+#' ## Categorical data (usually you wanna use annotation=FALSE to perform aestetic mapping and generate a meaningful legend)
+#' rc <- raster(r)
+#' rc[] <- cut(r[], seq(0,300, 50))
+#' ggR(rc, annotation = FALSE)
+#' 
+#' ## Legend cusomization etc. ...
+#' ggR(rc, annotation = FALSE) + scale_fill_discrete(labels=paste("Class", 1:6)) 
+ggR <- function(img, layer = 1, maxpixels = 500000, stretch, quantiles = c(0.02,0.98), coordEqual = TRUE, alpha = 1, ggLayer=FALSE, ggObj = TRUE, annotation = TRUE) {
+     
+    layer <- unlist(.numBand(img, layer))
+    xfort <- sampleRegular(img[[layer]], maxpixels, asRaster = TRUE)
+    if(is.factor(img[[layer]])) {
+        rat <- levels(xfort)
+        xfort <- stack(xfort,xfort)  ## workaround raster bug #6043        
+        names(xfort)[1] <- names(img)[layer]   
     }
-    return(p)
+    df 	  <- as.data.frame(xfort, xy = T)[,-4]
+    layer <- names(img)[layer]
+    colnames(df) <- c("x", "y", layer) 
+    
+    fac <- is.factor(df[,layer])
+    if(fac & annotation) {
+        .vMessage("img values are factors but annotation is TRUE. Converting factors as.numeric.")
+        levelLUT <- levels(df[,layer])
+        df[,layer] <- as.numeric(df[,layer])
+    }
+    if(!fac & !missing("stretch"))  df[,layer] <- .stretch(df[,layer], method = stretch, quantiles = quantiles)    
+    
+    if(!(ggObj & !annotation)){
+        normVals 	<- normImage(df[,layer], ymin = 0, ymax = 1)    
+        nona 		<- !is.na(normVals)
+        df$color  	<- NA
+        df[nona, "color"] <- hsv(h = 1, s = 0, v = normVals[nona], alpha = alpha)
+    }
+    
+    if(ggObj) {       
+        ex    <- extent(xfort)
+        if(annotation)  {        
+            dmat  <- matrix(df$color, nrow=nrow(xfort), ncol=ncol(xfort), byrow = TRUE)  
+            ggl  <- annotation_raster(raster = dmat, xmin = ex[1], xmax = ex[2], ymin = ex[3], ymax = ex[4], interpolate = FALSE)
+        } else {
+            ggl  <- geom_raster(data = df[,c("x","y",layer)], aes_string(x = "x", y = "y", fill = layer)) 
+        }
+        
+        if(ggLayer) return(ggl)
+        if(annotation) {   
+            dummy <- data.frame(x=ex[1:2],y=ex[3:4])       
+            p <- ggplot(dummy, aes(x,y))  + ggl
+            if(coordEqual) p <- p + coord_equal()
+            return(p)
+        } else {
+            p <- ggplot() + ggl
+            if(coordEqual) p <- p + coord_equal()
+            return(p)
+        }
+        
+    } else {
+        if(fac & annotation) df[,layer] <- levelLUT[df[, layer]]
+        return(df)
+    }
+    
 }

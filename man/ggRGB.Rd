@@ -4,13 +4,13 @@
 \alias{ggRGB}
 \title{Create ggplot raster with RGB from 3 rasterLayers}
 \usage{
-ggRGB(x, r = 3, g = 2, b = 1, scale, maxpixels = 5e+05,
+ggRGB(img, r = 3, g = 2, b = 1, scale, maxpixels = 5e+05,
   stretch = NULL, ext = NULL, minMax = NULL, clipToMinMax = FALSE,
-  quantileStretch = c(0.02, 0.98), ggObj = TRUE, ggLayer = FALSE,
-  alpha = 1, coord_equal = TRUE, interpolate = FALSE, annotation = TRUE)
+  quantiles = c(0.02, 0.98), ggObj = TRUE, ggLayer = FALSE, alpha = 1,
+  coordEqual = TRUE, annotation = TRUE)
 }
 \arguments{
-\item{x}{RasterStack or RasterBrick}
+\item{img}{RasterStack or RasterBrick}
 
 \item{r}{Integer or character. Red layer in x. Can be set to \code{NULL}, in which case the red channel will be set to zero.}
 
@@ -31,7 +31,7 @@ or a 3x2 matrix with separate min and max values (columns) for each layer (rows)
 
 \item{clipToMinMax}{Logical. If \code{TRUE}, values > scale will be set to NA. if \code{FALSE} they will be set to scale. Defaults to \code{FALSE}.}
 
-\item{quantileStretch}{Numeric vector with two elements. Min and max quantiles to stretch to. Defaults to 2\% stretch, i.e. c(0.02,0.98).}
+\item{quantiles}{Numeric vector with two elements. Min and max quantiles to stretch to. Defaults to 2\% stretch, i.e. c(0.02,0.98).}
 
 \item{ggObj}{Logical. If \code{TRUE} a ggplot2 object is returned. If \code{FALSE} a data.frame with coordinates and color will be returned.}
 
@@ -40,9 +40,8 @@ Note that if \code{TRUE} & \code{annotate = FALSE} you have to add a scale_fill_
 
 \item{alpha}{Numeric. Transparency between 0 and 1.}
 
-\item{coord_equal}{Logical. Uses coord_equal, i.e. aspect ratio of 1:1.}
-
-\item{interpolate}{Logical. Interpolate the raster during plotting. Defaults to \code{FALSE}.}
+\item{coordEqual}{Logical. Force addition of coord_equal, i.e. aspect ratio of 1:1. Typically usefull for remote sensing data (depending on your projection), hence it defaults to TRUE.
+Note howver, that this does not apply if (\code{ggLayer=FALSE}).}
 
 \item{annotation}{Logical. If \code{TRUE} annotation_raster is used, otherwise geom_raster()+scale_fill_identity is used.
 Note that you can't use scale_fill* in addition to the latter, because it already requires scale_fill_identity().}
@@ -60,5 +59,8 @@ Functionality is based on \code{\link[raster]{plotRGB}} from the raster package.
 br <- brick(system.file("external/rlogo.grd", package="raster"))
 ggRGB(br, 1, 2, 3)
 ggRGB(br, r=1,g=2,b=3, minMax = matrix(c(100,150,10,200,50,255),  ncol = 2, by = TRUE))
+}
+\seealso{
+\link{ggR}, \link[=fortify-raster]{fortify}
 }
 
