@@ -7,28 +7,27 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width,initial-scale=1">
-	<title>RStoolbox Remote Sensing Data Analysis in R</title>
+	<title>Remote Sensing Data Analysis in R</title>
 	<meta name="author" content="Benjamin Leutner">
+    <link href='http://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
 	<link href='/assets/themes/the-minimum/css/style.css' rel="stylesheet" media="all">
-	<link href="http://feeds.feedburner.com/" rel="alternate" title="RStoolbox Remote Sensing Data Analysis in R" type="application/atom+xml">
+	<link href="http://feeds.feedburner.com/" rel="alternate" title="Remote Sensing Data Analysis in R" type="application/atom+xml">
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
 </head>
 <body>
 <div id="page" class="hentry">
-    
-
 	<header class="the-header">
 		<div class="unit-head">
 			<div class="unit-inner unit-head-inner">
-				<p class="logo"><img alt="RStoolbox-logo" src="assets/img/rstbx.png"><a href="/">RStoolbox</a></p>
+				
 				<nav class="nav-global">
 					<ul>
-						<li class="archive"><a href="/archive.html">archive</a></li>
-						<li class="page"><a href="/pages.html">pages</a></li>
-						<li class="category"><a href="/categories.html">categories</a></li>
-						<li class="tag"><a href="/tags.html">tags</a></li>
-						</li>
-					</ul>
+                        
+						<li class="page"><a href="/pages.html">Blog</a></li>
+                        <li class="documentation"><a href="/pages.html">Documentation</a></li>
+						<li class="category"><a href="/about.html">about</a></li>
+
+											</ul>
 				</nav>
 			</div><!-- unit-inner -->
 		</div><!-- unit-head -->
@@ -42,40 +41,66 @@
 	<div class="unit-inner unit-article-inner">
 		<div class="content">
 			<header>
-				<div class="unit-head">
+				<div class="unit-head">                                     
 					<div class="unit-inner unit-head-inner">
-						<h1 class="h2 entry-title">RStoolbox Remote Sensing Data Analysis in R</h1>
+                        <div class="logobox"><a href="/"><img alt="RStoolbox-logo" src="assets/img/rstbx.png"></a></div>      
+						<h1 class="h2 entry-title">Remote Sensing Data Analysis in R
+                        </h1>
 					</div><!-- unit-inner -->
+                    
 				</div><!-- unit-head -->
 			</header>
 
 			<div class="bd">
 				<div class="entry-content">
 					
-<p>Read <a href="http://jekyllbootstrap.com/usage/jekyll-quick-start.html">Jekyll Quick Start</a></p>
+<h2 id="the-package">The Package</h2>
 
-<h2 id="update-author-attributes">Update Author Attributes</h2>
+<p><strong>RStoolbox</strong> is a R package providing a wide range of tools for your every-day remote sensing processing needs. 
+The available toolset covers many aspects from data import, pre-processing, data analysis, image classification and graphical display. 
+RStoolbox builds upon the raster package, which makes it suitable for processing large data-sets even on smaller workstations. 
+Moreover it most parts decent support for parallel processing is implemented. The package is published under GPL3.</p>
 
-<h2 id="sample-posts">Sample Posts</h2>
+<h2 id="getting-the-code">Getting the Code</h2>
 
-<p>This blog contains sample posts which help stage pages and blog data.
-When you don’t need the samples anymore just delete the <code>_posts/core-samples</code> folder.</p>
+<p>View the most recent code on my <a href="http://www.github.com/bleutner/RStoolbox">github</a> repository. 
+Please be aware that during initial development function and argument names are likely to change without notice.
+Only once the package is submitted to CRAN they will remain stable.</p>
 
-<pre><code>$ rm -rf _posts/core-samples
+<p>Code bundles (Note that the windows binary build can be slightly outdated).</p>
+
+<ul class="tag_box">
+  <li><a href="http://www.github.com/bleutner/RStoolbox">RStoolbox on Github</a></li>
+  <li><a href="https://github.com/bleutner/RStoolbox/tarball/master">Source tarball</a></li>
+ <li><a href="miniCRAN/bin/windows/contrib/3.1/RStoolbox_0.0.0.9000.zip">Windows binary</a></li>
+ </ul>
+
+<h2 id="installing-rstoolbox">Installing RStoolbox</h2>
+
+<p>To get the latest version, install RStoolbox directly from th <a href="http://www.github.com/bleutner/RStoolbox">github repository</a>. 
+Apart from R itself, you’ll also need to have r-base-dev (Linux) or <a href="http://cran.r-project.org/bin/windows/Rtools">Rtools</a> (Windows) installed to compile the package.</p>
+
+<pre><code>library(devtools)
+install_github("bleutner/RStoolbox")
 </code></pre>
 
-<p>Here’s a sample “posts list”.</p>
+<p>If you are on Windows and don’t have Rtools installed, you can install a pre-compiled Windows binary build like so:</p>
+
+<pre><code>install.packages("RStoolbox", repos=c("http://bleutner.github.io/RStoolbox/miniCRAN", "http://cran.r-project.org"))     
+</code></pre>
+
+<h2 id="feedback">Feedback</h2>
+
+<p>I am greatfull for any feedback on RStoolbox. Please do not hesitat to report an issue <a href="https://github.com/bleutner/RStoolbox/issues">here</a> if you discover bugs or have a feature idea.
+If you find the package usefull I’d love to hear about it as well :-). Just drop me an email if you like: benjamin.leutner@uni-wuerzburg.de.</p>
 
 <ul class="posts">
+  
+    <li><span>07 Mar 2015</span> &raquo; <a href="/r/2015/03/07/yo-first-post">Yo! First post</a></li>
   
     <li><span>29 Dec 2011</span> &raquo; <a href="/lessons/2011/12/29/jekyll-introduction">Jekyll Introduction</a></li>
   
 </ul>
-
-<h2 id="to-do">To-Do</h2>
-
-<p>This theme is still unfinished. If you’d like to be added as a contributor, <a href="http://github.com/plusjade/jekyll-bootstrap">please fork</a>!
-We need to clean up the themes, make theme usage guides with theme-specific markup examples.</p>
 
 
 				</div><!-- entry-content -->
@@ -106,7 +131,6 @@ We need to clean up the themes, make theme usage guides with theme-specific mark
 					<ul>
 						<li class="contact"><address><span class="author fn n">Benjamin Leutner</span> - <span class="fn email">benjamin.leutner@uni-wuerzburg.de</span></address></li>
 						<li class="github"><a href="http://github.com/bleutner/" rel="me">github.com/bleutner</a></li>
-						<li class="twitter"><a href="http://twitter.com/username/" rel="me">twitter.com/username</a></li>
 						<li class="rss"><a href="http://feeds.feedburner.com/">Subscribe to RSS Feed</a></li>
 					</ul>
 				</div><!-- misc -->

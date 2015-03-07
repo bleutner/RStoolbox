@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7 ie" lang="en"> <![endif]-->
 <!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8 ie" lang="en"> <![endif]-->
@@ -6,11 +7,11 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width,initial-scale=1">
-	<title>{{ page.title }}</title>
-	<meta name="author" content="{{ site.author.name }}">
+	<title>About the Authors</title>
+	<meta name="author" content="Benjamin Leutner">
     <link href='http://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
-	<link href='{{ ASSET_PATH }}/css/style.css' rel="stylesheet" media="all">
-	<link href="http://feeds.feedburner.com/{{ site.author.feedbaname }}" rel="alternate" title="{{ page.title }}" type="application/atom+xml">
+	<link href='/assets/themes/the-minimum/css/style.css' rel="stylesheet" media="all">
+	<link href="http://feeds.feedburner.com/" rel="alternate" title="About the Authors" type="application/atom+xml">
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
 </head>
 <body>
@@ -35,7 +36,48 @@
 		<div class="unit-body">
 			<div class="unit-inner unit-body-inner">
 				<div class="entry-content">
-					{{ content }}
+					
+<article class="unit-article layout-page">
+	<div class="unit-inner unit-article-inner">
+		<div class="content">
+			<header>
+				<div class="unit-head">                                     
+					<div class="unit-inner unit-head-inner">
+                        <div class="logobox"><a href="/"><img alt="RStoolbox-logo" src="assets/img/rstbx.png"></a></div>      
+						<h1 class="h2 entry-title">About the Authors
+                        </h1>
+					</div><!-- unit-inner -->
+                    
+				</div><!-- unit-head -->
+			</header>
+
+			<div class="bd">
+				<div class="entry-content">
+					
+<h2 id="benjamin-leutner">Benjamin Leutner</h2>
+
+<p>I am a PhD student at the Department of Remote Sensing, at the University of Würzburg, Germany and an environmental scientist by training.
+My research interests lay in the application of remote sensing in ecology and biodiversity research.  I work primarily with airborne hyperspectral imagery and
+full-waveform lidar data, yet the odd multispectral scene slips in every now and then as well. 
+I firmly believe in the importance of using free and open-source software (free as in freedom), especially in the educational and scientific domain. While R certainly wasn’t born, 
+handling large spatial data-sets it has come a very long way and thanks to efforts such as the sp and raster packages it has evolved into a full fledged GIS and only very rarely do I find myself switching to QGIS, GRASS or SAGA instead.</p>
+
+				</div><!-- entry-content -->
+			</div><!-- bd -->
+
+			<footer class="unit-foot">
+				<div class="unit-inner unit-foot-inner">
+					<p class="gotop">
+						<a href="#page">Back to Top</a>
+					</p>
+				</div>
+			</footer>
+
+		</div><!-- content -->
+	</div><!-- unit-inner -->
+</article>
+
+
 				</div>
 			</div><!-- unit-inner -->
 		</div><!-- unit-body -->
@@ -46,9 +88,9 @@
 				<div class="misc vcard">
 					<h4>about</h4>
 					<ul>
-						<li class="contact"><address><span class="author fn n">{{ site.author.name }}</span> - <span class="fn email">{{ site.author.email }}</span></address></li>
-						<li class="github"><a href="http://github.com/{{ site.author.github }}/" rel="me">github.com/{{ site.author.github }}</a></li>
-						<li class="rss"><a href="http://feeds.feedburner.com/{{ site.author.feedname }}">Subscribe to RSS Feed</a></li>
+						<li class="contact"><address><span class="author fn n">Benjamin Leutner</span> - <span class="fn email">benjamin.leutner@uni-wuerzburg.de</span></address></li>
+						<li class="github"><a href="http://github.com/bleutner/" rel="me">github.com/bleutner</a></li>
+						<li class="rss"><a href="http://feeds.feedburner.com/">Subscribe to RSS Feed</a></li>
 					</ul>
 				</div><!-- misc -->
 				<p class="licence">
@@ -68,7 +110,7 @@
 		};
 	load('//platform.twitter.com/widgets.js', 'tweetjs');
 	// load('https://apis.googlecom/js/plusone.js', 'gplus1js'); // Checkout http://j.mp/ApDgMr for usage html for this is <div class="g-plusone" data-size="medium"></div>
-	// load('//connect.facebook.net/en_US/all.js#xfbml=1', 'fbjssdk'); // Checkout http://j.mp/wZw2xR for using open graph protorol html for this is <div class="fb-like" data-href="{{ page.url }}" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="verdana"></div>
+	// load('//connect.facebook.net/en_US/all.js#xfbml=1', 'fbjssdk'); // Checkout http://j.mp/wZw2xR for using open graph protorol html for this is <div class="fb-like" data-href="/about.html" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="verdana"></div>
 	}(document, 'script'));
 </script>
 <script>
@@ -76,6 +118,7 @@
 (function(j){var i=j.document;if(!i.querySelectorAll){return}var l=i.querySelectorAll("meta[name=viewport]")[0],a=l&&l.getAttribute("content"),h=a+", maximum-scale=1.0",d=a+", maximum-scale=10.0",g=true,c=j.orientation,k=0;if(!l){return}function f(){l.setAttribute("content",d);g=true}function b(){l.setAttribute("content",h);g=false}function e(m){c=Math.abs(j.orientation);k=Math.abs(m.gamma);if(k>8&&c===0){if(g){b()}}else{if(!g){f()}}}j.addEventListener("orientationchange",f,false);j.addEventListener("deviceorientation",e,false)})(this);
 </script>
 
-  {% include JB/analytics %}
+  
 </body>
 </html>
+

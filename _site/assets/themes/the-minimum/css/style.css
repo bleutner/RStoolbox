@@ -27,7 +27,8 @@ body {
   font-family: Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, "MS PGothic", Osaka, Sans-Serif;
   font-size: 1em;
   line-height: 1.625em;
-}
+ }
+
 /*
 Font size setting
 Using Golden ratio section (Caliculated via http://j.mp/sB6oxM):
@@ -51,8 +52,8 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: junctionregularRegular, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, "MS PGothic", Osaka, Sans-Serif;
-  font-weight: bold;
+  font-family: 'Orbitron', sans-serif; junctionregularRegular, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, "MS PGothic", Osaka, Sans-Serif;
+  font-weight: normal;
 }
 h1, .h1 {
   font-size: 42px;
@@ -281,7 +282,7 @@ pre {
   margin-top: 0;
 }
 .unit-article a:link {
-  border-bottom: 1px dotted #99cc99;
+  border-bottom: 2px dotted #99cc99;
 }
 .unit-article a:visited {
   border-bottom: 1px dotted #77bb77;
@@ -447,7 +448,7 @@ pre {
   vertical-align: middle;
 }
 .layout-page .tag_box a {
-  background-color: #99cc99;
+  background-color: #808080;
   float: left;
   border: 1px solid #448844;
   padding: 3px 6px 3px 6px;
@@ -503,6 +504,10 @@ pre {
   -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 1px rgba(0, 0, 0, 0.2);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 1px rgba(0, 0, 0, 0.2);
 }
+
+
+
+
 /* FOOTER
 ----------------------------------------------- */
 .the-footer {
@@ -850,3 +855,13 @@ pre {
     margin-right: 360px;
   }
 }
+
+.logobox {
+    height: 150px;
+    position: relative;
+    top: -100px;
+    margin-right: 20px;
+    overflow: visible; 
+    float: left;
+    }
+

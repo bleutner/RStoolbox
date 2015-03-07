@@ -1,4 +1,5 @@
 
+http://username.github.io/about.html
 http://username.github.io/archive.html
 http://username.github.io/atom.xml
 http://username.github.io/categories.html
@@ -8,4 +9,5 @@ http://username.github.io/rss.xml
 http://username.github.io/sitemap.txt
 http://username.github.io/tags.html
 
+http://username.github.io/r/2015/03/07/yo-first-post
 http://username.github.io/lessons/2011/12/29/jekyll-introduction

@@ -22,7 +22,12 @@ No styleguide reference.
 */
 
 html { font-size: 100%; overflow-y: scroll; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
-body { margin: 0; font-size: 1em; line-height: 1.4; -webkit-tap-highlight-color: rgba(255,0,0, 0.62); }
+body { background-image: url(../../../../assets/img/lsat.png);
+    background-repeat: repeat-y;
+    margin: 0; 
+    font-size: 1em; 
+    line-height: 1.4; 
+    -webkit-tap-highlight-color: rgba(255,0,0, 0.62); }
 body, button, input, select, textarea { font-family: sans-serif; }
 ::-moz-selection { background: #073642; color: #fff; text-shadow: none; }
 ::selection { background: #073642; color: #fff; text-shadow: none; }
@@ -151,3 +156,4 @@ No styleguide reference.
 
 table { border-collapse: collapse; border-spacing: 0; }
 td { vertical-align: top; }
+
