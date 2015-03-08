@@ -1,0 +1,161 @@
+---
+layout: docu
+title: ' Spectral indices '
+fun:  spectralIndices 
+package:  RStoolbox 
+header: Pages
+group: navigation
+---
+{% include JB/setup %}
+ <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Spectral indices</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+
+							<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+							<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+							<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+							<script>hljs.initHighlightingOnLoad();</script>
+							</head><body>
+
+<h3>Description</h3>
+
+<p>Calculate a suite of multispectral indices such as NDVI, SAVI etc. in an efficient way.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+spectralIndices(img, blue = NULL, red = NULL, nir = NULL, mir = NULL,
+  indices = NULL, coefs = list(L = 0.5, G = 2.5, L_evi = 1, C1 = 6, C2 =
+  7.5, s = 1), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>img</code></td>
+<td>
+<p>Raster* object. Typically remote sensing imagery, which is to be classified.</p>
+</td></tr>
+<tr valign="top"><td><code>blue</code></td>
+<td>
+<p>Character or integer. Blue band.</p>
+</td></tr>
+<tr valign="top"><td><code>red</code></td>
+<td>
+<p>Character or integer. Red band.</p>
+</td></tr>
+<tr valign="top"><td><code>nir</code></td>
+<td>
+<p>Character or integer. Near-infrared band.</p>
+</td></tr>
+<tr valign="top"><td><code>mir</code></td>
+<td>
+<p>Character or integer. Midwave-infrared band.</p>
+</td></tr>
+<tr valign="top"><td><code>indices</code></td>
+<td>
+<p>Character. One or more spectral indices to calculate (see Details). By default (NULL) all implemented indices given the spectral bands which are provided will be calculated.</p>
+</td></tr>
+<tr valign="top"><td><code>coefs</code></td>
+<td>
+<p>List of coefficients (see Details).</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments such as filename etc. passed to <a href="http://www.inside-r.org/packages/cran/raster/docs/writeRaster">writeRaster</a></p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>spectralIndices</code> calculates all indices in one go, i.e. one call to overlay, which is far more efficient, than calculating each index separately (for large rasters).
+By default all indices which can be calculated given the specified indices will be calcultated. If you don't want all indices, use the <code>indices</code> argument to specify exactly which indices are to be calculated.
+See the table bellow for index names and required bands.
+</p>
+<p><code>coefs</code> can be used to redefine additional coefficients used to calculate <code>EVI</code> (<code>L_evi, C1, C2, G</code>), and <code>SAVI</code> (<code>L</code>).
+Although the defaults are sensible values, it can make sense to adjust the SAVI soil brigthness factor <code>L</code> depending on the characteristics of the vegetation cover in your scene.
+</p>
+
+<table summary="Rd table">
+<tr>
+ <td align="left"> <STRONG> Index </STRONG> </td><td align="left"> <STRONG> Description </STRONG> </td><td align="left"> <STRONG> Source </STRONG> </td><td align="left"> <STRONG> Bands </STRONG> </td><td align="left"> <STRONG> Formula </STRONG> </td>
+</tr>
+<tr>
+ <td align="left"> DVI </td><td align="left"> Difference Vegetation Index </td><td align="left"> Richardson1977 </td><td align="left"> <code>red, nir</code> </td><td align="left"> <i>s * nir - red</i> </td>
+</tr>
+<tr>
+ <td align="left"> EVI </td><td align="left"> Enhanced Vegetation Index </td><td align="left"> Huete1999 </td><td align="left"> <code>red, nir, blue</code> </td><td align="left"> <i>G * ((nir - red)/(nir + C1 * red - C2 * blue + L_evi))</i> </td>
+</tr>
+<tr>
+ <td align="left"> GEMI </td><td align="left"> Global Environmental Monitoring Index </td><td align="left"> Pinty1992 </td><td align="left"> <code>red, nir</code> </td><td align="left"> <i>(((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5))/(nir + red + 0.5)) * (1 - ((((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5))/(nir + red + 0.5)) * 0.25)) - ((red - 0.125)/(1 - red))</i> </td>
+</tr>
+<tr>
+ <td align="left"> LSWI </td><td align="left"> Land Surface Water Index </td><td align="left">  </td><td align="left"> <code>nir, swir</code> </td><td align="left"> <i>(nir - swir)/(nir + swir)</i> </td>
+</tr>
+<tr>
+ <td align="left"> MSAVI </td><td align="left"> Modified Soil Adjusted Vegetation Index </td><td align="left"> Qi1994 </td><td align="left"> <code>red, nir</code> </td><td align="left"> <i>nir + 0.5 - (0.5 * sqrt((2 * nir + 1)^2 - 8 * (nir - (2 * red))))</i> </td>
+</tr>
+<tr>
+ <td align="left"> MSAVI2 </td><td align="left"> Modified Soil Adjusted Vegetation Index 2 </td><td align="left"> Qi1994 </td><td align="left"> <code>red, nir</code> </td><td align="left"> <i>(2 * (nir + 1) - sqrt((2 * nir + 1)^2 - 8 * (nir - red)))/2</i> </td>
+</tr>
+<tr>
+ <td align="left"> NDVI </td><td align="left"> Normalised Difference Vegetation Index </td><td align="left"> Rouse1974 </td><td align="left"> <code>red, nir</code> </td><td align="left"> <i>(nir - red)/(nir + red)</i> </td>
+</tr>
+<tr>
+ <td align="left"> NDWI </td><td align="left"> Normalised Difference Water Index </td><td align="left">  </td><td align="left"> <code>green, nir</code> </td><td align="left"> <i>(green - nir)/(green + nir)</i> </td>
+</tr>
+<tr>
+ <td align="left"> SAVI </td><td align="left"> Soil Adjusted Vegetation Index </td><td align="left"> Huete1988 </td><td align="left"> <code>red, nir</code> </td><td align="left"> <i>(nir - red) * (1 + L)/(nir + red + L)</i> </td>
+</tr>
+<tr>
+ <td align="left"> SLAVI </td><td align="left"> Specific Leaf Area Vegetation Index </td><td align="left"> Lymburger2000 </td><td align="left"> <code>red, nir, mir</code> </td><td align="left"> <i>nir/(red + mir)</i> </td>
+</tr>
+<tr>
+ <td align="left"> SR </td><td align="left"> Simple Ratio Vegetation Index </td><td align="left"> Birth1968 </td><td align="left"> <code>red, nir</code> </td><td align="left"> <i>nir/red</i> </td>
+</tr>
+<tr>
+ <td align="left"> TVI </td><td align="left"> Transformed Vegetation Index </td><td align="left"> Deering1975 </td><td align="left"> <code>red, nir</code> </td><td align="left"> <i>sqrt(((nir - red)/(nir + red)) + 0.5)</i> </td>
+</tr>
+<tr>
+ <td align="left"> WDVI </td><td align="left"> Weighted Difference Vegetation Index </td><td align="left"> Richardson1977 </td><td align="left"> <code>red, nir</code> </td><td align="left"> <i>nir - s * red</i> </td>
+</tr>
+<tr>
+ <td align="left"> DVI </td><td align="left"> Difference Vegetation Index </td><td align="left"> Richardson1977 </td><td align="left"> <code>red, nir</code> </td><td align="left"> <i>s * nir - red</i> </td>
+</tr>
+
+</table>
+
+
+
+<h3>Value</h3>
+
+<p>RasterBrick or a RasterLayer if length(indices) == 1
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="http://www.inside-r.org/packages/cran/raster/docs/overlay">overlay</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class="r">r &lt;- raster(ncol=10,nrow=10)
+r[] &lt;- sample(1:155, 100, TRUE)
+r &lt;- stack(r, r + 90 + rnorm(100, 10))
+names(r) &lt;- c(&quot;red&quot;, &quot;nir&quot;)
+SI &lt;- spectralIndices(r, red = 1, nir = 2, indices = &quot;NDVI&quot;)
+plot(SI)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-1"/> </p>
+
+
+<hr><div align="center">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>

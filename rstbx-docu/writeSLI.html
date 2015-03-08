@@ -1,0 +1,109 @@
+---
+layout: docu
+title: ' Write ENVI spectral libraries '
+fun:  writeSLI 
+package:  RStoolbox 
+header: Pages
+group: navigation
+---
+{% include JB/setup %}
+ <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Write ENVI spectral libraries</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+
+							<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+							<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+							<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+							<script>hljs.initHighlightingOnLoad();</script>
+							</head><body>
+
+<h3>Description</h3>
+
+<p>Writes binary ENVI spectral library files (sli) with accompanying header (.sli.hdr) files OR ASCII spectral library files in ENVI format.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+writeSLI(x, path, wavl.units = "Micrometers", scaleF = 1, mode = "bin")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>data.frame with first column containing wavelengths and all other columns containing spectra.</p>
+</td></tr>
+<tr valign="top"><td><code>path</code></td>
+<td>
+<p>path to spectral library file to be created.</p>
+</td></tr>
+<tr valign="top"><td><code>wavl.units</code></td>
+<td>
+<p>wavelength units. Defaults to Micrometers. Nanometers is another typical option.</p>
+</td></tr>
+<tr valign="top"><td><code>scaleF</code></td>
+<td>
+<p>optional reflectance scaling factor. Defaults to 1.</p>
+</td></tr>
+<tr valign="top"><td><code>mode</code></td>
+<td>
+<p>character string specifying output file type. Must be one of <code>"bin"</code> for binary .sli files or <code>"ASCII"</code> for &ndash;guess what&ndash; ASCII spectral library files (still in an ENVI compatible format).</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>ENVI spectral libraries with ending .sli are binary arrays with spectra saved in rows.
+</p>
+
+
+<h3>References</h3>
+
+<p><a href="http://geol.hu/data/online_help/ENVI_Header_Format.html">ENVI header format</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="readSLI.html">readSLI</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class="r">## Create fake spectra
+data &lt;- data.frame(wavelength=350:2500, spectrumA=cumsum(abs(rnorm(2151))),
+                     spectrumB=cumsum(abs(rnorm(2151))))
+pathToFile &lt;- paste0(tempdir(),&quot;/specLib.sli&quot;)
+
+## Write to binary spectral library
+writeSLI(x = data, path = pathToFile)
+
+## Read from binary spectral library
+dataRe &lt;- readSLI(path = pathToFile)
+
+## Check whether they are the same
+all.equal(data, dataRe)
+</code></pre>
+
+<pre><code>#&gt; [1] &quot;Names: 1 string mismatch&quot;
+</code></pre>
+
+<pre><code class="r">## oops? nope, only colnames mismatch. numbers are fine.
+cat(&quot;colnames:\noriginal: &quot;,colnames(data),&quot;\nre-read: &quot;,colnames(dataRe))
+</code></pre>
+
+<pre><code>#&gt; colnames:
+#&gt; original:  wavelength spectrumA spectrumB 
+#&gt; re-read:  wavelengths spectrumA spectrumB
+</code></pre>
+
+
+<hr><div align="center">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,251 @@
+
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7 ie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8 ie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9 ie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title> Import separate Landsat files into single stack </title>
+    <meta name="author" content="Benjamin Leutner">
+    <link href='http://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
+    <link href='/assets/themes/the-minimum/css/style.css' rel="stylesheet" media="all">
+    <link href="http://feeds.feedburner.com/" rel="alternate" title=" Import separate Landsat files into single stack " type="application/atom+xml">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
+</head>
+
+<body>
+    <div id="page" class="hentry">
+        <header class="the-header">
+            <div class="unit-head">
+                <div class="unit-inner unit-head-inner">
+
+                    <nav class="nav-global">
+                        <ul>
+                            <li class="page"><a href="/">Home</a>
+                            </li>
+                            <li class="page"><a href="/pages.html">Blog</a>
+                            </li>
+                            <li class="documentation"><a href="/rstbx-docu">Documentation</a>
+                            </li>
+                            <li class="category"><a href="/about.html">About</a>
+                            </li>
+
+                        </ul>
+                    </nav>
+                </div>
+                <!-- unit-inner -->
+            </div>
+            <!-- unit-head -->
+        </header>
+        <div class="body" role="main">
+            <div class="unit-body">
+                <div class="unit-inner unit-body-inner">
+                    <div class="entry-content">
+                        
+<article class="unit-article layout-page">
+    <div class="unit-inner unit-article-inner">
+        <div class="content">
+            <header>
+                <div class="unit-head">
+                    <a class="logobox" href="/"><img alt="RStoolbox-logo" src="/assets/img/rstbx.png"> </a>
+
+                    <div class="unit-inner unit-head-inner">
+                        <div class="h4 entry-title"> 
+                            <table width="100%"><tr><td><strong>stackMeta<strong> { <a href="index.html">RStoolbox</a>}</td><td align="right">R Documentation</td></tr></table>
+                            <h3> Import separate Landsat files into single stack </h2>
+                        </div>
+                    </div>
+                    <!-- unit-inner -->
+                </div>
+                <!-- unit-head -->
+            </header>
+
+            <div class="bd">
+                <div class="entry-content">
+                    
+ <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Import separate Landsat files into single stack</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<h3>Description</h3>
+
+<p>Reads Landsat MTL or XML metadata files and loads single Landsat Tiffs into a rasterStack.
+Be aware that by default stackLS() does NOT import panchromatic bands nor thermal bands with resolutions != 30m.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+stackMeta(file, allResolutions = FALSE, quantity = "all",
+  category = "image")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>file</code></td>
+<td>
+<p>character. Path to Landsat MTL metadata file (not an XML file!).</p>
+</td></tr>
+<tr valign="top"><td><code>allResolutions</code></td>
+<td>
+<p>logical. if <code>TRUE</code> a list will be returned with length = unique spatial resolutions.</p>
+</td></tr>
+<tr valign="top"><td><code>quantity</code></td>
+<td>
+<p>Character vector. Which quantity should be returned. Options: digital numbers ('dn'), top of atmosphere reflectance ('tre'), at surface reflectance ('sre'), brightness temperature ('bt'), spectral index ('idx').</p>
+</td></tr>
+<tr valign="top"><td><code>category</code></td>
+<td>
+<p>character vector. Which category of data to return. Options 'image': image data, 'pan': panchromatic image, 'index': multiband indices, 'qa' quality flag bands, 'all': all categories.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Either a list of rasterStacks comprising all resolutions or only one rasterStack comprising only 30m resolution imagery
+</p>
+
+
+<h3>Note</h3>
+
+<p>Be aware that by default stackLS() does NOT import panchromatic bands nor thermal bands with resolutions != 30m. Use the allResolutions argument to import all layers.
+Note that nowadays the USGS uses cubic convolution to resample the TIR bands to 30m resolution.
+</p>
+
+<hr><div align="center">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>
+
+                </div>
+                <!-- entry-content -->
+            </div>
+            <!-- bd -->
+
+            <footer class="unit-foot">
+                <div class="unit-inner unit-foot-inner">
+                    <p class="gotop">
+                        <a href="#page">Back to Top</a>
+                    </p>
+                </div>
+            </footer>
+
+        </div>
+        <!-- content -->
+    </div>
+    <!-- unit-inner -->
+</article>
+                    </div>
+                </div>
+                <!-- unit-inner -->
+            </div>
+            <!-- unit-body -->
+        </div>
+        <!-- body -->
+        <footer class="the-footer">
+            <div class="unit-foot">
+                <div class="unit-inner unit-foot-inner">
+                    <div class="misc vcard">
+                        <div>
+                            <p>Last update 2015-03-08 03:56:42 +0100</p>
+                        </div>
+                        <h4>about</h4>
+                        <ul>
+
+                            <li class="contact"><address><span class="author fn n">Benjamin Leutner</span> - <span class="fn email">benjamin.leutner@uni-wuerzburg.de</span></address>
+                            </li>
+                            <li class="github"><a href="http://github.com/bleutner/" rel="me">github.com/bleutner</a>
+                            </li>
+                           <!-- <li class="rss"><a href="http://feeds.feedburner.com/">Subscribe to RSS Feed</a>
+                            </li>-->
+                        </ul>
+                    </div>
+                    <!-- misc -->
+                    <p class="tinyfoot">
+                        This site is powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> and <a href="http://jekyllbootstrap.com/">Jekyll-bootstrap</a>. The original theme was <a href="http://layouts-the.me/">Theme: the_minimum</a>
+                        </br>
+                       <a href="impressum.html">Impressum</a>
+                    </p>
+                </div>
+                <!-- unit-foot-inner -->
+            </div>
+            <!-- unit-foot -->
+        </footer>
+    </div>
+    <!-- page -->
+    <script>
+        (function (d, s) {
+            var js, fjs = d.getElementsByTagName(s)[0],
+                load = function (url, id) {
+                    if (d.getElementById(id)) {
+                        return;
+                    }
+                    js = d.createElement(s);
+                    js.src = url;
+                    js.id = id;
+                    fjs.parentNode.insertBefore(js, fjs);
+                };
+            load('//platform.twitter.com/widgets.js', 'tweetjs');
+            // load('https://apis.googlecom/js/plusone.js', 'gplus1js'); // Checkout http://j.mp/ApDgMr for usage html for this is <div class="g-plusone" data-size="medium"></div>
+            // load('//connect.facebook.net/en_US/all.js#xfbml=1', 'fbjssdk'); // Checkout http://j.mp/wZw2xR for using open graph protorol html for this is <div class="fb-like" data-href="/rstbx-docu/stackMeta.html" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="verdana"></div>
+        }(document, 'script'));
+    </script>
+    <script>
+        /*! A fix for the iOS orientationchange zoom bug.Script by @scottjehl, rebound by @wilto. MIT License.*/
+        (function (j) {
+            var i = j.document;
+            if (!i.querySelectorAll) {
+                return
+            }
+            var l = i.querySelectorAll("meta[name=viewport]")[0],
+                a = l && l.getAttribute("content"),
+                h = a + ", maximum-scale=1.0",
+                d = a + ", maximum-scale=10.0",
+                g = true,
+                c = j.orientation,
+                k = 0;
+            if (!l) {
+                return
+            }
+
+            function f() {
+                l.setAttribute("content", d);
+                g = true
+            }
+
+            function b() {
+                l.setAttribute("content", h);
+                g = false
+            }
+
+            function e(m) {
+                c = Math.abs(j.orientation);
+                k = Math.abs(m.gamma);
+                if (k > 8 && c === 0) {
+                    if (g) {
+                        b()
+                    }
+                } else {
+                    if (!g) {
+                        f()
+                    }
+                }
+            }
+            j.addEventListener("orientationchange", f, false);
+            j.addEventListener("deviceorientation", e, false)
+        })(this);
+    </script>
+
+    
+</body>
+
+</html>

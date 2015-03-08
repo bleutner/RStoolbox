@@ -1,0 +1,98 @@
+---
+layout: docu
+title: ' RStoolbox: A Collection of Remote Sensing Tools '
+fun:  RStoolbox 
+package:  RStoolbox 
+header: Pages
+group: navigation
+---
+{% include JB/setup %}
+ <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: RStoolbox: A Collection of Remote Sensing Tools</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<h3>Description</h3>
+
+<p>The RStoolbox package provides a set of functions which simplify performing standard remote sensing tasks in R.
+</p>
+
+
+<h3>Data Import and Export</h3>
+
+
+<ul>
+<li> <p><code><a href="readMeta.html">readMeta</a></code>: import Landsat metadata from MTL or XML files
+</p>
+</li>
+<li> <p><code><a href="stackMeta.html">stackMeta</a></code>: load Landsat bands based on metadata
+</p>
+</li>
+<li> <p><code><a href="readSLI.html">readSLI</a> &amp; <a href="writeSLI.html">writeSLI</a></code>: read and write ENVI spectral libraries
+</p>
+</li>
+<li> <p><code><a href="saveRSTBX.html">saveRSTBX</a> &amp; <a href="saveRSTBX.html">readRSTBX</a></code>: save and re-import RStoolbox classification objects (model and map)
+</p>
+</li></ul>
+
+
+
+<h3>Data Pre-Processing</h3>
+
+
+<ul>
+<li> <p><code><a href="radCor.html">radCor</a></code>: radiometric conversions and corrections. Primarily, yet not exclusively, intended for Landsat data processing. DN to radiance to reflectance conversion as well as DOS approaches
+</p>
+</li>
+<li> <p><code><a href="cloudMask.html">cloudMask</a></code>: mask clouds in Landsat or other imagery which comes with a thermal band
+</p>
+</li>
+<li> <p><code><a href="normImage.html">normImage</a></code>: norm image to match min/max from another image or a specified min/max range.
+</p>
+</li>
+<li> <p><code><a href="histMatch.html">histMatch</a></code>: matches the histograms of two scenes.
+</p>
+</li>
+<li> <p><code><a href="coregisterImages.html">coregisterImages</a></code>: co-register images based on mutual information.
+</p>
+</li>
+<li> <p><code><a href="panSharpen.html">panSharpen</a></code>: sharpen a coarse resolution image with a high resolution image (typically panchromatic)
+</p>
+</li></ul>
+
+
+
+<h3>Data Analysis</h3>
+
+
+<ul>
+<li> <p><code><a href="spectralIndices.html">spectralIndices</a></code>: calculate a set of predefined multispectral indices like NDVI
+</p>
+</li>
+<li> <p><code><a href="rasterPCA.html">rasterPCA</a></code>: principal components transform for raster data
+</p>
+</li>
+<li> <p><code><a href="unsuperClass.html">unsuperClass</a></code>: unsupervised classification
+</p>
+</li>
+<li> <p><code><a href="superClass.html">superClass</a></code>: supervised classification
+</p>
+</li>
+<li> <p><code><a href="fCover.html">fCover</a></code>: fractional cover of coarse resolution imagery based on high resolution classificaton
+</p>
+</li></ul>
+
+
+
+<h3>Data Display</h3>
+
+
+<ul>
+<li> <p><code><a href="ggRGB.html">ggRGB</a></code>: efficient plotting of remote sensing imagery in RGB with ggplot2
+</p>
+</li></ul>
+
+
+<hr><div align="center">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>

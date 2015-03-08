@@ -1,0 +1,79 @@
+---
+layout: docu
+title: ' Pan sharpen imagery / Image fusion '
+fun:  panSharpen 
+package:  RStoolbox 
+header: Pages
+group: navigation
+---
+{% include JB/setup %}
+ <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Pan sharpen imagery / Image fusion</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<h3>Description</h3>
+
+<p>provides different methods for pan sharpening a coarse resolution (typically multispectral) image with
+a higher reolution panchromatic image
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+panSharpen(img, pan, r, g, b, method = "pca", norm = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>img</code></td>
+<td>
+<p>Raster* object. Coarse resolution imagery</p>
+</td></tr>
+<tr valign="top"><td><code>pan</code></td>
+<td>
+<p>RasterLayer. High resolution image, typically panchromatic.</p>
+</td></tr>
+<tr valign="top"><td><code>r</code></td>
+<td>
+<p>Character or Integer. Red band in <code>img</code>. Only relevant if <code>method='pca'</code></p>
+</td></tr>
+<tr valign="top"><td><code>g</code></td>
+<td>
+<p>Character or Integer. Green band in <code>img</code>. Only relevant if <code>method='pca'</code></p>
+</td></tr>
+<tr valign="top"><td><code>b</code></td>
+<td>
+<p>Character or Integer. Blue band in <code>img</code>. Only relevant if <code>method='pca'</code></p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>Character. Choose method from c(&quot;pca&quot;, &quot;ihs&quot;).</p>
+</td></tr>
+<tr valign="top"><td><code>norm</code></td>
+<td>
+<p>Logical. Normalize pan image to 1st PC component. If <code>FALSE</code> pan will be histogram matched to the 1st PC. Otherwise only min and max are matched.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Pan sharpening options:
+</p>
+
+<ul>
+<li><p><code>method='pca'</code>: Performs a pca using <a href="rasterPCA.html">rasterPCA</a>. The first component is then swapped for the pan band an the PCA is rotated backwards.
+</p>
+</li>
+<li><p><code>method='ihs'</code>: Performs a color space transform to Intensity-Hue-Saturation space, swaps intensity for the histogram matched pan and does the backwards transformation.
+</p>
+</li></ul>
+
+
+<hr><div align="center">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>

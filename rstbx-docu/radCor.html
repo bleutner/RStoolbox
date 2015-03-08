@@ -1,0 +1,124 @@
+---
+layout: docu
+title: ' Radiometric calibration and correction '
+fun:  radCor 
+package:  RStoolbox 
+header: Pages
+group: navigation
+---
+{% include JB/setup %}
+ <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Radiometric calibration and correction</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<h3>Description</h3>
+
+<p>Implements several different methods for absolute radiometric correction of Landsat data.
+You can either specify a metadata file, or supply all neccesary values manually. With proper parametrization APREF and SDOS should work for other sensors as well.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+radCor(img, metaData, radiance = FALSE, method = "APREF",
+  bandSet = "full", SHV, hazeBand, atHaze, darkProp = 0.02, verbose)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>img</code></td>
+<td>
+<p>raster object</p>
+</td></tr>
+<tr valign="top"><td><code>metaData</code></td>
+<td>
+<p>object of class ImageMetaData or a path to the meta data (MTL) file.</p>
+</td></tr>
+<tr valign="top"><td><code>radiance</code></td>
+<td>
+<p>Logical. If <code>TRUE</code> only radiance will be calculated. Otherwise reflectance and brightness temperature are calculated.</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>Radiometric correction method to be used. There are currently four methods available (see Details):
+&quot;APREF&quot;, &quot;SDOS&quot;, &quot;DOS&quot;, &quot;COSTZ&quot;.</p>
+</td></tr>
+<tr valign="top"><td><code>bandSet</code></td>
+<td>
+<p>numeric or character. original Landsat band numbers or names in the form of (&quot;B1&quot;, &quot;B2&quot; etc). If set to 'full' all bands in the solar region will be processed.</p>
+</td></tr>
+<tr valign="top"><td><code>SHV</code></td>
+<td>
+<p>starting haze value, can be estimated using estimateSHV(). if not provided and method is &quot;DOS&quot; or &quot;COSTZ&quot; SHV will be estimated in an automated fashion. Not needed for apparent reflectance.</p>
+</td></tr>
+<tr valign="top"><td><code>hazeBand</code></td>
+<td>
+<p>band from which SHV was estimated.</p>
+</td></tr>
+<tr valign="top"><td><code>atHaze</code></td>
+<td>
+<p>character. Scene haze characteristics. Will be estimated if not expicilty provided. Must be one of <code>"veryClear", "clear", "moderate", "hazy"</code> or <code>"veryHazy"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>darkProp</code></td>
+<td>
+<p>numeric. Estimated proportion of dark pixels in the scene. Used only for automatic guessing of SHV.</p>
+</td></tr>
+<tr valign="top"><td><code>verbose</code></td>
+<td>
+<p>Logical. Print status information.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Conversion to top of atmosphere radiance (<i>W/(m^2 * srad * &mu;m)</i>)
+Conversion to at-satellite brightness temperature (K)
+Conversion to top of atmosphere reflectance (unitless) corrected for the sun angle
+Estimation of at-surface spectral reflectance (unitless)
+</p>
+
+<dl>
+<dt>APREF</dt><dd><p>Apparent reflectance</p>
+</dd>
+<dt>DOS</dt><dd><p>Dark object subtratction following Chavez (1989)</p>
+</dd>
+<dt>COSTZ</dt><dd><p>Dark object subtraction following Chaves(1996)</p>
+</dd>
+<dt>SDOS</dt><dd><p>Simple dark object subtraction. Classical DOS, Lhaze must be estimated for each band separately.</p>
+</dd>
+</dl>
+
+<p>The implemented sun-earth distances neglect the earth's eccentricity. Instead it uses a 100 year daily average (1979-2070).
+</p>
+<p>Atmospheric haze decay model according to Chavez (1989)
+</p>
+
+<dl>
+<dt>veryClear</dt><dd><i>&lambda;^{-4.0}</i></dd>
+<dt>clear</dt><dd><i>&lambda;^{-2.0}</i></dd>
+<dt>moderate</dt><dd><i>&lambda;^{-1.0}</i></dd>
+<dt>hazy</dt><dd><i>&lambda;^{-0.7}</i></dd>
+<dt>veryHazy</dt><dd><i>&lambda;^{-0.5}</i></dd>
+</dl>
+
+
+
+<h3>Note</h3>
+
+<p>This was originally a fork of randcorr in the landsat package. It may be slower, however it works on Raster* objects and hence is memory-safe.
+</p>
+
+
+<h3>References</h3>
+
+<p>S. Goslee (2011): Analyzing Remote Sensing Data in R: The landsat Package. Journal of Statistical Software 43(4).
+</p>
+
+<hr><div align="center">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>

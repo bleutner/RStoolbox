@@ -1,0 +1,309 @@
+
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7 ie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8 ie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9 ie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title> Radiometric calibration and correction </title>
+    <meta name="author" content="Benjamin Leutner">
+    <link href='http://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
+    <link href='/assets/themes/the-minimum/css/style.css' rel="stylesheet" media="all">
+    <link href="http://feeds.feedburner.com/" rel="alternate" title=" Radiometric calibration and correction " type="application/atom+xml">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
+</head>
+
+<body>
+    <div id="page" class="hentry">
+        <header class="the-header">
+            <div class="unit-head">
+                <div class="unit-inner unit-head-inner">
+
+                    <nav class="nav-global">
+                        <ul>
+                            <li class="page"><a href="/">Home</a>
+                            </li>
+                            <li class="page"><a href="/pages.html">Blog</a>
+                            </li>
+                            <li class="documentation"><a href="/rstbx-docu">Documentation</a>
+                            </li>
+                            <li class="category"><a href="/about.html">About</a>
+                            </li>
+
+                        </ul>
+                    </nav>
+                </div>
+                <!-- unit-inner -->
+            </div>
+            <!-- unit-head -->
+        </header>
+        <div class="body" role="main">
+            <div class="unit-body">
+                <div class="unit-inner unit-body-inner">
+                    <div class="entry-content">
+                        
+<article class="unit-article layout-page">
+    <div class="unit-inner unit-article-inner">
+        <div class="content">
+            <header>
+                <div class="unit-head">
+                    <a class="logobox" href="/"><img alt="RStoolbox-logo" src="/assets/img/rstbx.png"> </a>
+
+                    <div class="unit-inner unit-head-inner">
+                        <div class="h4 entry-title"> 
+                            <table width="100%"><tr><td><strong>radCor<strong> { <a href="index.html">RStoolbox</a>}</td><td align="right">R Documentation</td></tr></table>
+                            <h3> Radiometric calibration and correction </h2>
+                        </div>
+                    </div>
+                    <!-- unit-inner -->
+                </div>
+                <!-- unit-head -->
+            </header>
+
+            <div class="bd">
+                <div class="entry-content">
+                    
+ <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Radiometric calibration and correction</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<h3>Description</h3>
+
+<p>Implements several different methods for absolute radiometric correction of Landsat data.
+You can either specify a metadata file, or supply all neccesary values manually. With proper parametrization APREF and SDOS should work for other sensors as well.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+radCor(img, metaData, radiance = FALSE, method = "APREF",
+  bandSet = "full", SHV, hazeBand, atHaze, darkProp = 0.02, verbose)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>img</code></td>
+<td>
+<p>raster object</p>
+</td></tr>
+<tr valign="top"><td><code>metaData</code></td>
+<td>
+<p>object of class ImageMetaData or a path to the meta data (MTL) file.</p>
+</td></tr>
+<tr valign="top"><td><code>radiance</code></td>
+<td>
+<p>Logical. If <code>TRUE</code> only radiance will be calculated. Otherwise reflectance and brightness temperature are calculated.</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>Radiometric correction method to be used. There are currently four methods available (see Details):
+&quot;APREF&quot;, &quot;SDOS&quot;, &quot;DOS&quot;, &quot;COSTZ&quot;.</p>
+</td></tr>
+<tr valign="top"><td><code>bandSet</code></td>
+<td>
+<p>numeric or character. original Landsat band numbers or names in the form of (&quot;B1&quot;, &quot;B2&quot; etc). If set to 'full' all bands in the solar region will be processed.</p>
+</td></tr>
+<tr valign="top"><td><code>SHV</code></td>
+<td>
+<p>starting haze value, can be estimated using estimateSHV(). if not provided and method is &quot;DOS&quot; or &quot;COSTZ&quot; SHV will be estimated in an automated fashion. Not needed for apparent reflectance.</p>
+</td></tr>
+<tr valign="top"><td><code>hazeBand</code></td>
+<td>
+<p>band from which SHV was estimated.</p>
+</td></tr>
+<tr valign="top"><td><code>atHaze</code></td>
+<td>
+<p>character. Scene haze characteristics. Will be estimated if not expicilty provided. Must be one of <code>"veryClear", "clear", "moderate", "hazy"</code> or <code>"veryHazy"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>darkProp</code></td>
+<td>
+<p>numeric. Estimated proportion of dark pixels in the scene. Used only for automatic guessing of SHV.</p>
+</td></tr>
+<tr valign="top"><td><code>verbose</code></td>
+<td>
+<p>Logical. Print status information.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Conversion to top of atmosphere radiance (<i>W/(m^2 * srad * &mu;m)</i>)
+Conversion to at-satellite brightness temperature (K)
+Conversion to top of atmosphere reflectance (unitless) corrected for the sun angle
+Estimation of at-surface spectral reflectance (unitless)
+</p>
+
+<dl>
+<dt>APREF</dt><dd><p>Apparent reflectance</p>
+</dd>
+<dt>DOS</dt><dd><p>Dark object subtratction following Chavez (1989)</p>
+</dd>
+<dt>COSTZ</dt><dd><p>Dark object subtraction following Chaves(1996)</p>
+</dd>
+<dt>SDOS</dt><dd><p>Simple dark object subtraction. Classical DOS, Lhaze must be estimated for each band separately.</p>
+</dd>
+</dl>
+
+<p>The implemented sun-earth distances neglect the earth's eccentricity. Instead it uses a 100 year daily average (1979-2070).
+</p>
+<p>Atmospheric haze decay model according to Chavez (1989)
+</p>
+
+<dl>
+<dt>veryClear</dt><dd><i>&lambda;^{-4.0}</i></dd>
+<dt>clear</dt><dd><i>&lambda;^{-2.0}</i></dd>
+<dt>moderate</dt><dd><i>&lambda;^{-1.0}</i></dd>
+<dt>hazy</dt><dd><i>&lambda;^{-0.7}</i></dd>
+<dt>veryHazy</dt><dd><i>&lambda;^{-0.5}</i></dd>
+</dl>
+
+
+
+<h3>Note</h3>
+
+<p>This was originally a fork of randcorr in the landsat package. It may be slower, however it works on Raster* objects and hence is memory-safe.
+</p>
+
+
+<h3>References</h3>
+
+<p>S. Goslee (2011): Analyzing Remote Sensing Data in R: The landsat Package. Journal of Statistical Software 43(4).
+</p>
+
+<hr><div align="center">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>
+
+                </div>
+                <!-- entry-content -->
+            </div>
+            <!-- bd -->
+
+            <footer class="unit-foot">
+                <div class="unit-inner unit-foot-inner">
+                    <p class="gotop">
+                        <a href="#page">Back to Top</a>
+                    </p>
+                </div>
+            </footer>
+
+        </div>
+        <!-- content -->
+    </div>
+    <!-- unit-inner -->
+</article>
+                    </div>
+                </div>
+                <!-- unit-inner -->
+            </div>
+            <!-- unit-body -->
+        </div>
+        <!-- body -->
+        <footer class="the-footer">
+            <div class="unit-foot">
+                <div class="unit-inner unit-foot-inner">
+                    <div class="misc vcard">
+                        <div>
+                            <p>Last update 2015-03-08 03:56:42 +0100</p>
+                        </div>
+                        <h4>about</h4>
+                        <ul>
+
+                            <li class="contact"><address><span class="author fn n">Benjamin Leutner</span> - <span class="fn email">benjamin.leutner@uni-wuerzburg.de</span></address>
+                            </li>
+                            <li class="github"><a href="http://github.com/bleutner/" rel="me">github.com/bleutner</a>
+                            </li>
+                           <!-- <li class="rss"><a href="http://feeds.feedburner.com/">Subscribe to RSS Feed</a>
+                            </li>-->
+                        </ul>
+                    </div>
+                    <!-- misc -->
+                    <p class="tinyfoot">
+                        This site is powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> and <a href="http://jekyllbootstrap.com/">Jekyll-bootstrap</a>. The original theme was <a href="http://layouts-the.me/">Theme: the_minimum</a>
+                        </br>
+                       <a href="impressum.html">Impressum</a>
+                    </p>
+                </div>
+                <!-- unit-foot-inner -->
+            </div>
+            <!-- unit-foot -->
+        </footer>
+    </div>
+    <!-- page -->
+    <script>
+        (function (d, s) {
+            var js, fjs = d.getElementsByTagName(s)[0],
+                load = function (url, id) {
+                    if (d.getElementById(id)) {
+                        return;
+                    }
+                    js = d.createElement(s);
+                    js.src = url;
+                    js.id = id;
+                    fjs.parentNode.insertBefore(js, fjs);
+                };
+            load('//platform.twitter.com/widgets.js', 'tweetjs');
+            // load('https://apis.googlecom/js/plusone.js', 'gplus1js'); // Checkout http://j.mp/ApDgMr for usage html for this is <div class="g-plusone" data-size="medium"></div>
+            // load('//connect.facebook.net/en_US/all.js#xfbml=1', 'fbjssdk'); // Checkout http://j.mp/wZw2xR for using open graph protorol html for this is <div class="fb-like" data-href="/rstbx-docu/radCor.html" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="verdana"></div>
+        }(document, 'script'));
+    </script>
+    <script>
+        /*! A fix for the iOS orientationchange zoom bug.Script by @scottjehl, rebound by @wilto. MIT License.*/
+        (function (j) {
+            var i = j.document;
+            if (!i.querySelectorAll) {
+                return
+            }
+            var l = i.querySelectorAll("meta[name=viewport]")[0],
+                a = l && l.getAttribute("content"),
+                h = a + ", maximum-scale=1.0",
+                d = a + ", maximum-scale=10.0",
+                g = true,
+                c = j.orientation,
+                k = 0;
+            if (!l) {
+                return
+            }
+
+            function f() {
+                l.setAttribute("content", d);
+                g = true
+            }
+
+            function b() {
+                l.setAttribute("content", h);
+                g = false
+            }
+
+            function e(m) {
+                c = Math.abs(j.orientation);
+                k = Math.abs(m.gamma);
+                if (k > 8 && c === 0) {
+                    if (g) {
+                        b()
+                    }
+                } else {
+                    if (!g) {
+                        f()
+                    }
+                }
+            }
+            j.addEventListener("orientationchange", f, false);
+            j.addEventListener("deviceorientation", e, false)
+        })(this);
+    </script>
+
+    
+</body>
+
+</html>

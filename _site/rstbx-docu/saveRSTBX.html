@@ -1,0 +1,296 @@
+
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7 ie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8 ie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9 ie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title> Save and Read RStoolbox Classification Results </title>
+    <meta name="author" content="Benjamin Leutner">
+    <link href='http://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
+    <link href='/assets/themes/the-minimum/css/style.css' rel="stylesheet" media="all">
+    <link href="http://feeds.feedburner.com/" rel="alternate" title=" Save and Read RStoolbox Classification Results " type="application/atom+xml">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
+</head>
+
+<body>
+    <div id="page" class="hentry">
+        <header class="the-header">
+            <div class="unit-head">
+                <div class="unit-inner unit-head-inner">
+
+                    <nav class="nav-global">
+                        <ul>
+                            <li class="page"><a href="/">Home</a>
+                            </li>
+                            <li class="page"><a href="/pages.html">Blog</a>
+                            </li>
+                            <li class="documentation"><a href="/rstbx-docu">Documentation</a>
+                            </li>
+                            <li class="category"><a href="/about.html">About</a>
+                            </li>
+
+                        </ul>
+                    </nav>
+                </div>
+                <!-- unit-inner -->
+            </div>
+            <!-- unit-head -->
+        </header>
+        <div class="body" role="main">
+            <div class="unit-body">
+                <div class="unit-inner unit-body-inner">
+                    <div class="entry-content">
+                        
+<article class="unit-article layout-page">
+    <div class="unit-inner unit-article-inner">
+        <div class="content">
+            <header>
+                <div class="unit-head">
+                    <a class="logobox" href="/"><img alt="RStoolbox-logo" src="/assets/img/rstbx.png"> </a>
+
+                    <div class="unit-inner unit-head-inner">
+                        <div class="h4 entry-title"> 
+                            <table width="100%"><tr><td><strong>saveRSTBX<strong> { <a href="index.html">RStoolbox</a>}</td><td align="right">R Documentation</td></tr></table>
+                            <h3> Save and Read RStoolbox Classification Results </h2>
+                        </div>
+                    </div>
+                    <!-- unit-inner -->
+                </div>
+                <!-- unit-head -->
+            </header>
+
+            <div class="bd">
+                <div class="entry-content">
+                    
+ <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Save and Read RStoolbox Classification Results</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+
+							<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+							<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+							<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+							<script>hljs.initHighlightingOnLoad();</script>
+							</head><body>
+
+<h3>Description</h3>
+
+<p>Saves objects of classes unsuperClass, superClass, rasterPCA and fCover to
+file. Useful to archive the fitted models.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+saveRSTBX(x, filename, format = "raster", ...)
+
+readRSTBX(filename)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>RStoolbox object of classes c(&quot;fCover&quot;, &quot;rasterPCA&quot;, &quot;superClass&quot;, &quot;unsuperClass&quot;)</p>
+</td></tr>
+<tr valign="top"><td><code>filename</code></td>
+<td>
+<p>Character. Path and filename. Any file extension will be ignored.</p>
+</td></tr>
+<tr valign="top"><td><code>format</code></td>
+<td>
+<p>Character. Driver to use for the raster file</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments passed to writeRaster</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>The output of writeRSTBX will be at least two files written to disk:
+a) an .rds file containing the object itself and
+b) the raster file (depending on the driver you choose this can be more than two files).
+</p>
+
+
+<h3>Functions</h3>
+
+
+<ul>
+<li> <p><code>readRSTBX</code>: 
+</p>
+</li></ul>
+
+
+<h3>Note</h3>
+
+<p>All files must be kept in the same directory to read the full object back into R
+by means of readRSTBX. You can move them to another location but you'll have to move *all* of them
+(just like you would with Shapefiles). In case the raster file(s) is missing, readRSTBX will still
+return the object but the raster will be missing.
+</p>
+<p>writeRSTBX and readRSTBX are convenience wrappers around saveRDS, readRDS. This means
+you can read all files created this way also with base functionality as long as you don't move your files.
+This is because x$map is a Raster* object and hence contains only a static link to the file on disk.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class="r">## Not run: 
+##D input &lt;- brick(system.file(&quot;external/rlogo.grd&quot;, package=&quot;raster&quot;))
+##D ## Create filename
+##D file  &lt;- paste0(tempdir(), &quot;/test&quot;, runif(1))
+##D ## Run PCA
+##D rpc   &lt;- rasterPCA(input, filename = file, nSample = 100)
+##D ## Save object
+##D saveRSTBX(rpc, filename=file)
+##D ## Which files were written?
+##D list.files(tempdir(), pattern = basename(file))
+##D ## Re-read files
+##D re_rpc &lt;- readRSTBX(file)
+##D ## Compare
+##D all.equal(re_rpc, rpc)
+##D file.remove(file)
+## End(Not run)
+</code></pre>
+
+
+<hr><div align="center">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>
+
+                </div>
+                <!-- entry-content -->
+            </div>
+            <!-- bd -->
+
+            <footer class="unit-foot">
+                <div class="unit-inner unit-foot-inner">
+                    <p class="gotop">
+                        <a href="#page">Back to Top</a>
+                    </p>
+                </div>
+            </footer>
+
+        </div>
+        <!-- content -->
+    </div>
+    <!-- unit-inner -->
+</article>
+                    </div>
+                </div>
+                <!-- unit-inner -->
+            </div>
+            <!-- unit-body -->
+        </div>
+        <!-- body -->
+        <footer class="the-footer">
+            <div class="unit-foot">
+                <div class="unit-inner unit-foot-inner">
+                    <div class="misc vcard">
+                        <div>
+                            <p>Last update 2015-03-08 03:56:42 +0100</p>
+                        </div>
+                        <h4>about</h4>
+                        <ul>
+
+                            <li class="contact"><address><span class="author fn n">Benjamin Leutner</span> - <span class="fn email">benjamin.leutner@uni-wuerzburg.de</span></address>
+                            </li>
+                            <li class="github"><a href="http://github.com/bleutner/" rel="me">github.com/bleutner</a>
+                            </li>
+                           <!-- <li class="rss"><a href="http://feeds.feedburner.com/">Subscribe to RSS Feed</a>
+                            </li>-->
+                        </ul>
+                    </div>
+                    <!-- misc -->
+                    <p class="tinyfoot">
+                        This site is powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> and <a href="http://jekyllbootstrap.com/">Jekyll-bootstrap</a>. The original theme was <a href="http://layouts-the.me/">Theme: the_minimum</a>
+                        </br>
+                       <a href="impressum.html">Impressum</a>
+                    </p>
+                </div>
+                <!-- unit-foot-inner -->
+            </div>
+            <!-- unit-foot -->
+        </footer>
+    </div>
+    <!-- page -->
+    <script>
+        (function (d, s) {
+            var js, fjs = d.getElementsByTagName(s)[0],
+                load = function (url, id) {
+                    if (d.getElementById(id)) {
+                        return;
+                    }
+                    js = d.createElement(s);
+                    js.src = url;
+                    js.id = id;
+                    fjs.parentNode.insertBefore(js, fjs);
+                };
+            load('//platform.twitter.com/widgets.js', 'tweetjs');
+            // load('https://apis.googlecom/js/plusone.js', 'gplus1js'); // Checkout http://j.mp/ApDgMr for usage html for this is <div class="g-plusone" data-size="medium"></div>
+            // load('//connect.facebook.net/en_US/all.js#xfbml=1', 'fbjssdk'); // Checkout http://j.mp/wZw2xR for using open graph protorol html for this is <div class="fb-like" data-href="/rstbx-docu/saveRSTBX.html" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="verdana"></div>
+        }(document, 'script'));
+    </script>
+    <script>
+        /*! A fix for the iOS orientationchange zoom bug.Script by @scottjehl, rebound by @wilto. MIT License.*/
+        (function (j) {
+            var i = j.document;
+            if (!i.querySelectorAll) {
+                return
+            }
+            var l = i.querySelectorAll("meta[name=viewport]")[0],
+                a = l && l.getAttribute("content"),
+                h = a + ", maximum-scale=1.0",
+                d = a + ", maximum-scale=10.0",
+                g = true,
+                c = j.orientation,
+                k = 0;
+            if (!l) {
+                return
+            }
+
+            function f() {
+                l.setAttribute("content", d);
+                g = true
+            }
+
+            function b() {
+                l.setAttribute("content", h);
+                g = false
+            }
+
+            function e(m) {
+                c = Math.abs(j.orientation);
+                k = Math.abs(m.gamma);
+                if (k > 8 && c === 0) {
+                    if (g) {
+                        b()
+                    }
+                } else {
+                    if (!g) {
+                        f()
+                    }
+                }
+            }
+            j.addEventListener("orientationchange", f, false);
+            j.addEventListener("deviceorientation", e, false)
+        })(this);
+    </script>
+
+    
+</body>
+
+</html>

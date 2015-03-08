@@ -1,0 +1,363 @@
+
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7 ie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8 ie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9 ie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title> Estimate fractional cover using image regression </title>
+    <meta name="author" content="Benjamin Leutner">
+    <link href='http://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
+    <link href='/assets/themes/the-minimum/css/style.css' rel="stylesheet" media="all">
+    <link href="http://feeds.feedburner.com/" rel="alternate" title=" Estimate fractional cover using image regression " type="application/atom+xml">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
+</head>
+
+<body>
+    <div id="page" class="hentry">
+        <header class="the-header">
+            <div class="unit-head">
+                <div class="unit-inner unit-head-inner">
+
+                    <nav class="nav-global">
+                        <ul>
+                            <li class="page"><a href="/">Home</a>
+                            </li>
+                            <li class="page"><a href="/pages.html">Blog</a>
+                            </li>
+                            <li class="documentation"><a href="/rstbx-docu">Documentation</a>
+                            </li>
+                            <li class="category"><a href="/about.html">About</a>
+                            </li>
+
+                        </ul>
+                    </nav>
+                </div>
+                <!-- unit-inner -->
+            </div>
+            <!-- unit-head -->
+        </header>
+        <div class="body" role="main">
+            <div class="unit-body">
+                <div class="unit-inner unit-body-inner">
+                    <div class="entry-content">
+                        
+<article class="unit-article layout-page">
+    <div class="unit-inner unit-article-inner">
+        <div class="content">
+            <header>
+                <div class="unit-head">
+                    <a class="logobox" href="/"><img alt="RStoolbox-logo" src="/assets/img/rstbx.png"> </a>
+
+                    <div class="unit-inner unit-head-inner">
+                        <div class="h4 entry-title"> 
+                            <table width="100%"><tr><td><strong>fCover<strong> { <a href="index.html">RStoolbox</a>}</td><td align="right">R Documentation</td></tr></table>
+                            <h3> Estimate fractional cover using image regression </h2>
+                        </div>
+                    </div>
+                    <!-- unit-inner -->
+                </div>
+                <!-- unit-head -->
+            </header>
+
+            <div class="bd">
+                <div class="entry-content">
+                    
+ <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Estimate fractional cover using image regression</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+
+							<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+							<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+							<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+							<script>hljs.initHighlightingOnLoad();</script>
+							</head><body>
+
+<h3>Description</h3>
+
+<p>fCover takes a classified high resolution image, e.g. vegetation and non-vegetation based on Landsat and calculates cover fractions for
+pixels of a coarser resolution, e.g. MODIS.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+fCover(classImage, predImage, nSamples = 1000, classes = 1, model = "rf",
+  tuneLength = 3, tuneGrid = NULL, method = "cv", maxNA = 0.1,
+  filename = NULL, verbose, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>classImage</code></td>
+<td>
+<p>high resolution RasterLayer containing a landcover classification, e.g. as obtained by <a href="superClass.html">superClass</a>.</p>
+</td></tr>
+<tr valign="top"><td><code>predImage</code></td>
+<td>
+<p>coearse resolution RasterLayer for which fractional cover will be estimated.</p>
+</td></tr>
+<tr valign="top"><td><code>nSamples</code></td>
+<td>
+<p>Integer. Number of pixels to sample from predImage to train the regression model</p>
+</td></tr>
+<tr valign="top"><td><code>classes</code></td>
+<td>
+<p>Integer. Classes for which fractional cover should be estimated.</p>
+</td></tr>
+<tr valign="top"><td><code>model</code></td>
+<td>
+<p>Character. Which model to fit for image regression. See <a href="http://www.inside-r.org/packages/cran/caret/docs/train">train</a> for options. Defaults to randomForest ('rf')</p>
+</td></tr>
+<tr valign="top"><td><code>tuneLength</code></td>
+<td>
+<p>Integer. Number of levels for each tuning parameters that should be generated by train.</p>
+</td></tr>
+<tr valign="top"><td><code>tuneGrid</code></td>
+<td>
+<p>Optional data.frame with exact tuning values. The columns are named the same as the tuning parameters.</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>Character. Resampling method for parameter tuning. Defaults to 10 fold cross-validation. See <a href="http://www.inside-r.org/packages/cran/caret/docs/trainControl">trainControl</a> for options.</p>
+</td></tr>
+<tr valign="top"><td><code>maxNA</code></td>
+<td>
+<p>Numeric. Maximal proportion of NAs allowed in training pixels.</p>
+</td></tr>
+<tr valign="top"><td><code>filename</code></td>
+<td>
+<p>Character. Raster filename.</p>
+</td></tr>
+<tr valign="top"><td><code>verbose</code></td>
+<td>
+<p>Logical. Print progress information.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments to be passed to <a href="http://www.inside-r.org/packages/cran/caret/docs/trainControl">trainControl</a> and <code><a href="http://www.inside-r.org/packages/cran/raster/docs/writeRaster">writeRaster</a></code></p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>fCover gets the pixel values in a high resolution classified image that correspond to
+individual randomly selected moderate resolution pixels and then calculates the percent of
+the classified image pixels that represent your cover type of interest. In other words, if
+your high resolution image has a pixel size of 1m and your moderate resolution image has a
+pixel size of 30m the sampling process would take a block of 900 of the 1m resolution pixels
+that correspond to a single 30m pixel and calculate the percentage of the 1m pixels that
+are forest. For example, if there were 600 forest pixels and 300 non-forest pixels the value
+given for the output pixel would be 0.67 since 67
+</p>
+<p>fCover relies on train from the caret package which provides acces to a huge number of classifiers.
+Please see the available options at <a href="http://www.inside-r.org/packages/cran/caret/docs/train">train</a>. The default classifier (randomForest) we chose has been shown
+to provide very good results in image regression and hence its recomended you start with this one. If you choose a different
+one, make sure it can run in regression mode.
+</p>
+<p>If you register a parallel backend before, model fitting will run in parallel.
+</p>
+<p>If the total no-data values for a block of high resolution pixels is greater than maxNA then
+it will not be included in the training data set since there is too much missing data to provide
+a reliable cover percentage. If the no-data proporton is less then maxNA the no-data pixels are removed
+from the total number of pixels when calculating the percent cover.
+</p>
+
+
+<h3>Value</h3>
+
+<p>Returns a list with two elements: models contains the fitted models evaluated in tenfold cross-validation (caret train objects);
+fCover contains a RasterStack with a fractional cover layer for each requested <code>class</code>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="superClass.html">superClass</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class="r">## Not run: 
+##D ## Create fake input images
+##D lsat &lt;- brick(system.file(&quot;external/rlogo.grd&quot;, package=&quot;raster&quot;))
+##D agg.level &lt;- 9
+##D modis &lt;- aggregate(lsat, agg.level)
+##D 
+##D ## Perform classification
+##D lc    &lt;- unsuperClass(lsat, nClass=2)
+##D 
+##D ## Calculate the true cover (possible in this example because the fake corse resolution imagery
+##D ## is exactly res(lsat)*9
+##D trueCover &lt;- aggregate(lc$map, agg.level, fun = function(x, ...){sum(x == 1, ...)/sum(!is.na(x))})
+##D 
+##D ## Run with randomForest and support vector machine (radial basis kernel)
+##D ## Of course the SVM is handicapped in this example due to poor tuning (tuneLength)
+##D par(mfrow=c(2,3))
+##D for(model in c(&quot;rf&quot;, &quot;svmRadial&quot;)){
+##D    fc &lt;- fCover(
+##D            classImage = lc$map ,
+##D            predImage = modis,
+##D            classes=1,
+##D            model=model,
+##D            nSample = 50,
+##D            number = 5,
+##D            tuneLength=2
+##D    )
+##D 
+##D    ## How close is it to the truth?
+##D    compare.rf &lt;- trueCover - fc$map
+##D    plot(fc$map, main = paste(&quot;Fractional Cover: Class 1\nModel:&quot;, model))
+##D    plot(compare.rf, main = &quot;Diffence\n true vs. predicted&quot;)
+##D    plot(trueCover[],fc$map[],  xlim = c(0,1), ylim =c(0,1),
+##D            xlab = &quot;True Cover&quot;, ylab = &quot;Predicted Cover&quot; )
+##D    abline(coef=c(0,1))
+##D    rmse &lt;- sqrt(cellStats(compare.rf^2, sum))/ncell(compare.rf)
+##D    r2 &lt;- cor(trueCover[], fc$map[], &quot;complete.obs&quot;)
+##D    text(0.9,0.1,paste0(paste(c(&quot;RMSE:&quot;,&quot;R2:&quot;),
+##D                            round(c(rmse, r2),3)),collapse=&quot;\n&quot;), adj=1)
+##D }
+##D 
+##D ## Reset par
+##D par(mfrow=c(1,1))
+## End(Not run)
+</code></pre>
+
+
+<hr><div align="center">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>
+
+                </div>
+                <!-- entry-content -->
+            </div>
+            <!-- bd -->
+
+            <footer class="unit-foot">
+                <div class="unit-inner unit-foot-inner">
+                    <p class="gotop">
+                        <a href="#page">Back to Top</a>
+                    </p>
+                </div>
+            </footer>
+
+        </div>
+        <!-- content -->
+    </div>
+    <!-- unit-inner -->
+</article>
+                    </div>
+                </div>
+                <!-- unit-inner -->
+            </div>
+            <!-- unit-body -->
+        </div>
+        <!-- body -->
+        <footer class="the-footer">
+            <div class="unit-foot">
+                <div class="unit-inner unit-foot-inner">
+                    <div class="misc vcard">
+                        <div>
+                            <p>Last update 2015-03-08 03:56:42 +0100</p>
+                        </div>
+                        <h4>about</h4>
+                        <ul>
+
+                            <li class="contact"><address><span class="author fn n">Benjamin Leutner</span> - <span class="fn email">benjamin.leutner@uni-wuerzburg.de</span></address>
+                            </li>
+                            <li class="github"><a href="http://github.com/bleutner/" rel="me">github.com/bleutner</a>
+                            </li>
+                           <!-- <li class="rss"><a href="http://feeds.feedburner.com/">Subscribe to RSS Feed</a>
+                            </li>-->
+                        </ul>
+                    </div>
+                    <!-- misc -->
+                    <p class="tinyfoot">
+                        This site is powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> and <a href="http://jekyllbootstrap.com/">Jekyll-bootstrap</a>. The original theme was <a href="http://layouts-the.me/">Theme: the_minimum</a>
+                        </br>
+                       <a href="impressum.html">Impressum</a>
+                    </p>
+                </div>
+                <!-- unit-foot-inner -->
+            </div>
+            <!-- unit-foot -->
+        </footer>
+    </div>
+    <!-- page -->
+    <script>
+        (function (d, s) {
+            var js, fjs = d.getElementsByTagName(s)[0],
+                load = function (url, id) {
+                    if (d.getElementById(id)) {
+                        return;
+                    }
+                    js = d.createElement(s);
+                    js.src = url;
+                    js.id = id;
+                    fjs.parentNode.insertBefore(js, fjs);
+                };
+            load('//platform.twitter.com/widgets.js', 'tweetjs');
+            // load('https://apis.googlecom/js/plusone.js', 'gplus1js'); // Checkout http://j.mp/ApDgMr for usage html for this is <div class="g-plusone" data-size="medium"></div>
+            // load('//connect.facebook.net/en_US/all.js#xfbml=1', 'fbjssdk'); // Checkout http://j.mp/wZw2xR for using open graph protorol html for this is <div class="fb-like" data-href="/rstbx-docu/fCover.html" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="verdana"></div>
+        }(document, 'script'));
+    </script>
+    <script>
+        /*! A fix for the iOS orientationchange zoom bug.Script by @scottjehl, rebound by @wilto. MIT License.*/
+        (function (j) {
+            var i = j.document;
+            if (!i.querySelectorAll) {
+                return
+            }
+            var l = i.querySelectorAll("meta[name=viewport]")[0],
+                a = l && l.getAttribute("content"),
+                h = a + ", maximum-scale=1.0",
+                d = a + ", maximum-scale=10.0",
+                g = true,
+                c = j.orientation,
+                k = 0;
+            if (!l) {
+                return
+            }
+
+            function f() {
+                l.setAttribute("content", d);
+                g = true
+            }
+
+            function b() {
+                l.setAttribute("content", h);
+                g = false
+            }
+
+            function e(m) {
+                c = Math.abs(j.orientation);
+                k = Math.abs(m.gamma);
+                if (k > 8 && c === 0) {
+                    if (g) {
+                        b()
+                    }
+                } else {
+                    if (!g) {
+                        f()
+                    }
+                }
+            }
+            j.addEventListener("orientationchange", f, false);
+            j.addEventListener("deviceorientation", e, false)
+        })(this);
+    </script>
+
+    
+</body>
+
+</html>

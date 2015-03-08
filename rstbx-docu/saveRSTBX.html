@@ -1,0 +1,111 @@
+---
+layout: docu
+title: ' Save and Read RStoolbox Classification Results '
+fun:  saveRSTBX 
+package:  RStoolbox 
+header: Pages
+group: navigation
+---
+{% include JB/setup %}
+ <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Save and Read RStoolbox Classification Results</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+
+							<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+							<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+							<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+							<script>hljs.initHighlightingOnLoad();</script>
+							</head><body>
+
+<h3>Description</h3>
+
+<p>Saves objects of classes unsuperClass, superClass, rasterPCA and fCover to
+file. Useful to archive the fitted models.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+saveRSTBX(x, filename, format = "raster", ...)
+
+readRSTBX(filename)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>RStoolbox object of classes c(&quot;fCover&quot;, &quot;rasterPCA&quot;, &quot;superClass&quot;, &quot;unsuperClass&quot;)</p>
+</td></tr>
+<tr valign="top"><td><code>filename</code></td>
+<td>
+<p>Character. Path and filename. Any file extension will be ignored.</p>
+</td></tr>
+<tr valign="top"><td><code>format</code></td>
+<td>
+<p>Character. Driver to use for the raster file</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments passed to writeRaster</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>The output of writeRSTBX will be at least two files written to disk:
+a) an .rds file containing the object itself and
+b) the raster file (depending on the driver you choose this can be more than two files).
+</p>
+
+
+<h3>Functions</h3>
+
+
+<ul>
+<li> <p><code>readRSTBX</code>: 
+</p>
+</li></ul>
+
+
+<h3>Note</h3>
+
+<p>All files must be kept in the same directory to read the full object back into R
+by means of readRSTBX. You can move them to another location but you'll have to move *all* of them
+(just like you would with Shapefiles). In case the raster file(s) is missing, readRSTBX will still
+return the object but the raster will be missing.
+</p>
+<p>writeRSTBX and readRSTBX are convenience wrappers around saveRDS, readRDS. This means
+you can read all files created this way also with base functionality as long as you don't move your files.
+This is because x$map is a Raster* object and hence contains only a static link to the file on disk.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class="r">## Not run: 
+##D input &lt;- brick(system.file(&quot;external/rlogo.grd&quot;, package=&quot;raster&quot;))
+##D ## Create filename
+##D file  &lt;- paste0(tempdir(), &quot;/test&quot;, runif(1))
+##D ## Run PCA
+##D rpc   &lt;- rasterPCA(input, filename = file, nSample = 100)
+##D ## Save object
+##D saveRSTBX(rpc, filename=file)
+##D ## Which files were written?
+##D list.files(tempdir(), pattern = basename(file))
+##D ## Re-read files
+##D re_rpc &lt;- readRSTBX(file)
+##D ## Compare
+##D all.equal(re_rpc, rpc)
+##D file.remove(file)
+## End(Not run)
+</code></pre>
+
+
+<hr><div align="center">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>

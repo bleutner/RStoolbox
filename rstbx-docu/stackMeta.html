@@ -1,0 +1,66 @@
+---
+layout: docu
+title: ' Import separate Landsat files into single stack '
+fun:  stackMeta 
+package:  RStoolbox 
+header: Pages
+group: navigation
+---
+{% include JB/setup %}
+ <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Import separate Landsat files into single stack</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<h3>Description</h3>
+
+<p>Reads Landsat MTL or XML metadata files and loads single Landsat Tiffs into a rasterStack.
+Be aware that by default stackLS() does NOT import panchromatic bands nor thermal bands with resolutions != 30m.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+stackMeta(file, allResolutions = FALSE, quantity = "all",
+  category = "image")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>file</code></td>
+<td>
+<p>character. Path to Landsat MTL metadata file (not an XML file!).</p>
+</td></tr>
+<tr valign="top"><td><code>allResolutions</code></td>
+<td>
+<p>logical. if <code>TRUE</code> a list will be returned with length = unique spatial resolutions.</p>
+</td></tr>
+<tr valign="top"><td><code>quantity</code></td>
+<td>
+<p>Character vector. Which quantity should be returned. Options: digital numbers ('dn'), top of atmosphere reflectance ('tre'), at surface reflectance ('sre'), brightness temperature ('bt'), spectral index ('idx').</p>
+</td></tr>
+<tr valign="top"><td><code>category</code></td>
+<td>
+<p>character vector. Which category of data to return. Options 'image': image data, 'pan': panchromatic image, 'index': multiband indices, 'qa' quality flag bands, 'all': all categories.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Either a list of rasterStacks comprising all resolutions or only one rasterStack comprising only 30m resolution imagery
+</p>
+
+
+<h3>Note</h3>
+
+<p>Be aware that by default stackLS() does NOT import panchromatic bands nor thermal bands with resolutions != 30m. Use the allResolutions argument to import all layers.
+Note that nowadays the USGS uses cubic convolution to resample the TIR bands to 30m resolution.
+</p>
+
+<hr><div align="center">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,140 @@
+---
+layout: docu
+title: ' Plot RasterLayers in ggplot with greyscale '
+fun:  ggR 
+package:  RStoolbox 
+header: Pages
+group: navigation
+---
+{% include JB/setup %}
+ <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Plot RasterLayers in ggplot with greyscale</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+
+							<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+							<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+							<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+							<script>hljs.initHighlightingOnLoad();</script>
+							</head><body>
+
+<h3>Description</h3>
+
+<p>aimed towards plotting single layer imagery in grey-scale (remote sensing data) but can be
+used with any Raster* object.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+ggR(img, layer = 1, maxpixels = 5e+05, stretch, quantiles = c(0.02, 0.98),
+  coordEqual = TRUE, alpha = 1, ggLayer = FALSE, ggObj = TRUE,
+  annotation = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>img</code></td>
+<td>
+<p>raster</p>
+</td></tr>
+<tr valign="top"><td><code>layer</code></td>
+<td>
+<p>layername</p>
+</td></tr>
+<tr valign="top"><td><code>maxpixels</code></td>
+<td>
+<p>Integer. Maximal number of pixels to sample</p>
+</td></tr>
+<tr valign="top"><td><code>stretch</code></td>
+<td>
+<p>Character. Either 'lin' or 'hist' for linear or histogram stretch of the data</p>
+</td></tr>
+<tr valign="top"><td><code>quantiles</code></td>
+<td>
+<p>Numeric vector with two elements. Min and max quantiles to stretch to. Defaults to 2% stretch, i.e. c(0.02,0.98).</p>
+</td></tr>
+<tr valign="top"><td><code>coordEqual</code></td>
+<td>
+<p>Logical. Force addition of coord_equal, i.e. aspect ratio of 1:1. Typically usefull for remote sensing data (depending on your projection), hence it defaults to TRUE.
+Note howver, that this does not apply if (<code>ggLayer=FALSE</code>).</p>
+</td></tr>
+<tr valign="top"><td><code>alpha</code></td>
+<td>
+<p>Numeric. Transparency (0-1).</p>
+</td></tr>
+<tr valign="top"><td><code>ggLayer</code></td>
+<td>
+<p>Logical. Return only a ggplot layer which must be added to an existing ggplot. If <code>FALSE</code> s stand-alone ggplot will be returned.</p>
+</td></tr>
+<tr valign="top"><td><code>ggObj</code></td>
+<td>
+<p>Logical. Return a stand-alone ggplot object (TRUE) or just the data.frame with values and colors</p>
+</td></tr>
+<tr valign="top"><td><code>annotation</code></td>
+<td>
+<p>Logical. Uses annotation_raster by default (good to keep aestetic mappings free). If <code>FALSE</code> uses geom_raster (and aes(fill)).</p>
+</td></tr>
+</table>
+
+
+<h3>Note</h3>
+
+<p>When img contains factor values and annotation raster is <code>TRUE</code>, the values will be automatically converted
+to numeric in order to proceed with the color calculation.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="ggRGB.html">ggRGB</a>, <a href="fortify.raster.html">fortify</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class="r">if(require(ggplot2)){
+r &lt;- raster(system.file(&quot;external/rlogo.grd&quot;, package=&quot;raster&quot;))
+
+## Simple grey scale annotation
+ggR(r)
+
+## With linear stretch contrast enhancement
+ggR(r, stretch = &quot;lin&quot;, quantiles = c(0.1,0.9))
+
+## Don&#39;t plot, just return a data.frame
+df &lt;- ggR(r, ggObj=F)
+head(df)
+
+## ggplot with geom_raster instead of annotation_raster
+## and default scale_fill*
+ggR(r, annotation=FALSE)
+
+## with different scale
+ggR(r, annotation=FALSE) + scale_fill_gradientn(name = &quot;mojo&quot;, colours = rainbow(10)) +
+        ggtitle(&quot;**Funkadelic**&quot;)
+
+## Layermode (ggLayer=TRUE)
+data &lt;- fdata &lt;- data.frame(x = c(0, 0:100,100), y = c(0,sin(seq(0,2*pi,pi/50))*10+20, 0))
+ggplot(data, aes(x, y)) +  ggR(r, annotation= TRUE, ggLayer = TRUE) +
+       geom_polygon(aes(x, y), fill = &quot;blue&quot;, alpha = 0.4) +
+       coord_equal(ylim=c(0,75))
+
+## Categorical data (usually you wanna use annotation=FALSE to perform aestetic mapping and generate a meaningful legend)
+rc &lt;- raster(r)
+rc[] &lt;- cut(r[], seq(0,300, 50))
+ggR(rc, annotation = FALSE)
+
+## Legend cusomization etc. ...
+ggR(rc, annotation = FALSE) + scale_fill_discrete(labels=paste(&quot;Class&quot;, 1:6))
+}
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-1"/> </p>
+
+
+<hr><div align="center">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>

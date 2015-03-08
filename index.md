@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Remote Sensing Data Analysis in R
+title: "RStoolbox: Remote Sensing Data Analysis in R"
 tagline: Supporting tagline
 ---
 {% include JB/setup %}
@@ -45,7 +45,7 @@ If you are on Windows and don't have Rtools installed, you can install a pre-com
 
 ## Feedback
 
-I am greatfull for any feedback on RStoolbox. Please do not hesitat to report an issue [here](https://github.com/bleutner/RStoolbox/issues) if you discover bugs or have a feature idea.
+I am greatful for any feedback on RStoolbox. Please do not hesitat to report an issue [here](https://github.com/bleutner/RStoolbox/issues) if you discover bugs or have a feature idea.
 If you find the package usefull I'd love to hear about it as well :-). Just drop me an email if you like: benjamin.leutner@uni-wuerzburg.de.
 
 
