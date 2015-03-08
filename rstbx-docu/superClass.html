@@ -137,17 +137,7 @@ superClass(img, trainData, valData = NULL, responseCol = NULL,
 <pre><code class="r">## Don&#39;t show: 
 library(randomForest)
 library(e1071)
-</code></pre>
-
-<pre><code>#&gt; 
-#&gt; Attaching package: &#39;e1071&#39;
-#&gt; 
-#&gt; The following object is masked from &#39;package:raster&#39;:
-#&gt; 
-#&gt;     interpolate
-</code></pre>
-
-<pre><code class="r">## End Don&#39;t show
+## End Don&#39;t show
 input &lt;- brick(system.file(&quot;external/rlogo.grd&quot;, package=&quot;raster&quot;))
 train &lt;- readRDS(system.file(&quot;external/training.rds&quot;, package=&quot;RStoolbox&quot;))
 
