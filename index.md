@@ -45,16 +45,11 @@ If you are on Windows and don't have Rtools installed, you can install a pre-com
 
 ## Feedback
 
-I am greatful for any feedback on RStoolbox. Please do not hesitat to report an issue [here](https://github.com/bleutner/RStoolbox/issues) if you discover bugs or have a feature idea.
+I am greatful for any feedback on RStoolbox. Please do not hesitate to report an issue [here](https://github.com/bleutner/RStoolbox/issues) if you discover bugs or have a feature idea.
 If you find the package usefull I'd love to hear about it as well :-). Just drop me an email if you like: benjamin.leutner@uni-wuerzburg.de.
 
 
 
-<ul class="posts">
-  {% for post in site.posts %}
-    <li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ BASE_PATH }}{{ post.url }}">{{ post.title }}</a></li>
-  {% endfor %}
-</ul>
 
 
 

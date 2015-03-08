@@ -4,6 +4,7 @@ http://bleutner.github.io/RStoolbox/rstbx-docu/RStoolbox.html
 http://bleutner.github.io/RStoolbox/about.html
 http://bleutner.github.io/RStoolbox/archive.html
 http://bleutner.github.io/RStoolbox/atom.xml
+http://bleutner.github.io/RStoolbox/blog.html
 http://bleutner.github.io/RStoolbox/categories.html
 http://bleutner.github.io/RStoolbox/rstbx-docu/cloudMask.html
 http://bleutner.github.io/RStoolbox/rstbx-docu/coregisterImages.html
