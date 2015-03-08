@@ -65,8 +65,11 @@ from the total number of pixels when calculating the percent cover.
 }
 \examples{
 \dontrun{
+library(raster)
+library(caret)
 ## Create fake input images
-lsat <- brick(system.file("external/rlogo.grd", package="raster"))
+data(rlogo)
+lsat <- rlogo
 agg.level <- 9
 modis <- aggregate(lsat, agg.level)
 

@@ -27,9 +27,9 @@ Returns a data.frame with coordinates (x,y) and corresponding raster values.
 Fortify method for classes from the raster package.
 }
 \examples{
-if (require("raster")) {
-br <- brick(system.file("external/rlogo.grd", package="raster"))
-br_df <- fortify(br)
-}
+library(ggplot2)
+data(rlogo)
+r_df <- fortify(rlogo)
+head(r_df)
 }
 

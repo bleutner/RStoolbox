@@ -22,9 +22,13 @@
 #' the joint histograms per shift in a list ($jointHist) and the shifted image ($coregImg). 
 #' @export 
 #' @examples 
-#'reference <- brick(system.file("external/rlogo.grd", package="raster"))
-#'## Shift reference 2 pixels to the right and 3 up
-#'miss_registered <- shift(reference, x = 2, y = 3)
+#' library(raster)
+#' library(ggplot2)
+#' library(reshape2)
+#' data(rlogo)
+#' reference <- rlogo
+#' ## Shift reference 2 pixels to the right and 3 up
+#' miss_registered <- shift(reference, x = 2, y = 3)
 #'
 #'## Compare shift
 #'p <- ggRGB(reference, NULL, NULL, 3) 
@@ -32,14 +36,14 @@
 #'p + ggRGB(miss_registered, 3, NULL, NULL, alpha = 0.5, ggLayer=TRUE) 
 #'
 #'## Coregister images (and report statistics)
-#'mrs_coregistered <- coregisterImages(slave = miss_registered, master = reference, reportStats = TRUE)
+#'coreg <- coregisterImages(slave = miss_registered, master = reference, reportStats = TRUE)
 #'
 #'## Plot mutual information per shift
-#'ggplot(mrs_coregistered$MI) + geom_raster(aes(x,y,fill=mi))
+#'ggplot(coreg$MI) + geom_raster(aes(x,y,fill=mi))
 #'
 #'## Plot joint histograms per shift (x/y shift in facet labels)
-#'df <- melt(mrs_coregistered$jointHist)   
-#'df$L1 <- factor(df$L1, levels = names(mrs_coregistered$jointHist))
+#'df <- melt(coreg$jointHist)   
+#'df$L1 <- factor(df$L1, levels = names(coreg$jointHist))
 #'df[df$value == 0, "value"] <- NA ## don't display p = 0
 #'ggplot(df) + geom_raster(aes(x = Var2, y = Var1,fill=value)) + facet_wrap(~L1) + 
 #'        scale_fill_gradientn(name = "p", colours =  heat.colors(10), na.value = NA)
@@ -47,7 +51,7 @@
 #'## Compare correction
 #'p <- ggRGB(reference, NULL, NULL, 3)
 #'p
-#'p + ggRGB(mrs_coregistered$coregImg,3, NULL,NULL, alpha = 0.5, ggLayer=T) 
+#'p + ggRGB(coreg$coregImg,3, NULL,NULL, alpha = 0.5, ggLayer=TRUE) 
 coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, n = 500, reportStats = FALSE, verbose, nBins = 100, ...) {
     #if(!swin%%2 | !mwin%%2) stop("swin and mwin must be odd numbers")
     if(!missing("verbose")) .initVerbose(verbose)

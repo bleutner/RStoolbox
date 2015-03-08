@@ -6,10 +6,10 @@
 #' @return Returns a data.frame with coordinates (x,y) and corresponding raster values.
 #' @name fortify.raster
 #' @examples
-#' if (require("raster")) {
-#' br <- brick(system.file("external/rlogo.grd", package="raster"))
-#' br_df <- fortify(br)
-#' }
+#' library(ggplot2)
+#' data(rlogo)
+#' r_df <- fortify(rlogo)
+#' head(r_df)
 #' 
 NULL
 

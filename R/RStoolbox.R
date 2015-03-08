@@ -50,3 +50,17 @@
 #' @docType package
 #' @name RStoolbox
 NULL
+
+
+
+
+
+#' Rlogo as RasterBrick
+#'
+#' Tiny example of raster data used to run examples. 
+#' 
+#' @usage data(rlogo)
+#' @docType data
+#' @keywords datasets
+#' @name rlogo
+NULL

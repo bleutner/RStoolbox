@@ -12,7 +12,7 @@
 #' @param ggLayer Logical. Return only a ggplot layer which must be added to an existing ggplot. If \code{FALSE} s stand-alone ggplot will be returned.
 #' @param annotation Logical. Uses annotation_raster by default (good to keep aestetic mappings free). If \code{FALSE} uses geom_raster (and aes(fill)).
 #' @param coordEqual Logical. Force addition of coord_equal, i.e. aspect ratio of 1:1. Typically usefull for remote sensing data (depending on your projection), hence it defaults to TRUE.
-#'         Note howver, that this does not apply if (\code{ggLayer=FALSE}).
+#'         Note however, that this does not apply if (\code{ggLayer=FALSE}).
 #' @param alpha Numeric. Transparency (0-1).
 #' @seealso \link{ggRGB}, \link[=fortify.raster]{fortify}
 #' @note
@@ -21,41 +21,43 @@
 #' 
 #' @export 
 #' @examples
-#' if(require(ggplot2)){
-#' r <- raster(system.file("external/rlogo.grd", package="raster"))
+#' library(ggplot2)
+#' data(rlogo)
 #' 
 #' ## Simple grey scale annotation
-#' ggR(r)
+#' ggR(rlogo)
 #' 
 #' ## With linear stretch contrast enhancement
-#' ggR(r, stretch = "lin", quantiles = c(0.1,0.9))
+#' ggR(rlogo, stretch = "lin", quantiles = c(0.1,0.9))
 #' 
 #' ## Don't plot, just return a data.frame
-#' df <- ggR(r, ggObj=F)
+#' df <- ggR(rlogo, ggObj = FALSE)
 #' head(df)
 #' 
 #' ## ggplot with geom_raster instead of annotation_raster
 #' ## and default scale_fill*
-#' ggR(r, annotation=FALSE)
+#' ggR(rlogo, annotation = FALSE)
 #' 
 #' ## with different scale
-#' ggR(r, annotation=FALSE) + scale_fill_gradientn(name = "mojo", colours = rainbow(10)) +
+#' ggR(rlogo, annotation=FALSE) + scale_fill_gradientn(name = "mojo", colours = rainbow(10)) +
 #'         ggtitle("**Funkadelic**")
 #' 
 #' ## Layermode (ggLayer=TRUE)
-#' data <- fdata <- data.frame(x = c(0, 0:100,100), y = c(0,sin(seq(0,2*pi,pi/50))*10+20, 0))
-#' ggplot(data, aes(x, y)) +  ggR(r, annotation= TRUE, ggLayer = TRUE) +
+#' data <- data.frame(x = c(0, 0:100,100), y = c(0,sin(seq(0,2*pi,pi/50))*10+20, 0))
+#' ggplot(data, aes(x, y)) +  ggR(rlogo, annotation= TRUE, ggLayer = TRUE) +
 #'        geom_polygon(aes(x, y), fill = "blue", alpha = 0.4) +
 #'        coord_equal(ylim=c(0,75))
 #' 
-#' ## Categorical data (usually you wanna use annotation=FALSE to perform aestetic mapping and generate a meaningful legend)
-#' rc <- raster(r)
-#' rc[] <- cut(r[], seq(0,300, 50))
+#' ## Categorical data 
+#' ## In this case you probably want to use annotation=FALSE 
+#' ## in order to perform aestetic mapping (i.e. a meaningful legend)
+#' rc <- raster(rlogo)
+#' rc[] <- cut(rlogo[[1]][], seq(0,300, 50))
 #' ggR(rc, annotation = FALSE)
 #' 
 #' ## Legend cusomization etc. ...
 #' ggR(rc, annotation = FALSE) + scale_fill_discrete(labels=paste("Class", 1:6))
-#' } 
+#'  
 ggR <- function(img, layer = 1, maxpixels = 500000, stretch, quantiles = c(0.02,0.98), coordEqual = TRUE, alpha = 1, ggLayer=FALSE, ggObj = TRUE, annotation = TRUE) {
      
     layer <- unlist(.numBand(img, layer))
