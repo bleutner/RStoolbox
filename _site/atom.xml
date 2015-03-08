@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
  
  <title>RStoolbox</title>
- <link href="http://username.github.io/" rel="self"/>
- <link href="http://username.github.io"/>
- <updated>2015-03-08T03:56:42+01:00</updated>
- <id>http://username.github.io</id>
+ <link href="http://bleutner.github.io/RStoolbox/" rel="self"/>
+ <link href="http://bleutner.github.io/RStoolbox"/>
+ <updated>2015-03-08T22:46:20+01:00</updated>
+ <id>http://bleutner.github.io/RStoolbox</id>
  <author>
    <name>Benjamin Leutner</name>
    <email>benjamin.leutner@uni-wuerzburg.de</email>
@@ -14,9 +14,9 @@
  
  <entry>
    <title>Yo! First post</title>
-   <link href="http://username.github.io/r/2015/03/07/yo-first-post"/>
+   <link href="http://bleutner.github.io/RStoolbox/r/2015/03/07/yo-first-post"/>
    <updated>2015-03-07T00:00:00+01:00</updated>
-   <id>http://username.github.io/r/2015/03/07/yo-first-post</id>
+   <id>http://bleutner.github.io/RStoolbox/r/2015/03/07/yo-first-post</id>
    <content type="html">
 &lt;h3 id=&quot;yo-up-and-running&quot;&gt;Yo, up and running&lt;/h3&gt;
 
@@ -26,9 +26,9 @@
  
  <entry>
    <title>Jekyll Introduction</title>
-   <link href="http://username.github.io/lessons/2011/12/29/jekyll-introduction"/>
+   <link href="http://bleutner.github.io/RStoolbox/lessons/2011/12/29/jekyll-introduction"/>
    <updated>2011-12-29T00:00:00+01:00</updated>
-   <id>http://username.github.io/lessons/2011/12/29/jekyll-introduction</id>
+   <id>http://bleutner.github.io/RStoolbox/lessons/2011/12/29/jekyll-introduction</id>
    <content type="html">
 &lt;p&gt;This Jekyll introduction will outline specifically  what Jekyll is and why you would want to use it.
 Directly following the intro we’ll learn exactly &lt;em&gt;how&lt;/em&gt; Jekyll does what it does.&lt;/p&gt;

@@ -100,11 +100,30 @@ Once your mask detects obvious cloud pixels properly re-enable sanitizing and re
 
 <h3>Examples</h3>
 
-<pre><code class="r">## Not run: 
-##D ls &lt;- stackMeta(&quot;path/to/MTL.txt&quot;)
-##D ls_cor &lt;- radCor(ls, &quot;path/to/MTL.txt&quot;)
-##D ls_cmask &lt;-cloudMask(ls_cor, returnDiffLayer = TRUE)
-## End(Not run)
+<pre><code class="r">ls &lt;- stackMeta(&quot;path/to/MTL.txt&quot;)
+</code></pre>
+
+<pre><code>#&gt; Warning in file(file, &quot;rt&quot;): cannot open file &#39;path/to/MTL.txt&#39;: No such
+#&gt; file or directory
+</code></pre>
+
+<pre><code>#&gt; Error in file(file, &quot;rt&quot;): cannot open the connection
+</code></pre>
+
+<pre><code class="r">ls_cor &lt;- radCor(ls, &quot;path/to/MTL.txt&quot;)
+</code></pre>
+
+<pre><code>#&gt; Warning in file(file, &quot;rt&quot;): cannot open file &#39;path/to/MTL.txt&#39;: No such
+#&gt; file or directory
+</code></pre>
+
+<pre><code>#&gt; Error in file(file, &quot;rt&quot;): cannot open the connection
+</code></pre>
+
+<pre><code class="r">ls_cmask &lt;-cloudMask(ls_cor, returnDiffLayer = TRUE)
+</code></pre>
+
+<pre><code>#&gt; Error in match(x, table, nomatch = 0L): object &#39;ls_cor&#39; not found
 </code></pre>
 
 

@@ -3,10 +3,10 @@
 <channel>
         <title>RStoolbox</title>
         <description>RStoolbox - Benjamin Leutner</description>
-        <link>http://username.github.io</link>
-        <link>http://username.github.io</link>
-        <lastBuildDate>2015-03-08T03:56:42+01:00</lastBuildDate>
-        <pubDate>2015-03-08T03:56:42+01:00</pubDate>
+        <link>http://bleutner.github.io/RStoolbox</link>
+        <link>http://bleutner.github.io/RStoolbox</link>
+        <lastBuildDate>2015-03-08T22:46:20+01:00</lastBuildDate>
+        <pubDate>2015-03-08T22:46:20+01:00</pubDate>
         <ttl>1800</ttl>
 
 
@@ -17,8 +17,8 @@
 
 &lt;p&gt;Lets see&lt;/p&gt;
 </description>
-                <link>http://username.github.io/r/2015/03/07/yo-first-post</link>
-                <guid>http://username.github.io/r/2015/03/07/yo-first-post</guid>
+                <link>http://bleutner.github.io/RStoolbox/r/2015/03/07/yo-first-post</link>
+                <guid>http://bleutner.github.io/RStoolbox/r/2015/03/07/yo-first-post</guid>
                 <pubDate>2015-03-07T00:00:00+01:00</pubDate>
         </item>
 
@@ -440,8 +440,8 @@ As noted, our main programming constraint is the fact that our API is limited to
 &lt;p&gt;Please take a look at []()
 or jump right into &lt;a href=&quot;&quot;&gt;Usage&lt;/a&gt; if you’d like.&lt;/p&gt;
 </description>
-                <link>http://username.github.io/lessons/2011/12/29/jekyll-introduction</link>
-                <guid>http://username.github.io/lessons/2011/12/29/jekyll-introduction</guid>
+                <link>http://bleutner.github.io/RStoolbox/lessons/2011/12/29/jekyll-introduction</link>
+                <guid>http://bleutner.github.io/RStoolbox/lessons/2011/12/29/jekyll-introduction</guid>
                 <pubDate>2011-12-29T00:00:00+01:00</pubDate>
         </item>
 
