@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Yo! First post"
+title: "Use the Source, Luke!"
 description: ""
 category: R 
 tags: [RStoolbox]
@@ -8,6 +8,6 @@ tags: [RStoolbox]
 {% include JB/setup %}
 
 
-### Yo, up and running
 
-Lets see
+
+<a href="http://github.com/bleutner/RStoolbox"><img src="https://octodex.github.com/images/octobiwan.jpg" height="200px"></a>

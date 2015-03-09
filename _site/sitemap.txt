@@ -37,4 +37,3 @@ http://bleutner.github.io/RStoolbox/rstbx-docu/unsuperClass.html
 http://bleutner.github.io/RStoolbox/rstbx-docu/writeSLI.html
 
 http://bleutner.github.io/RStoolbox/r/2015/03/07/yo-first-post
-http://bleutner.github.io/RStoolbox/lessons/2011/12/29/jekyll-introduction
