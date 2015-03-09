@@ -4,9 +4,9 @@
 \alias{ggR}
 \title{Plot RasterLayers in ggplot with greyscale}
 \usage{
-ggR(img, layer = 1, maxpixels = 5e+05, stretch, quantiles = c(0.02, 0.98),
-  coordEqual = TRUE, alpha = 1, ggLayer = FALSE, ggObj = TRUE,
-  annotation = TRUE)
+ggR(img, layer = 1, maxpixels = 5e+05, alpha = 1, stretch,
+  quantiles = c(0.02, 0.98), coordEqual = TRUE, ggLayer = FALSE,
+  ggObj = TRUE, annotation = TRUE, forceCat = FALSE)
 }
 \arguments{
 \item{img}{raster}
@@ -15,6 +15,8 @@ ggR(img, layer = 1, maxpixels = 5e+05, stretch, quantiles = c(0.02, 0.98),
 
 \item{maxpixels}{Integer. Maximal number of pixels to sample}
 
+\item{alpha}{Numeric. Transparency (0-1).}
+
 \item{stretch}{Character. Either 'lin' or 'hist' for linear or histogram stretch of the data}
 
 \item{quantiles}{Numeric vector with two elements. Min and max quantiles to stretch to. Defaults to 2\% stretch, i.e. c(0.02,0.98).}
@@ -22,21 +24,25 @@ ggR(img, layer = 1, maxpixels = 5e+05, stretch, quantiles = c(0.02, 0.98),
 \item{coordEqual}{Logical. Force addition of coord_equal, i.e. aspect ratio of 1:1. Typically usefull for remote sensing data (depending on your projection), hence it defaults to TRUE.
 Note however, that this does not apply if (\code{ggLayer=FALSE}).}
 
-\item{alpha}{Numeric. Transparency (0-1).}
-
 \item{ggLayer}{Logical. Return only a ggplot layer which must be added to an existing ggplot. If \code{FALSE} s stand-alone ggplot will be returned.}
 
 \item{ggObj}{Logical. Return a stand-alone ggplot object (TRUE) or just the data.frame with values and colors}
 
 \item{annotation}{Logical. Uses annotation_raster by default (good to keep aestetic mappings free). If \code{FALSE} uses geom_raster (and aes(fill)).}
+
+\item{forceCat}{Logical. If \code{TRUE} the raster values will be forced to be categorical (will be converted to factor if needed).}
 }
 \description{
 aimed towards plotting single layer imagery in grey-scale (remote sensing data) but can be
 used with any Raster* object.
 }
 \note{
-When img contains factor values and annotation raster is \code{TRUE}, the values will be automatically converted
+When \code{img} contains factor values and \code{annotation=TRUE}, the raster values will automatically be converted
 to numeric in order to proceed with the color calculation.
+
+The raster package provides a class lookup-table for categorical rasters (e.g. what you get if you run superClass in classification mode). If your raster has one ggR will automatically treat it as categorical (see \link[raster]{factor}).
+However, the factor status of Raster objects is easily lost and the values are interpreted as numeric. In such cases you should make use of the \code{forceCat = TRUE} argument, which makes sure
+that ggplot2 uses a discrete scale, not a continuous one.
 }
 \examples{
 library(ggplot2)

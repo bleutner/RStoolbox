@@ -14,10 +14,16 @@
 #' @param coordEqual Logical. Force addition of coord_equal, i.e. aspect ratio of 1:1. Typically usefull for remote sensing data (depending on your projection), hence it defaults to TRUE.
 #'         Note however, that this does not apply if (\code{ggLayer=FALSE}).
 #' @param alpha Numeric. Transparency (0-1).
+#' @param forceCat Logical. If \code{TRUE} the raster values will be forced to be categorical (will be converted to factor if needed). 
 #' @seealso \link{ggRGB}, \link[=fortify.raster]{fortify}
 #' @note
-#' When img contains factor values and annotation raster is \code{TRUE}, the values will be automatically converted
-#' to numeric in order to proceed with the color calculation.
+#' When \code{img} contains factor values and \code{annotation=TRUE}, the raster values will automatically be converted
+#' to numeric in order to proceed with the color calculation. 
+#' 
+#' The raster package provides a class lookup-table for categorical rasters (e.g. what you get if you run superClass in classification mode). If your raster has one ggR will automatically treat it as categorical (see \link[raster]{factor}). 
+#' However, the factor status of Raster objects is easily lost and the values are interpreted as numeric. In such cases you should make use of the \code{forceCat = TRUE} argument, which makes sure
+#' that ggplot2 uses a discrete scale, not a continuous one.
+#' 
 #' 
 #' @export 
 #' @examples
@@ -58,7 +64,7 @@
 #' ## Legend cusomization etc. ...
 #' ggR(rc, annotation = FALSE) + scale_fill_discrete(labels=paste("Class", 1:6))
 #'  
-ggR <- function(img, layer = 1, maxpixels = 500000, stretch, quantiles = c(0.02,0.98), coordEqual = TRUE, alpha = 1, ggLayer=FALSE, ggObj = TRUE, annotation = TRUE) {
+ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, stretch, quantiles = c(0.02,0.98), coordEqual = TRUE, ggLayer=FALSE, ggObj = TRUE, annotation = TRUE, forceCat = FALSE) {
      
     layer <- unlist(.numBand(img, layer))
     xfort <- sampleRegular(img[[layer]], maxpixels, asRaster = TRUE)
@@ -70,16 +76,17 @@ ggR <- function(img, layer = 1, maxpixels = 500000, stretch, quantiles = c(0.02,
     df 	  <- as.data.frame(xfort, xy = T)[,-4]
     layer <- names(img)[layer]
     colnames(df) <- c("x", "y", layer) 
-    
+    if(forceCat & !is.factor(df[,layer])) df[,layer] <- as.factor(df[,layer])
+   
     fac <- is.factor(df[,layer])
-    if(fac & annotation) {
+    if(fac & (annotation | !ggObj)) {
         .vMessage("img values are factors but annotation is TRUE. Converting factors as.numeric.")
         levelLUT <- levels(df[,layer])
         df[,layer] <- as.numeric(df[,layer])
     }
     if(!fac & !missing("stretch"))  df[,layer] <- .stretch(df[,layer], method = stretch, quantiles = quantiles)    
     
-    if(!(ggObj & !annotation)){
+    if(!(ggObj & !annotation)  ){
         normVals 	<- normImage(df[,layer], ymin = 0, ymax = 1)    
         nona 		<- !is.na(normVals)
         df$color  	<- NA
@@ -89,7 +96,7 @@ ggR <- function(img, layer = 1, maxpixels = 500000, stretch, quantiles = c(0.02,
     if(ggObj) {       
         ex    <- extent(xfort)
         if(annotation)  {        
-            dmat  <- matrix(df$color, nrow=nrow(xfort), ncol=ncol(xfort), byrow = TRUE)  
+            dmat <- matrix(df$color, nrow=nrow(xfort), ncol=ncol(xfort), byrow = TRUE)  
             ggl  <- annotation_raster(raster = dmat, xmin = ex[1], xmax = ex[2], ymin = ex[3], ymax = ex[4], interpolate = FALSE)
         } else {
             ggl  <- geom_raster(data = df[,c("x","y",layer)], aes_string(x = "x", y = "y", fill = layer)) 
@@ -109,7 +116,7 @@ ggR <- function(img, layer = 1, maxpixels = 500000, stretch, quantiles = c(0.02,
         }
         
     } else {
-        if(fac & annotation) df[,layer] <- levelLUT[df[, layer]]
+        if(fac & (annotation | !ggObj)) df[,layer] <- factor(levelLUT[df[, layer]], levels=levelLUT)
         return(df)
     }
     
