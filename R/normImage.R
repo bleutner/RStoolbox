@@ -17,10 +17,10 @@ normImage <- function(x, y, xmin, xmax, ymin, ymax, forceMinMax = FALSE) {
     if(inherits(x, "Raster")){
         if(forceMinMax)  x <- setMinMax(x)
         if(!missing(y) && forceMinMax)  y <- setMinMax(y)
-        if(missing("ymin")) ymin <- y@data@min
-        if(missing("ymax")) ymax <- y@data@max
-        if(missing("xmin"))	xmin <- x@data@min 
-        if(missing("xmax")) xmax <- x@data@max
+        if(missing("ymin")) ymin <- minValue(y)
+        if(missing("ymax")) ymax <- maxValue(y)
+        if(missing("xmin"))	xmin <- minValue(x) 
+        if(missing("xmax")) xmax <- maxValue(x)
     } else {
         if(missing("xmin"))	xmin <- min(x, na.rm = T)
         if(missing("xmax")) xmax <- max(x, na.rm = T)

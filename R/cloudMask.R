@@ -25,7 +25,7 @@
 #' ls_cor <- radCor(ls, "path/to/MTL.txt") 
 #' ls_cmask <-cloudMask(ls_cor, returnDiffLayer = TRUE)
 #' }
-cloudMask <- function(x, threshold, minCloudSize, windowSize1 = 5, windowSize2 = 11, maskGrowing = TRUE, sanitize = TRUE, lowBand = "B1", tirBand = "B6", plot = TRUE, verbose = TRUE, returnDiffLayer = FALSE){
+cloudMask <- function(x, threshold, minCloudSize, windowSize1 = 5, windowSize2 = 11, maskGrowing = TRUE, sanitize = TRUE, lowBand = "B1", tirBand = "B6", plot = TRUE, verbose, returnDiffLayer = FALSE){
 	
 	## Set-up graphics device 
     if(!missing("verbose")) .initVerbose(verbose)

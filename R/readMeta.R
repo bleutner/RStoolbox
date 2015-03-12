@@ -245,9 +245,9 @@ ImageMetaData <- function(file = NA, format = NA, sat = NA, sen = NA,scene = NA,
 }
 
 
-#' @method print ImageMetaData
+#' @method summary ImageMetaData
 #' @export 
-print.ImageMetaData <- function(x, ...) { 
+summary.ImageMetaData <- function(x, ...) { 
     
     labs <- format(c("Scene:", "Satellite:", "Sensor:", "Date:", "Path/Row:", "Projection:")) 
     vals <- c(x$SCENE_ID, x$SATELLITE,x$SENSOR,format(x$ACQUISITION_DATE, "%F"), paste(x$PATH_ROW, collapse="/"), projection(x$PROJECTION))

@@ -6,7 +6,7 @@
 \usage{
 cloudMask(x, threshold, minCloudSize, windowSize1 = 5, windowSize2 = 11,
   maskGrowing = TRUE, sanitize = TRUE, lowBand = "B1", tirBand = "B6",
-  plot = TRUE, verbose = TRUE, returnDiffLayer = FALSE)
+  plot = TRUE, verbose, returnDiffLayer = FALSE)
 }
 \arguments{
 \item{x}{RasterBrick or RasterStack with reflectance and brightness temperature OR the mask of a previous run of \code{cloudMask} with \code{returnDiffLayer=TRUE}.}
