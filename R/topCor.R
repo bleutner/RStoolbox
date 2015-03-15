@@ -9,8 +9,8 @@
 #' @param stratImg RasterLayer by which to stratify by, e.g. NDVI. Defaults to 'slope'
 #' @param nStrat Integer. Number of bins or quantiles to stratify by. If a bin has less than 50 samples it will be merged with the next bin.
 #' @param cosi Raster*. Optional pre-calculated ilumination map. Run topCor with method="cosi" to calculate one.
-topCor <- function(img, dem, metaData, method = "cos", stratImg, stratMeth = "noStrat", stratN = 5, cosi){
-    
+topCor <- function(img, dem, metaData, method = "cos", stratImg, stratMeth = "noStrat", nStrat = 5, cosi){
+     
     stopifnot(method %in% c("cos", "avgcos", "minnaert", "C", "stat", "cosi"), stratMeth %in% c("stat", "noStrat", "stratEqualBins", "stratQuantiles"))
     
     ## Metadata
@@ -24,7 +24,7 @@ topCor <- function(img, dem, metaData, method = "cos", stratImg, stratMeth = "no
     }  
     
     ## Terrain
-    if(any(!names(DEM) %in% c("slope", "aspect"))) {
+    if(any(!names(dem) %in% c("slope", "aspect"))) {
         .vMessage("Calculate slope and aspect")
         topo <- terrain(dem, c("slope", "aspect"))
     } else {
@@ -63,7 +63,7 @@ topCor <- function(img, dem, metaData, method = "cos", stratImg, stratMeth = "no
         ## Lambertian assumption if k == 1
         ## Non-lambertian if 0 <= k < 1   
         if(missing(stratImg)) {stratImg <- "slope"}
-        ks <- .kestimate(img, cosi, slope, method = stratMeth, stratImg = stratImg, n = stratN)
+        ks <- .kestimate(img, cosi, slope, method = stratMeth, stratImg = stratImg, n = nStrat, sz=sz)
         
         ks$k <- lapply(ks$k, function(x){
                     x[x[,2] < 0, 2] <- 0
@@ -104,7 +104,7 @@ topCor <- function(img, dem, metaData, method = "cos", stratImg, stratMeth = "no
 
 
 
-.kestimate <- function(img, cosi, slope, stratImg = "slope", method = "noStrat", n = 5, minN = 50) {
+.kestimate <- function(img, cosi, slope, stratImg = "slope", method = "noStrat", n = 5, minN = 50, sz) {
     
     stopifnot(method %in% c("stat", "noStrat", "stratEqualBins", "stratQuantiles"))
     ## Following Lu 2008 sample pre selection

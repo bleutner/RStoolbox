@@ -44,176 +44,178 @@
 #' @references S. Goslee (2011): Analyzing Remote Sensing Data in R: The landsat Package. Journal of Statistical Software 43(4).
 #' @export
 radCor <-	function(img, metaData, radiance = FALSE,  method = "APREF", bandSet = "full", SHV, hazeBand, atHaze, darkProp = 0.02, verbose){
-    # http://landsat.usgs.gov/Landsat8_Using_Product.php
-     if(!missing("verbose")) .initVerbose(verbose)
-
-    if(!method %in% c("APREF", "DOS", "COSTZ", "SDOS")) stop("method must be one of 'APREF', 'DOS', 'COSTZ' 'SDOS'", call.=FALSE)
-    
-    
-    if(radiance & method != "APREF"){
-        .vMessage("For radiance calculations the 'method' argument is ignored")
-        method <- "APREF"
-    }
-    
-    if(!grepl("MTL", metaData)) stop("The metadata file must be the original MTL file") 
-    
-    ## Read metadata from file
-    if(is.character(metaData)) metaData <- readMeta(metaData)
-    
-    sat 		<- metaData$SATELLITE
-    sensor 		<- metaData$SENSOR
-    d			<- metaData$SOLAR_PARAMETERS["distance"]
-    sunElev		<- metaData$SOLAR_PARAMETERS["elevation"]   
-    rad 		<- metaData$DATA$RADIOMETRIC_RESOLUTION 
-    
-    if(sat == "LANDSAT8" & method != "APREF") {
-        warning("DOS, COSTZ and SDOS are currently not implemented for Landsat 8. Using official reflectance calibration coefficients, i.e. output corresponds to method = 'APREF'", call. = FALSE) 
-        method <- "APREF"
-    }
-    
-    satZenith   <- 1
-    satZenith	<- satZenith * pi / 180
-    satphi 		<- cos(satZenith)
-    suntheta 	<- cos((90 - sunElev) * pi / 180)	
-    
-    ## Query internal db	
-    sDB <- .LANDSATdb[[sat]][[sensor]]
-    
-    if(any(bandSet == "full")) {
-        bandSet <- names(img)
-    } else {
-        if(is.numeric(bandSet)) bandSet <- names(img)[bandSet]
-    }	
-    
-    origBands 	<- names(img)   
-    corBands 	<- sDB[!sDB$bandtype %in% c("TIR", "PAN"), "band"]
-    bandSet 	<- bandSet[bandSet %in% corBands]
-    
-    tirBands	<- c("B10_dn", "B11_dn", "B6_dn", "B6_VCID_1_dn", "B6_VCID_2_dn")	
-    tirBands 	<- origBands[origBands %in% tirBands]  
-    if(length(tirBands) == 0) tirBands <- NULL
-    
-    exclBands	<- origBands[!origBands %in% c(bandSet, tirBands)]   
-    excl 		<- if(length(exclBands) > 0) img[[exclBands]] else  NULL
-    
-    if(radiance) {
-        bandSet <- c(bandSet, tirBands)
-        .vMessage("Bands to convert to toa radiance: ", paste(bandSet, collapse = ", "))
-    } else {
-        .vMessage("Bands to convert to reflectance: ", paste(bandSet, collapse = ", "))
-        if(length(tirBands) > 0) .vMessage("Thermal bands to convert to brightness temperatures: ", paste(tirBands, collapse=", "))
-        if(length(exclBands) > 0) .vMessage("Excluding bands: ", paste(exclBands, collapse = ", "))	
-    } 
-    
-    ## Thermal processing
-    if(!radiance & length(tirBands) > 0) {
-        .vMessage("Processing thermal band(s)")
-        K1  	<- metaData$CALBT[tirBands, "K1"]
-        K2   	<- metaData$CALBT[tirBands, "K2"]
-        GAIN    <- metaData$CALRAD[tirBands,"gain"]
-        OFFSET  <- metaData$CALRAD[tirBands,"offset"]           
-        xtir <- .paraRasterFun(raster = img[[tirBands]], rasterFun = calc, args = list(fun = function(x) K2 / log(K1 / (GAIN * x + OFFSET) +1)))
-        names(xtir) <- gsub("dn", "bt", tirBands)
-    } else {
-        xtir <- NULL
-    }
-    
-    ## Radiance and reflectance processing
-    GAIN    <- metaData$CALRAD[bandSet,"gain"]
-    OFFSET  <- metaData$CALRAD[bandSet,"offset"]  
-    TAUz <- 1
-    TAUv <- 1
-    Edown <- 0
-    Lhaze <- 0   
-    if(method != "APREF") {
-        
-        ## Estimate SHV automatically
-        if(missing(SHV)){
-            if(missing(hazeBand))  hazeBand <- names(img)[1]
-            if(length(hazeBand) > 1) {
-                stop("Automatic search for SHV values is intended for one band only. For more bands please estimate haze DNs manually using estimateSHV() \nhazeBand was automatically reset to 1")
-                hazeBand <- names(img)[1]
-            }
-            .vMessage("SHV was not provided -> Estimating SHV automatically")
-            ## We suppress warnings because we search for a possible value autimatically in case we missed the first time
-            SHV <- suppressWarnings(estimateHaze(img, hazeBand = hazeBand, darkProp = darkProp , plot = FALSE, returnTables = TRUE))
-            while(is.na(SHV[[1]])){ 
-                darkProp	<- darkProp * 0.95
-                SHV <- suppressWarnings(estimateHaze(SHV, hazeBand = hazeBand, darkProp = darkProp, plot = FALSE, returnTables = TRUE))
-            }
-            .vMessage(paste0("SHV estimated as: ", SHV[[1]]))
-            SHV <- SHV[[1]]
-        }
-        
-        
-        if(method == "SDOS") {
-            SHVdummy <- rep(0, length(bandSet))  
-            names(SHVdummy) <- bandSet
-            SHVdummy[hazeBand] <- SHV[hazeBand]
-            SHV <- SHVdummy
-            hazeBand <- bandSet
-        }
-        
-        if (method == "COSTZ") {
-            TAUz <- suntheta
-            TAUv <- satphi
-        }  
-        
-        ## 1% correction and conversion to radiance
-        ## TODO: Calculate esun manually based on spectral response curves
-        esun 	 <- sDB[hazeBand, "esun"]     
-        GAIN_h 	 <- metaData$CALRAD[hazeBand,"gain"]
-        OFFSET_h <- metaData$CALRAD[hazeBand,"offset"]
-        Ldo  	 <- 0.01 * ((esun * suntheta * TAUz) + Edown) * TAUv / (pi * d ^ 2)
-        Lhaze 	 <- (SHV * GAIN_h + OFFSET_h ) - Ldo
-        
-        if(method %in% c("DOS", "COSTZ")) {		
-            ## Pick atmoshpere type
-            if(missing(atHaze)) {
-                atHaze.db <- data.frame(min = c(1,56,76,96,116), max = c(55,75,95,115,255)) / 255 * (2^rad-1)
-                atHaze 	  <- c("veryClear", "clear", "moderate", "hazy", "veryHazy")[Lhaze > atHaze.db[,1] & Lhaze <= atHaze.db[,2]]
-                .vMessage("Selecting atmosphere: '", atHaze, "'")
-            }	
-            if(is.numeric(hazeBand)) hazeBand <- names(img)[hazeBand]
-            Lhaze	  <- Lhaze  * sDB[bandSet, paste0(hazeBand,"_", atHaze)] 
-            ## Calculate corrected RAD_haze
-            NORM  <- GAIN / GAIN_h
-            Lhaze <- Lhaze * NORM + OFFSET
-            
-        }    
-        
-        # In case Lhaze becomes negative we reset it to zero to prevent artefacts.
-        Lhaze [Lhaze < 0] <- 0
-    }
-    
-    
-    if(radiance)  { 
-        ## Radiance
-        layernames <- gsub("_dn", "_tra", bandSet)
-    } else {
-        ## Reflectance
-        if(sat == "LANDSAT8"){
-            GAIN 	<- metaData$CALRAD[bandSet,"gain"] / suntheta
-            OFFSET 	<- metaData$CALREF[bandSet,"offset"] / suntheta          
-        } else  {            
-            esun 	<- sDB[bandSet, "esun"]            
-            C		<- (pi * d ^ 2)/(TAUv * (esun * suntheta * TAUz + Edown))	
-            OFFSET  <- C * (OFFSET - Lhaze)
-            GAIN 	<- C * GAIN 
-        }
-        layernames <-   if(method == "APREF") gsub("_dn", "_tre", bandSet) else gsub("_dn", "_sre", bandSet)               
-    }  
-    .vMessage("Processing radiance / reflectance")  
-    xref <- .paraRasterFun(img[[bandSet]], rasterFun = calc, args = list(fun = function(x) GAIN * x + OFFSET))
-    names(xref) <- layernames   
-    
-    ## Re-combine thermal, solar and excluded imagery
-    out <- stack(xref, xtir, excl)
-    
-    bandOrder <- match(origBands, c(bandSet, tirBands, exclBands))
-    out <- out[[bandOrder]]
-    
-    return(out)
+	# http://landsat.usgs.gov/Landsat8_Using_Product.php
+	if(!missing("verbose")) .initVerbose(verbose)
+	
+	if(!method %in% c("APREF", "DOS", "COSTZ", "SDOS")) stop("method must be one of 'APREF', 'DOS', 'COSTZ' 'SDOS'", call.=FALSE)
+	
+	
+	if(radiance & method != "APREF"){
+		.vMessage("For radiance calculations the 'method' argument is ignored")
+		method <- "APREF"
+	}
+		
+	## Read metadata from file
+	if(is.character(metaData)) {    
+		if(!grepl("MTL", metaData)) stop("The metadata file must be the original MTL file") 
+		metaData <- readMeta(metaData)
+	} else if (!inherits(metaData, "ImageMetaData")){
+		stop("metaData must be a path to the MTL file or an ImageMetaData object (see readMeta)")
+	}
+	sat 		<- metaData$SATELLITE
+	sensor 		<- metaData$SENSOR
+	d			<- metaData$SOLAR_PARAMETERS["distance"]
+	sunElev		<- metaData$SOLAR_PARAMETERS["elevation"]   
+	rad 		<- metaData$DATA$RADIOMETRIC_RESOLUTION 
+	
+	if(sat == "LANDSAT8" & method != "APREF") {
+		warning("DOS, COSTZ and SDOS are currently not implemented for Landsat 8. Using official reflectance calibration coefficients, i.e. output corresponds to method = 'APREF'", call. = FALSE) 
+		method <- "APREF"
+	}
+	
+	satZenith   <- 1
+	satZenith	<- satZenith * pi / 180
+	satphi 		<- cos(satZenith)
+	suntheta 	<- cos((90 - sunElev) * pi / 180)	
+	
+	## Query internal db	
+	sDB <- .LANDSATdb[[sat]][[sensor]]
+	
+	if(any(bandSet == "full")) {
+		bandSet <- names(img)
+	} else {
+		if(is.numeric(bandSet)) bandSet <- names(img)[bandSet]
+	}	
+	
+	origBands 	<- names(img)   
+	corBands 	<- sDB[!sDB$bandtype %in% c("TIR", "PAN"), "band"]
+	bandSet 	<- bandSet[bandSet %in% corBands]
+	
+	tirBands	<- list(LANDSAT5 = "B6_dn", LANDSAT7 = c("B6", "B6_VCID_1_dn", "B6_VCID_2_dn"), LANDSAT8 = c("B10_dn", "B11_dn") )[[sat]]	
+	tirBands 	<- origBands[origBands %in% tirBands]  
+	if(length(tirBands) == 0) tirBands <- NULL
+	
+	exclBands	<- origBands[!origBands %in% c(bandSet, tirBands)]   
+	excl 		<- if(length(exclBands) > 0) img[[exclBands]] else  NULL
+	
+	if(radiance) {
+		bandSet <- c(bandSet, tirBands)
+		.vMessage("Bands to convert to toa radiance: ", paste(bandSet, collapse = ", "))
+	} else {
+		.vMessage("Bands to convert to reflectance: ", paste(bandSet, collapse = ", "))
+		if(length(tirBands) > 0) .vMessage("Thermal bands to convert to brightness temperatures: ", paste(tirBands, collapse=", "))
+		if(length(exclBands) > 0) .vMessage("Excluding bands: ", paste(exclBands, collapse = ", "))	
+	} 
+	
+	## Thermal processing
+	if(!radiance & length(tirBands) > 0) {
+		.vMessage("Processing thermal band(s)")
+		K1  	<- metaData$CALBT[tirBands, "K1"]
+		K2   	<- metaData$CALBT[tirBands, "K2"]
+		GAIN    <- metaData$CALRAD[tirBands,"gain"]
+		OFFSET  <- metaData$CALRAD[tirBands,"offset"]           
+		xtir <- .paraRasterFun(raster = img[[tirBands]], rasterFun = calc, args = list(fun = function(x) K2 / log(K1 / (GAIN * x + OFFSET) +1)))
+		names(xtir) <- gsub("dn", "bt", tirBands)
+	} else {
+		xtir <- NULL
+	}
+	
+	## Radiance and reflectance processing
+	GAIN    <- metaData$CALRAD[bandSet,"gain"]
+	OFFSET  <- metaData$CALRAD[bandSet,"offset"]  
+	TAUz <- 1
+	TAUv <- 1
+	Edown <- 0
+	Lhaze <- 0   
+	if(method != "APREF") {
+		
+		## Estimate SHV automatically
+		if(missing(SHV)){
+			if(missing(hazeBand))  hazeBand <- names(img)[1]
+			if(length(hazeBand) > 1) {
+				stop("Automatic search for SHV values is intended for one band only. For more bands please estimate haze DNs manually using estimateSHV() \nhazeBand was automatically reset to 1")
+				hazeBand <- names(img)[1]
+			}
+			.vMessage("SHV was not provided -> Estimating SHV automatically")
+			## We suppress warnings because we search for a possible value autimatically in case we missed the first time
+			SHV <- suppressWarnings(estimateHaze(img, hazeBand = hazeBand, darkProp = darkProp , plot = FALSE, returnTables = TRUE))
+			while(is.na(SHV[[1]])){ 
+				darkProp	<- darkProp * 0.95
+				SHV <- suppressWarnings(estimateHaze(SHV, hazeBand = hazeBand, darkProp = darkProp, plot = FALSE, returnTables = TRUE))
+			}
+			.vMessage(paste0("SHV estimated as: ", SHV[[1]]))
+			SHV <- SHV[[1]]
+		}
+		
+		
+		if(method == "SDOS") {
+			SHVdummy <- rep(0, length(bandSet))  
+			names(SHVdummy) <- bandSet
+			SHVdummy[hazeBand] <- SHV[hazeBand]
+			SHV <- SHVdummy
+			hazeBand <- bandSet
+		}
+		
+		if (method == "COSTZ") {
+			TAUz <- suntheta
+			TAUv <- satphi
+		}  
+		
+		## 1% correction and conversion to radiance
+		## TODO: Calculate esun manually based on spectral response curves
+		esun 	 <- sDB[hazeBand, "esun"]     
+		GAIN_h 	 <- metaData$CALRAD[hazeBand,"gain"]
+		OFFSET_h <- metaData$CALRAD[hazeBand,"offset"]
+		Ldo  	 <- 0.01 * ((esun * suntheta * TAUz) + Edown) * TAUv / (pi * d ^ 2)
+		Lhaze 	 <- (SHV * GAIN_h + OFFSET_h ) - Ldo
+		
+		if(method %in% c("DOS", "COSTZ")) {		
+			## Pick atmoshpere type
+			if(missing(atHaze)) {
+				atHaze.db <- data.frame(min = c(1,56,76,96,116), max = c(55,75,95,115,255)) / 255 * (2^rad-1)
+				atHaze 	  <- c("veryClear", "clear", "moderate", "hazy", "veryHazy")[Lhaze > atHaze.db[,1] & Lhaze <= atHaze.db[,2]]
+				.vMessage("Selecting atmosphere: '", atHaze, "'")
+			}	
+			if(is.numeric(hazeBand)) hazeBand <- names(img)[hazeBand]
+			Lhaze	  <- Lhaze  * sDB[bandSet, paste0(hazeBand,"_", atHaze)] 
+			## Calculate corrected RAD_haze
+			NORM  <- GAIN / GAIN_h
+			Lhaze <- Lhaze * NORM + OFFSET
+			
+		}    
+		
+		# In case Lhaze becomes negative we reset it to zero to prevent artefacts.
+		Lhaze [Lhaze < 0] <- 0
+	}
+	
+	
+	if(radiance)  { 
+		## Radiance
+		layernames <- gsub("_dn", "_tra", bandSet)
+	} else {
+		## Reflectance
+		if(sat == "LANDSAT8"){
+			GAIN 	<- metaData$CALREF[bandSet,"gain"] / suntheta
+			OFFSET 	<- metaData$CALREF[bandSet,"offset"] / suntheta          
+		} else  {            
+			esun 	<- sDB[bandSet, "esun"]            
+			C		<- (pi * d ^ 2)/(TAUv * (esun * suntheta * TAUz + Edown))	
+			OFFSET  <- C * (OFFSET - Lhaze)
+			GAIN 	<- C * GAIN 
+		}
+		layernames <-   if(method == "APREF") gsub("_dn", "_tre", bandSet) else gsub("_dn", "_sre", bandSet)               
+	}  
+	.vMessage("Processing radiance / reflectance")  
+	xref <- .paraRasterFun(img[[bandSet]], rasterFun = calc, args = list(fun = function(x) GAIN * x + OFFSET))
+	names(xref) <- layernames   
+	
+	## Re-combine thermal, solar and excluded imagery
+	out <- stack(xref, xtir, excl)
+	
+	bandOrder <- match(origBands, c(bandSet, tirBands, exclBands))
+	out <- out[[bandOrder]]
+	
+	return(out)
 }
 
 

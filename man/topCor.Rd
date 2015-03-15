@@ -5,7 +5,7 @@
 \title{Topographic Illumination Correction}
 \usage{
 topCor(img, dem, metaData, method = "cos", stratImg, stratMeth = "noStrat",
-  stratN = 5, cosi)
+  nStrat = 5, cosi)
 }
 \arguments{
 \item{img}{Raster*. Imagery to correct}
@@ -21,9 +21,9 @@ Or a RasterStack/Brick with pre-calculated slope and aspect (see \link[raster]{t
 
 \item{stratMeth}{Character. One of c("noStrat", "stratEqualBins", "stratQuantiles").}
 
-\item{cosi}{Raster*. Optional pre-calculated ilumination map. Run topCor with method="cosi" to calculate one.}
-
 \item{nStrat}{Integer. Number of bins or quantiles to stratify by. If a bin has less than 50 samples it will be merged with the next bin.}
+
+\item{cosi}{Raster*. Optional pre-calculated ilumination map. Run topCor with method="cosi" to calculate one.}
 }
 \description{
 Topographic Illumination Correction
