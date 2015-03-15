@@ -42,6 +42,7 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
     
     ## Subsample raster		
     rgb <- unlist(.numBand(raster=img,r,g,b))
+	if(inherits(img, "RasterLayer")) img <- brick(img)
     rr 	<- sampleRegular(img[[rgb]], maxpixels, ext=ext, asRaster=TRUE, useGDAL=TRUE)
     RGB <- getValues(rr)
     if(!is.matrix(RGB)) RGB <- as.matrix(RGB)
