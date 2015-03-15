@@ -246,16 +246,16 @@ ImageMetaData <- function(file = NA, format = NA, sat = NA, sen = NA,scene = NA,
 
 
 #' @method summary ImageMetaData
-#' @export 
-summary.ImageMetaData <- function(x, ...) { 
+#' @export  
+summary.ImageMetaData <- function(object, ...) { 
     
     labs <- format(c("Scene:", "Satellite:", "Sensor:", "Date:", "Path/Row:", "Projection:")) 
-    vals <- c(x$SCENE_ID, x$SATELLITE,x$SENSOR,format(x$ACQUISITION_DATE, "%F"), paste(x$PATH_ROW, collapse="/"), projection(x$PROJECTION))
+    vals <- c(object$SCENE_ID, object$SATELLITE,object$SENSOR,format(object$ACQUISITION_DATE, "%F"), paste(object$PATH_ROW, collapse="/"), projection(object$PROJECTION))
     cat(paste(labs, vals), fill =1)
     
     cat("\nData:\n") 
-    print(x$DATA[, c("FILES", "QUANTITY", "CATEGORY")])    
-    hasCal <- vapply(x[c("CALRAD", "CALREF", "CALBT")], is.data.frame, logical(1))
+    print(object$DATA[, c("FILES", "QUANTITY", "CATEGORY")])    
+    hasCal <- vapply(object[c("CALRAD", "CALREF", "CALBT")], is.data.frame, logical(1))
     
     cat("\nAvailable calibration parameters (gain and offset):\n") 
     if(any(hasCal)) {
@@ -263,5 +263,5 @@ summary.ImageMetaData <- function(x, ...) {
     }   else {
         cat("\tnone")
     }
-    invisible(x)
+    invisible(object)
 }
