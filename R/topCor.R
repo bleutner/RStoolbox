@@ -5,15 +5,15 @@
 #' @param metaData Character, ImageMetaData or List. Either a path to a meta-data file, ImageMetaData object (see \link{readMeta}) or a numeric vector containing sun azimuth and sun zenith (in radians).   
 #' Or a RasterStack/Brick with pre-calculated slope and aspect (see \link[raster]{terrain}). In this case the layers must be named 'slope' and 'aspect'.
 #' @param method Character. One of c("cos", "avgcos", "minnaert", "C", "stat", "cosi").
-#' @param stratMeth Character. One of c("noStrat", "stratEqualBins", "stratQuantiles").
+#' @param stratMethod Character. One of c("noStrat", "stratEqualBins", "stratQuantiles").
 #' @param stratImg RasterLayer by which to stratify by, e.g. NDVI. Defaults to 'slope'
 #' @param nStrat Integer. Number of bins or quantiles to stratify by. If a bin has less than 50 samples it will be merged with the next bin.
 #' @param cosi Raster*. Optional pre-calculated ilumination map. Run topCor with method="cosi" to calculate one.
-topCor <- function(img, dem, metaData, method = "cos", stratImg, stratMeth = "noStrat", nStrat = 5, cosi){
-     
-    stopifnot(method %in% c("cos", "avgcos", "minnaert", "C", "stat", "cosi"), stratMeth %in% c("stat", "noStrat", "stratEqualBins", "stratQuantiles"))
+topCor <- function(img, dem, metaData, method = "C", stratImg, stratMethod = "noStrat", nStrat = 5, cosi){
     
-    ## Metadata
+    stopifnot(method %in% c("cos", "avgcos", "minnaert", "C", "stat", "cosi"), stratMethod %in% c("stat", "noStrat", "stratEqualBins", "stratQuantiles"))
+    
+    ## Metadata 
     if(is.vector(metaData,"numeric")) {
         sa <- metaData[1]
         sz <- metaData[2]
@@ -63,7 +63,7 @@ topCor <- function(img, dem, metaData, method = "cos", stratImg, stratMeth = "no
         ## Lambertian assumption if k == 1
         ## Non-lambertian if 0 <= k < 1   
         if(missing(stratImg)) {stratImg <- "slope"}
-        ks <- .kestimate(img, cosi, slope, method = stratMeth, stratImg = stratImg, n = nStrat, sz=sz)
+        ks <- .kestimate(img, cosi, slope, method = stratMethod, stratImg = stratImg, n = nStrat, sz=sz)
         
         ks$k <- lapply(ks$k, function(x){
                     x[x[,2] < 0, 2] <- 0
@@ -97,13 +97,45 @@ topCor <- function(img, dem, metaData, method = "cos", stratImg, stratMeth = "no
                         })) 
         return(Lh <-  img * mult)   
     }
-    
-    
+    if(FALSE && method == "minnaMod"){
+        ## Richter 2009
+        if(sz < 45*pi/180) {
+            beta_t <- sz + 20*pi/180
+        } else if(sz > 55*pi/180) {
+            beta_t <- sz + 10*pi/180        
+        } else {
+            beta_t <- sz + 15*pi/180
+        }
+        
+        ## Vegetation classes: 1 = non-veg, 2 = veg
+        bvis = c(0.5,  ## non-vegetation
+                3/4)  ## vegetation (wavelength < 720nm)
+        bir = c(0.5,  ## non-vegetation
+                1/3)  ## vegetation (wavelength > 720nm)
+   
+        minnaMod <- function(x, beta_tx, b_lut) {
+            b 	 <- b_lut[x[,2]]
+            mult <- (x[,1]/beta_tx)^b
+            mult[mult > 0.25] <- 0.25
+            mult
+        }
+        
+     multvis <- calc(stack(cosi, stratImg), fun = function(x) minnaMod(x, b_lut = bvis, beta_tx = beta_t))
+     multir  <- calc(stack(cosi, stratImg), fun = function(x) minnaMod(x, b_lut = bir, beta_tx = beta_t))
+      
+     select <- cosi > beta_t 
+     visBands <- 1:4    
+     visCo <- img[visBands]
+     visCo[select] <- img[[visBands]][select]  * multvis[select]
+    }
+        
 }
 
 
 
-
+#' Parameter estimation
+#' @noRd 
+#' @keywords internal
 .kestimate <- function(img, cosi, slope, stratImg = "slope", method = "noStrat", n = 5, minN = 50, sz) {
     
     stopifnot(method %in% c("stat", "noStrat", "stratEqualBins", "stratQuantiles"))

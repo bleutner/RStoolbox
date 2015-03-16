@@ -5,8 +5,8 @@
 \title{Spectral indices}
 \usage{
 spectralIndices(img, blue = NULL, red = NULL, nir = NULL, mir = NULL,
-  indices = NULL, coefs = list(L = 0.5, G = 2.5, L_evi = 1, C1 = 6, C2 =
-  7.5, s = 1), ...)
+  indices = NULL, index = NULL, coefs = list(L = 0.5, G = 2.5, L_evi = 1,
+  C1 = 6, C2 = 7.5, s = 1), ...)
 }
 \arguments{
 \item{img}{Raster* object. Typically remote sensing imagery, which is to be classified.}
@@ -20,6 +20,8 @@ spectralIndices(img, blue = NULL, red = NULL, nir = NULL, mir = NULL,
 \item{mir}{Character or integer. Midwave-infrared band.}
 
 \item{indices}{Character. One or more spectral indices to calculate (see Details). By default (NULL) all implemented indices given the spectral bands which are provided will be calculated.}
+
+\item{index}{Character. Alias for \code{indices}.}
 
 \item{coefs}{List of coefficients (see Details).}
 

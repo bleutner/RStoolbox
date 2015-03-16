@@ -8,6 +8,7 @@
 #' @param nir Character or integer. Near-infrared band. 
 #' @param mir Character or integer. Midwave-infrared band. 
 #' @param indices Character. One or more spectral indices to calculate (see Details). By default (NULL) all implemented indices given the spectral bands which are provided will be calculated.
+#' @param index Character. Alias for \code{indices}.
 #' @param coefs List of coefficients (see Details).  
 #' @param ... further arguments such as filename etc. passed to \link[raster]{writeRaster}
 #' @return  RasterBrick or a RasterLayer if length(indices) == 1
@@ -21,9 +22,11 @@
 #' names(r) <- c("red", "nir")
 #' SI <- spectralIndices(r, red = 1, nir = 2, indices = "NDVI")
 #' plot(SI)
-spectralIndices <- function(img, blue=NULL, red=NULL, nir=NULL, mir=NULL, indices=NULL, coefs = list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5, s = 1),
+spectralIndices <- function(img, blue=NULL, red=NULL, nir=NULL, mir=NULL, indices=NULL, index = NULL, coefs = list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5, s = 1),
         ... ) {
     # TODO: add further indices
+    
+    if(!is.null(index)) indices <- index  ## argument translation for convenience
     
     ## Coefficients
     defaultCoefs <- list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5, s = 1)     

@@ -4,7 +4,7 @@
 \alias{topCor}
 \title{Topographic Illumination Correction}
 \usage{
-topCor(img, dem, metaData, method = "cos", stratImg, stratMeth = "noStrat",
+topCor(img, dem, metaData, method = "C", stratImg, stratMethod = "noStrat",
   nStrat = 5, cosi)
 }
 \arguments{
@@ -19,7 +19,7 @@ Or a RasterStack/Brick with pre-calculated slope and aspect (see \link[raster]{t
 
 \item{stratImg}{RasterLayer by which to stratify by, e.g. NDVI. Defaults to 'slope'}
 
-\item{stratMeth}{Character. One of c("noStrat", "stratEqualBins", "stratQuantiles").}
+\item{stratMethod}{Character. One of c("noStrat", "stratEqualBins", "stratQuantiles").}
 
 \item{nStrat}{Integer. Number of bins or quantiles to stratify by. If a bin has less than 50 samples it will be merged with the next bin.}
 
