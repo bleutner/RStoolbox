@@ -99,7 +99,7 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, stretch, quantil
             dmat <- matrix(df$fill, nrow=nrow(xfort), ncol=ncol(xfort), byrow = TRUE)  
             ggl  <- annotation_raster(raster = dmat, xmin = ex[1], xmax = ex[2], ymin = ex[3], ymax = ex[4], interpolate = FALSE)
         } else {
-            ggl  <- geom_raster(data = df[,c("x","y",layer)], aes_string(x = "x", y = "y", fill = layer)) 
+            ggl  <- geom_raster(data = df[,c("x","y",layer)], aes_string(x = "x", y = "y", fill = layer), alpha = alpha) 
         }
         
         if(ggLayer) return(ggl)

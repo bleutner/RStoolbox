@@ -4,18 +4,19 @@
 \alias{topCor}
 \title{Topographic Illumination Correction}
 \usage{
-topCor(img, dem, metaData, method = "C", stratImg, stratMethod = "noStrat",
-  nStrat = 5, cosi)
+topCor(img, dem, metaData, solarAngles, method = "C", stratImg,
+  stratMethod = "noStrat", nStrat = 5, illu)
 }
 \arguments{
 \item{img}{Raster*. Imagery to correct}
 
-\item{dem}{Raster*. Either a digital elevation model as a RasterLayer.}
+\item{dem}{Raster*. Either a digital elevation model as a RasterLayer or a RasterStack/Brick with pre-calculated slope and aspect (see \link[raster]{terrain}) in which case the layers must be named 'slope' and 'aspect'.}
 
-\item{metaData}{Character, ImageMetaData or List. Either a path to a meta-data file, ImageMetaData object (see \link{readMeta}) or a numeric vector containing sun azimuth and sun zenith (in radians).
-Or a RasterStack/Brick with pre-calculated slope and aspect (see \link[raster]{terrain}). In this case the layers must be named 'slope' and 'aspect'.}
+\item{metaData}{Character, ImageMetaData. Either a path to a Landsat meta-data file (MTL) or an ImageMetaData object (see \link{readMeta})}
 
-\item{method}{Character. One of c("cos", "avgcos", "minnaert", "C", "stat", "cosi").}
+\item{solarAngles}{Numeric vector containing sun azimuth and sun zenith (in radians and in that order). Not needed if metaData is provided}
+
+\item{method}{Character. One of c("cos", "avgcos", "minnaert", "C", "stat", "illu"). Choosing 'illu' will return only the local illumination map.}
 
 \item{stratImg}{RasterLayer by which to stratify by, e.g. NDVI. Defaults to 'slope'}
 
@@ -23,7 +24,7 @@ Or a RasterStack/Brick with pre-calculated slope and aspect (see \link[raster]{t
 
 \item{nStrat}{Integer. Number of bins or quantiles to stratify by. If a bin has less than 50 samples it will be merged with the next bin.}
 
-\item{cosi}{Raster*. Optional pre-calculated ilumination map. Run topCor with method="cosi" to calculate one.}
+\item{illu}{Raster*. Optional pre-calculated ilumination map. Run topCor with method="illu" to calculate one.}
 }
 \description{
 Topographic Illumination Correction

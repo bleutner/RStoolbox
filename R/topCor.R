@@ -2,23 +2,25 @@
 #' 
 #' @param img Raster*. Imagery to correct
 #' @param dem Raster*. Either a digital elevation model as a RasterLayer or a RasterStack/Brick with pre-calculated slope and aspect (see \link[raster]{terrain}) in which case the layers must be named 'slope' and 'aspect'.
-#' @param metaData Character, ImageMetaData or Numeric vector. Either a path to a meta-data file, ImageMetaData object (see \link{readMeta}) or a numeric vector containing sun azimuth and sun zenith (in radians and in that order).   
+#' @param metaData Character, ImageMetaData. Either a path to a Landsat meta-data file (MTL) or an ImageMetaData object (see \link{readMeta}) 
+#' @param solarAngles Numeric vector containing sun azimuth and sun zenith (in radians and in that order). Not needed if metaData is provided   
 #' @param method Character. One of c("cos", "avgcos", "minnaert", "C", "stat", "illu"). Choosing 'illu' will return only the local illumination map.
 #' @param stratMethod Character. One of c("noStrat", "stratEqualBins", "stratQuantiles").
 #' @param stratImg RasterLayer by which to stratify by, e.g. NDVI. Defaults to 'slope'
 #' @param nStrat Integer. Number of bins or quantiles to stratify by. If a bin has less than 50 samples it will be merged with the next bin.
 #' @param illu Raster*. Optional pre-calculated ilumination map. Run topCor with method="illu" to calculate one.
 #' @export 
-topCor <- function(img, dem, metaData, method = "C", stratImg, stratMethod = "noStrat", nStrat = 5, illu){
+topCor <- function(img, dem, metaData, solarAngles, method = "C", stratImg, stratMethod = "noStrat", nStrat = 5, illu){
     
     stopifnot(method %in% c("cos", "avgcos", "minnaert", "C", "stat", "illu"), stratMethod %in% c("stat", "noStrat", "stratEqualBins", "stratQuantiles"))
     
     ## Metadata 
-    if(is.vector(metaData,"numeric")) {
-        if(length(metaData)!=2) stop ("If metaData is used to provide solar azimuth and solar zenith it must be a numeric vector of length 2: c(azimuth, zenith)")
-        sa <- metaData[1]
-        sz <- metaData[2]
-    } else {     
+    if(!missing("solarAngles")) {
+        if(length(solarAngles)!=2) stop ("If metaData is used to provide solar azimuth and solar zenith it must be a numeric vector of length 2: c(azimuth, zenith)")
+        sa <- solarAngles[1]
+        sz <- solarAngles[2]
+    } else { 
+        if(missing("metaData")) stop("You must specify either solarAngles or metaData")
         if(inherits(metaData, "character"))   metaData <- readMeta(metaData)
         sz <- (90-metaData$SOLAR_PARAMETERS[2])*pi/180
         sa <-  metaData$SOLAR_PARAMETERS[1]*pi/180        

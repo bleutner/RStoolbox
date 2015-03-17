@@ -148,7 +148,7 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
                 p <- ggplot(df, aes(x = x,y = y)) + p
             }
         } else {
-            p <- geom_raster(data = df_raster, aes(x = x, y = y, fill = fill))  
+            p <- geom_raster(data = df_raster, aes(x = x, y = y, fill = fill), alpha = alpha)  
             if(!ggLayer) {
                 p <- ggplot() + p + scale_fill_identity() 
             }
