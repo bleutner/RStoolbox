@@ -28,9 +28,11 @@ topCor <- function(img, dem, metaData, solarAngles, method = "C", stratImg, stra
     
     ## Terrain
     if(any(!names(dem) %in% c("slope", "aspect"))) {
+        compareRaster(img, dem)
         .vMessage("Calculate slope and aspect")
         topo <- terrain(dem, c("slope", "aspect"))
     } else {
+        compareRaster(img, illu)
         .vMessage("Using pre-calculated slope and aspect")
     }
     slope <- topo[["slope"]]
