@@ -1,20 +1,21 @@
 #' Topographic Illumination Correction
 #' 
 #' @param img Raster*. Imagery to correct
-#' @param dem Raster*. Either a digital elevation model as a RasterLayer.
-#' @param metaData Character, ImageMetaData or List. Either a path to a meta-data file, ImageMetaData object (see \link{readMeta}) or a numeric vector containing sun azimuth and sun zenith (in radians).   
-#' Or a RasterStack/Brick with pre-calculated slope and aspect (see \link[raster]{terrain}). In this case the layers must be named 'slope' and 'aspect'.
-#' @param method Character. One of c("cos", "avgcos", "minnaert", "C", "stat", "cosi").
+#' @param dem Raster*. Either a digital elevation model as a RasterLayer or a RasterStack/Brick with pre-calculated slope and aspect (see \link[raster]{terrain}) in which case the layers must be named 'slope' and 'aspect'.
+#' @param metaData Character, ImageMetaData or Numeric vector. Either a path to a meta-data file, ImageMetaData object (see \link{readMeta}) or a numeric vector containing sun azimuth and sun zenith (in radians and in that order).   
+#' @param method Character. One of c("cos", "avgcos", "minnaert", "C", "stat", "illu"). Choosing 'illu' will return only the local illumination map.
 #' @param stratMethod Character. One of c("noStrat", "stratEqualBins", "stratQuantiles").
 #' @param stratImg RasterLayer by which to stratify by, e.g. NDVI. Defaults to 'slope'
 #' @param nStrat Integer. Number of bins or quantiles to stratify by. If a bin has less than 50 samples it will be merged with the next bin.
-#' @param cosi Raster*. Optional pre-calculated ilumination map. Run topCor with method="cosi" to calculate one.
-topCor <- function(img, dem, metaData, method = "C", stratImg, stratMethod = "noStrat", nStrat = 5, cosi){
+#' @param illu Raster*. Optional pre-calculated ilumination map. Run topCor with method="illu" to calculate one.
+#' @export 
+topCor <- function(img, dem, metaData, method = "C", stratImg, stratMethod = "noStrat", nStrat = 5, illu){
     
-    stopifnot(method %in% c("cos", "avgcos", "minnaert", "C", "stat", "cosi"), stratMethod %in% c("stat", "noStrat", "stratEqualBins", "stratQuantiles"))
+    stopifnot(method %in% c("cos", "avgcos", "minnaert", "C", "stat", "illu"), stratMethod %in% c("stat", "noStrat", "stratEqualBins", "stratQuantiles"))
     
     ## Metadata 
     if(is.vector(metaData,"numeric")) {
+        if(length(metaData)!=2) stop ("If metaData is used to provide solar azimuth and solar zenith it must be a numeric vector of length 2: c(azimuth, zenith)")
         sa <- metaData[1]
         sz <- metaData[2]
     } else {     
@@ -34,46 +35,46 @@ topCor <- function(img, dem, metaData, method = "C", stratImg, stratMethod = "no
     aspect <- topo[["aspect"]]
     
     ## Illumination
-    if(missing(cosi)){
+    if(missing(illu)){
         .vMessage("Calculate illumination map")
-        cosi  <- raster::overlay(topo, fun = function(slope, aspect, sazimuth = sa, szenith = sz){
+        illu  <- raster::overlay(topo, fun = function(slope, aspect, sazimuth = sa, szenith = sz){
                     cos(szenith) * cos(slope) + sin(szenith) * sin(slope) * cos(sazimuth - aspect)
                 })
-        names(cosi) <- "cosi"
+        names(illu) <- "illu"
     } else {
         .vMessage("Using pre-calculated illumination map")
     }
-    if(method=="cosi") return(cosi)
+    if(method=="illu") return(illu)
     
     .vMessage("Correct imagery")
     if (method == "cos") {
         ## valid range: <55°
         ## Eq 3 in Riano2003
         ## Lambertian assumption
-        return(Lh <- img * (cos(sz) / cosi))  
+        return(Lh <- img * (cos(sz) / illu))  
     }
     if (method == "avgcos") {
         ## Eq 4 in Riano2003
         ## Lambertian assumption
-        avgcosi <- cellStats(cosi, mean)
-        return(Lh <- img + img * (avgcosi-cosi) / avgcosi)  
+        avgillu <- cellStats(illu, mean)
+        return(Lh <- img + img * (avgillu-illu) / avgillu)  
     }
     if(method =="minnaert") {
         ## Eq 5 in Riano2003
         ## Lambertian assumption if k == 1
         ## Non-lambertian if 0 <= k < 1   
         if(missing(stratImg)) {stratImg <- "slope"}
-        ks <- .kestimate(img, cosi, slope, method = stratMethod, stratImg = stratImg, n = nStrat, sz=sz)
+        ks <- .kestimate(img, illu, slope, method = stratMethod, stratImg = stratImg, n = nStrat, sz=sz)
         
         ks$k <- lapply(ks$k, function(x){
                     x[x[,2] < 0, 2] <- 0
                     x[x[,2] > 1, 2] <- 1
                     x
                 })
-        Lh <- lapply(1:nlayers(img), function(layer){ overlay(stack(img[[layer]], cosi, slope), fun = function(img, cosi, strat, groups = ks$groups, k = ks$k) {
+        Lh <- lapply(1:nlayers(img), function(layer){ overlay(stack(img[[layer]], illu, slope), fun = function(img, illu, strat, groups = ks$groups, k = ks$k) {
                                 sc <- cut(strat, breaks = groups, labels = FALSE)
                                 k <- k[[layer]][sc,2]       
-                                Lh <- img * c(cos(sz)/ cosi)^k 
+                                Lh <- img * c(cos(sz)/ illu)^k 
                             })
                 })
         Lh <- stack(Lh)       
@@ -83,17 +84,17 @@ topCor <- function(img, dem, metaData, method = "C", stratImg, stratMethod = "no
     }    
     if(method ==  "stat") {
         ## Eq 8 in Riano2003        
-        ks <- .kestimate(img, cosi, slope, method = "stat")
+        ks <- .kestimate(img, illu, slope, method = "stat")
         sub <- stack(lapply(ks$k, function(x){
-                            x[,2] * cosi
+                            x[,2] * illu
                         }))
         return(Lh <- img - sub)
     }
     if(method == "C") {
-        ks <- .kestimate(img, cosi, slope, method = "stat")
+        ks <- .kestimate(img, illu, slope, method = "stat")
         mult <- stack(lapply(ks$k, function(x){
                             ck <- x[,1]/x[,2] 
-                            (cos(sz) + ck) /  (cosi + ck)
+                            (cos(sz) + ck) /  (illu + ck)
                         })) 
         return(Lh <-  img * mult)   
     }
@@ -120,10 +121,10 @@ topCor <- function(img, dem, metaData, method = "C", stratImg, stratMethod = "no
             mult
         }
         
-     multvis <- calc(stack(cosi, stratImg), fun = function(x) minnaMod(x, b_lut = bvis, beta_tx = beta_t))
-     multir  <- calc(stack(cosi, stratImg), fun = function(x) minnaMod(x, b_lut = bir, beta_tx = beta_t))
+     multvis <- calc(stack(illu, stratImg), fun = function(x) minnaMod(x, b_lut = bvis, beta_tx = beta_t))
+     multir  <- calc(stack(illu, stratImg), fun = function(x) minnaMod(x, b_lut = bir, beta_tx = beta_t))
       
-     select <- cosi > beta_t 
+     select <- illu > beta_t 
      visBands <- 1:4    
      visCo <- img[visBands]
      visCo[select] <- img[[visBands]][select]  * multvis[select]
@@ -136,15 +137,15 @@ topCor <- function(img, dem, metaData, method = "C", stratImg, stratMethod = "no
 #' Parameter estimation
 #' @noRd 
 #' @keywords internal
-.kestimate <- function(img, cosi, slope, stratImg = "slope", method = "noStrat", n = 5, minN = 50, sz) {
+.kestimate <- function(img, illu, slope, stratImg = "slope", method = "noStrat", n = 5, minN = 50, sz) {
     
     stopifnot(method %in% c("stat", "noStrat", "stratEqualBins", "stratQuantiles"))
     ## Following Lu 2008 sample pre selection
     set.seed(10)
     strat <- if(inherits(stratImg, "character")) NULL else {names(stratImg) <- "strat"; stratImg} 
-    sr 	  <- as.data.frame(sampleRandom(stack(img, cosi, slope, strat), size = 10000))
+    sr 	  <- as.data.frame(sampleRandom(stack(img, illu, slope, strat), size = 10000))
     
-    if(method != "stat") sr  <- sr[sr$slope > 2*pi/180 & sr$cosi >= 0,]
+    if(method != "stat") sr  <- sr[sr$slope > 2*pi/180 & sr$illu >= 0,]
     if(method != "noStrat" & inherits(stratImg, "character")) {
         sr$strat <- sr[,stratImg]
         stratImg <- slope
@@ -181,7 +182,7 @@ topCor <- function(img, dem, metaData, method = "C", stratImg, stratMethod = "no
         }           
     }
     .vMessage("Estimate coefficients")
-    x 	<- if(method == "stat") sr$cosi else log(sr$cosi/cos(sz))
+    x 	<- if(method == "stat") sr$illu else log(sr$illu/cos(sz))
     kl <- lapply(1:nlayers(img), function(i){
                 if(method == "stat") {
                     y <- sr[,i] 
