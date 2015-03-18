@@ -1,15 +1,14 @@
 #' Radiometric calibration and correction
 #' 
 #' Implements several different methods for absolute radiometric correction of Landsat data.
-#' You can either specify a metadata file, or supply all neccesary values manually. With proper parametrization APREF and SDOS should work for other sensors as well.
+#' You can either specify a metadata file, or supply all neccesary values manually. With proper parametrization apref and sdos should work for other sensors as well.
 #' 
 #' @param img raster object
 #' @param metaData object of class ImageMetaData or a path to the meta data (MTL) file. 
-#' @param radiance Logical. If \code{TRUE} only radiance will be calculated. Otherwise reflectance and brightness temperature are calculated. 
-#' @param method Radiometric correction method to be used. There are currently four methods available (see Details):
-#' "APREF", "SDOS", "DOS", "COSTZ".
+#' @param method Radiometric conversion/correction method to be used. There are currently four methods available (see Details):
+#' "apref", "sdos", "dos", "costz".
 #' @param bandSet numeric or character. original Landsat band numbers or names in the form of ("B1", "B2" etc). If set to 'full' all bands in the solar region will be processed.
-#' @param SHV starting haze value, can be estimated using estimateSHV(). if not provided and method is "DOS" or "COSTZ" SHV will be estimated in an automated fashion. Not needed for apparent reflectance.
+#' @param SHV starting haze value, can be estimated using estimateSHV(). if not provided and method is "dos" or "costz" SHV will be estimated in an automated fashion. Not needed for apparent reflectance.
 #' @param hazeBand band from which SHV was estimated.
 #' @param atHaze character. Scene haze characteristics. Will be estimated if not expicilty provided. Must be one of \code{"veryClear", "clear", "moderate", "hazy"} or \code{"veryHazy"}.
 #' @param darkProp numeric. Estimated proportion of dark pixels in the scene. Used only for automatic guessing of SHV.
@@ -24,10 +23,11 @@
 #' Estimation of at-surface spectral reflectance (unitless)
 #'  
 #' \describe{
-#' \item{APREF}{Apparent reflectance}
-#' \item{DOS}{Dark object subtratction following Chavez (1989)}
-#' \item{COSTZ}{Dark object subtraction following Chaves(1996)}
-#' \item{SDOS}{Simple dark object subtraction. Classical DOS, Lhaze must be estimated for each band separately.}
+#' \item{rad}{Radiance}
+#' \item{apref}{Apparent reflectance}
+#' \item{dos}{Dark object subtratction following Chavez (1989)}
+#' \item{costz}{Dark object subtraction following Chaves(1996)}
+#' \item{sdos}{Simple dark object subtraction. Classical dos, Lhaze must be estimated for each band separately.}
 #' }
 #'  
 #' The implemented sun-earth distances neglect the earth's eccentricity. Instead it uses a 100 year daily average (1979-2070).
@@ -43,16 +43,16 @@
 #' }
 #' @references S. Goslee (2011): Analyzing Remote Sensing Data in R: The landsat Package. Journal of Statistical Software 43(4).
 #' @export
-radCor <-	function(img, metaData, radiance = FALSE,  method = "APREF", bandSet = "full", SHV, hazeBand, atHaze, darkProp = 0.02, verbose){
+radCor <-	function(img, metaData, method = "apref", bandSet = "full", SHV, hazeBand, atHaze, darkProp = 0.02, verbose){
 	# http://landsat.usgs.gov/Landsat8_Using_Product.php
 	if(!missing("verbose")) .initVerbose(verbose)
 	
-	if(!method %in% c("APREF", "DOS", "COSTZ", "SDOS")) stop("method must be one of 'APREF', 'DOS', 'COSTZ' 'SDOS'", call.=FALSE)
+	if(!method %in% c("rad", "apref", "dos", "costz", "sdos")) stop("method must be one of 'apref', 'dos', 'costz' 'sdos'", call.=FALSE)
 	
 	
-	if(radiance & method != "APREF"){
+	if(radiance & method != "apref"){
 		.vMessage("For radiance calculations the 'method' argument is ignored")
-		method <- "APREF"
+		method <- "apref"
 	}
 		
 	## Read metadata from file
@@ -68,9 +68,9 @@ radCor <-	function(img, metaData, radiance = FALSE,  method = "APREF", bandSet =
 	sunElev		<- metaData$SOLAR_PARAMETERS["elevation"]   
 	rad 		<- metaData$DATA$RADIOMETRIC_RESOLUTION 
 	
-	if(sat == "LANDSAT8" & method != "APREF") {
-		warning("DOS, COSTZ and SDOS are currently not implemented for Landsat 8. Using official reflectance calibration coefficients, i.e. output corresponds to method = 'APREF'", call. = FALSE) 
-		method <- "APREF"
+	if(sat == "LANDSAT8" & method != "apref") {
+		warning("dos, costz and sdos are currently not implemented for Landsat 8. Using official reflectance calibration coefficients, i.e. output corresponds to method = 'apref'", call. = FALSE) 
+		method <- "apref"
 	}
 	
 	satZenith   <- 1
@@ -98,7 +98,7 @@ radCor <-	function(img, metaData, radiance = FALSE,  method = "APREF", bandSet =
 	exclBands	<- origBands[!origBands %in% c(bandSet, tirBands)]   
 	excl 		<- if(length(exclBands) > 0) img[[exclBands]] else  NULL
 	
-	if(radiance) {
+	if(method == "rad") {
 		bandSet <- c(bandSet, tirBands)
 		.vMessage("Bands to convert to toa radiance: ", paste(bandSet, collapse = ", "))
 	} else {
@@ -108,7 +108,7 @@ radCor <-	function(img, metaData, radiance = FALSE,  method = "APREF", bandSet =
 	} 
 	
 	## Thermal processing
-	if(!radiance & length(tirBands) > 0) {
+	if((method != "rad") & (length(tirBands) > 0)) {
 		.vMessage("Processing thermal band(s)")
 		K1  	<- metaData$CALBT[tirBands, "K1"]
 		K2   	<- metaData$CALBT[tirBands, "K2"]
@@ -127,7 +127,7 @@ radCor <-	function(img, metaData, radiance = FALSE,  method = "APREF", bandSet =
 	TAUv <- 1
 	Edown <- 0
 	Lhaze <- 0   
-	if(method != "APREF") {
+	if(method != "apref") {
 		
 		## Estimate SHV automatically
 		if(missing(SHV)){
@@ -148,7 +148,7 @@ radCor <-	function(img, metaData, radiance = FALSE,  method = "APREF", bandSet =
 		}
 		
 		
-		if(method == "SDOS") {
+		if(method == "sdos") {
 			SHVdummy <- rep(0, length(bandSet))  
 			names(SHVdummy) <- bandSet
 			SHVdummy[hazeBand] <- SHV[hazeBand]
@@ -156,7 +156,7 @@ radCor <-	function(img, metaData, radiance = FALSE,  method = "APREF", bandSet =
 			hazeBand <- bandSet
 		}
 		
-		if (method == "COSTZ") {
+		if (method == "costz") {
 			TAUz <- suntheta
 			TAUv <- satphi
 		}  
@@ -169,7 +169,7 @@ radCor <-	function(img, metaData, radiance = FALSE,  method = "APREF", bandSet =
 		Ldo  	 <- 0.01 * ((esun * suntheta * TAUz) + Edown) * TAUv / (pi * d ^ 2)
 		Lhaze 	 <- (SHV * GAIN_h + OFFSET_h ) - Ldo
 		
-		if(method %in% c("DOS", "COSTZ")) {		
+		if(method %in% c("dos", "costz")) {		
 			## Pick atmoshpere type
 			if(missing(atHaze)) {
 				atHaze.db <- data.frame(min = c(1,56,76,96,116), max = c(55,75,95,115,255)) / 255 * (2^rad-1)
@@ -189,7 +189,7 @@ radCor <-	function(img, metaData, radiance = FALSE,  method = "APREF", bandSet =
 	}
 	
 	
-	if(radiance)  { 
+	if(method == "rad")  { 
 		## Radiance
 		layernames <- gsub("_dn", "_tra", bandSet)
 	} else {
@@ -203,7 +203,7 @@ radCor <-	function(img, metaData, radiance = FALSE,  method = "APREF", bandSet =
 			OFFSET  <- C * (OFFSET - Lhaze)
 			GAIN 	<- C * GAIN 
 		}
-		layernames <-   if(method == "APREF") gsub("_dn", "_tre", bandSet) else gsub("_dn", "_sre", bandSet)               
+		layernames <-   if(method == "apref") gsub("_dn", "_tre", bandSet) else gsub("_dn", "_sre", bandSet)               
 	}  
 	.vMessage("Processing radiance / reflectance")  
 	xref <- .paraRasterFun(img[[bandSet]], rasterFun = calc, args = list(fun = function(x) GAIN * x + OFFSET))
