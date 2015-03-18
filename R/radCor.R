@@ -8,10 +8,10 @@
 #' @param method Radiometric conversion/correction method to be used. There are currently four methods available (see Details):
 #' "apref", "sdos", "dos", "costz".
 #' @param bandSet numeric or character. original Landsat band numbers or names in the form of ("B1", "B2" etc). If set to 'full' all bands in the solar region will be processed.
-#' @param SHV starting haze value, can be estimated using estimateSHV(). if not provided and method is "dos" or "costz" SHV will be estimated in an automated fashion. Not needed for apparent reflectance.
-#' @param hazeBand band from which SHV was estimated.
-#' @param atHaze character. Scene haze characteristics. Will be estimated if not expicilty provided. Must be one of \code{"veryClear", "clear", "moderate", "hazy"} or \code{"veryHazy"}.
-#' @param darkProp numeric. Estimated proportion of dark pixels in the scene. Used only for automatic guessing of SHV.
+#' @param hazeValues starting haze value, can be estimated using estimatehazeValues(). if not provided and method is "dos" or "costz" hazeValues will be estimated in an automated fashion. Not needed for apparent reflectance.
+#' @param hazeBands Bands corresponding to hazeValues.
+#' @param atmosphere Character. Atmospheric characteristics. Will be estimated if not expicilty provided. Must be one of \code{"veryClear", "clear", "moderate", "hazy"} or \code{"veryHazy"}.
+#' @param darkProp numeric. Estimated proportion of dark pixels in the scene. Used only for automatic guessing of hazeValues.
 #' @param verbose Logical. Print status information. 
 
 #' @note This was originally a fork of randcorr in the landsat package. It may be slower, however it works on Raster* objects and hence is memory-safe.
@@ -43,17 +43,12 @@
 #' }
 #' @references S. Goslee (2011): Analyzing Remote Sensing Data in R: The landsat Package. Journal of Statistical Software 43(4).
 #' @export
-radCor <-	function(img, metaData, method = "apref", bandSet = "full", SHV, hazeBand, atHaze, darkProp = 0.02, verbose){
+radCor <-	function(img, metaData, method = "apref", bandSet = "full", hazeValues, hazeBands, atmosphere, darkProp = 0.02, verbose){
 	# http://landsat.usgs.gov/Landsat8_Using_Product.php
 	if(!missing("verbose")) .initVerbose(verbose)
 	
 	if(!method %in% c("rad", "apref", "dos", "costz", "sdos")) stop("method must be one of 'rad' 'apref', 'dos', 'costz' 'sdos'", call.=FALSE)
 	
-	
-	if(radiance & method != "apref"){
-		.vMessage("For radiance calculations the 'method' argument is ignored")
-		method <- "apref"
-	}
 		
 	## Read metadata from file
 	if(is.character(metaData)) {    
@@ -103,7 +98,7 @@ radCor <-	function(img, metaData, method = "apref", bandSet = "full", SHV, hazeB
 		.vMessage("Bands to convert to toa radiance: ", paste(bandSet, collapse = ", "))
 	} else {
 		.vMessage("Bands to convert to reflectance: ", paste(bandSet, collapse = ", "))
-		if(length(tirBands) > 0) .vMessage("Thermal bands to convert to brightness temperatures: ", paste(tirBands, collapse=", "))
+		if(length(tirBands) > 0) .vMessage("Thermal bands to convert to brightness temperature: ", paste(tirBands, collapse=", "))
 		if(length(exclBands) > 0) .vMessage("Excluding bands: ", paste(exclBands, collapse = ", "))	
 	} 
 	
@@ -129,31 +124,31 @@ radCor <-	function(img, metaData, method = "apref", bandSet = "full", SHV, hazeB
 	Lhaze <- 0   
 	if(method != "apref") {
 		
-		## Estimate SHV automatically
-		if(missing(SHV)){
-			if(missing(hazeBand))  hazeBand <- names(img)[1]
-			if(length(hazeBand) > 1) {
-				stop("Automatic search for SHV values is intended for one band only. For more bands please estimate haze DNs manually using estimateSHV() \nhazeBand was automatically reset to 1")
-				hazeBand <- names(img)[1]
+		## Estimate hazeValues automatically
+		if(missing(hazeValues)){
+			if(missing(hazeBands))  hazeBands <- names(img)[1]
+			if(length(hazeBands) > 1) {
+				stop("Automatic search for hazeValues values is intended for one band only. For more bands please estimate haze DNs manually using estimatehazeValues() \nhazeBands was automatically reset to 1")
+				hazeBands <- names(img)[1]
 			}
-			.vMessage("SHV was not provided -> Estimating SHV automatically")
+			.vMessage("hazeValues was not provided -> Estimating hazeValues automatically")
 			## We suppress warnings because we search for a possible value autimatically in case we missed the first time
-			SHV <- suppressWarnings(estimateHaze(img, hazeBand = hazeBand, darkProp = darkProp , plot = FALSE, returnTables = TRUE))
-			while(is.na(SHV[[1]])){ 
+			hazeValues <- suppressWarnings(estimateHaze(img, hazeBands = hazeBands, darkProp = darkProp , plot = FALSE, returnTables = TRUE))
+			while(is.na(hazeValues[[1]])){ 
 				darkProp	<- darkProp * 0.95
-				SHV <- suppressWarnings(estimateHaze(SHV, hazeBand = hazeBand, darkProp = darkProp, plot = FALSE, returnTables = TRUE))
+				hazeValues <- suppressWarnings(estimateHaze(hazeValues, hazeBands = hazeBands, darkProp = darkProp, plot = FALSE, returnTables = TRUE))
 			}
-			.vMessage(paste0("SHV estimated as: ", SHV[[1]]))
-			SHV <- SHV[[1]]
+			.vMessage(paste0("hazeValues estimated as: ", hazeValues[[1]]))
+			hazeValues <- hazeValues[[1]]
 		}
 		
 		
 		if(method == "sdos") {
-			SHVdummy <- rep(0, length(bandSet))  
-			names(SHVdummy) <- bandSet
-			SHVdummy[hazeBand] <- SHV[hazeBand]
-			SHV <- SHVdummy
-			hazeBand <- bandSet
+			hazeValuesdummy <- rep(0, length(bandSet))  
+			names(hazeValuesdummy) <- bandSet
+			hazeValuesdummy[hazeBands] <- hazeValues[hazeBands]
+			hazeValues <- hazeValuesdummy
+			hazeBands <- bandSet
 		}
 		
 		if (method == "costz") {
@@ -163,21 +158,21 @@ radCor <-	function(img, metaData, method = "apref", bandSet = "full", SHV, hazeB
 		
 		## 1% correction and conversion to radiance
 		## TODO: Calculate esun manually based on spectral response curves
-		esun 	 <- sDB[hazeBand, "esun"]     
-		GAIN_h 	 <- metaData$CALRAD[hazeBand,"gain"]
-		OFFSET_h <- metaData$CALRAD[hazeBand,"offset"]
+		esun 	 <- sDB[hazeBands, "esun"]     
+		GAIN_h 	 <- metaData$CALRAD[hazeBands,"gain"]
+		OFFSET_h <- metaData$CALRAD[hazeBands,"offset"]
 		Ldo  	 <- 0.01 * ((esun * suntheta * TAUz) + Edown) * TAUv / (pi * d ^ 2)
-		Lhaze 	 <- (SHV * GAIN_h + OFFSET_h ) - Ldo
+		Lhaze 	 <- (hazeValues * GAIN_h + OFFSET_h ) - Ldo
 		
 		if(method %in% c("dos", "costz")) {		
 			## Pick atmoshpere type
-			if(missing(atHaze)) {
-				atHaze.db <- data.frame(min = c(1,56,76,96,116), max = c(55,75,95,115,255)) / 255 * (2^rad-1)
-				atHaze 	  <- c("veryClear", "clear", "moderate", "hazy", "veryHazy")[Lhaze > atHaze.db[,1] & Lhaze <= atHaze.db[,2]]
-				.vMessage("Selecting atmosphere: '", atHaze, "'")
+			if(missing(atmosphere)) {
+				atmosphere.db <- data.frame(min = c(1,56,76,96,116), max = c(55,75,95,115,255)) / 255 * (2^rad-1)
+				atmosphere 	  <- c("veryClear", "clear", "moderate", "hazy", "veryHazy")[Lhaze > atmosphere.db[,1] & Lhaze <= atmosphere.db[,2]]
+				.vMessage("Selecting atmosphere: '", atmosphere, "'")
 			}	
-			if(is.numeric(hazeBand)) hazeBand <- names(img)[hazeBand]
-			Lhaze	  <- Lhaze  * sDB[bandSet, paste0(hazeBand,"_", atHaze)] 
+			if(is.numeric(hazeBands)) hazeBands <- names(img)[hazeBands]
+			Lhaze	  <- Lhaze  * sDB[bandSet, paste0(hazeBands,"_", atmosphere)] 
 			## Calculate corrected RAD_haze
 			NORM  <- GAIN / GAIN_h
 			Lhaze <- Lhaze * NORM + OFFSET

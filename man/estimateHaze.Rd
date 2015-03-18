@@ -4,13 +4,13 @@
 \alias{estimateHaze}
 \title{Estimate image haze for dark object subtraction procedures}
 \usage{
-estimateHaze(x, hazeBand, darkProp = 0.02, plot = FALSE,
+estimateHaze(x, hazeBands, darkProp = 0.02, plot = FALSE,
   returnTables = FALSE)
 }
 \arguments{
 \item{x}{raster object or a previous result from \code{estimateSHV(x , returnTables = TRUE} from which to estimate haze}
 
-\item{hazeBand}{character. Band or bandname from which to estimate SHV (optional if x contains only one layer)}
+\item{hazeBands}{character. Band or bandname from which to estimate SHV (optional if x contains only one layer)}
 
 \item{darkProp}{proportion of pixels estimated to be dark}
 

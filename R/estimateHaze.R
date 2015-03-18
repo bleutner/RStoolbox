@@ -1,12 +1,12 @@
 #' Estimate image haze for dark object subtraction procedures
 #' 
 #' @param x raster object or a previous result from \code{estimateSHV(x , returnTables = TRUE} from which to estimate haze
-#' @param hazeBand character. Band or bandname from which to estimate SHV (optional if x contains only one layer)
+#' @param hazeBands character. Band or bandname from which to estimate SHV (optional if x contains only one layer)
 #' @param darkProp proportion of pixels estimated to be dark
 #' @param plot display histograms and haze values
 #' @param returnTables return the frequency table per layer. Only takes effect if x is a Raster* object. If x is a result of estimateSHV tables will always be returned.
 #' @export 
-estimateHaze <- function(x, hazeBand, darkProp = 0.02, plot = FALSE, returnTables = FALSE) {
+estimateHaze <- function(x, hazeBands, darkProp = 0.02, plot = FALSE, returnTables = FALSE) {
     
     ## Initial or repeated run?
     if(inherits(x, "Raster")) {
@@ -20,24 +20,24 @@ estimateHaze <- function(x, hazeBand, darkProp = 0.02, plot = FALSE, returnTable
     }
     
     if(!preCalc){
-        if(missing(hazeBand)){ 
+        if(missing(hazeBands)){ 
             if(nlayers(x) == 1) {
-                hazeBand <- names(x)        
+                hazeBands <- names(x)        
             } else {
                 stop("Please specify the band from which you want to estimate the haze dn")
             }	
-            if(is.numeric(hazeBand)) hazeBand <- names(x)[hazeBand]
+            if(is.numeric(hazeBands)) hazeBands <- names(x)[hazeBands]
         }
         
     } else {
         
-        if(is.numeric(hazeBand)) hazeBand <- names(x$table)[hazeBand]
-        preCalcAvail <- hazeBand %in% names(x$table)
+        if(is.numeric(hazeBands)) hazeBands <- names(x$table)[hazeBands]
+        preCalcAvail <- hazeBands %in% names(x$table)
         if(!any(preCalcAvail)) 	stop("Cannot estimate SHV because tables are missing for all specified bands", call. = FALSE)
         
         if(any(!preCalcAvail)) {
-            warning(paste0("Cannot estimate SHV for >> ", hazeBand[!preCalcAvail], " << because tables are missing."), call. = FALSE)
-            hazeBand <- hazeBand[preCalcAvail] 				
+            warning(paste0("Cannot estimate SHV for >> ", hazeBands[!preCalcAvail], " << because tables are missing."), call. = FALSE)
+            hazeBands <- hazeBands[preCalcAvail] 				
         }	
     }
     
@@ -45,13 +45,13 @@ estimateHaze <- function(x, hazeBand, darkProp = 0.02, plot = FALSE, returnTable
     if(plot){
         olpar <- par(no.readonly = TRUE)
         on.exit(par(olpar))
-        if(length(hazeBand) > 1){
-            par(mfrow = c(2, ceiling(length(hazeBand)/2))) 
+        if(length(hazeBands) > 1){
+            par(mfrow = c(2, ceiling(length(hazeBands)/2))) 
         }
     }
     
     ## Run estimation for each band separately
-    out   <- lapply(hazeBand, function(bi) {
+    out   <- lapply(hazeBands, function(bi) {
                 if(!preCalc) {
                     ## TODO: move freq out of loop
                     tf <- freq(x[[bi]], useNA = "no") 
@@ -77,11 +77,11 @@ estimateHaze <- function(x, hazeBand, darkProp = 0.02, plot = FALSE, returnTable
             })
     
     SHV <- unlist(lapply(out, "[", 2))
-    names(SHV) <- hazeBand
+    names(SHV) <- hazeBands
     
     if(!preCalc){
         table <- sapply(out, "[", 1)
-        names(table) <- hazeBand
+        names(table) <- hazeBands
     } else {
         table <- x$table
     }

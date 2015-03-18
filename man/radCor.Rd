@@ -4,8 +4,8 @@
 \alias{radCor}
 \title{Radiometric calibration and correction}
 \usage{
-radCor(img, metaData, method = "apref", bandSet = "full", SHV, hazeBand,
-  atHaze, darkProp = 0.02, verbose)
+radCor(img, metaData, method = "apref", bandSet = "full", hazeValues,
+  hazeBands, atmosphere, darkProp = 0.02, verbose)
 }
 \arguments{
 \item{img}{raster object}
@@ -17,13 +17,13 @@ radCor(img, metaData, method = "apref", bandSet = "full", SHV, hazeBand,
 
 \item{bandSet}{numeric or character. original Landsat band numbers or names in the form of ("B1", "B2" etc). If set to 'full' all bands in the solar region will be processed.}
 
-\item{SHV}{starting haze value, can be estimated using estimateSHV(). if not provided and method is "dos" or "costz" SHV will be estimated in an automated fashion. Not needed for apparent reflectance.}
+\item{hazeValues}{starting haze value, can be estimated using estimatehazeValues(). if not provided and method is "dos" or "costz" hazeValues will be estimated in an automated fashion. Not needed for apparent reflectance.}
 
-\item{hazeBand}{band from which SHV was estimated.}
+\item{hazeBands}{Bands corresponding to hazeValues.}
 
-\item{atHaze}{character. Scene haze characteristics. Will be estimated if not expicilty provided. Must be one of \code{"veryClear", "clear", "moderate", "hazy"} or \code{"veryHazy"}.}
+\item{atmosphere}{Character. Atmospheric characteristics. Will be estimated if not expicilty provided. Must be one of \code{"veryClear", "clear", "moderate", "hazy"} or \code{"veryHazy"}.}
 
-\item{darkProp}{numeric. Estimated proportion of dark pixels in the scene. Used only for automatic guessing of SHV.}
+\item{darkProp}{numeric. Estimated proportion of dark pixels in the scene. Used only for automatic guessing of hazeValues.}
 
 \item{verbose}{Logical. Print status information.}
 }
