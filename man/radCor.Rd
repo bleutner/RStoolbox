@@ -4,22 +4,20 @@
 \alias{radCor}
 \title{Radiometric calibration and correction}
 \usage{
-radCor(img, metaData, radiance = FALSE, method = "APREF",
-  bandSet = "full", SHV, hazeBand, atHaze, darkProp = 0.02, verbose)
+radCor(img, metaData, method = "apref", bandSet = "full", SHV, hazeBand,
+  atHaze, darkProp = 0.02, verbose)
 }
 \arguments{
 \item{img}{raster object}
 
 \item{metaData}{object of class ImageMetaData or a path to the meta data (MTL) file.}
 
-\item{radiance}{Logical. If \code{TRUE} only radiance will be calculated. Otherwise reflectance and brightness temperature are calculated.}
-
-\item{method}{Radiometric correction method to be used. There are currently four methods available (see Details):
-"APREF", "SDOS", "DOS", "COSTZ".}
+\item{method}{Radiometric conversion/correction method to be used. There are currently four methods available (see Details):
+"apref", "sdos", "dos", "costz".}
 
 \item{bandSet}{numeric or character. original Landsat band numbers or names in the form of ("B1", "B2" etc). If set to 'full' all bands in the solar region will be processed.}
 
-\item{SHV}{starting haze value, can be estimated using estimateSHV(). if not provided and method is "DOS" or "COSTZ" SHV will be estimated in an automated fashion. Not needed for apparent reflectance.}
+\item{SHV}{starting haze value, can be estimated using estimateSHV(). if not provided and method is "dos" or "costz" SHV will be estimated in an automated fashion. Not needed for apparent reflectance.}
 
 \item{hazeBand}{band from which SHV was estimated.}
 
@@ -31,7 +29,7 @@ radCor(img, metaData, radiance = FALSE, method = "APREF",
 }
 \description{
 Implements several different methods for absolute radiometric correction of Landsat data.
-You can either specify a metadata file, or supply all neccesary values manually. With proper parametrization APREF and SDOS should work for other sensors as well.
+You can either specify a metadata file, or supply all neccesary values manually. With proper parametrization apref and sdos should work for other sensors as well.
 }
 \details{
 Conversion to top of atmosphere radiance (\eqn{W/(m^2 * srad * \mu m)})
@@ -40,10 +38,11 @@ Conversion to top of atmosphere reflectance (unitless) corrected for the sun ang
 Estimation of at-surface spectral reflectance (unitless)
 
 \describe{
-\item{APREF}{Apparent reflectance}
-\item{DOS}{Dark object subtratction following Chavez (1989)}
-\item{COSTZ}{Dark object subtraction following Chaves(1996)}
-\item{SDOS}{Simple dark object subtraction. Classical DOS, Lhaze must be estimated for each band separately.}
+\item{rad}{Radiance}
+\item{apref}{Apparent reflectance}
+\item{dos}{Dark object subtratction following Chavez (1989)}
+\item{costz}{Dark object subtraction following Chaves(1996)}
+\item{sdos}{Simple dark object subtraction. Classical dos, Lhaze must be estimated for each band separately.}
 }
 
 The implemented sun-earth distances neglect the earth's eccentricity. Instead it uses a 100 year daily average (1979-2070).

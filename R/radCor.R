@@ -47,7 +47,7 @@ radCor <-	function(img, metaData, method = "apref", bandSet = "full", SHV, hazeB
 	# http://landsat.usgs.gov/Landsat8_Using_Product.php
 	if(!missing("verbose")) .initVerbose(verbose)
 	
-	if(!method %in% c("rad", "apref", "dos", "costz", "sdos")) stop("method must be one of 'apref', 'dos', 'costz' 'sdos'", call.=FALSE)
+	if(!method %in% c("rad", "apref", "dos", "costz", "sdos")) stop("method must be one of 'rad' 'apref', 'dos', 'costz' 'sdos'", call.=FALSE)
 	
 	
 	if(radiance & method != "apref"){
