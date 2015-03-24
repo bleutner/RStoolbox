@@ -23,7 +23,9 @@ cloudMask(x, threshold = 0.8, blue = "B1_sre", tir = "B6_sre",
 \item{verbose}{logical. Print messages or suppress.}
 }
 \description{
-Developed for use with Landsat data \code{cloudMask} relies on the distinctive difference between the blue (or any other short-wave band) and thermal band for semi-automated creation of a cloud mask.
+Developed for use with Landsat data \code{cloudMask} relies on the distinctive difference between the blue (or any other short-wave band)
+and thermal band for semi-automated creation of a cloud mask. Since it relies on thermal information it doesn't work well for sensors without
+thermal bands.
 }
 \note{
 Typically clouds are cold in the thermal region and have high reflectance in short wavelengths (blue). By calculating a normalized difference index between the two bands and thresholding a rough cloud mask can be obtained.
