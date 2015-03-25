@@ -53,7 +53,9 @@
 #'p
 #'p + ggRGB(coreg$coregImg,3, NULL,NULL, alpha = 0.5, ggLayer=TRUE) 
 coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, n = 500, reportStats = FALSE, verbose, nBins = 100, ...) {
-    #if(!swin%%2 | !mwin%%2) stop("swin and mwin must be odd numbers")
+    
+	## TODO: allow user selected pseudo control points
+	#if(!swin%%2 | !mwin%%2) stop("swin and mwin must be odd numbers")
     if(!missing("verbose")) .initVerbose(verbose)
     if(!compareCRS(master,  slave)) stop("Projection must be the same for master and slave")
     
