@@ -29,17 +29,40 @@ A RasterLayer of x adjusted to the histogram of ref.
 Performs image to image contrast adjustments based on histogram matching using empirical cumulative distribution functions from both images.
 }
 \examples{
-par(mfrow=c(1,3))
-r0  <- raster(system.file("external/test.grd", package="raster"))
-plot(r0, main = "original meuse dataset")
+library(ggplot2)
 
-r1 <- crop(r0, extent(c(180000,182000,330000,334000))) * 10
-r.merge <- merge(r1, r0)
-plot(r.merge, main ="merge r0+r1 without histMatch")
+data(rlogo)
+## Original image a (+1 to prevent log(0))
+img_a <-  rlogo + 1
+## Degraded image b
+img_b <- log(img_a)
+## Cut-off half the image (just for better display)
+img_b[, 1:50] <- NA
 
-r.match <- histMatch(r0, r1)
-rcmatch <- merge(r1, r.match)
-plot(rcmatch, main = "merge r0+r1 with histMatch")
+## Compare Images before histMatching
+ggRGB(img_a,1,2,3)+
+        ggRGB(img_b, 1,2,3, ggLayer=T, stretch = "lin", q = 0:1) +
+        geom_vline(aes(xintercept = 50))+
+        ggtitle("Img_a vs. Img_b")
+
+## Do histogram matching
+img_b_matched <- histMatch(img_b, img_a)
+
+## Compare Images after histMatching
+ggRGB(img_a, 1, 2, 3)+
+        ggRGB(img_b_matched, 1, 2, 3, ggLayer = TRUE, stretch = "lin", q = 0:1) +
+        geom_vline(aes(xintercept = 50))+
+        ggtitle("Img_a vs. Img_b_matched")
+
+## Histogram comparison
+opar <- par(mfrow = c(1, 3), no.readonly = TRUE)
+img_a[,1:50] <- NA
+redLayers <- stack(img_a, img_b, img_b_matched)[[c(1,4,7)]]
+names(redLayers) <- c("img_a", "img_b", "img_b_matched")
+
+hist(redLayers)
+## Reset par
+par(opar)
 }
 \references{
 Richards and Jia: Remote Sensing Digital Image Analysis. Springer, Berlin, Heidelberg, Germany, 439pp.

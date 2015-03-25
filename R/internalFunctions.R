@@ -188,7 +188,17 @@
     extent(c(max(em[,1]), min(em[,2]), max(em[,3]), min(em[,4])))    
 }
 
-
+#' Check haveminmax slot
+#' @param x Raster*
+#' @noRd 
+#' @keywords internal
+.hasMinMax <- function(x) {
+    if(inherits(x, c("RasterLayer", "RasterBrick"))) {
+        return(x@data@haveminmax)
+    } else {
+        return(vapply(1:nlayers(x), function(xi) {x[[xi]]@data@haveminmax}, logical(1)))
+    }
+}
 
 #' On package startup
 #' @noRd 

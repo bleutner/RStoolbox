@@ -94,7 +94,7 @@ cloudMask <- function(x, threshold = 0.8,  blue = "B1_sre", tir = "B6_sre",  buf
 #' @param threshold Numeric (between 0 and 1). Threshold used for image co-registration (see details). Doesn't usually require tweaking.
 #' @param returnShift Logical. Return a numeric vector containing the shift parameters. Usefull if you estimate parameters on a subset of the image.
 #' @details 
-#' This is a very simplistic approach to cloud masking. It is not image based and will suffer from clouds at different altitudes. However, just as cloudMask
+#' This is a very simplistic approach to cloud shadow masking (simple shift of the cloud mask). It is not image based and accuracy will suffer from clouds at different altitudes. However, just as cloudMask
 #' this is a quick and easy to use tool for Landsat data if you're just working on a few scenes and don't have fMask or CDR data at hand. Although for some test scenes
 #' it does perform surprisingly well.
 #' 
