@@ -209,8 +209,7 @@ radCor <-	function(img, metaData, method = "apref", bandSet = "full", hazeValues
 	bandOrder <- match(origBands, c(bandSet, tirBands, exclBands))
 	out <- out[[bandOrder]]
 	
-	return(out)
-}
+	return(out)}
 
 
 

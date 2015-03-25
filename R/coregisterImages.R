@@ -84,32 +84,32 @@ coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, n = 500, re
     mbreax <- seq(mmin, mmax, by = (mmax - mmin)/nBins)
     sbreax <- seq(smin, smax, by = (smax - smin)/nBins)
     me 	  <- cut(me, breaks = mbreax, labels = FALSE, include.lowest = TRUE)
-   
-   nsl <- nlayers(slave)
-   nml <- nlayers(master)
-   if(nsl !=  nml)  stop("Currently slave and master must have the same number of layers")         
-   
-   shiftPts <- function(o, x, y) {
-       o[,"x"] <- o[,"x"] + x
-       o[,"y"] <- o[,"y"] + y
-       o
-   }
-   
-   spts <- .parXapply(X = 1:nrow(shifts), XFUN = "lapply", FUN = function(i){
+    
+    nsl <- nlayers(slave)
+    nml <- nlayers(master)
+    if(nsl !=  nml)  stop("Currently slave and master must have the same number of layers")         
+    
+    shiftPts <- function(o, x, y) {
+        o[,"x"] <- o[,"x"] + x
+        o[,"y"] <- o[,"y"] + y
+        o
+    }
+    
+    spts <- .parXapply(X = 1:nrow(shifts), XFUN = "lapply", FUN = function(i){
                 xt <- shiftPts(xy, x = -shifts[i,1], y = -shifts[i,2])
                 cellFromXY(slave, xt)
-           }, envir=environment())
-   
-   ucells <- sort(unique(unlist(spts)))
-   lut <- as.matrix(slave[ucells])
-   rownames(lut) <- ucells
-   spts <- lapply(spts, as.character)
-
+            }, envir=environment())
+    
+    ucells <- sort(unique(unlist(spts)))
+    lut <- as.matrix(slave[ucells])
+    rownames(lut) <- ucells
+    spts <- lapply(spts, as.character)
+    
     ## Shift and calculate mutual information
     sh <- .parXapply(X = 1:nrow(shifts), XFUN = "lapply", FUN = function(i){
                 se <- lut[spts[[i]], ]
                 se  <- cut(se, breaks = sbreax, labels = FALSE, include.lowest = TRUE)  
-
+                
                 pab  <- table(me,se)
                 pab  <- pab/sum(pab)
                 
@@ -129,11 +129,11 @@ coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, n = 500, re
             }, envir = environment() )
     
     ## Aggregate stats
-    if(reportStats){
     mi <- vapply(sh,"[[",i=1, numeric(1)) 
-    jh <- lapply(sh, function(x) matrix(as.vector(x$joint), nrow=nrow(x$joint), ncol=ncol(x$joint)))   
-    names(jh) <- paste(shifts[,"x"], shifts[,"y"], sep = "/")
-}
+    if(reportStats){
+        jh <- lapply(sh, function(x) matrix(as.vector(x$joint), nrow=nrow(x$joint), ncol=ncol(x$joint)))   
+        names(jh) <- paste(shifts[,"x"], shifts[,"y"], sep = "/")
+    }
     ## Find best shift and shift if doShift
     moveIt <- shifts[which.max(mi),]
     .vMessage("Identified shift in map units (x/y): ", paste(moveIt, collapse="/"))
@@ -143,7 +143,7 @@ coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, n = 500, re
     } else {
         return(moved)
     }
- 
+    
 }
 
 

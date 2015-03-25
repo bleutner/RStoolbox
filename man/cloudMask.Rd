@@ -2,47 +2,42 @@
 % Please edit documentation in R/cloudMask.R
 \name{cloudMask}
 \alias{cloudMask}
-\title{Very simple cloud detection for imagery with blue and thermal bands}
+\title{Simple Cloud Detection}
 \usage{
-cloudMask(x, threshold, minCloudSize, windowSize1 = 5, windowSize2 = 11,
-  maskGrowing = TRUE, sanitize = TRUE, lowBand = "B1", tirBand = "B6",
-  plot = TRUE, verbose, returnDiffLayer = FALSE)
+cloudMask(x, threshold = 0.8, blue = "B1_sre", tir = "B6_sre",
+  buffer = NULL, plot = FALSE, verbose)
 }
 \arguments{
 \item{x}{RasterBrick or RasterStack with reflectance and brightness temperature OR the mask of a previous run of \code{cloudMask} with \code{returnDiffLayer=TRUE}.}
 
-\item{threshold}{cloud detection threshold. If not provided it will be guessed. Everything *above* this threshold will be considered a cloud pixel (unless it is removed by filtering afterwards).}
+\item{threshold}{cloud detection threshold. If not provided it will be guessed. Everything *below* this threshold will be considered a cloud pixel (unless it is removed by filtering afterwards).}
 
-\item{minCloudSize}{minimum number of cloud pixels in window1}
+\item{blue}{bandname or number for the blue band}
 
-\item{windowSize1}{odd number, rectangular moving window to remove clouds which are too small (likely artefacts)}
+\item{tir}{bandname or number for the thermal band}
 
-\item{windowSize2}{odd number, rectangular buffer around cluster centers}
+\item{buffer}{Integer (number of pixels). If given, a buffer will be added to the identified cloud centers.}
 
-\item{maskGrowing}{logical. Applies simple region-growing (rectangular buffering) to the cloud mask. If \code{TRUE} windowSize2 must be specified.}
-
-\item{sanitize}{logical. Should small clouds (possibly false positives) be removed by filtering? If \code{TRUE} windowSize1 must be specified.}
-
-\item{lowBand}{bandname or number for the blue band}
-
-\item{tirBand}{bandname or number for the thermal band}
-
-\item{plot}{logical. Provides plots of the cloud mask for all sub-steps (sanitizing etc.) Helpful to find proper parametrization.}
+\item{plot}{logical. Plots of the cloud mask for all sub-steps (sanitizing etc.) Helpful to find proper parametrization.}
 
 \item{verbose}{logical. Print messages or suppress.}
-
-\item{returnDiffLayer}{logical. If \code{TRUE}, the difference layer will be returned along with the cloudmask. This option allows to re-use the difference layer in cloudMask.}
 }
 \description{
-Very simple cloud detection for imagery with blue and thermal bands
+Developed for use with Landsat data \code{cloudMask} relies on the distinctive difference between the blue (or any other short-wave band)
+and thermal band for semi-automated creation of a cloud mask. Since it relies on thermal information it doesn't work well for sensors without
+thermal bands.
 }
 \note{
-Typically clouds are cold in the thermal region and have high reflectance in short wavelengths (blue). By differencing the two bands and thresholding a rough cloud mask can be obtained.
-More sophisticated approaches can be found elsewhere, e.g. \href{http://code.google.com/p/fmask}{fmask}.
+Typically clouds are cold in the thermal region and have high reflectance in short wavelengths (blue). By calculating a normalized difference index between the two bands and thresholding a rough cloud mask can be obtained.
+Before calculating the normalized difference thermal cloud index (NDTCI) the thermal band will be matched to the same value range as the blue band. Therefore, it doesn't matter whether you
+provide DN, radiance or brightness temperature.
+
+This approach to cloud masking is very simplistic. And aims only at rough removal of potentially clouded areas. Nevertheless, it is able to provide satisfactory results.
+More sophisticated approaches, including cloud cast shadow detection can be found elsewhere, e.g. \href{http://code.google.com/p/fmask}{fmask}.
 
 It can make sense to find a suitable threshold on a cropped version of the scene. Also make sure you make use of the \code{returnDiffLayer} argument to save yourself one processing step.
-Sanitizing and region growing can be seen as final polishing, i.e. as long as the pure cloud centers are not detected properly, you can turn those two arguments off if they take too long to calculate.
-Once your mask detects obvious cloud pixels properly re-enable sanitizing and regionGrowing for fine tuning if desired. Finally, once a suitable threshold is established re-run cloudMask on the whole scene with this threshold and go get a coffee.
+Buffering should be seen as final polishing, i.e. as long as the pure cloud centers are not detected properly, you might want to turn it off. since it takes some time to calculate.
+Once your mask detects obvious cloud pixels properly re-enable buffering for fine tuning if desired. Finally, once a suitable threshold is established re-run cloudMask on the whole scene with this threshold and go get a coffee.
 }
 \examples{
 \dontrun{
@@ -50,5 +45,8 @@ ls <- stackMeta("path/to/MTL.txt")
 ls_cor <- radCor(ls, "path/to/MTL.txt")
 ls_cmask <-cloudMask(ls_cor, returnDiffLayer = TRUE)
 }
+}
+\seealso{
+\link[raster]{mask}
 }
 
