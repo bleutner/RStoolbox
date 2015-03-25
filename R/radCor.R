@@ -6,14 +6,13 @@
 #' @param img raster object
 #' @param metaData object of class ImageMetaData or a path to the meta data (MTL) file. 
 #' @param method Radiometric conversion/correction method to be used. There are currently four methods available (see Details):
-#' "apref", "sdos", "dos", "costz".
+#' "rad", "apref", "sdos", "dos", "costz".
 #' @param bandSet numeric or character. original Landsat band numbers or names in the form of ("B1", "B2" etc). If set to 'full' all bands in the solar region will be processed.
 #' @param hazeValues starting haze value, can be estimated using estimatehazeValues(). if not provided and method is "dos" or "costz" hazeValues will be estimated in an automated fashion. Not needed for apparent reflectance.
 #' @param hazeBands Bands corresponding to hazeValues.
 #' @param atmosphere Character. Atmospheric characteristics. Will be estimated if not expicilty provided. Must be one of \code{"veryClear", "clear", "moderate", "hazy"} or \code{"veryHazy"}.
 #' @param darkProp numeric. Estimated proportion of dark pixels in the scene. Used only for automatic guessing of hazeValues.
 #' @param verbose Logical. Print status information. 
-
 #' @note This was originally a fork of randcorr in the landsat package. It may be slower, however it works on Raster* objects and hence is memory-safe.
 #' @details 
 #' 
@@ -41,6 +40,7 @@
 #' \item{hazy}{\eqn{\lambda^{-0.7}}}
 #' \item{veryHazy}{\eqn{\lambda^{-0.5}}} 
 #' }
+#' 
 #' @references S. Goslee (2011): Analyzing Remote Sensing Data in R: The landsat Package. Journal of Statistical Software 43(4).
 #' @export
 radCor <-	function(img, metaData, method = "apref", bandSet = "full", hazeValues, hazeBands, atmosphere, darkProp = 0.02, verbose){
@@ -63,17 +63,16 @@ radCor <-	function(img, metaData, method = "apref", bandSet = "full", hazeValues
 	sunElev		<- metaData$SOLAR_PARAMETERS["elevation"]   
 	rad 		<- metaData$DATA$RADIOMETRIC_RESOLUTION 
 	
-	if(sat == "LANDSAT8" & method != "apref") {
-		warning("dos, costz and sdos are currently not implemented for Landsat 8. Using official reflectance calibration coefficients, i.e. output corresponds to method = 'apref'", call. = FALSE) 
-		method <- "apref"
-	}
-	
 	satZenith   <- 1
 	satZenith	<- satZenith * pi / 180
 	satphi 		<- cos(satZenith)
 	suntheta 	<- cos((90 - sunElev) * pi / 180)	
 	
 	## Query internal db	
+	#' TODO: add support for non-landsat data
+	#' The present implementation is geared towards use with Landsat 5:8 data. However, radCor can be used with other sensors as well (currently methods 'rad','apref','sdos' only). 
+	#' To do so create an \link{ImageMetaData} object containing the following information: 
+	
 	sDB <- .LANDSATdb[[sat]][[sensor]]
 	
 	if(any(bandSet == "full")) {
