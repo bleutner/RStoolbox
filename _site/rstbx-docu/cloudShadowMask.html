@@ -10,11 +10,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title> Predict method for kmeans objects </title>
+    <title> Cloud Shadow Detection </title>
     <meta name="author" content="Benjamin Leutner">
     <link href='http://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
     <link href='/assets/themes/the-minimum/css/style.css' rel="stylesheet" media="all">
-    <link href="http://feeds.feedburner.com/" rel="alternate" title=" Predict method for kmeans objects " type="application/atom+xml">
+    <link href="http://feeds.feedburner.com/" rel="alternate" title=" Cloud Shadow Detection " type="application/atom+xml">
     <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
 </head>
 
@@ -56,8 +56,8 @@
 
                     <div class="unit-inner unit-head-inner">
                         <div class="h4 entry-title"> 
-                            <table width="100%"><tr><td><strong>predict.kmeans<strong> { <a href="index.html">RStoolbox</a>}</td><td align="right">R Documentation</td></tr></table>
-                            <h3> Predict method for kmeans objects </h2>
+                            <table width="100%"><tr><td><strong>cloudShadowMask<strong> { <a href="index.html">RStoolbox</a>}</td><td align="right">R Documentation</td></tr></table>
+                            <h3> Cloud Shadow Detection </h2>
                         </div>
                     </div>
                     <!-- unit-inner -->
@@ -69,41 +69,73 @@
                 <div class="entry-content">
                     
  <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head><title>R: Predict method for kmeans objects</title>
+<html><head><title>R: Cloud Shadow Detection</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link rel="stylesheet" type="text/css" href="R.css">
 </head><body>
 
 <h3>Description</h3>
 
-<p>Prediction for kmeans models based on minimum distance to cluster centers
+<p>Intended for interactive use <code>cloudShadowMask</code> will ask the user to select a few
+corresponding cloud/cloudShadow pixels which will be used to estimate coordinates
+for a linear cloudmask shift.
 </p>
 
 
 <h3>Usage</h3>
 
 <pre>
-## S3 method for class 'kmeans'
-predict(object, newdata, ...)
+cloudShadowMask(img, cm, nc = 5, shiftEstimate = NULL,
+  preciseShift = NULL, threshold = 0.1, returnShift = FALSE)
 </pre>
 
 
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><code>object</code></td>
+<tr valign="top"><td><code>img</code></td>
 <td>
-<p><a href="http://www.inside-r.org/r-doc/stats/kmeans">kmeans</a> object</p>
+<p>Raster* Object containing the scene</p>
 </td></tr>
-<tr valign="top"><td><code>newdata</code></td>
+<tr valign="top"><td><code>cm</code></td>
 <td>
-<p>matrix</p>
+<p>RasterBrick. Cloud mask (typically the result of <code>cloudMask</code>)</p>
 </td></tr>
-<tr valign="top"><td><code>...</code></td>
+<tr valign="top"><td><code>nc</code></td>
 <td>
-<p>further arguments. None implemented.</p>
+<p>Integer. Number of control points. A few points (default) are fine because the final shift is estimated by <a href="coregisterImages.html">coregisterImages</a>.</p>
+</td></tr>
+<tr valign="top"><td><code>shiftEstimate</code></td>
+<td>
+<p>NULL or numeric vector of length two (x,y). Estimated displacement of shadows in map units. If <code>NULL</code>, the user will be asked to select control points interactively.</p>
+</td></tr>
+<tr valign="top"><td><code>preciseShift</code></td>
+<td>
+<p>NULL or numeric vector of length two (x,y). Use this if cloud/cloud-shadow displacement is already known, e.g. from a previous run of <code>cloudShadowMask</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>threshold</code></td>
+<td>
+<p>Numeric (between 0 and 1). Threshold used for image co-registration (see details). Doesn't usually require tweaking.</p>
+</td></tr>
+<tr valign="top"><td><code>returnShift</code></td>
+<td>
+<p>Logical. Return a numeric vector containing the shift parameters. Usefull if you estimate parameters on a subset of the image.</p>
 </td></tr>
 </table>
+
+
+<h3>Details</h3>
+
+<p>This is a very simplistic approach to cloud shadow masking (simple shift of the cloud mask). It is not image based and accuracy will suffer from clouds at different altitudes. However, just as cloudMask
+this is a quick and easy to use tool for Landsat data if you're just working on a few scenes and don't have fMask or CDR data at hand. Although for some test scenes
+it does perform surprisingly well.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="cloudMask.html">cloudMask</a>
+</p>
 
 <hr><div align="center">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
 </body></html>
@@ -178,7 +210,7 @@ predict(object, newdata, ...)
                 };
             load('//platform.twitter.com/widgets.js', 'tweetjs');
             // load('https://apis.googlecom/js/plusone.js', 'gplus1js'); // Checkout http://j.mp/ApDgMr for usage html for this is <div class="g-plusone" data-size="medium"></div>
-            // load('//connect.facebook.net/en_US/all.js#xfbml=1', 'fbjssdk'); // Checkout http://j.mp/wZw2xR for using open graph protorol html for this is <div class="fb-like" data-href="/rstbx-docu/predict.kmeans.html" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="verdana"></div>
+            // load('//connect.facebook.net/en_US/all.js#xfbml=1', 'fbjssdk'); // Checkout http://j.mp/wZw2xR for using open graph protorol html for this is <div class="fb-like" data-href="/rstbx-docu/cloudShadowMask.html" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="verdana"></div>
         }(document, 'script'));
     </script>
     <script>

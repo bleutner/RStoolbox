@@ -7,10 +7,12 @@ http://bleutner.github.io/RStoolbox/atom.xml
 http://bleutner.github.io/RStoolbox/blog.html
 http://bleutner.github.io/RStoolbox/categories.html
 http://bleutner.github.io/RStoolbox/rstbx-docu/cloudMask.html
+http://bleutner.github.io/RStoolbox/rstbx-docu/cloudShadowMask.html
 http://bleutner.github.io/RStoolbox/rstbx-docu/coregisterImages.html
 http://bleutner.github.io/RStoolbox/rstbx-docu/estimateHaze.html
 http://bleutner.github.io/RStoolbox/rstbx-docu/fCover.html
 http://bleutner.github.io/RStoolbox/rstbx-docu/fortify.raster.html
+http://bleutner.github.io/RStoolbox/rstbx-docu/getMeta.html
 http://bleutner.github.io/RStoolbox/rstbx-docu/ggR.html
 http://bleutner.github.io/RStoolbox/rstbx-docu/ggRGB.html
 http://bleutner.github.io/RStoolbox/rstbx-docu/histMatch.html
@@ -26,6 +28,7 @@ http://bleutner.github.io/RStoolbox/rstbx-docu/rasterPCA.html
 http://bleutner.github.io/RStoolbox/rstbx-docu/readMeta.html
 http://bleutner.github.io/RStoolbox/rstbx-docu/readSLI.html
 http://bleutner.github.io/RStoolbox/rstbx-docu/rlogo.html
+http://bleutner.github.io/RStoolbox/rstbx-docu/rsOpts.html
 http://bleutner.github.io/RStoolbox/rss.xml
 http://bleutner.github.io/RStoolbox/rstbx-docu/saveRSTBX.html
 http://bleutner.github.io/RStoolbox/sitemap.txt
@@ -33,6 +36,7 @@ http://bleutner.github.io/RStoolbox/rstbx-docu/spectralIndices.html
 http://bleutner.github.io/RStoolbox/rstbx-docu/stackMeta.html
 http://bleutner.github.io/RStoolbox/rstbx-docu/superClass.html
 http://bleutner.github.io/RStoolbox/tags.html
+http://bleutner.github.io/RStoolbox/rstbx-docu/topCor.html
 http://bleutner.github.io/RStoolbox/rstbx-docu/unsuperClass.html
 http://bleutner.github.io/RStoolbox/rstbx-docu/writeSLI.html
 

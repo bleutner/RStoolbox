@@ -10,11 +10,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title> Predict method for kmeans objects </title>
+    <title> Extract bandwise information from ImageMetaData </title>
     <meta name="author" content="Benjamin Leutner">
     <link href='http://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
     <link href='/assets/themes/the-minimum/css/style.css' rel="stylesheet" media="all">
-    <link href="http://feeds.feedburner.com/" rel="alternate" title=" Predict method for kmeans objects " type="application/atom+xml">
+    <link href="http://feeds.feedburner.com/" rel="alternate" title=" Extract bandwise information from ImageMetaData " type="application/atom+xml">
     <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
 </head>
 
@@ -56,8 +56,8 @@
 
                     <div class="unit-inner unit-head-inner">
                         <div class="h4 entry-title"> 
-                            <table width="100%"><tr><td><strong>predict.kmeans<strong> { <a href="index.html">RStoolbox</a>}</td><td align="right">R Documentation</td></tr></table>
-                            <h3> Predict method for kmeans objects </h2>
+                            <table width="100%"><tr><td><strong>getMeta<strong> { <a href="index.html">RStoolbox</a>}</td><td align="right">R Documentation</td></tr></table>
+                            <h3> Extract bandwise information from ImageMetaData </h2>
                         </div>
                     </div>
                     <!-- unit-inner -->
@@ -69,39 +69,39 @@
                 <div class="entry-content">
                     
  <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head><title>R: Predict method for kmeans objects</title>
+<html><head><title>R: Extract bandwise information from ImageMetaData</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link rel="stylesheet" type="text/css" href="R.css">
 </head><body>
 
 <h3>Description</h3>
 
-<p>Prediction for kmeans models based on minimum distance to cluster centers
+<p>This is an accessor function to quickly access information stored in ImageMetaData, e.g. scale factor per band.
+Intended for use with imagery which was imported using stackMeta.
 </p>
 
 
 <h3>Usage</h3>
 
 <pre>
-## S3 method for class 'kmeans'
-predict(object, newdata, ...)
+getMeta(img, metaData, what)
 </pre>
 
 
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><code>object</code></td>
+<tr valign="top"><td><code>img</code></td>
 <td>
-<p><a href="http://www.inside-r.org/r-doc/stats/kmeans">kmeans</a> object</p>
+<p>Raster* or character vector with band names.</p>
 </td></tr>
-<tr valign="top"><td><code>newdata</code></td>
+<tr valign="top"><td><code>metaData</code></td>
 <td>
-<p>matrix</p>
+<p>ImageMetaData or path to meta data file.</p>
 </td></tr>
-<tr valign="top"><td><code>...</code></td>
+<tr valign="top"><td><code>what</code></td>
 <td>
-<p>further arguments. None implemented.</p>
+<p>Character. Slot to extract.</p>
 </td></tr>
 </table>
 
@@ -178,7 +178,7 @@ predict(object, newdata, ...)
                 };
             load('//platform.twitter.com/widgets.js', 'tweetjs');
             // load('https://apis.googlecom/js/plusone.js', 'gplus1js'); // Checkout http://j.mp/ApDgMr for usage html for this is <div class="g-plusone" data-size="medium"></div>
-            // load('//connect.facebook.net/en_US/all.js#xfbml=1', 'fbjssdk'); // Checkout http://j.mp/wZw2xR for using open graph protorol html for this is <div class="fb-like" data-href="/rstbx-docu/predict.kmeans.html" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="verdana"></div>
+            // load('//connect.facebook.net/en_US/all.js#xfbml=1', 'fbjssdk'); // Checkout http://j.mp/wZw2xR for using open graph protorol html for this is <div class="fb-like" data-href="/rstbx-docu/getMeta.html" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="verdana"></div>
         }(document, 'script'));
     </script>
     <script>

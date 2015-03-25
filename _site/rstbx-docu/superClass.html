@@ -198,7 +198,17 @@ superClass(img, trainData, valData = NULL, responseCol = NULL,
 <pre><code class="r">## Don&#39;t show: 
 library(randomForest)
 library(e1071)
-## End Don&#39;t show
+</code></pre>
+
+<pre><code>#&gt; 
+#&gt; Attaching package: &#39;e1071&#39;
+#&gt; 
+#&gt; The following object is masked from &#39;package:raster&#39;:
+#&gt; 
+#&gt;     interpolate
+</code></pre>
+
+<pre><code class="r">## End Don&#39;t show
 input &lt;- brick(system.file(&quot;external/rlogo.grd&quot;, package=&quot;raster&quot;))
 train &lt;- readRDS(system.file(&quot;external/training.rds&quot;, package=&quot;RStoolbox&quot;))
 
@@ -212,7 +222,100 @@ plot(train, add = TRUE, col =  colors[train$class], pch = 19)
 ## Fit classifier (splitting training into 70% training data, 30% validation data)
 SC    &lt;- superClass(input, trainData = train, responseCol = &quot;class&quot;,
 model = &quot;rf&quot;, tuneLength = 1, trainPartition = 0.7)
-SC
+</code></pre>
+
+<pre><code>#&gt; Begin sampling training data
+#&gt; Starting to fit model
+#&gt; Starting spatial predict
+</code></pre>
+
+<pre><code>#&gt; 
+  |                                                                       
+  |                                                                 |   0%
+  |                                                                       
+  |================                                                 |  25%
+  |                                                                       
+  |================================                                 |  50%
+  |                                                                       
+  |=================================================                |  75%
+  |                                                                       
+  |=================================================================| 100%
+#&gt; 
+</code></pre>
+
+<pre><code>#&gt; Begin sampling training data
+#&gt; ******************** Model summary ********************
+</code></pre>
+
+<pre><code>#&gt; Random Forest 
+#&gt; 
+#&gt; 21 samples
+#&gt;  3 predictors
+#&gt;  3 classes: &#39;A&#39;, &#39;B&#39;, &#39;C&#39; 
+#&gt; 
+#&gt; No pre-processing
+#&gt; Resampling: Cross-Validated (5 fold) 
+#&gt; 
+#&gt; Summary of sample sizes: 17, 17, 17, 17, 16 
+#&gt; 
+#&gt; Resampling results
+#&gt; 
+#&gt;   Accuracy  Kappa  Accuracy SD  Kappa SD
+#&gt;   1         1      0            0       
+#&gt; 
+#&gt; Tuning parameter &#39;mtry&#39; was held constant at a value of 1
+#&gt;  
+#&gt; [[1]]
+#&gt;   TrainAccuracy TrainKappa method
+#&gt; 1             1          1     rf
+#&gt; 
+#&gt; [[2]]
+#&gt; Cross-Validated (5 fold) Confusion Matrix 
+#&gt; 
+#&gt; (entries are cell counts per resample)
+#&gt;  
+#&gt;           Reference
+#&gt; Prediction  A  B  C
+#&gt;          A 28  0  0
+#&gt;          B  0 28  0
+#&gt;          C  0  0 28
+</code></pre>
+
+<pre><code>#&gt; ******************** Validation summary ********************
+</code></pre>
+
+<pre><code>#&gt; Confusion Matrix and Statistics
+#&gt; 
+#&gt;           Reference
+#&gt; Prediction A B C
+#&gt;          A 3 0 0
+#&gt;          B 0 3 0
+#&gt;          C 0 0 3
+#&gt; 
+#&gt; Overall Statistics
+#&gt;                                      
+#&gt;                Accuracy : 1          
+#&gt;                  95% CI : (0.6637, 1)
+#&gt;     No Information Rate : 0.3333     
+#&gt;     P-Value [Acc &gt; NIR] : 5.081e-05  
+#&gt;                                      
+#&gt;                   Kappa : 1          
+#&gt;  Mcnemar&#39;s Test P-Value : NA         
+#&gt; 
+#&gt; Statistics by Class:
+#&gt; 
+#&gt;                      Class: A Class: B Class: C
+#&gt; Sensitivity            1.0000   1.0000   1.0000
+#&gt; Specificity            1.0000   1.0000   1.0000
+#&gt; Pos Pred Value         1.0000   1.0000   1.0000
+#&gt; Neg Pred Value         1.0000   1.0000   1.0000
+#&gt; Prevalence             0.3333   0.3333   0.3333
+#&gt; Detection Rate         0.3333   0.3333   0.3333
+#&gt; Detection Prevalence   0.3333   0.3333   0.3333
+#&gt; Balanced Accuracy      1.0000   1.0000   1.0000
+</code></pre>
+
+<pre><code class="r">SC
 </code></pre>
 
 <pre><code>#&gt; superClass results
@@ -310,7 +413,7 @@ horiz = TRUE,  bty = &quot;n&quot;)
                 <div class="unit-inner unit-foot-inner">
                     <div class="misc vcard">
                         <div>
-                            <p>Last update 2015-03-09 01:57:05 +0100</p>
+                            <p>Last update 2015-03-26 00:25:20 +0100</p>
                         </div>
                         <h4>about</h4>
                         <ul>

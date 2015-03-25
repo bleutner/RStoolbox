@@ -10,11 +10,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title> Predict method for kmeans objects </title>
+    <title> Topographic Illumination Correction </title>
     <meta name="author" content="Benjamin Leutner">
     <link href='http://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
     <link href='/assets/themes/the-minimum/css/style.css' rel="stylesheet" media="all">
-    <link href="http://feeds.feedburner.com/" rel="alternate" title=" Predict method for kmeans objects " type="application/atom+xml">
+    <link href="http://feeds.feedburner.com/" rel="alternate" title=" Topographic Illumination Correction " type="application/atom+xml">
     <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
 </head>
 
@@ -56,8 +56,8 @@
 
                     <div class="unit-inner unit-head-inner">
                         <div class="h4 entry-title"> 
-                            <table width="100%"><tr><td><strong>predict.kmeans<strong> { <a href="index.html">RStoolbox</a>}</td><td align="right">R Documentation</td></tr></table>
-                            <h3> Predict method for kmeans objects </h2>
+                            <table width="100%"><tr><td><strong>topCor<strong> { <a href="index.html">RStoolbox</a>}</td><td align="right">R Documentation</td></tr></table>
+                            <h3> Topographic Illumination Correction </h2>
                         </div>
                     </div>
                     <!-- unit-inner -->
@@ -69,39 +69,63 @@
                 <div class="entry-content">
                     
  <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head><title>R: Predict method for kmeans objects</title>
+<html><head><title>R: Topographic Illumination Correction</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link rel="stylesheet" type="text/css" href="R.css">
 </head><body>
 
 <h3>Description</h3>
 
-<p>Prediction for kmeans models based on minimum distance to cluster centers
+<p>Topographic Illumination Correction
 </p>
 
 
 <h3>Usage</h3>
 
 <pre>
-## S3 method for class 'kmeans'
-predict(object, newdata, ...)
+topCor(img, dem, metaData, solarAngles, method = "C", stratImg,
+  stratMethod = "noStrat", nStrat = 5, illu)
 </pre>
 
 
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><code>object</code></td>
+<tr valign="top"><td><code>img</code></td>
 <td>
-<p><a href="http://www.inside-r.org/r-doc/stats/kmeans">kmeans</a> object</p>
+<p>Raster*. Imagery to correct</p>
 </td></tr>
-<tr valign="top"><td><code>newdata</code></td>
+<tr valign="top"><td><code>dem</code></td>
 <td>
-<p>matrix</p>
+<p>Raster*. Either a digital elevation model as a RasterLayer or a RasterStack/Brick with pre-calculated slope and aspect (see <a href="http://www.inside-r.org/packages/cran/raster/docs/terrain">terrain</a>) in which case the layers must be named 'slope' and 'aspect'.</p>
 </td></tr>
-<tr valign="top"><td><code>...</code></td>
+<tr valign="top"><td><code>metaData</code></td>
 <td>
-<p>further arguments. None implemented.</p>
+<p>Character, ImageMetaData. Either a path to a Landsat meta-data file (MTL) or an ImageMetaData object (see <a href="readMeta.html">readMeta</a>)</p>
+</td></tr>
+<tr valign="top"><td><code>solarAngles</code></td>
+<td>
+<p>Numeric vector containing sun azimuth and sun zenith (in radians and in that order). Not needed if metaData is provided</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>Character. One of c(&quot;cos&quot;, &quot;avgcos&quot;, &quot;minnaert&quot;, &quot;C&quot;, &quot;stat&quot;, &quot;illu&quot;). Choosing 'illu' will return only the local illumination map.</p>
+</td></tr>
+<tr valign="top"><td><code>stratImg</code></td>
+<td>
+<p>RasterLayer by which to stratify by, e.g. NDVI. Defaults to 'slope'</p>
+</td></tr>
+<tr valign="top"><td><code>stratMethod</code></td>
+<td>
+<p>Character. One of c(&quot;noStrat&quot;, &quot;stratEqualBins&quot;, &quot;stratQuantiles&quot;).</p>
+</td></tr>
+<tr valign="top"><td><code>nStrat</code></td>
+<td>
+<p>Integer. Number of bins or quantiles to stratify by. If a bin has less than 50 samples it will be merged with the next bin.</p>
+</td></tr>
+<tr valign="top"><td><code>illu</code></td>
+<td>
+<p>Raster*. Optional pre-calculated ilumination map. Run topCor with method=&quot;illu&quot; to calculate one.</p>
 </td></tr>
 </table>
 
@@ -178,7 +202,7 @@ predict(object, newdata, ...)
                 };
             load('//platform.twitter.com/widgets.js', 'tweetjs');
             // load('https://apis.googlecom/js/plusone.js', 'gplus1js'); // Checkout http://j.mp/ApDgMr for usage html for this is <div class="g-plusone" data-size="medium"></div>
-            // load('//connect.facebook.net/en_US/all.js#xfbml=1', 'fbjssdk'); // Checkout http://j.mp/wZw2xR for using open graph protorol html for this is <div class="fb-like" data-href="/rstbx-docu/predict.kmeans.html" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="verdana"></div>
+            // load('//connect.facebook.net/en_US/all.js#xfbml=1', 'fbjssdk'); // Checkout http://j.mp/wZw2xR for using open graph protorol html for this is <div class="fb-like" data-href="/rstbx-docu/topCor.html" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="verdana"></div>
         }(document, 'script'));
     </script>
     <script>

@@ -16,15 +16,15 @@ group: navigation
 <h3>Description</h3>
 
 <p>Implements several different methods for absolute radiometric correction of Landsat data.
-You can either specify a metadata file, or supply all neccesary values manually. With proper parametrization APREF and SDOS should work for other sensors as well.
+You can either specify a metadata file, or supply all neccesary values manually. With proper parametrization apref and sdos should work for other sensors as well.
 </p>
 
 
 <h3>Usage</h3>
 
 <pre>
-radCor(img, metaData, radiance = FALSE, method = "APREF",
-  bandSet = "full", SHV, hazeBand, atHaze, darkProp = 0.02, verbose)
+radCor(img, metaData, method = "apref", bandSet = "full", hazeValues,
+  hazeBands, atmosphere, darkProp = 0.02, verbose)
 </pre>
 
 
@@ -39,34 +39,30 @@ radCor(img, metaData, radiance = FALSE, method = "APREF",
 <td>
 <p>object of class ImageMetaData or a path to the meta data (MTL) file.</p>
 </td></tr>
-<tr valign="top"><td><code>radiance</code></td>
-<td>
-<p>Logical. If <code>TRUE</code> only radiance will be calculated. Otherwise reflectance and brightness temperature are calculated.</p>
-</td></tr>
 <tr valign="top"><td><code>method</code></td>
 <td>
-<p>Radiometric correction method to be used. There are currently four methods available (see Details):
-&quot;APREF&quot;, &quot;SDOS&quot;, &quot;DOS&quot;, &quot;COSTZ&quot;.</p>
+<p>Radiometric conversion/correction method to be used. There are currently four methods available (see Details):
+&quot;rad&quot;, &quot;apref&quot;, &quot;sdos&quot;, &quot;dos&quot;, &quot;costz&quot;.</p>
 </td></tr>
 <tr valign="top"><td><code>bandSet</code></td>
 <td>
 <p>numeric or character. original Landsat band numbers or names in the form of (&quot;B1&quot;, &quot;B2&quot; etc). If set to 'full' all bands in the solar region will be processed.</p>
 </td></tr>
-<tr valign="top"><td><code>SHV</code></td>
+<tr valign="top"><td><code>hazeValues</code></td>
 <td>
-<p>starting haze value, can be estimated using estimateSHV(). if not provided and method is &quot;DOS&quot; or &quot;COSTZ&quot; SHV will be estimated in an automated fashion. Not needed for apparent reflectance.</p>
+<p>starting haze value, can be estimated using estimatehazeValues(). if not provided and method is &quot;dos&quot; or &quot;costz&quot; hazeValues will be estimated in an automated fashion. Not needed for apparent reflectance.</p>
 </td></tr>
-<tr valign="top"><td><code>hazeBand</code></td>
+<tr valign="top"><td><code>hazeBands</code></td>
 <td>
-<p>band from which SHV was estimated.</p>
+<p>Bands corresponding to hazeValues.</p>
 </td></tr>
-<tr valign="top"><td><code>atHaze</code></td>
+<tr valign="top"><td><code>atmosphere</code></td>
 <td>
-<p>character. Scene haze characteristics. Will be estimated if not expicilty provided. Must be one of <code>"veryClear", "clear", "moderate", "hazy"</code> or <code>"veryHazy"</code>.</p>
+<p>Character. Atmospheric characteristics. Will be estimated if not expicilty provided. Must be one of <code>"veryClear", "clear", "moderate", "hazy"</code> or <code>"veryHazy"</code>.</p>
 </td></tr>
 <tr valign="top"><td><code>darkProp</code></td>
 <td>
-<p>numeric. Estimated proportion of dark pixels in the scene. Used only for automatic guessing of SHV.</p>
+<p>numeric. Estimated proportion of dark pixels in the scene. Used only for automatic guessing of hazeValues.</p>
 </td></tr>
 <tr valign="top"><td><code>verbose</code></td>
 <td>
@@ -84,13 +80,15 @@ Estimation of at-surface spectral reflectance (unitless)
 </p>
 
 <dl>
-<dt>APREF</dt><dd><p>Apparent reflectance</p>
+<dt>rad</dt><dd><p>Radiance</p>
 </dd>
-<dt>DOS</dt><dd><p>Dark object subtratction following Chavez (1989)</p>
+<dt>apref</dt><dd><p>Apparent reflectance</p>
 </dd>
-<dt>COSTZ</dt><dd><p>Dark object subtraction following Chaves(1996)</p>
+<dt>dos</dt><dd><p>Dark object subtratction following Chavez (1989)</p>
 </dd>
-<dt>SDOS</dt><dd><p>Simple dark object subtraction. Classical DOS, Lhaze must be estimated for each band separately.</p>
+<dt>costz</dt><dd><p>Dark object subtraction following Chaves(1996)</p>
+</dd>
+<dt>sdos</dt><dd><p>Simple dark object subtraction. Classical dos, Lhaze must be estimated for each band separately.</p>
 </dd>
 </dl>
 

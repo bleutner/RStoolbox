@@ -10,11 +10,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title> Very simple cloud detection for imagery with blue and thermal... </title>
+    <title> Simple Cloud Detection </title>
     <meta name="author" content="Benjamin Leutner">
     <link href='http://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
     <link href='/assets/themes/the-minimum/css/style.css' rel="stylesheet" media="all">
-    <link href="http://feeds.feedburner.com/" rel="alternate" title=" Very simple cloud detection for imagery with blue and thermal... " type="application/atom+xml">
+    <link href="http://feeds.feedburner.com/" rel="alternate" title=" Simple Cloud Detection " type="application/atom+xml">
     <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
 </head>
 
@@ -57,7 +57,7 @@
                     <div class="unit-inner unit-head-inner">
                         <div class="h4 entry-title"> 
                             <table width="100%"><tr><td><strong>cloudMask<strong> { <a href="index.html">RStoolbox</a>}</td><td align="right">R Documentation</td></tr></table>
-                            <h3> Very simple cloud detection for imagery with blue and thermal... </h2>
+                            <h3> Simple Cloud Detection </h2>
                         </div>
                     </div>
                     <!-- unit-inner -->
@@ -69,7 +69,7 @@
                 <div class="entry-content">
                     
  <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head><title>R: Very simple cloud detection for imagery with blue and thermal...</title>
+<html><head><title>R: Simple Cloud Detection</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link rel="stylesheet" type="text/css" href="R.css">
 
@@ -81,16 +81,17 @@
 
 <h3>Description</h3>
 
-<p>Very simple cloud detection for imagery with blue and thermal bands
+<p>Developed for use with Landsat data <code>cloudMask</code> relies on the distinctive difference between the blue (or any other short-wave band)
+and thermal band for semi-automated creation of a cloud mask. Since it relies on thermal information it doesn't work well for sensors without
+thermal bands.
 </p>
 
 
 <h3>Usage</h3>
 
 <pre>
-cloudMask(x, threshold, minCloudSize, windowSize1 = 5, windowSize2 = 11,
-  maskGrowing = TRUE, sanitize = TRUE, lowBand = "B1", tirBand = "B6",
-  plot = TRUE, verbose = TRUE, returnDiffLayer = FALSE)
+cloudMask(x, threshold = 0.8, blue = "B1_sre", tir = "B6_sre",
+  buffer = NULL, plot = FALSE, verbose)
 </pre>
 
 
@@ -103,59 +104,49 @@ cloudMask(x, threshold, minCloudSize, windowSize1 = 5, windowSize2 = 11,
 </td></tr>
 <tr valign="top"><td><code>threshold</code></td>
 <td>
-<p>cloud detection threshold. If not provided it will be guessed. Everything *above* this threshold will be considered a cloud pixel (unless it is removed by filtering afterwards).</p>
+<p>cloud detection threshold. If not provided it will be guessed. Everything *below* this threshold will be considered a cloud pixel (unless it is removed by filtering afterwards).</p>
 </td></tr>
-<tr valign="top"><td><code>minCloudSize</code></td>
-<td>
-<p>minimum number of cloud pixels in window1</p>
-</td></tr>
-<tr valign="top"><td><code>windowSize1</code></td>
-<td>
-<p>odd number, rectangular moving window to remove clouds which are too small (likely artefacts)</p>
-</td></tr>
-<tr valign="top"><td><code>windowSize2</code></td>
-<td>
-<p>odd number, rectangular buffer around cluster centers</p>
-</td></tr>
-<tr valign="top"><td><code>maskGrowing</code></td>
-<td>
-<p>logical. Applies simple region-growing (rectangular buffering) to the cloud mask. If <code>TRUE</code> windowSize2 must be specified.</p>
-</td></tr>
-<tr valign="top"><td><code>sanitize</code></td>
-<td>
-<p>logical. Should small clouds (possibly false positives) be removed by filtering? If <code>TRUE</code> windowSize1 must be specified.</p>
-</td></tr>
-<tr valign="top"><td><code>lowBand</code></td>
+<tr valign="top"><td><code>blue</code></td>
 <td>
 <p>bandname or number for the blue band</p>
 </td></tr>
-<tr valign="top"><td><code>tirBand</code></td>
+<tr valign="top"><td><code>tir</code></td>
 <td>
 <p>bandname or number for the thermal band</p>
 </td></tr>
+<tr valign="top"><td><code>buffer</code></td>
+<td>
+<p>Integer (number of pixels). If given, a buffer will be added to the identified cloud centers.</p>
+</td></tr>
 <tr valign="top"><td><code>plot</code></td>
 <td>
-<p>logical. Provides plots of the cloud mask for all sub-steps (sanitizing etc.) Helpful to find proper parametrization.</p>
+<p>logical. Plots of the cloud mask for all sub-steps (sanitizing etc.) Helpful to find proper parametrization.</p>
 </td></tr>
 <tr valign="top"><td><code>verbose</code></td>
 <td>
 <p>logical. Print messages or suppress.</p>
-</td></tr>
-<tr valign="top"><td><code>returnDiffLayer</code></td>
-<td>
-<p>logical. If <code>TRUE</code>, the difference layer will be returned along with the cloudmask. This option allows to re-use the difference layer in cloudMask.</p>
 </td></tr>
 </table>
 
 
 <h3>Note</h3>
 
-<p>Typically clouds are cold in the thermal region and have high reflectance in short wavelengths (blue). By differencing the two bands and thresholding a rough cloud mask can be obtained.
-More sophisticated approaches can be found elsewhere, e.g. <a href="http://code.google.com/p/fmask">fmask</a>.
+<p>Typically clouds are cold in the thermal region and have high reflectance in short wavelengths (blue). By calculating a normalized difference index between the two bands and thresholding a rough cloud mask can be obtained.
+Before calculating the normalized difference thermal cloud index (NDTCI) the thermal band will be matched to the same value range as the blue band. Therefore, it doesn't matter whether you
+provide DN, radiance or brightness temperature.
+</p>
+<p>This approach to cloud masking is very simplistic. And aims only at rough removal of potentially clouded areas. Nevertheless, it is able to provide satisfactory results.
+More sophisticated approaches, including cloud cast shadow detection can be found elsewhere, e.g. <a href="http://code.google.com/p/fmask">fmask</a>.
 </p>
 <p>It can make sense to find a suitable threshold on a cropped version of the scene. Also make sure you make use of the <code>returnDiffLayer</code> argument to save yourself one processing step.
-Sanitizing and region growing can be seen as final polishing, i.e. as long as the pure cloud centers are not detected properly, you can turn those two arguments off if they take too long to calculate.
-Once your mask detects obvious cloud pixels properly re-enable sanitizing and regionGrowing for fine tuning if desired. Finally, once a suitable threshold is established re-run cloudMask on the whole scene with this threshold and go get a coffee.
+Buffering should be seen as final polishing, i.e. as long as the pure cloud centers are not detected properly, you might want to turn it off. since it takes some time to calculate.
+Once your mask detects obvious cloud pixels properly re-enable buffering for fine tuning if desired. Finally, once a suitable threshold is established re-run cloudMask on the whole scene with this threshold and go get a coffee.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="http://www.inside-r.org/packages/cran/raster/docs/mask">mask</a>
 </p>
 
 
@@ -164,27 +155,19 @@ Once your mask detects obvious cloud pixels properly re-enable sanitizing and re
 <pre><code class="r">ls &lt;- stackMeta(&quot;path/to/MTL.txt&quot;)
 </code></pre>
 
-<pre><code>#&gt; Warning in file(file, &quot;rt&quot;): cannot open file &#39;path/to/MTL.txt&#39;: No such
-#&gt; file or directory
-</code></pre>
-
-<pre><code>#&gt; Error in file(file, &quot;rt&quot;): cannot open the connection
+<pre><code>#&gt; Error in readMeta(file): File does not exist.
 </code></pre>
 
 <pre><code class="r">ls_cor &lt;- radCor(ls, &quot;path/to/MTL.txt&quot;)
 </code></pre>
 
-<pre><code>#&gt; Warning in file(file, &quot;rt&quot;): cannot open file &#39;path/to/MTL.txt&#39;: No such
-#&gt; file or directory
-</code></pre>
-
-<pre><code>#&gt; Error in file(file, &quot;rt&quot;): cannot open the connection
+<pre><code>#&gt; Error in readMeta(metaData): File does not exist.
 </code></pre>
 
 <pre><code class="r">ls_cmask &lt;-cloudMask(ls_cor, returnDiffLayer = TRUE)
 </code></pre>
 
-<pre><code>#&gt; Error in match(x, table, nomatch = 0L): object &#39;ls_cor&#39; not found
+<pre><code>#&gt; Error in cloudMask(ls_cor, returnDiffLayer = TRUE): unused argument (returnDiffLayer = TRUE)
 </code></pre>
 
 
@@ -221,7 +204,7 @@ Once your mask detects obvious cloud pixels properly re-enable sanitizing and re
                 <div class="unit-inner unit-foot-inner">
                     <div class="misc vcard">
                         <div>
-                            <p>Last update 2015-03-09 01:57:05 +0100</p>
+                            <p>Last update 2015-03-26 00:25:20 +0100</p>
                         </div>
                         <h4>about</h4>
                         <ul>

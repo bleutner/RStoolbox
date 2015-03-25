@@ -1,0 +1,72 @@
+---
+layout: docu
+title: ' Topographic Illumination Correction '
+fun:  topCor 
+package:  RStoolbox 
+header: Pages
+group: navigation
+---
+{% include JB/setup %}
+ <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Topographic Illumination Correction</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<h3>Description</h3>
+
+<p>Topographic Illumination Correction
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+topCor(img, dem, metaData, solarAngles, method = "C", stratImg,
+  stratMethod = "noStrat", nStrat = 5, illu)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>img</code></td>
+<td>
+<p>Raster*. Imagery to correct</p>
+</td></tr>
+<tr valign="top"><td><code>dem</code></td>
+<td>
+<p>Raster*. Either a digital elevation model as a RasterLayer or a RasterStack/Brick with pre-calculated slope and aspect (see <a href="http://www.inside-r.org/packages/cran/raster/docs/terrain">terrain</a>) in which case the layers must be named 'slope' and 'aspect'.</p>
+</td></tr>
+<tr valign="top"><td><code>metaData</code></td>
+<td>
+<p>Character, ImageMetaData. Either a path to a Landsat meta-data file (MTL) or an ImageMetaData object (see <a href="readMeta.html">readMeta</a>)</p>
+</td></tr>
+<tr valign="top"><td><code>solarAngles</code></td>
+<td>
+<p>Numeric vector containing sun azimuth and sun zenith (in radians and in that order). Not needed if metaData is provided</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>Character. One of c(&quot;cos&quot;, &quot;avgcos&quot;, &quot;minnaert&quot;, &quot;C&quot;, &quot;stat&quot;, &quot;illu&quot;). Choosing 'illu' will return only the local illumination map.</p>
+</td></tr>
+<tr valign="top"><td><code>stratImg</code></td>
+<td>
+<p>RasterLayer by which to stratify by, e.g. NDVI. Defaults to 'slope'</p>
+</td></tr>
+<tr valign="top"><td><code>stratMethod</code></td>
+<td>
+<p>Character. One of c(&quot;noStrat&quot;, &quot;stratEqualBins&quot;, &quot;stratQuantiles&quot;).</p>
+</td></tr>
+<tr valign="top"><td><code>nStrat</code></td>
+<td>
+<p>Integer. Number of bins or quantiles to stratify by. If a bin has less than 50 samples it will be merged with the next bin.</p>
+</td></tr>
+<tr valign="top"><td><code>illu</code></td>
+<td>
+<p>Raster*. Optional pre-calculated ilumination map. Run topCor with method=&quot;illu&quot; to calculate one.</p>
+</td></tr>
+</table>
+
+<hr><div align="center">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>

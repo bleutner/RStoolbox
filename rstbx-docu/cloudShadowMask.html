@@ -1,0 +1,80 @@
+---
+layout: docu
+title: ' Cloud Shadow Detection '
+fun:  cloudShadowMask 
+package:  RStoolbox 
+header: Pages
+group: navigation
+---
+{% include JB/setup %}
+ <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Cloud Shadow Detection</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<h3>Description</h3>
+
+<p>Intended for interactive use <code>cloudShadowMask</code> will ask the user to select a few
+corresponding cloud/cloudShadow pixels which will be used to estimate coordinates
+for a linear cloudmask shift.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+cloudShadowMask(img, cm, nc = 5, shiftEstimate = NULL,
+  preciseShift = NULL, threshold = 0.1, returnShift = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>img</code></td>
+<td>
+<p>Raster* Object containing the scene</p>
+</td></tr>
+<tr valign="top"><td><code>cm</code></td>
+<td>
+<p>RasterBrick. Cloud mask (typically the result of <code>cloudMask</code>)</p>
+</td></tr>
+<tr valign="top"><td><code>nc</code></td>
+<td>
+<p>Integer. Number of control points. A few points (default) are fine because the final shift is estimated by <a href="coregisterImages.html">coregisterImages</a>.</p>
+</td></tr>
+<tr valign="top"><td><code>shiftEstimate</code></td>
+<td>
+<p>NULL or numeric vector of length two (x,y). Estimated displacement of shadows in map units. If <code>NULL</code>, the user will be asked to select control points interactively.</p>
+</td></tr>
+<tr valign="top"><td><code>preciseShift</code></td>
+<td>
+<p>NULL or numeric vector of length two (x,y). Use this if cloud/cloud-shadow displacement is already known, e.g. from a previous run of <code>cloudShadowMask</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>threshold</code></td>
+<td>
+<p>Numeric (between 0 and 1). Threshold used for image co-registration (see details). Doesn't usually require tweaking.</p>
+</td></tr>
+<tr valign="top"><td><code>returnShift</code></td>
+<td>
+<p>Logical. Return a numeric vector containing the shift parameters. Usefull if you estimate parameters on a subset of the image.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This is a very simplistic approach to cloud shadow masking (simple shift of the cloud mask). It is not image based and accuracy will suffer from clouds at different altitudes. However, just as cloudMask
+this is a quick and easy to use tool for Landsat data if you're just working on a few scenes and don't have fMask or CDR data at hand. Although for some test scenes
+it does perform surprisingly well.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="cloudMask.html">cloudMask</a>
+</p>
+
+<hr><div align="center">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>

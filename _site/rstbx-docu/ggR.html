@@ -89,9 +89,9 @@ used with any Raster* object.
 <h3>Usage</h3>
 
 <pre>
-ggR(img, layer = 1, maxpixels = 5e+05, stretch, quantiles = c(0.02, 0.98),
-  coordEqual = TRUE, alpha = 1, ggLayer = FALSE, ggObj = TRUE,
-  annotation = TRUE)
+ggR(img, layer = 1, maxpixels = 5e+05, alpha = 1, stretch,
+  quantiles = c(0.02, 0.98), coordEqual = TRUE, ggLayer = FALSE,
+  ggObj = TRUE, annotation = TRUE, forceCat = FALSE)
 </pre>
 
 
@@ -110,6 +110,10 @@ ggR(img, layer = 1, maxpixels = 5e+05, stretch, quantiles = c(0.02, 0.98),
 <td>
 <p>Integer. Maximal number of pixels to sample</p>
 </td></tr>
+<tr valign="top"><td><code>alpha</code></td>
+<td>
+<p>Numeric. Transparency (0-1).</p>
+</td></tr>
 <tr valign="top"><td><code>stretch</code></td>
 <td>
 <p>Character. Either 'lin' or 'hist' for linear or histogram stretch of the data</p>
@@ -123,10 +127,6 @@ ggR(img, layer = 1, maxpixels = 5e+05, stretch, quantiles = c(0.02, 0.98),
 <p>Logical. Force addition of coord_equal, i.e. aspect ratio of 1:1. Typically usefull for remote sensing data (depending on your projection), hence it defaults to TRUE.
 Note however, that this does not apply if (<code>ggLayer=FALSE</code>).</p>
 </td></tr>
-<tr valign="top"><td><code>alpha</code></td>
-<td>
-<p>Numeric. Transparency (0-1).</p>
-</td></tr>
 <tr valign="top"><td><code>ggLayer</code></td>
 <td>
 <p>Logical. Return only a ggplot layer which must be added to an existing ggplot. If <code>FALSE</code> s stand-alone ggplot will be returned.</p>
@@ -139,13 +139,21 @@ Note however, that this does not apply if (<code>ggLayer=FALSE</code>).</p>
 <td>
 <p>Logical. Uses annotation_raster by default (good to keep aestetic mappings free). If <code>FALSE</code> uses geom_raster (and aes(fill)).</p>
 </td></tr>
+<tr valign="top"><td><code>forceCat</code></td>
+<td>
+<p>Logical. If <code>TRUE</code> the raster values will be forced to be categorical (will be converted to factor if needed).</p>
+</td></tr>
 </table>
 
 
 <h3>Note</h3>
 
-<p>When img contains factor values and annotation raster is <code>TRUE</code>, the values will be automatically converted
+<p>When <code>img</code> contains factor values and <code>annotation=TRUE</code>, the raster values will automatically be converted
 to numeric in order to proceed with the color calculation.
+</p>
+<p>The raster package provides a class lookup-table for categorical rasters (e.g. what you get if you run superClass in classification mode). If your raster has one ggR will automatically treat it as categorical (see <a href="http://www.inside-r.org/packages/cran/raster/docs/factor">factor</a>).
+However, the factor status of Raster objects is easily lost and the values are interpreted as numeric. In such cases you should make use of the <code>forceCat = TRUE</code> argument, which makes sure
+that ggplot2 uses a discrete scale, not a continuous one.
 </p>
 
 
@@ -177,7 +185,7 @@ df &lt;- ggR(rlogo, ggObj = FALSE)
 head(df)
 </code></pre>
 
-<pre><code>#&gt;     x    y red     color
+<pre><code>#&gt;     x    y red      fill
 #&gt; 1 0.5 76.5 255 #FFFFFFFF
 #&gt; 2 1.5 76.5 255 #FFFFFFFF
 #&gt; 3 2.5 76.5 255 #FFFFFFFF
@@ -259,7 +267,7 @@ ggR(rc, annotation = FALSE) + scale_fill_discrete(labels=paste(&quot;Class&quot;
                 <div class="unit-inner unit-foot-inner">
                     <div class="misc vcard">
                         <div>
-                            <p>Last update 2015-03-09 01:57:05 +0100</p>
+                            <p>Last update 2015-03-26 00:25:20 +0100</p>
                         </div>
                         <h4>about</h4>
                         <ul>

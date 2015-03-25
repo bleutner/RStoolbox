@@ -154,19 +154,9 @@ This is because x$map is a Raster* object and hence contains only a static link 
 file  &lt;- paste0(tempdir(), &quot;/test&quot;, runif(1))
 ## Run PCA
 rpc   &lt;- rasterPCA(input, filename = file, nSample = 100)
-</code></pre>
-
-<pre><code>#&gt; Error in .startRasterWriting(x, filename, format = filetype, ...): /tmp/Rtmp1cOoYQ/test0.456437604967505.grd exists. use &#39;overwrite=TRUE&#39; if you want to overwrite it
-</code></pre>
-
-<pre><code class="r">## Save object
+## Save object
 saveRSTBX(rpc, filename=file)
-</code></pre>
-
-<pre><code>#&gt; Error in .startRasterWriting(x, filename, format = filetype, ...): /tmp/Rtmp1cOoYQ/test0.456437604967505.grd exists. use &#39;overwrite=TRUE&#39; if you want to overwrite it
-</code></pre>
-
-<pre><code class="r">## Which files were written?
+## Which files were written?
 list.files(tempdir(), pattern = basename(file))
 </code></pre>
 
@@ -180,34 +170,14 @@ re_rpc &lt;- readRSTBX(file)
 all.equal(re_rpc, rpc)
 </code></pre>
 
-<pre><code>#&gt;  [1] &quot;Component \&quot;call\&quot;: target, current do not match when deparsed&quot;                                                                                                
-#&gt;  [2] &quot;Component \&quot;model\&quot;: Component \&quot;sdev\&quot;: Mean relative difference: 0.04471185&quot;                                                                                 
-#&gt;  [3] &quot;Component \&quot;model\&quot;: Component \&quot;loadings\&quot;: Mean relative difference: 0.01170357&quot;                                                                             
-#&gt;  [4] &quot;Component \&quot;model\&quot;: Component \&quot;center\&quot;: Mean relative difference: 0.03463799&quot;                                                                               
-#&gt;  [5] &quot;Component \&quot;model\&quot;: Component \&quot;n.obs\&quot;: Modes: numeric, logical&quot;                                                                                             
-#&gt;  [6] &quot;Component \&quot;model\&quot;: Component \&quot;n.obs\&quot;: target is numeric, current is logical&quot;                                                                               
-#&gt;  [7] &quot;Component \&quot;model\&quot;: Component \&quot;call\&quot;: target, current do not match when deparsed&quot;                                                                           
-#&gt;  [8] &quot;Component \&quot;map\&quot;: Attributes: &lt; Component \&quot;data\&quot;: Attributes: &lt; Component \&quot;fromdisk\&quot;: 1 element mismatch &gt; &gt;&quot;                                             
-#&gt;  [9] &quot;Component \&quot;map\&quot;: Attributes: &lt; Component \&quot;data\&quot;: Attributes: &lt; Component \&quot;inmemory\&quot;: 1 element mismatch &gt; &gt;&quot;                                             
-#&gt; [10] &quot;Component \&quot;map\&quot;: Attributes: &lt; Component \&quot;data\&quot;: Attributes: &lt; Component \&quot;max\&quot;: Mean relative difference: 0.03365062 &gt; &gt;&quot;                                
-#&gt; [11] &quot;Component \&quot;map\&quot;: Attributes: &lt; Component \&quot;data\&quot;: Attributes: &lt; Component \&quot;min\&quot;: Mean relative difference: 0.09283748 &gt; &gt;&quot;                                
-#&gt; [12] &quot;Component \&quot;map\&quot;: Attributes: &lt; Component \&quot;data\&quot;: Attributes: &lt; Component \&quot;values\&quot;: Modes: logical, numeric &gt; &gt;&quot;                                          
-#&gt; [13] &quot;Component \&quot;map\&quot;: Attributes: &lt; Component \&quot;data\&quot;: Attributes: &lt; Component \&quot;values\&quot;: Attributes: &lt; Component \&quot;dim\&quot;: Mean absolute difference: 3890 &gt; &gt; &gt;&quot;
-#&gt; [14] &quot;Component \&quot;map\&quot;: Attributes: &lt; Component \&quot;data\&quot;: Attributes: &lt; Component \&quot;values\&quot;: Lengths (0, 23331) differ (comparison on first 0 components) &gt; &gt;&quot;     
-#&gt; [15] &quot;Component \&quot;map\&quot;: Attributes: &lt; Component \&quot;file\&quot;: Attributes: &lt; Component \&quot;bandorder\&quot;: names for target but not for current &gt; &gt;&quot;                          
-#&gt; [16] &quot;Component \&quot;map\&quot;: Attributes: &lt; Component \&quot;file\&quot;: Attributes: &lt; Component \&quot;byteorder\&quot;: names for target but not for current &gt; &gt;&quot;                          
-#&gt; [17] &quot;Component \&quot;map\&quot;: Attributes: &lt; Component \&quot;file\&quot;: Attributes: &lt; Component \&quot;datanotation\&quot;: 1 string mismatch &gt; &gt;&quot;                                          
-#&gt; [18] &quot;Component \&quot;map\&quot;: Attributes: &lt; Component \&quot;file\&quot;: Attributes: &lt; Component \&quot;driver\&quot;: 1 string mismatch &gt; &gt;&quot;                                                
-#&gt; [19] &quot;Component \&quot;map\&quot;: Attributes: &lt; Component \&quot;file\&quot;: Attributes: &lt; Component \&quot;name\&quot;: 1 string mismatch &gt; &gt;&quot;                                                  
-#&gt; [20] &quot;Component \&quot;map\&quot;: Attributes: &lt; Component \&quot;file\&quot;: Attributes: &lt; Component \&quot;nbands\&quot;: Mean relative difference: 0.6666667 &gt; &gt;&quot;                              
-#&gt; [21] &quot;Component \&quot;map\&quot;: Attributes: &lt; Component \&quot;file\&quot;: Attributes: &lt; Component \&quot;nodatavalue\&quot;: Mean relative difference: Inf &gt; &gt;&quot;
+<pre><code>#&gt; [1] TRUE
 </code></pre>
 
 <pre><code class="r">file.remove(file)
 </code></pre>
 
 <pre><code>#&gt; Warning in file.remove(file): cannot remove file
-#&gt; &#39;/tmp/Rtmp1cOoYQ/test0.456437604967505&#39;, reason &#39;No such file or
+#&gt; &#39;/tmp/RtmpFwlcwf/test0.456437604967505&#39;, reason &#39;No such file or
 #&gt; directory&#39;
 </code></pre>
 
@@ -248,7 +218,7 @@ all.equal(re_rpc, rpc)
                 <div class="unit-inner unit-foot-inner">
                     <div class="misc vcard">
                         <div>
-                            <p>Last update 2015-03-09 01:57:05 +0100</p>
+                            <p>Last update 2015-03-26 00:25:20 +0100</p>
                         </div>
                         <h4>about</h4>
                         <ul>

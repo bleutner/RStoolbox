@@ -28,8 +28,8 @@ group: navigation
 
 <pre>
 spectralIndices(img, blue = NULL, red = NULL, nir = NULL, mir = NULL,
-  indices = NULL, coefs = list(L = 0.5, G = 2.5, L_evi = 1, C1 = 6, C2 =
-  7.5, s = 1), ...)
+  indices = NULL, index = NULL, coefs = list(L = 0.5, G = 2.5, L_evi = 1,
+  C1 = 6, C2 = 7.5, s = 1), ...)
 </pre>
 
 
@@ -59,6 +59,10 @@ spectralIndices(img, blue = NULL, red = NULL, nir = NULL, mir = NULL,
 <tr valign="top"><td><code>indices</code></td>
 <td>
 <p>Character. One or more spectral indices to calculate (see Details). By default (NULL) all implemented indices given the spectral bands which are provided will be calculated.</p>
+</td></tr>
+<tr valign="top"><td><code>index</code></td>
+<td>
+<p>Character. Alias for <code>indices</code>.</p>
 </td></tr>
 <tr valign="top"><td><code>coefs</code></td>
 <td>
