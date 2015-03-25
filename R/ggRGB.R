@@ -11,11 +11,11 @@
 #' @param scale Numeric. Maximum possible pixel value (optional). Defaults to 255 or to the maximum value of x if that is larger than 255
 #' @param maxpixels Integer. Maximal number of pixels used for plotting.
 #' @param stretch Character. Either 'lin' or 'hist' for linear or histogram stretch of the data
-#' @param ext extent object tp crop the image
-#' @param minMax Vector or matrix. Can be used to reduce the range of values. Either a vector of two values for all bands (c(min, max))
+#' @param ext extent object to crop the image
+#' @param limits Vector or matrix. Can be used to reduce the range of values. Either a vector of two values for all bands (c(min, max))
 #'  or a 3x2 matrix with separate min and max values (columns) for each layer (rows).
 #' @param quantiles Numeric vector with two elements. Min and max quantiles to stretch to. Defaults to 2\% stretch, i.e. c(0.02,0.98). 
-#' @param clipToMinMax Logical. If \code{TRUE}, values > scale will be set to NA. if \code{FALSE} they will be set to scale. Defaults to \code{FALSE}.
+#' @param clipToLimits Logical. If \code{TRUE}, values > scale will be set to NA. if \code{FALSE} they will be set to scale. Defaults to \code{FALSE}.
 #' @param ggObj Logical. If \code{TRUE} a ggplot2 object is returned. If \code{FALSE} a data.frame with coordinates and color will be returned.
 #' @param ggLayer Logical. If \code{TRUE} a ggplot2 layer is returned. This is usefull if you want to add it to an existing ggplot2 object.
 #'  Note that if \code{TRUE} & \code{annotate = FALSE} you have to add a scale_fill_identity() manually in your call to ggplot().
@@ -34,7 +34,7 @@
 #' ggRGB(rlogo, r=1, g=2, b=3)
 #' 
 #' ## Define minMax ranges
-#' ggRGB(rlogo, r=1,g=2, b=3, minMax = matrix(c(100,150,10,200,50,255),  ncol = 2, by = TRUE))
+#' ggRGB(rlogo, r=1,g=2, b=3, limits = matrix(c(100,150,10,200,50,255),  ncol = 2, by = TRUE))
 #' 
 #' ## Perform stong linear contrast stretch
 #' ggRGB(rlogo, r = 1, g = 2, b = 3,stretch = "lin", quantiles = c(0.2, 0.8))
@@ -49,10 +49,10 @@
 #' ## Use in layer-mode, e.g. to add to another plot
 #' wave <- data.frame(x = c(0, 0:100,100), y = c(0,sin(seq(0,2*pi,pi/50))*10+20, 0))
 #' p <- ggplot(wave, aes(x, y)) 
-#' p + ggRGB(rlogo, ggLayer = TRUE) +
+#' p + ggRGB(rlogo, ggLayer = TRUE) + 
 #'        geom_polygon(aes(x, y), fill = "blue", alpha = 0.4) +
 #'        coord_equal(ylim=c(0,75))
-ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = NULL, ext = NULL,  minMax = NULL, clipToMinMax = FALSE, quantiles = c(0.02,0.98),
+ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = NULL, ext = NULL,  limits = NULL, clipToLimits  = FALSE, quantiles = c(0.02,0.98),
         ggObj = TRUE, ggLayer = FALSE, alpha = 1, coordEqual = TRUE, annotation = TRUE) { 
     # RGB processing riginally forked from raster:::plotRGB
     # Author: Robert J. Hijmans 
@@ -68,30 +68,23 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
     RGB <- getValues(rr)
     if(!is.matrix(RGB)) RGB <- as.matrix(RGB)
     
-    rangeRGB <- range(RGB, na.rm = TRUE)
-    if(missing(scale)){ scale <- max(rangeRGB, 255) }
-    if(rangeRGB[1] < 0){
-        RGB 	<- RGB - rangeRGB[1]
-        scale 	<- scale - rangeRGB[1] 
-        if(!missing(minMax)) minMax <- minMax - rangeRGB[1] 
-    }   
-    
+   
     ## 
-    if (!is.null(minMax)) {
-        if (length(minMax) == 2) {
-            minMax <- sort(minMax)
-            if (!clipToMinMax) {
-                RGB[ RGB < minMax[1] ] <- minMax[1]
-                RGB[ RGB > minMax[2] ] <- minMax[2]
+    if (!is.null(limits)) {		
+        if (length(limits) == 2) {
+			limits <- sort(limits)
+			if (!clipToLimits) {
+                RGB[ RGB < limits[1] ] <- limits[1]
+                RGB[ RGB > limits[2] ] <- limits[2]
             } else { 
-                RGB[RGB < minMax[1] | RGB > minMax[2]] <- NA
+                RGB[RGB < limits[1] | RGB > limits[2]] <- NA
             } 
-        } else if (NROW(minMax) == 3 & NCOL(minMax) == 2) {
+        } else if (NROW(limits) == 3 & NCOL(limits) == 2) {
             for (i in 1:3) {
-                zmin <- min(minMax[i,])		
-                zmax <- max(minMax[i,])
+                zmin <- min(limits[i,])		
+                zmax <- max(limits[i,])
                 if(zmin < min(RGB[,i], na.rm = T) | zmax > max(RGB[,i], na.rm = T)) warning("The provided minMax values of ", c("red","green","blue")[i]," layer exceed range of actual values in this band.")
-                if (!clipToMinMax) {
+                if (!clipToLimits) {
                     RGB[RGB[,i] < zmin, i] <- zmin
                     RGB[RGB[,i] > zmax, i] <- zmax
                 } else { 
@@ -102,9 +95,21 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
             stop('zlim should be a vector of two numbers or a 3x2 matrix (one row for each color)')
         }
     }   
+	
+	rangeRGB <- range(RGB, na.rm = TRUE)
+	if(missing(scale)){ scale <- rangeRGB[2] }
+	
+	if(rangeRGB[1] < 0){
+		RGB 	<- RGB - rangeRGB[1]
+		scale 	<- scale - rangeRGB[1] 
+		rangeRGB <- rangeRGB - rangeRGB[1]
+	}   
+	
+	if(scale < rangeRGB[2]) scale <- rangeRGB[2]
     RGB <- na.omit(RGB)
     
-    ## Perform data stretch
+    
+	## Perform data stretch
     if (!is.null(stretch)) {
         stretch = tolower(stretch)
         for(i in seq_along(rgb)){
@@ -169,6 +174,7 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
 ## Perform histogram and 98% linear stretching
 .stretch <- function (x, method = "lin", quantiles = c(0.02,0.98)) {
     if(method == "lin"){
+		if(length(quantiles) == 1) c(0,1) + c(quantiles, -quantiles)/100	
         v <- quantile(x, quantiles, na.rm = TRUE)
         temp <- (255 * (x - v[1]))/(v[2] - v[1])
         temp[temp < 0] <- 0

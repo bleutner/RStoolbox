@@ -5,7 +5,7 @@
 \title{Create ggplot raster with RGB from 3 rasterLayers}
 \usage{
 ggRGB(img, r = 3, g = 2, b = 1, scale, maxpixels = 5e+05,
-  stretch = NULL, ext = NULL, minMax = NULL, clipToMinMax = FALSE,
+  stretch = NULL, ext = NULL, limits = NULL, clipToLimits = FALSE,
   quantiles = c(0.02, 0.98), ggObj = TRUE, ggLayer = FALSE, alpha = 1,
   coordEqual = TRUE, annotation = TRUE)
 }
@@ -24,12 +24,12 @@ ggRGB(img, r = 3, g = 2, b = 1, scale, maxpixels = 5e+05,
 
 \item{stretch}{Character. Either 'lin' or 'hist' for linear or histogram stretch of the data}
 
-\item{ext}{extent object tp crop the image}
+\item{ext}{extent object to crop the image}
 
-\item{minMax}{Vector or matrix. Can be used to reduce the range of values. Either a vector of two values for all bands (c(min, max))
+\item{limits}{Vector or matrix. Can be used to reduce the range of values. Either a vector of two values for all bands (c(min, max))
 or a 3x2 matrix with separate min and max values (columns) for each layer (rows).}
 
-\item{clipToMinMax}{Logical. If \code{TRUE}, values > scale will be set to NA. if \code{FALSE} they will be set to scale. Defaults to \code{FALSE}.}
+\item{clipToLimits}{Logical. If \code{TRUE}, values > scale will be set to NA. if \code{FALSE} they will be set to scale. Defaults to \code{FALSE}.}
 
 \item{quantiles}{Numeric vector with two elements. Min and max quantiles to stretch to. Defaults to 2\% stretch, i.e. c(0.02,0.98).}
 
@@ -62,7 +62,7 @@ data(rlogo)
 ggRGB(rlogo, r=1, g=2, b=3)
 
 ## Define minMax ranges
-ggRGB(rlogo, r=1,g=2, b=3, minMax = matrix(c(100,150,10,200,50,255),  ncol = 2, by = TRUE))
+ggRGB(rlogo, r=1,g=2, b=3, limits = matrix(c(100,150,10,200,50,255),  ncol = 2, by = TRUE))
 
 ## Perform stong linear contrast stretch
 ggRGB(rlogo, r = 1, g = 2, b = 3,stretch = "lin", quantiles = c(0.2, 0.8))
