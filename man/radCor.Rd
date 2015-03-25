@@ -13,7 +13,7 @@ radCor(img, metaData, method = "apref", bandSet = "full", hazeValues,
 \item{metaData}{object of class ImageMetaData or a path to the meta data (MTL) file.}
 
 \item{method}{Radiometric conversion/correction method to be used. There are currently four methods available (see Details):
-"apref", "sdos", "dos", "costz".}
+"rad", "apref", "sdos", "dos", "costz".}
 
 \item{bandSet}{numeric or character. original Landsat band numbers or names in the form of ("B1", "B2" etc). If set to 'full' all bands in the solar region will be processed.}
 

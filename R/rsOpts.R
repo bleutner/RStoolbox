@@ -6,8 +6,8 @@
 #' @export
 #' @examples 
 #' \dontrun{
-#' rstbxOpts(verbose=TRUE)
+#' rsOpts(verbose=TRUE)
 #' }
-rstbxOpts <- function(verbose){
+rsOpts <- function(verbose){
     options(RStoolbox.verbose=verbose)
 }
