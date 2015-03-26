@@ -10,7 +10,7 @@
 #' @param b Integer or character. Blue layer in x. Can be set to \code{NULL}, in which case the blue channel will be set to zero.
 #' @param scale Numeric. Maximum possible pixel value (optional). Defaults to 255 or to the maximum value of x if that is larger than 255
 #' @param maxpixels Integer. Maximal number of pixels used for plotting.
-#' @param stretch Character. Either 'lin', 'hist' or 'log' for linear, histogram or logarithmic stretch.
+#' @param stretch Character. Either 'none', 'lin', 'hist', 'sqrt' or 'log' for no stretch, linear, histogram, square-root or logarithmic stretch.
 #' @param ext extent object to crop the image
 #' @param limits Vector or matrix. Can be used to reduce the range of values. Either a vector of two values for all bands (c(min, max))
 #'  or a 3x2 matrix with separate min and max values (columns) for each layer (rows).
@@ -52,7 +52,7 @@
 #' p + ggRGB(rlogo, ggLayer = TRUE) + 
 #'        geom_polygon(aes(x, y), fill = "blue", alpha = 0.4) +
 #'        coord_equal(ylim=c(0,75))
-ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = NULL, ext = NULL,  limits = NULL, clipToLimits  = FALSE, quantiles = c(0.02,0.98),
+ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = "lin", ext = NULL,  limits = NULL, clipToLimits  = FALSE, quantiles = c(0.02,0.98),
         ggObj = TRUE, ggLayer = FALSE, alpha = 1, coordEqual = TRUE, annotation = TRUE) { 
     # RGB processing riginally forked from raster:::plotRGB
     # Author: Robert J. Hijmans 
@@ -110,7 +110,7 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
     
     
 	## Perform data stretch
-    if (!is.null(stretch)) {
+    if (stretch != "none") {
         stretch = tolower(stretch)
         for(i in seq_along(rgb)){
             RGB[,i] <- .stretch(RGB[,i], method = stretch, quantiles=quantiles)
@@ -173,7 +173,7 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
 
 ## Perform histogram, log and 98% linear stretching
 .stretch <- function (x, method = "lin", quantiles = c(0.02,0.98)) {
-    if(method %in% c("lin", "hist", "log", "sqrt")) stop("Stretch method must be 'lin', 'hist', 'sqrt' or 'log'", call. = FALSE)
+    if(!method %in% c("lin", "hist", "log", "sqrt")) stop("Stretch method must be 'lin', 'hist', 'sqrt' or 'log'", call. = FALSE)
     if(method == "lin"){
 		if(length(quantiles) == 1) c(0,1) + c(quantiles, -quantiles)/100	
         v <- quantile(x, quantiles, na.rm = TRUE)

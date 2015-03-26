@@ -6,7 +6,7 @@
 #' @param img raster
 #' @param layer layername
 #' @param maxpixels Integer. Maximal number of pixels to sample
-#' @param stretch Character. Either 'lin' or 'hist' for linear or histogram stretch of the data
+#' @param stretch Character. Either 'none', 'lin', 'hist', 'sqrt' or 'log' for no stretch, linear, histogram, square-root or logarithmic stretch.
 #' @param quantiles Numeric vector with two elements. Min and max quantiles to stretch to. Defaults to 2\% stretch, i.e. c(0.02,0.98). 
 #' @param ggObj Logical. Return a stand-alone ggplot object (TRUE) or just the data.frame with values and colors
 #' @param ggLayer Logical. Return only a ggplot layer which must be added to an existing ggplot. If \code{FALSE} s stand-alone ggplot will be returned.
@@ -64,7 +64,7 @@
 #' ## Legend cusomization etc. ...
 #' ggR(rc, annotation = FALSE) + scale_fill_discrete(labels=paste("Class", 1:6))
 #'  
-ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, stretch, quantiles = c(0.02,0.98), coordEqual = TRUE, ggLayer=FALSE, ggObj = TRUE, annotation = TRUE, forceCat = FALSE) {
+ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, stretch = "lin", quantiles = c(0.02,0.98), coordEqual = TRUE, ggLayer=FALSE, ggObj = TRUE, annotation = TRUE, forceCat = FALSE) {
      
     layer <- unlist(.numBand(img, layer))
     xfort <- sampleRegular(img[[layer]], maxpixels, asRaster = TRUE)
@@ -84,7 +84,7 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, stretch, quantil
         levelLUT <- levels(df[,layer])
         df[,layer] <- as.numeric(df[,layer])
     }
-    if(!fac & !missing("stretch"))  df[,layer] <- .stretch(df[,layer], method = stretch, quantiles = quantiles)    
+    if(!fac & stretch != "none")  df[,layer] <- .stretch(df[,layer], method = stretch, quantiles = quantiles)    
     
     if(!(ggObj & !annotation)  ){
         normVals 	<- normImage(df[,layer], ymin = 0, ymax = 1)    

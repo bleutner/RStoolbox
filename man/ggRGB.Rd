@@ -5,7 +5,7 @@
 \title{Create ggplot raster with RGB from 3 rasterLayers}
 \usage{
 ggRGB(img, r = 3, g = 2, b = 1, scale, maxpixels = 5e+05,
-  stretch = NULL, ext = NULL, limits = NULL, clipToLimits = FALSE,
+  stretch = "lin", ext = NULL, limits = NULL, clipToLimits = FALSE,
   quantiles = c(0.02, 0.98), ggObj = TRUE, ggLayer = FALSE, alpha = 1,
   coordEqual = TRUE, annotation = TRUE)
 }
@@ -22,7 +22,7 @@ ggRGB(img, r = 3, g = 2, b = 1, scale, maxpixels = 5e+05,
 
 \item{maxpixels}{Integer. Maximal number of pixels used for plotting.}
 
-\item{stretch}{Character. Either 'lin' or 'hist' for linear or histogram stretch of the data}
+\item{stretch}{Character. Either 'none', 'lin', 'hist', 'sqrt' or 'log' for no stretch, linear, histogram, square-root or logarithmic stretch.}
 
 \item{ext}{extent object to crop the image}
 
