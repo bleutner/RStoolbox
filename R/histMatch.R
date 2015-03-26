@@ -25,7 +25,7 @@
 #' 
 #' ## Compare Images before histMatching
 #' ggRGB(img_a,1,2,3)+
-#'         ggRGB(img_b, 1,2,3, ggLayer=T, stretch = "lin", q = 0:1) +
+#'         ggRGB(img_b, 1,2,3, ggLayer = TRUE, stretch = "lin", q = 0:1) +
 #'         geom_vline(aes(xintercept = 50))+
 #'         ggtitle("Img_a vs. Img_b")
 #' 
