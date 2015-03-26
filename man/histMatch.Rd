@@ -4,8 +4,8 @@
 \alias{histMatch}
 \title{Image to Image Contrast Matching}
 \usage{
-histMatch(x, ref, nsamp = 1e+05, intersectOnly = TRUE, precise = TRUE,
-  forceInteger = FALSE, ...)
+histMatch(x, ref, xmask = NULL, refmask = NULL, nsamp = 1e+05,
+  intersectOnly = TRUE, precise = TRUE, forceInteger = FALSE, ...)
 }
 \arguments{
 \item{x}{RasterLayer. Source raster which is to be modified.}

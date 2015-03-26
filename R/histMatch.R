@@ -47,7 +47,7 @@
 #' hist(redLayers)
 #' ## Reset par
 #' par(opar)
-histMatch <- function(x, ref, nsamp = 1e5, intersectOnly = TRUE, precise = TRUE, forceInteger = FALSE, ...){
+histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nsamp = 1e5, intersectOnly = TRUE, precise = TRUE, forceInteger = FALSE, ...){
     if(nsamp > ncell(ref)) nsamp <- ncell(ref)
     
     ## Define intersecting extent if required. Returns NULL if FALSE
@@ -57,8 +57,15 @@ histMatch <- function(x, ref, nsamp = 1e5, intersectOnly = TRUE, precise = TRUE,
         warning("Rasters do not overlap. Precise sampling disabled.", call. = FALSE)
     }
     
+    if(!is.null(xmask)) {
+        xfull <- x
+        x <- mask(x, xmask)
+     }
+    if(!is.null(refmask)) ref <- mask(ref, refmask)
+    
     ## Sample histogram data
     ref.sample  <- sampleRandom(ref, nsamp, na.rm = TRUE, ext = ext, xy = precise)
+ 
     if(precise) {
         x.sample   <- extract(x, ref.sample[,c("x","y")])
         if(is.vector(x.sample)) x.sample <- as.matrix(x.sample)
@@ -82,15 +89,18 @@ histMatch <- function(x, ref, nsamp = 1e5, intersectOnly = TRUE, precise = TRUE,
                 inverse.ref.ecdf <- approxfun(y, kn, method = "linear", yleft = limits[1] , yright = limits[2], ties = "ordered")
                 
                 ## Function definition
-                histMatchFun <- if(grepl("INT", dataType(ref)) | forceInteger)
+                histMatchFun <- if(grepl("INT", dataType(ref)[i]) | forceInteger)
                             function(values, na.rm = FALSE){round( inverse.ref.ecdf( source.ecdf(values)))}
                         else {
                             function(values, na.rm = FALSE){       inverse.ref.ecdf( source.ecdf(values))}
                         }
                 histMatchFun
             })
+    
     ## Apply histMatch to raster 
     out <- stack(lapply(1:nlayers(x), FUN = function(i) raster::calc(x[[i]], fun = layerFun[[i]], ...)))
+    if(!is.null(xmask)) out <- merge(xfull, out)
     names(out) <- names(x)
+    
     out
 }

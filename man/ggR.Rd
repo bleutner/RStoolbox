@@ -4,7 +4,7 @@
 \alias{ggR}
 \title{Plot RasterLayers in ggplot with greyscale}
 \usage{
-ggR(img, layer = 1, maxpixels = 5e+05, alpha = 1, stretch,
+ggR(img, layer = 1, maxpixels = 5e+05, alpha = 1, stretch = "lin",
   quantiles = c(0.02, 0.98), coordEqual = TRUE, ggLayer = FALSE,
   ggObj = TRUE, annotation = TRUE, forceCat = FALSE)
 }
@@ -17,7 +17,7 @@ ggR(img, layer = 1, maxpixels = 5e+05, alpha = 1, stretch,
 
 \item{alpha}{Numeric. Transparency (0-1).}
 
-\item{stretch}{Character. Either 'lin' or 'hist' for linear or histogram stretch of the data}
+\item{stretch}{Character. Either 'none', 'lin', 'hist', 'sqrt' or 'log' for no stretch, linear, histogram, square-root or logarithmic stretch.}
 
 \item{quantiles}{Numeric vector with two elements. Min and max quantiles to stretch to. Defaults to 2\% stretch, i.e. c(0.02,0.98).}
 

@@ -175,7 +175,7 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
 .stretch <- function (x, method = "lin", quantiles = c(0.02,0.98)) {
     if(!method %in% c("lin", "hist", "log", "sqrt")) stop("Stretch method must be 'lin', 'hist', 'sqrt' or 'log'", call. = FALSE)
     if(method == "lin"){
-		if(length(quantiles) == 1) c(0,1) + c(quantiles, -quantiles)/100	
+		if(length(quantiles) == 1) quantiles <- c(0,1) + c(quantiles, -quantiles)/100
         v <- quantile(x, quantiles, na.rm = TRUE)
         temp <- (255 * (x - v[1]))/(v[2] - v[1])
         temp[temp < 0] <- 0
