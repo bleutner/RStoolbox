@@ -28,7 +28,7 @@ corresponding cloud/cloudShadow pixels which will be used to estimate coordinate
 for a linear cloudmask shift.
 }
 \details{
-This is a very simplistic approach to cloud masking. It is not image based and will suffer from clouds at different altitudes. However, just as cloudMask
+This is a very simplistic approach to cloud shadow masking (simple shift of the cloud mask). It is not image based and accuracy will suffer from clouds at different altitudes. However, just as cloudMask
 this is a quick and easy to use tool for Landsat data if you're just working on a few scenes and don't have fMask or CDR data at hand. Although for some test scenes
 it does perform surprisingly well.
 }

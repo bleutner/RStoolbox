@@ -10,7 +10,7 @@
 #' @param b Integer or character. Blue layer in x. Can be set to \code{NULL}, in which case the blue channel will be set to zero.
 #' @param scale Numeric. Maximum possible pixel value (optional). Defaults to 255 or to the maximum value of x if that is larger than 255
 #' @param maxpixels Integer. Maximal number of pixels used for plotting.
-#' @param stretch Character. Either 'lin' or 'hist' for linear or histogram stretch of the data
+#' @param stretch Character. Either 'lin', 'hist' or 'log' for linear, histogram or logarithmic stretch.
 #' @param ext extent object tp crop the image
 #' @param minMax Vector or matrix. Can be used to reduce the range of values. Either a vector of two values for all bands (c(min, max))
 #'  or a 3x2 matrix with separate min and max values (columns) for each layer (rows).
@@ -63,7 +63,7 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
     
     ## Subsample raster		
     rgb <- unlist(.numBand(raster=img,r,g,b))
-	if(inherits(img, "RasterLayer")) img <- brick(img)
+    if(inherits(img, "RasterLayer")) img <- brick(img)
     rr 	<- sampleRegular(img[[rgb]], maxpixels, ext=ext, asRaster=TRUE, useGDAL=TRUE)
     RGB <- getValues(rr)
     if(!is.matrix(RGB)) RGB <- as.matrix(RGB)
@@ -166,21 +166,30 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
 }
 
 
-## Perform histogram and 98% linear stretching
+## Perform histogram, log and 98% linear stretching
 .stretch <- function (x, method = "lin", quantiles = c(0.02,0.98)) {
+    if(method %in% c("lin", "hist", "log", "sqrt")) stop("Stretch method must be 'lin', 'hist', 'sqrt' or 'log'", call. = FALSE)
     if(method == "lin"){
         v <- quantile(x, quantiles, na.rm = TRUE)
         temp <- (255 * (x - v[1]))/(v[2] - v[1])
         temp[temp < 0] <- 0
         temp[temp > 255] <- 255 
         return(temp)
-    } else {
-        if(method == "hist"){
-            ecdfun <- ecdf(x)
-            ecdfun(x) * 255
-        } else {
-            stop("Stretch method must be 'lin' or 'hist'", call. = FALSE)
-        }
+    } 
+    if(method == "hist"){
+        ecdfun <- ecdf(x)
+        return(ecdfun(x) * 255)
+    } 
+    if(method == "log"){
+        x <- log(x + 1)
+        x <- x - min(x)
+        return((x / max(x)) * 255)         
+    }
+    if(method == "sqrt"){
+        x <- sqrt(x)
+        x <- x - min(x)
+        return((x /max(x)) * 255)
     }
 }
+
 
