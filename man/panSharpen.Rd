@@ -4,26 +4,26 @@
 \alias{panSharpen}
 \title{Pan sharpen imagery / Image fusion}
 \usage{
-panSharpen(img, pan, r, g, b, method = "pca", norm = TRUE)
+panSharpen(img, pan, r, g, b, pc = 1, method = "brovey", norm = TRUE)
 }
 \arguments{
 \item{img}{Raster* object. Coarse resolution imagery}
 
 \item{pan}{RasterLayer. High resolution image, typically panchromatic.}
 
-\item{r}{Character or Integer. Red band in \code{img}. Only relevant if \code{method='pca'}}
+\item{r}{Character or Integer. Red band in \code{img}. Only relevant if \code{method!='pca'}}
 
-\item{g}{Character or Integer. Green band in \code{img}. Only relevant if \code{method='pca'}}
+\item{g}{Character or Integer. Green band in \code{img}. Only relevant if \code{method!='pca'}}
 
-\item{b}{Character or Integer. Blue band in \code{img}. Only relevant if \code{method='pca'}}
+\item{b}{Character or Integer. Blue band in \code{img}. Only relevant if \code{method!='pca'}}
 
-\item{method}{Character. Choose method from c("pca", "ihs").}
+\item{method}{Character. Choose method from c("pca", "ihs", "brovey").}
 
 \item{norm}{Logical. Normalize pan image to 1st PC component. If \code{FALSE} pan will be histogram matched to the 1st PC. Otherwise only min and max are matched.}
 }
 \description{
 provides different methods for pan sharpening a coarse resolution (typically multispectral) image with
-a higher reolution panchromatic image
+a higher reolution panchromatic image. Values of the pan-chromatic and multispectral images must be of the same scale, (e.g. from 0:1, or all DNs from 0:255)
 }
 \details{
 Pan sharpening options:

@@ -9,7 +9,7 @@
 #' 
 readMeta <- function(file, raw = FALSE){
     ## TODO: make modular for additional sensors
-    if(!file.exists(file)) stop("File does not exist.")
+    if(!file.exists(file)) stop("Metadata file does not exist. Looking for: ", file, call. = FALSE)
     if(!grepl("MTL", file) & !grepl("xml", file)) warning("The Landsat metadata file you have specified looks unusual. Typically the filename contains the string 'MTL' or 'xml'. Are you sure you specified the right file? \n I'll try to read it but check the results!")
     
     format <- if(grepl('xml', file)) "XML" else "MTL"

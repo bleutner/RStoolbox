@@ -4,16 +4,16 @@
 #' Be aware that by default stackLS() does NOT import panchromatic bands nor thermal bands with resolutions != 30m.
 #' 
 #' @param file character. Path to Landsat MTL metadata file (not an XML file!).
-#' @param allResolutions logical. if \code{TRUE} a list will be returned with length = unique spatial resolutions.
 #' @param category character vector. Which category of data to return. Options 'image': image data, 'pan': panchromatic image, 'index': multiband indices, 'qa' quality flag bands, 'all': all categories.
 #' @param quantity Character vector. Which quantity should be returned. Options: digital numbers ('dn'), top of atmosphere reflectance ('tre'), at surface reflectance ('sre'), brightness temperature ('bt'), spectral index ('idx').
+#' @param allResolutions logical. if \code{TRUE} a list will be returned with length = unique spatial resolutions.
 #' @return Either a list of rasterStacks comprising all resolutions or only one rasterStack comprising only 30m resolution imagery
 #' @note 
 #' Be aware that by default stackLS() does NOT import panchromatic bands nor thermal bands with resolutions != 30m. Use the allResolutions argument to import all layers.
 #' Note that nowadays the USGS uses cubic convolution to resample the TIR bands to 30m resolution.
 #' @export 
-stackMeta <- function(file, allResolutions = FALSE, quantity = "all", category = "image"){ 
-    ## TODO: check arguments
+stackMeta <- function(file,  quantity = "all", category = "image", allResolutions = FALSE){ 
+    
     stopifnot( !any(!category %in%  c("pan", "image", "index", "qa", "all")), !any(!quantity %in% c("all", "dn", "tra", "tre", "sre", "bt", "idx")))
     
     ## Read metadata and extract layer file names
@@ -23,7 +23,7 @@ stackMeta <- function(file, allResolutions = FALSE, quantity = "all", category =
                 file 
             }
     files <- meta$DATA$FILES    
-    file <- meta$METADATA_FILE
+    metaFile <- meta$METADATA_FILE 
     
     if("all" %in% quantity) quantity <- unique(meta$DATA$QUANTITY) 
     if("all" %in% category) category <- unique(meta$DATA$CATEGORY)
@@ -35,23 +35,28 @@ stackMeta <- function(file, allResolutions = FALSE, quantity = "all", category =
     if(any(!typAvail)) warning("The following specified categories don't exist: ", paste0(category[!typAvail], collapse=", ") ,"\nReturning available categories:", paste0(category[typAvail], collapse=", "), call.=FALSE)
     
     ## Load layers
-    path  <- if(basename(file) != file)  gsub(basename(file), "", file) else NULL
+    path  <- if(basename(metaFile) != metaFile)  gsub(basename(metaFile), "", metaFile) else NULL
+    
+    ## Select products to return 
+    se <- meta$DATA$CATEGORY %in% category & meta$DATA$QUANTITY %in% quantity
+    select <- meta$DATA$BANDS[se]               
     
     ## Import rasters
     rl <- lapply(paste0(path, files), raster)
     resL <- lapply(rl, function(x) res(x)[1])
-    
+    resLs <- resL[se]
     if(any(resL > 30)) .vMessage("Your Landsat data includes TIR band(s) which were not resampled to 30m.")
+    if(length(unique(resLs)) > 1 & !allResolutions) warning("You asked to import rasters of different resolutions but the allResolutions argument is FALSE. Will return only 30m data", call. = FALSE)
+    
+    
+    ## Return resolutions
+    returnRes <- if(allResolutions) {
+                unlist(unique(resLs))
+            } else if(any(resLs == 30)) 30 else {
+                min(unlist(resLs)) 
+            } 
     
     ## Stack
-    returnRes <- if(allResolutions) unlist(unique(resL)) else 30
-    
-    ## Select products to return
-    select <- meta$DATA$BANDS[
-            meta$DATA$CATEGORY %in% category &
-                    meta$DATA$QUANTITY %in% quantity
-    ]               
-    
     LS 	<- lapply(returnRes, function(x){
                 s			<- stack(rl[resL == x])
                 names(s) 	<- meta$DATA$BANDS[resL == x]

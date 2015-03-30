@@ -4,17 +4,17 @@
 \alias{stackMeta}
 \title{Import separate Landsat files into single stack}
 \usage{
-stackMeta(file, allResolutions = FALSE, quantity = "all",
-  category = "image")
+stackMeta(file, quantity = "all", category = "image",
+  allResolutions = FALSE)
 }
 \arguments{
 \item{file}{character. Path to Landsat MTL metadata file (not an XML file!).}
 
-\item{allResolutions}{logical. if \code{TRUE} a list will be returned with length = unique spatial resolutions.}
-
 \item{quantity}{Character vector. Which quantity should be returned. Options: digital numbers ('dn'), top of atmosphere reflectance ('tre'), at surface reflectance ('sre'), brightness temperature ('bt'), spectral index ('idx').}
 
 \item{category}{character vector. Which category of data to return. Options 'image': image data, 'pan': panchromatic image, 'index': multiband indices, 'qa' quality flag bands, 'all': all categories.}
+
+\item{allResolutions}{logical. if \code{TRUE} a list will be returned with length = unique spatial resolutions.}
 }
 \value{
 Either a list of rasterStacks comprising all resolutions or only one rasterStack comprising only 30m resolution imagery

@@ -17,6 +17,6 @@ pifMatch(img, ref, method = "cor", quantile = 0.95)
 }
 \description{
 Automatically estimates pseudo-invariant-features (PIF) by pixel similarity and fits a linear model which is then applied
-to the whole scene
+to the whole scene.
 }
 

@@ -1,12 +1,12 @@
 #' PIF-based Image Matching
 #' 
 #' Automatically estimates pseudo-invariant-features (PIF) by pixel similarity and fits a linear model which is then applied
-#' to the whole scene
+#' to the whole scene.
 #' @param img Raster*. Image to be adjusted.
 #' @param ref Raster*. Reference image.
 #' @param method Method to calculate pixel similariry
 #' @param quantile Numeric. Threshold quantile used to identify PIFs
-#' @noRd 
+#' @export 
 pifMatch <- function(img, ref, method = "cor", quantile = 0.95){
 	stopifnot(nlayers(img)==nlayers(ref))
 	flist <- list(
