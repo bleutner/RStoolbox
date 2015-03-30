@@ -5,7 +5,7 @@
 \title{Create ggplot raster with RGB from 3 rasterLayers}
 \usage{
 ggRGB(img, r = 3, g = 2, b = 1, scale, maxpixels = 5e+05,
-  stretch = "lin", ext = NULL, limits = NULL, clipToLimits = FALSE,
+  stretch = "lin", ext = NULL, limits = NULL, clipValues = "limits",
   quantiles = c(0.02, 0.98), ggObj = TRUE, ggLayer = FALSE, alpha = 1,
   coordEqual = TRUE, annotation = TRUE)
 }
@@ -29,7 +29,10 @@ ggRGB(img, r = 3, g = 2, b = 1, scale, maxpixels = 5e+05,
 \item{limits}{Vector or matrix. Can be used to reduce the range of values. Either a vector of two values for all bands (c(min, max))
 or a 3x2 matrix with separate min and max values (columns) for each layer (rows).}
 
-\item{clipToLimits}{Logical. If \code{TRUE}, values > scale will be set to NA. if \code{FALSE} they will be set to scale. Defaults to \code{FALSE}.}
+\item{clipValues}{Matrix, numeric vector, string or NA. Values to reset out of range (out of \code{limits}) values to.
+By default ('limits') values are reset to \code{limits}. A single value (e.g. NA) will be recycled to all lower/higher clippings,
+A vector of length two (c(min,max)) can be used to specify lower and higher replace values, applied to all bands.
+A two column matrix (typically with three rows) can be used to fully control lower and upper clipping values differently for each band.}
 
 \item{quantiles}{Numeric vector with two elements. Min and max quantiles to stretch to. Defaults to 2\% stretch, i.e. c(0.02,0.98).}
 
