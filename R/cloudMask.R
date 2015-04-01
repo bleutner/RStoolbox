@@ -30,7 +30,7 @@
 #' ls_cor <- radCor(ls, "path/to/MTL.txt") 
 #' ls_cmask <-cloudMask(ls_cor, returnDiffLayer = TRUE)  
 #' }
-cloudMask <- function(x, threshold = 0.8,  blue = "B1_sre", tir = "B6_sre",  buffer = NULL, plot = FALSE, verbose){
+cloudMask <- function(x, threshold = 0.8,  blue = "B1_sre", tir = "B6_sre",b1=T,  buffer = NULL, plot = FALSE, verbose){
     
     if(!missing("verbose")) .initVerbose(verbose)
     ## Set-up graphics device 
@@ -56,15 +56,20 @@ cloudMask <- function(x, threshold = 0.8,  blue = "B1_sre", tir = "B6_sre",  buf
     if(plot) plot(cmask, main = paste0("Cloud mask\nThreshold: ", threshold))
     
     ## Buffer cloud centers (we could also do a circular buffer, but for now this should suffice)
-    if(!is.null(buffer)){
-        # TODO: Check buffer vs. focal  performance
-#		w <- matrix(ncol = windowSize2, nrow = windowSize2, 1)
-#		cmask <- focal(cmask, w, na.rm = TRUE )
-#		cmask[!is.na(cmask)] <- 1L
+    if(!is.null(buffer)){  
         .vMessage("Begin region-growing")
+
+        if(b1){
+        # TODO: Check buffer vs. focal  performance
+		w <- matrix(ncol = buffer, nrow = buffer, 1)
+        w[c(1,buffer,1,buffer), c(1,1,buffer,buffer)] <- 0
+		cmask <- focal(cmask, w, na.rm = TRUE )
+		cmask[!is.na(cmask)] <- 1L
+       } else {
         buffer <- buffer * res(cmask)[1]
         cmask <- buffer(cmask, buffer, na.rm = TRUE )
-        if(plot) plot(cmask, main = "Region-grown cloud mask")       
+        if(plot) plot(cmask, main = "Region-grown cloud mask")
+    }
     }
     
     if(plot){

@@ -265,5 +265,6 @@ summary.ImageMetaData <- function(object, ...) {
     }   else {
         cat("\tnone")
     }
-    invisible(object)
+    cat("\n")
+    invisible(NULL)
 }

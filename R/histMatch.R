@@ -4,7 +4,7 @@
 #' 
 #' @param x RasterLayer. Source raster which is to be modified.
 #' @param ref RasterLayer. Reference raster, to which x will be matched.
-#' @param nsamp integer. Number of random samples to build the histograms.
+#' @param nSamples integer. Number of random samples to build the histograms.
 #' @param intersectOnly logical. If \code{TRUE} sampling will only take place in the overlap extent of the two rasters. Otherwise the full rasters will be used for sampling.
 #' @param precise logical. If \code{TRUE} the exact same pixels will be used in the overlap.
 #' @param ... Further arguments to be passed to \link[raster]{writeRaster}.
@@ -45,10 +45,10 @@
 #' names(redLayers) <- c("img_a", "img_b", "img_b_matched")
 #' 
 #' hist(redLayers)
-#' ## Reset par
+#' ## Reset par 
 #' par(opar)
-histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nsamp = 1e5, intersectOnly = TRUE, precise = TRUE, forceInteger = FALSE, ...){
-    if(nsamp > ncell(ref)) nsamp <- ncell(ref)
+histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e5, intersectOnly = TRUE, precise = TRUE, forceInteger = FALSE, ...){
+    if(nSamples > ncell(ref)) nSamples <- ncell(ref)
     
     ## Define intersecting extent if required. Returns NULL if FALSE
     ext <- if(precise | intersectOnly) intersect(extent(x), extent(ref)) 
@@ -58,13 +58,18 @@ histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nsamp = 1e5, interse
     }
     
     if(!is.null(xmask)) {
+        .vMessage("Apply xmask")
         xfull <- x
         x <- mask(x, xmask)
      }
-    if(!is.null(refmask)) ref <- mask(ref, refmask)
-    
-    ## Sample histogram data
-    ref.sample  <- sampleRandom(ref, nsamp, na.rm = TRUE, ext = ext, xy = precise)
+    if(!is.null(refmask)){
+     .vMessage("Apply refmask")
+        ref <- mask(ref, refmask)
+    }
+    ## Sample histogram data  
+    .vMessage("Extract samples")
+
+    ref.sample  <- sampleRandom(ref, nSamples, na.rm = TRUE, ext = ext, xy = precise)
  
     if(precise) {
         x.sample   <- extract(x, ref.sample[,c("x","y")])
@@ -74,9 +79,10 @@ histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nsamp = 1e5, interse
         x.sample      <- x.sample[valid, , drop = FALSE]
     } else {
         ref.sample  <- ref.sample[,-c(1:2)] 
-        x.sample 	<- sampleRandom(x, nsamp, na.rm = T, ext = ext)
+        x.sample 	<- sampleRandom(x, nSamples, na.rm = T, ext = ext)
     }
     
+    .vMessage("Calculate empirical cumulative histograms")
     layerFun <- lapply(1:ncol(x.sample), function(i) {
                 ## Estimate source empirical cumulative distribution function
                 source.ecdf <- ecdf(x.sample[,i])
@@ -98,6 +104,7 @@ histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nsamp = 1e5, interse
             })
     
     ## Apply histMatch to raster 
+    .vMessage("Apply histogram match functions")
     out <- stack(lapply(1:nlayers(x), FUN = function(i) raster::calc(x[[i]], fun = layerFun[[i]], ...)))
     if(!is.null(xmask)) out <- merge(xfull, out)
     names(out) <- names(x)

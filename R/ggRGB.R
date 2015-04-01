@@ -89,15 +89,14 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
 		for (i in 1:nComps) {	
 			if(verbose){
 				message("Number of pixels clipped in ", c("red", "green", "blue")[i], " band:\n",
-						"below limit: ", sum(RGB[,i] < limits[i,1]), " | above limit: ", sum(RGB[,i] < limits[i,1]))
+						"below limit: ", sum(RGB[,i] < limits[i,1], na.rm = TRUE), " | above limit: ", sum(RGB[,i] > limits[i,2], na.rm = TRUE))
 			}
 			RGB[RGB[,i] < limits[i,1], i] <- clipValues[i,1]
 			RGB[RGB[,i] > limits[i,2], i] <- clipValues[i,2]			
 		}
 	}   
-	
 	rangeRGB <- range(RGB, na.rm = TRUE)
-	if(missing(scale)){ scale <- rangeRGB[2] }
+	if(missing('scale')){ scale <- rangeRGB[2] }
 	
 	if(rangeRGB[1] < 0){
 		RGB 	<- RGB - rangeRGB[1]

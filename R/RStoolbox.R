@@ -16,6 +16,7 @@
 #' \itemize{
 #'  \item \code{\link{radCor}}: radiometric conversions and corrections. Primarily, yet not exclusively, intended for Landsat data processing. DN to radiance to reflectance conversion as well as DOS approaches
 #'  \item \code{\link{cloudMask}}: mask clouds in Landsat or other imagery which comes with a thermal band
+#' 	\item \code{\link{cloudShadowMask}}: mask cloud shadows from cloudMask
 #'  \item \code{\link{normImage}}: norm image to match min/max from another image or a specified min/max range.
 #'  \item \code{\link{histMatch}}: matches the histograms of two scenes.
 #'  \item \code{\link{coregisterImages}}: co-register images based on mutual information.
@@ -35,6 +36,7 @@
 #' @section Data Display:
 #' 
 #' \itemize{
+#' \item \code{\link{ggR}}: single raster layer plotting with ggplot2
 #' \item \code{\link{ggRGB}}: efficient plotting of remote sensing imagery in RGB with ggplot2
 #' }
 #' 
