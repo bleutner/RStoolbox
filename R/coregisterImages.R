@@ -8,7 +8,7 @@
 #' @param shift Numeric or matrix. If numeric, then shift is the maximal absolute radius (in pixels of \code{slave} resolution) which \code{slave} is shifted (\code{seq(-shift, shift, by=shiftInc)}). 
 #'  If shift is a matrix it must have two columns (x shift an y shift), then only these shift values will be tested.
 #' @param shiftInc Numeric. Shift increment (in pixels, but not restricted to integer). Ignored if \code{shift} is a matrix.
-#' @param n Integer. Number of samples to calculate mutual information. 
+#' @param nSamples Integer. Number of samples to calculate mutual information. 
 #' @param nBins Integer. Number of bins to calculate joint histogram.
 #' @param reportStats Logical. If \code{FALSE} it will return only the shifted images. Otherwise it will return the shifted image in a list containing stats such as mutual information per shift and joint histograms.
 #' @param verbose Logical. Print status messages. Overrides global RStoolbox.verbose option.
@@ -52,7 +52,7 @@
 #'p <- ggRGB(reference, NULL, NULL, 3)
 #'p
 #'p + ggRGB(coreg$coregImg,3, NULL,NULL, alpha = 0.5, ggLayer=TRUE) 
-coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, n = 500, reportStats = FALSE, verbose, nBins = 100, ...) {
+coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, nSamples = 1e5, reportStats = FALSE, verbose, nBins = 100, ...) {
     
 	## TODO: allow user selected pseudo control points
 	#if(!swin%%2 | !mwin%%2) stop("swin and mwin must be odd numbers")
@@ -73,7 +73,7 @@ coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, n = 500, re
     minex <- extent(shift(slave, ran[1,1], ran[1,2]))
     maxex <- extent(shift(slave, ran[2,1], ran[2,2]))   
     
-    XYslaves <- sampleRandom(master, size = n, ext = .getExtentOverlap(minex, maxex)*0.9, xy = TRUE)
+    XYslaves <- sampleRandom(master, size = nSamples, ext = .getExtentOverlap(minex, maxex)*0.9, xy = TRUE)
     xy <- XYslaves[,c(1,2)]
     me <- XYslaves[,-c(1,2)]     
     mmin <- min(minValue(master))

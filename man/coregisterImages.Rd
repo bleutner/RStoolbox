@@ -4,7 +4,7 @@
 \alias{coregisterImages}
 \title{Image to Image Co-Registration based on Mutual Information}
 \usage{
-coregisterImages(slave, master, shift = 3, shiftInc = 1, n = 500,
+coregisterImages(slave, master, shift = 3, shiftInc = 1, nSamples = 1e+05,
   reportStats = FALSE, verbose, nBins = 100, ...)
 }
 \arguments{
@@ -17,7 +17,7 @@ If shift is a matrix it must have two columns (x shift an y shift), then only th
 
 \item{shiftInc}{Numeric. Shift increment (in pixels, but not restricted to integer). Ignored if \code{shift} is a matrix.}
 
-\item{n}{Integer. Number of samples to calculate mutual information.}
+\item{nSamples}{Integer. Number of samples to calculate mutual information.}
 
 \item{reportStats}{Logical. If \code{FALSE} it will return only the shifted images. Otherwise it will return the shifted image in a list containing stats such as mutual information per shift and joint histograms.}
 

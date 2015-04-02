@@ -4,7 +4,7 @@
 \alias{cloudMask}
 \title{Simple Cloud Detection}
 \usage{
-cloudMask(x, threshold = 0.8, blue = "B1_sre", tir = "B6_sre",
+cloudMask(x, threshold = 0.8, blue = "B1_sre", tir = "B6_sre", b1 = T,
   buffer = NULL, plot = FALSE, verbose)
 }
 \arguments{

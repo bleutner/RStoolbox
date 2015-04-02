@@ -1,7 +1,8 @@
 #' Radiometric calibration and correction
 #' 
 #' Implements several different methods for absolute radiometric correction of Landsat data.
-#' You can either specify a metadata file, or supply all neccesary values manually. With proper parametrization apref and sdos should work for other sensors as well.
+#' You can either specify a metadata file, or supply all neccesary values manually. 
+#' With proper parametrization apref and sdos should work for other sensors as well.
 #' 
 #' @param img raster object
 #' @param metaData object of class ImageMetaData or a path to the meta data (MTL) file. 
@@ -13,7 +14,7 @@
 #' @param atmosphere Character. Atmospheric characteristics. Will be estimated if not expicilty provided. Must be one of \code{"veryClear", "clear", "moderate", "hazy"} or \code{"veryHazy"}.
 #' @param darkProp numeric. Estimated proportion of dark pixels in the scene. Used only for automatic guessing of hazeValues.
 #' @param verbose Logical. Print status information. 
-#' @note This was originally a fork of randcorr in the landsat package. It may be slower, however it works on Raster* objects and hence is memory-safe.
+#' @note This was originally a fork of randcorr in the landsat package. However it works on Raster* objects and hence is suitable for large rasters.
 #' @details 
 #' 
 #' Conversion to top of atmosphere radiance (\eqn{W/(m^2 * srad * \mu m)}) 

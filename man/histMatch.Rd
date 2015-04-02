@@ -4,7 +4,7 @@
 \alias{histMatch}
 \title{Image to Image Contrast Matching}
 \usage{
-histMatch(x, ref, xmask = NULL, refmask = NULL, nsamp = 1e+05,
+histMatch(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e+05,
   intersectOnly = TRUE, precise = TRUE, forceInteger = FALSE, ...)
 }
 \arguments{
@@ -12,7 +12,7 @@ histMatch(x, ref, xmask = NULL, refmask = NULL, nsamp = 1e+05,
 
 \item{ref}{RasterLayer. Reference raster, to which x will be matched.}
 
-\item{nsamp}{integer. Number of random samples to build the histograms.}
+\item{nSamples}{integer. Number of random samples to build the histograms.}
 
 \item{intersectOnly}{logical. If \code{TRUE} sampling will only take place in the overlap extent of the two rasters. Otherwise the full rasters will be used for sampling.}
 
