@@ -9,12 +9,14 @@
 #' @param r Character or Integer. Red band in \code{img}. Only relevant if \code{method!='pca'}
 #' @param g Character or Integer. Green band in \code{img}. Only relevant if \code{method!='pca'}
 #' @param b Character or Integer. Blue band in \code{img}. Only relevant if \code{method!='pca'}
+#' @param pc Integer. Which principal component to replace. Usually this should be the first component (default). Only if the first component is dominated by something else than brightness it might be worth a try to use the second component.
 #' @param norm Logical. Normalize pan image to 1st PC component. If \code{FALSE} pan will be histogram matched to the 1st PC. Otherwise only min and max are matched.
 #' @details 
 #' Pan sharpening options:
 #' \itemize{ 
 #'  \item{\code{method='pca'}: Performs a pca using \link{rasterPCA}. The first component is then swapped for the pan band an the PCA is rotated backwards.}
 #'  \item{\code{method='ihs'}: Performs a color space transform to Intensity-Hue-Saturation space, swaps intensity for the histogram matched pan and does the backwards transformation.}
+#' 	\item{\code{method='brovey'}: Performs Brovey reweighting. Pan and img must be at the same value scale (e.g. 0:1, or 0:255) otherwise you'll end up with psychodelic colors.}
 #' }
 #' @export
 panSharpen <- function(img, pan, r, g, b, pc = 1, method = "brovey", norm=TRUE) {

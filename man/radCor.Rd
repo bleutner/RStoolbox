@@ -29,7 +29,8 @@ radCor(img, metaData, method = "apref", bandSet = "full", hazeValues,
 }
 \description{
 Implements several different methods for absolute radiometric correction of Landsat data.
-You can either specify a metadata file, or supply all neccesary values manually. With proper parametrization apref and sdos should work for other sensors as well.
+You can either specify a metadata file, or supply all neccesary values manually.
+With proper parametrization apref and sdos should work for other sensors as well.
 }
 \details{
 Conversion to top of atmosphere radiance (\eqn{W/(m^2 * srad * \mu m)})
@@ -58,7 +59,7 @@ Atmospheric haze decay model according to Chavez (1989)
 }
 }
 \note{
-This was originally a fork of randcorr in the landsat package. It may be slower, however it works on Raster* objects and hence is memory-safe.
+This was originally a fork of randcorr in the landsat package. However it works on Raster* objects and hence is suitable for large rasters.
 }
 \references{
 S. Goslee (2011): Analyzing Remote Sensing Data in R: The landsat Package. Journal of Statistical Software 43(4).

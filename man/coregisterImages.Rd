@@ -47,15 +47,15 @@ library(reshape2)
 data(rlogo)
 reference <- rlogo
 ## Shift reference 2 pixels to the right and 3 up
-miss_registered <- shift(reference, x = 2, y = 3)
+missreg <- shift(reference, x = 2, y = 3)
 
 ## Compare shift
 p <- ggRGB(reference, NULL, NULL, 3)
 p
-p + ggRGB(miss_registered, 3, NULL, NULL, alpha = 0.5, ggLayer=TRUE)
+p + ggRGB(missreg, 3, NULL, NULL, alpha = 0.5, ggLayer=TRUE)
 
 ## Coregister images (and report statistics)
-coreg <- coregisterImages(slave = miss_registered, master = reference, reportStats = TRUE)
+coreg <- coregisterImages(missreg, master = reference, nSamples = 500, reportStats = TRUE)
 
 ## Plot mutual information per shift
 ggplot(coreg$MI) + geom_raster(aes(x,y,fill=mi))
@@ -70,6 +70,6 @@ ggplot(df) + geom_raster(aes(x = Var2, y = Var1,fill=value)) + facet_wrap(~L1) +
 ## Compare correction
 p <- ggRGB(reference, NULL, NULL, 3)
 p
-p + ggRGB(coreg$coregImg,3, NULL,NULL, alpha = 0.5, ggLayer=TRUE)
+p + ggRGB(coreg$coregImg, 3, NULL, NULL, alpha = 0.5, ggLayer=TRUE)
 }
 

@@ -30,7 +30,7 @@
 #' ls_cor <- radCor(ls, "path/to/MTL.txt") 
 #' ls_cmask <-cloudMask(ls_cor, returnDiffLayer = TRUE)  
 #' }
-cloudMask <- function(x, threshold = 0.8,  blue = "B1_sre", tir = "B6_sre",b1=T,  buffer = NULL, plot = FALSE, verbose){
+cloudMask <- function(x, threshold = 0.8,  blue = "B1_sre", tir = "B6_sre", buffer = NULL, plot = FALSE, verbose){
     
     if(!missing("verbose")) .initVerbose(verbose)
     ## Set-up graphics device 
@@ -58,18 +58,18 @@ cloudMask <- function(x, threshold = 0.8,  blue = "B1_sre", tir = "B6_sre",b1=T,
     ## Buffer cloud centers (we could also do a circular buffer, but for now this should suffice)
     if(!is.null(buffer)){  
         .vMessage("Begin region-growing")
-
-        if(b1){
-        # TODO: Check buffer vs. focal  performance
-		w <- matrix(ncol = buffer, nrow = buffer, 1)
-        w[c(1,buffer,1,buffer), c(1,1,buffer,buffer)] <- 0
-		cmask <- focal(cmask, w, na.rm = TRUE )
-		cmask[!is.na(cmask)] <- 1L
-       } else {
-        buffer <- buffer * res(cmask)[1]
-        cmask <- buffer(cmask, buffer, na.rm = TRUE )
-        if(plot) plot(cmask, main = "Region-grown cloud mask")
-    }
+        bufferMethod <- 1
+        if(bufferMethod){
+            # TODO: Check buffer vs. focal  performance
+            w <- matrix(ncol = buffer, nrow = buffer, 1)
+            w[c(1,buffer,1,buffer), c(1,1,buffer,buffer)] <- 0
+            cmask <- focal(cmask, w, na.rm = TRUE )
+            cmask[!is.na(cmask)] <- 1L
+        } else {
+            buffer <- buffer * res(cmask)[1]
+            cmask <- buffer(cmask, buffer, na.rm = TRUE )
+            if(plot) plot(cmask, main = "Region-grown cloud mask")
+        }
     }
     
     if(plot){
@@ -127,11 +127,11 @@ cloudShadowMask <- function (img, cm, nc = 5, shiftEstimate = NULL, preciseShift
         } else if(!(is.vector(shiftEstimate) && length(shiftEstimate) == 2) ) {
             stop("meanShift must be a numeric vector of length two (x,y) or NULL")
         }
-   
+        
         cma <- is.na(cm[[1]])
         shifts <- matrix(shiftEstimate + rep(seq(-3,3,0.5), each = 2), ncol=2, byrow=TRUE)
         colnames(shifts) <- c("x", "y")
-        cms <- coregisterImages(cma, csindm, shift = shifts, nBins = 2, n = ncell(cm), reportStats = TRUE)
+        cms <- coregisterImages(cma, csindm, shift = shifts, nBins = 2, nSamples = ncell(cm), reportStats = TRUE)
         shiftPar <- cms$bestShift
         cms <- cms$coregImg
         cms[cms == 1] <- NA

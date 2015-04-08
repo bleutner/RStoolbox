@@ -28,15 +28,15 @@
 #' data(rlogo)
 #' reference <- rlogo
 #' ## Shift reference 2 pixels to the right and 3 up
-#' miss_registered <- shift(reference, x = 2, y = 3)
+#' missreg <- shift(reference, x = 2, y = 3)
 #'
 #'## Compare shift
 #'p <- ggRGB(reference, NULL, NULL, 3) 
 #'p
-#'p + ggRGB(miss_registered, 3, NULL, NULL, alpha = 0.5, ggLayer=TRUE) 
+#'p + ggRGB(missreg, 3, NULL, NULL, alpha = 0.5, ggLayer=TRUE) 
 #'
 #'## Coregister images (and report statistics)
-#'coreg <- coregisterImages(slave = miss_registered, master = reference, reportStats = TRUE)
+#'coreg <- coregisterImages(missreg, master = reference, nSamples = 500, reportStats = TRUE)
 #'
 #'## Plot mutual information per shift
 #'ggplot(coreg$MI) + geom_raster(aes(x,y,fill=mi))
@@ -51,14 +51,14 @@
 #'## Compare correction
 #'p <- ggRGB(reference, NULL, NULL, 3)
 #'p
-#'p + ggRGB(coreg$coregImg,3, NULL,NULL, alpha = 0.5, ggLayer=TRUE) 
+#'p + ggRGB(coreg$coregImg, 3, NULL, NULL, alpha = 0.5, ggLayer=TRUE) 
 coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, nSamples = 1e5, reportStats = FALSE, verbose, nBins = 100, ...) {
     
 	## TODO: allow user selected pseudo control points
 	#if(!swin%%2 | !mwin%%2) stop("swin and mwin must be odd numbers")
     if(!missing("verbose")) .initVerbose(verbose)
     if(!compareCRS(master,  slave)) stop("Projection must be the same for master and slave")
-    
+    nSamples <- min(nSamples, ncell(slave))
     
     if(inherits(shift, "matrix") && ncol(shift)  == 2) { 
         shifts <- shift * res(slave) 
@@ -72,7 +72,7 @@ coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, nSamples = 
     ran   <- apply(shifts, 2, range)
     minex <- extent(shift(slave, ran[1,1], ran[1,2]))
     maxex <- extent(shift(slave, ran[2,1], ran[2,2]))   
-    
+
     XYslaves <- sampleRandom(master, size = nSamples, ext = .getExtentOverlap(minex, maxex)*0.9, xy = TRUE)
     xy <- XYslaves[,c(1,2)]
     me <- XYslaves[,-c(1,2)]     
@@ -129,7 +129,7 @@ coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, nSamples = 
             }, envir = environment() )
     
     ## Aggregate stats
-    mi <- vapply(sh,"[[",i=1, numeric(1)) 
+    mi <- vapply(sh,"[[", i = 1, numeric(1)) 
     if(reportStats){
         jh <- lapply(sh, function(x) matrix(as.vector(x$joint), nrow=nrow(x$joint), ncol=ncol(x$joint)))   
         names(jh) <- paste(shifts[,"x"], shifts[,"y"], sep = "/")
