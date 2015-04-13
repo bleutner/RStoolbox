@@ -205,7 +205,7 @@ readMeta <- function(file, raw = FALSE){
 #' @param calref data.frame. Calibration coefficients for dn->reflectance conversion. Must have columns 'gain' and 'offset'. Rows named according to \code{bands}.
 #' @param calbt data.frame. Calibration coefficients for dn->brightness temperature conversion. Must have columns 'K1' and 'K2'. Rows named according to \code{bands}.
 #' @export
-ImageMetaData <- function(file = NA, format = NA, sat = NA, sen = NA,scene = NA, proj =NA, date = NA, pdate = NA,path = NA, row = NA, az = NA, selv = NA,
+ImageMetaData <- function(file = NA, format = NA, sat = NA, sen = NA, scene = NA, proj =NA, date = NA, pdate = NA,path = NA, row = NA, az = NA, selv = NA,
         esd = NA, files = NA, bands = NA, quant = NA, cat = NA, na = NA, vsat = NA, scal = NA, dtyp = NA, calrad = NA, calref = NA, calbt = NA, radRes=NA, spatRes = NA){
     obj <- list(
             METADATA_FILE = file,
@@ -236,12 +236,14 @@ ImageMetaData <- function(file = NA, format = NA, sat = NA, sen = NA,scene = NA,
             CALBT = calbt
     
     )
+    if(length(bands) == 1 && is.na(bands)) BANDS <- bands <- "1"
     rownames(obj$DATA) <- bands
     
     ## Re-order DATA
     obj$DATA <- obj$DATA[with(obj$DATA, order(factor(CATEGORY, levels = c("image", "pan", "index", "qa")),
-                            factor(QUANTITY, levels = c("dn", "tra", "tre", "sre", "bt", "idx")),
-                            .getNumeric(BANDS))),]
+                            .getNumeric(BANDS),
+                            factor(QUANTITY, levels = c("dn", "tra", "tre", "sre", "bt", "idx"))
+                            )),]
     
     structure(obj, class = c("ImageMetaData", "RStoolbox"))    
 }
