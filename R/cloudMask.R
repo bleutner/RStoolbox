@@ -85,7 +85,7 @@ cloudMask <- function(x, threshold = 0.8,  blue = "B1_sre", tir = "B6_sre", buff
 
 
 
-#' Cloud Shadow Detection
+#' Cloud Shadow Masking for Flat Terrain
 #' 
 #' Intended for interactive use \code{cloudShadowMask} will ask the user to select a few 
 #' corresponding cloud/cloudShadow pixels which will be used to estimate coordinates 

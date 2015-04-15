@@ -2,7 +2,7 @@
 % Please edit documentation in R/cloudMask.R
 \name{cloudShadowMask}
 \alias{cloudShadowMask}
-\title{Cloud Shadow Detection}
+\title{Cloud Shadow Masking for Flat Terrain}
 \usage{
 cloudShadowMask(img, cm, nc = 5, shiftEstimate = NULL,
   preciseShift = NULL, threshold = 0.1, returnShift = FALSE)

@@ -26,7 +26,7 @@ getMeta <- function(img, metaData, what){
         stop("img must be a Raster* or character")
     }
     stopifnot(what %in% names(metaData$DATA))
-    
-    return(metaData$DATA[bds,what])
+   
+    return(metaData[[DATA]][bds,what])
     
 }
