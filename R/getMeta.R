@@ -27,6 +27,6 @@ getMeta <- function(img, metaData, what){
     }
     stopifnot(what %in% names(metaData$DATA))
    
-    return(metaData[[DATA]][bds,what])
+    return(metaData$DATA[bds,what])
     
 }
