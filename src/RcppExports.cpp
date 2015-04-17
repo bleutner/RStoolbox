@@ -5,6 +5,23 @@
 
 using namespace Rcpp;
 
+// gainOffsetRescale
+NumericMatrix gainOffsetRescale(NumericMatrix x, NumericVector g, NumericVector o);
+RcppExport SEXP RStoolbox_gainOffsetRescale(SEXP xSEXP, SEXP gSEXP, SEXP oSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< NumericMatrix >::type x(xSEXP );
+        Rcpp::traits::input_parameter< NumericVector >::type g(gSEXP );
+        Rcpp::traits::input_parameter< NumericVector >::type o(oSEXP );
+        NumericMatrix __result = gainOffsetRescale(x, g, o);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
 // whichColMinC
 IntegerVector whichColMinC(NumericMatrix x, NumericMatrix centers);
 RcppExport SEXP RStoolbox_whichColMinC(SEXP xSEXP, SEXP centersSEXP) {

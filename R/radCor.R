@@ -122,7 +122,7 @@ radCor <-	function(img, metaData, method = "apref", bandSet = "full", hazeValues
     TAUv <- 1
     Edown <- 0
     Lhaze <- 0   
-    if(method != "apref") {
+    if(!method %in% c("apref", "rad")) {
         
         ## Estimate hazeValues automatically
         if(missing(hazeValues)){
@@ -201,7 +201,7 @@ radCor <-	function(img, metaData, method = "apref", bandSet = "full", hazeValues
         layernames <-   if(method == "apref") gsub("_dn", "_tre", bandSet) else gsub("_dn", "_sre", bandSet)               
     }  
     .vMessage("Processing radiance / reflectance")  
-    xref <- .paraRasterFun(img[[bandSet]], rasterFun = calc, args = list(fun = function(x) {t(GAIN * t(x) + OFFSET)}, forcefun=TRUE))
+    xref <- .paraRasterFun(img[[bandSet]], rasterFun = calc, args = list(fun = function(x) {gainOffsetRescale(x,GAIN,OFFSET)}, forcefun=TRUE))
     names(xref) <- layernames   
     
     ## Re-combine thermal, solar and excluded imagery
