@@ -5,7 +5,7 @@
 \title{Create ggplot raster with RGB from 3 rasterLayers}
 \usage{
 ggRGB(img, r = 3, g = 2, b = 1, scale, maxpixels = 5e+05,
-  stretch = "lin", ext = NULL, limits = NULL, clipValues = "limits",
+  stretch = "none", ext = NULL, limits = NULL, clipValues = "limits",
   quantiles = c(0.02, 0.98), ggObj = TRUE, ggLayer = FALSE, alpha = 1,
   coordEqual = TRUE, annotation = TRUE)
 }

@@ -4,7 +4,7 @@
 \alias{ggR}
 \title{Plot RasterLayers in ggplot with greyscale}
 \usage{
-ggR(img, layer = 1, maxpixels = 5e+05, alpha = 1, stretch = "lin",
+ggR(img, layer = 1, maxpixels = 5e+05, alpha = 1, stretch = "none",
   quantiles = c(0.02, 0.98), coordEqual = TRUE, ggLayer = FALSE,
   ggObj = TRUE, annotation = TRUE, forceCat = FALSE)
 }

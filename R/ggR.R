@@ -64,9 +64,10 @@
 #' ## Legend cusomization etc. ...
 #' ggR(rc, annotation = FALSE) + scale_fill_discrete(labels=paste("Class", 1:6))
 #'  
-ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, stretch = "lin", quantiles = c(0.02,0.98), coordEqual = TRUE, ggLayer=FALSE, ggObj = TRUE, annotation = TRUE, forceCat = FALSE) {
+ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, stretch = "none", quantiles = c(0.02,0.98), coordEqual = TRUE, ggLayer=FALSE, ggObj = TRUE, annotation = TRUE, forceCat = FALSE) {
      
-    layer <- unlist(.numBand(img, layer))
+    
+	layer <- unlist(.numBand(img, layer))
     xfort <- sampleRegular(img[[layer]], maxpixels, asRaster = TRUE)
     if(is.factor(img[[layer]])) {
         rat <- levels(xfort)

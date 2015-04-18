@@ -55,7 +55,7 @@
 #' p + ggRGB(rlogo, ggLayer = TRUE) + 
 #'        geom_polygon(aes(x, y), fill = "blue", alpha = 0.4) +
 #'        coord_equal(ylim=c(0,75))
-ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = "lin", ext = NULL,  limits = NULL, clipValues  = "limits", quantiles = c(0.02,0.98),
+ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = "none", ext = NULL,  limits = NULL, clipValues  = "limits", quantiles = c(0.02,0.98),
 		ggObj = TRUE, ggLayer = FALSE, alpha = 1, coordEqual = TRUE, annotation = TRUE) { 
     
     ## TODO: handle single value rasters (e.g. masks)
