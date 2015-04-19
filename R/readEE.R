@@ -18,6 +18,7 @@ readEE <- function(x) {
 				df$Num <- as.numeric(substr(df$Landsat.Scene.Identifier,3,3))
 				df
 			})
-	do.call("rbind", llee)
+	out <- do.call("rbind", llee)
+	return(out)
 }
 
