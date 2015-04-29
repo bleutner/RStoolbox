@@ -9,32 +9,36 @@ using namespace Rcpp;
 NumericMatrix gainOffsetRescale(NumericMatrix x, NumericVector g, NumericVector o);
 RcppExport SEXP RStoolbox_gainOffsetRescale(SEXP xSEXP, SEXP gSEXP, SEXP oSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< NumericMatrix >::type x(xSEXP );
-        Rcpp::traits::input_parameter< NumericVector >::type g(gSEXP );
-        Rcpp::traits::input_parameter< NumericVector >::type o(oSEXP );
-        NumericMatrix __result = gainOffsetRescale(x, g, o);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericMatrix >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type g(gSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type o(oSEXP);
+    __result = Rcpp::wrap(gainOffsetRescale(x, g, o));
+    return __result;
+END_RCPP
+}
+// specSimC
+NumericMatrix specSimC(NumericMatrix& x, NumericMatrix& em);
+RcppExport SEXP RStoolbox_specSimC(SEXP xSEXP, SEXP emSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericMatrix& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix& >::type em(emSEXP);
+    __result = Rcpp::wrap(specSimC(x, em));
+    return __result;
 END_RCPP
 }
 // whichColMinC
 IntegerVector whichColMinC(NumericMatrix x, NumericMatrix centers);
 RcppExport SEXP RStoolbox_whichColMinC(SEXP xSEXP, SEXP centersSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< NumericMatrix >::type x(xSEXP );
-        Rcpp::traits::input_parameter< NumericMatrix >::type centers(centersSEXP );
-        IntegerVector __result = whichColMinC(x, centers);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericMatrix >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type centers(centersSEXP);
+    __result = Rcpp::wrap(whichColMinC(x, centers));
+    return __result;
 END_RCPP
 }
