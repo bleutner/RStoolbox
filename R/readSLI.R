@@ -30,8 +30,8 @@ readSLI <- function(path) {
     if(file.exists(str_c(path, ".hdr"))){
         hdr_path <- str_c(path, ".hdr")
     } else {
-        if (file.exists(str_c(str_split(path,"[.]")[[1]][1], ".hdr"))){
-            hdr_path <- str_c(str_split(path,"[.]")[[1]][1], ".hdr")
+        if (file.exists(paste0(str_split(path,"[.]")[[1]][1], ".hdr"))){
+            hdr_path <- paste0(str_split(path,"[.]")[[1]][1], ".hdr")
         } else {
             stop(paste0("Can't find header file of", path), call.= FALSE)
         }
@@ -39,9 +39,9 @@ readSLI <- function(path) {
     
     ## Get header info
     hdr <- readLines(hdr_path, n=-1L)
-    bands <- as.numeric(tail(.d(hdr, "samples ="), 1))
-    lines <- as.numeric(tail(.d(hdr, "lines   ="), 1))
-    data_type <- as.numeric(tail(.d(hdr, "data type ="), 1))
+    bands <-.getNumeric(hdr[grep("samples", hdr)])
+    lines <- .getNumeric(hdr[grep("lines", hdr)])
+    data_type <- .getNumeric(hdr[grep("data type", hdr)])
     
     ## Extract spectra labels
     id <- .bracketRange(hdr, "spectra names")
@@ -170,9 +170,6 @@ writeSLI <- function(x, path, wavl.units="Micrometers", scaleF=1.000000, mode="b
     }
 }
 
-
-## Find a pattern an split the resulting string
-.d <-function(x,string){unlist(str_split(x[grep(string,x)],"[ \\]"))}
 
 
 

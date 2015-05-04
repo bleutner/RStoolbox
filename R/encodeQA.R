@@ -1,4 +1,4 @@
-#' Encode QA flags to integers
+#' Encode QA Conditions to Integers
 #' 
 #' Intended for use with the Landsat 8 OLI QA band. Converts pixel quality flags from human to integer, which can then be used to 
 #' subset the QA image. Please be aware of the default settings which differ for different parameters.
@@ -12,7 +12,8 @@
 #' @param cloud Cloud confidence. Options: \code{c("na", "low", "med", "high", "all")}.
 #' 
 #' @note 
-#' Only currently populated bits are available as arguments, i.e. vegetation confidence, cloud shadow and bit nr. 3. ar currently useless and hence not available.
+#' Only currently populated bits are available as arguments, i.e. vegetation confidence, cloud shadow and bit nr. 3. are currently useless and hence not available.
+#' 
 #' @references 
 #' \url{http://landsat.usgs.gov/L8QualityAssessmentBand.php} 
 #' @export 
@@ -57,8 +58,10 @@ encodeQA <- function(fill = "no", droppedFrame = "no", terrainOcclusion = "no",
 
 #' Decode QA flags to bit-words
 #' 
+#' Intended for use with the Landsat 8 OLI QA band. Decodes pixel quality flags from integer to bit-words.
 #' @param x Integer (16bit)
 #' @export
+#' @seealso \link{encodeQA}
 #' @examples
 #' decodeQA(53248)
 decodeQA <- function(x){

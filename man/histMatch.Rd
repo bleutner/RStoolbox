@@ -34,7 +34,7 @@ Performs image to image contrast adjustments based on histogram matching using e
 }
 \examples{
 library(ggplot2)
-
+library(raster)
 data(rlogo)
 ## Original image a (+1 to prevent log(0))
 img_a <-  rlogo + 1

@@ -32,6 +32,7 @@ This means that a kmeans cluster map is calculated based on a random subset of p
 is calculated in a stepwise fashion using raster::predict. Class assignment is based on minimum distance to the cluster centers.
 }
 \examples{
+library(raster)
 input <- brick(system.file("external/rlogo.grd", package="raster"))
 
 ## Plot

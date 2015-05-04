@@ -62,6 +62,7 @@ Validation on a separate (not used for training) set of polygons/points is highl
 library(randomForest)
 library(e1071)
 }
+library(raster)
 input <- brick(system.file("external/rlogo.grd", package="raster"))
 train <- readRDS(system.file("external/training.rds", package="RStoolbox"))
 

@@ -31,6 +31,7 @@
 #' library(randomForest)
 #' library(e1071)
 #' }
+#' library(raster)
 #' input <- brick(system.file("external/rlogo.grd", package="raster"))
 #' train <- readRDS(system.file("external/training.rds", package="RStoolbox"))
 #' 

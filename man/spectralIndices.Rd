@@ -49,12 +49,12 @@ Although the defaults are sensible values, it can make sense to adjust the SAVI 
 \tabular{lllll}{ \strong{ Index } \tab \strong{ Description } \tab \strong{ Source } \tab \strong{ Bands } \tab \strong{ Formula } \cr DVI \tab Difference Vegetation Index \tab Richardson1977 \tab \code{red, nir} \tab \eqn{s * nir - red} \cr EVI \tab Enhanced Vegetation Index \tab Huete1999 \tab \code{red, nir, blue} \tab \eqn{G * ((nir - red)/(nir + C1 * red - C2 * blue + L_evi))} \cr GEMI \tab Global Environmental Monitoring Index \tab Pinty1992 \tab \code{red, nir} \tab \eqn{(((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5))/(nir + red + 0.5)) * (1 - ((((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5))/(nir + red + 0.5)) * 0.25)) - ((red - 0.125)/(1 - red))} \cr LSWI \tab Land Surface Water Index \tab  \tab \code{nir, swir} \tab \eqn{(nir - swir)/(nir + swir)} \cr MSAVI \tab Modified Soil Adjusted Vegetation Index \tab Qi1994 \tab \code{red, nir} \tab \eqn{nir + 0.5 - (0.5 * sqrt((2 * nir + 1)^2 - 8 * (nir - (2 * red))))} \cr MSAVI2 \tab Modified Soil Adjusted Vegetation Index 2 \tab Qi1994 \tab \code{red, nir} \tab \eqn{(2 * (nir + 1) - sqrt((2 * nir + 1)^2 - 8 * (nir - red)))/2} \cr NDVI \tab Normalised Difference Vegetation Index \tab Rouse1974 \tab \code{red, nir} \tab \eqn{(nir - red)/(nir + red)} \cr NDWI \tab Normalised Difference Water Index \tab  \tab \code{green, nir} \tab \eqn{(green - nir)/(green + nir)} \cr SAVI \tab Soil Adjusted Vegetation Index \tab Huete1988 \tab \code{red, nir} \tab \eqn{(nir - red) * (1 + L)/(nir + red + L)} \cr SLAVI \tab Specific Leaf Area Vegetation Index \tab Lymburger2000 \tab \code{red, nir, mir} \tab \eqn{nir/(red + mir)} \cr SR \tab Simple Ratio Vegetation Index \tab Birth1968 \tab \code{red, nir} \tab \eqn{nir/red} \cr TVI \tab Transformed Vegetation Index \tab Deering1975 \tab \code{red, nir} \tab \eqn{sqrt(((nir - red)/(nir + red)) + 0.5)} \cr WDVI \tab Weighted Difference Vegetation Index \tab Richardson1977 \tab \code{red, nir} \tab \eqn{nir - s * red} \cr DVI \tab Difference Vegetation Index \tab Richardson1977 \tab \code{red, nir} \tab \eqn{s * nir - red} }
 }
 \examples{
-r <- raster(ncol=10,nrow=10)
-r[] <- sample(1:155, 100, TRUE)
-r <- stack(r, r + 90 + rnorm(100, 10))
-names(r) <- c("red", "nir")
-SI <- spectralIndices(r, red = 1, nir = 2, indices = "NDVI")
-plot(SI)
+library(ggplot2)
+data(rlogo)
+rlogo[["nir"]] <- rlogo[[2]] + 100
+SI <- spectralIndices(rlogo, red = "red", nir = "nir", indices = "NDVI")
+ggR(SI, annotation=FALSE) +
+    scale_fill_gradient(low = "white", high = "green", na.value = NA)
 }
 \seealso{
 \code{\link[raster]{overlay}}

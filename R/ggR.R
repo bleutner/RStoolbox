@@ -28,6 +28,7 @@
 #' @export 
 #' @examples
 #' library(ggplot2)
+#' library(raster)
 #' data(rlogo)
 #' 
 #' ## Simple grey scale annotation

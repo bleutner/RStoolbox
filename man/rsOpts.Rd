@@ -7,7 +7,7 @@
 rsOpts(verbose)
 }
 \arguments{
-\item{verbose}{Logical. Make all functions print status messages}
+\item{verbose}{Logical. If \code{TRUE} many functions will print status messages about the current processing step.}
 }
 \description{
 shortcut to options(RStoolbox.*)

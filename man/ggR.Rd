@@ -46,6 +46,7 @@ that ggplot2 uses a discrete scale, not a continuous one.
 }
 \examples{
 library(ggplot2)
+library(raster)
 data(rlogo)
 
 ## Simple grey scale annotation

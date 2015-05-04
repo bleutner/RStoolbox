@@ -2,7 +2,7 @@
 % Please edit documentation in R/encodeQA.R
 \name{encodeQA}
 \alias{encodeQA}
-\title{Encode QA flags to integers}
+\title{Encode QA Conditions to Integers}
 \usage{
 encodeQA(fill = "no", droppedFrame = "no", terrainOcclusion = "no",
   water = "all", snow = "all", cirrus = "all", cloud = "all")
@@ -27,7 +27,7 @@ Intended for use with the Landsat 8 OLI QA band. Converts pixel quality flags fr
 subset the QA image. Please be aware of the default settings which differ for different parameters.
 }
 \note{
-Only currently populated bits are available as arguments, i.e. vegetation confidence, cloud shadow and bit nr. 3. ar currently useless and hence not available.
+Only currently populated bits are available as arguments, i.e. vegetation confidence, cloud shadow and bit nr. 3. are currently useless and hence not available.
 }
 \examples{
 encodeQA(snow = "low", cirrus = c("med", "high"), cloud = "high")

@@ -2,7 +2,7 @@
 #' 
 #' shortcut to options(RStoolbox.*)
 #' 
-#' @param verbose Logical. Make all functions print status messages
+#' @param verbose Logical. If \code{TRUE} many functions will print status messages about the current processing step.
 #' @export
 #' @examples 
 #' \dontrun{

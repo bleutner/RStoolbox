@@ -14,9 +14,9 @@ Description: Toolbox for remote sensing image processing and analysis such
 URL: https://github.com/bleutner/RStoolbox    
 BugReports: https://github.com/bleutner/RStoolbox/issues    
 Depends: 
-    R (>= 3.1.0),
-    raster
+    R (>= 3.1.0)
 Imports: 
+	raster,
     sp,
     stringr,
     caret,
@@ -34,6 +34,7 @@ Imports:
 Suggests: 
     randomForest,
     e1071,
+    gridExtra,
     testthat
 LinkingTo: Rcpp    
 License: GPL (>=3)

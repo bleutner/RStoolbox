@@ -16,12 +16,12 @@
 #' @seealso \code{\link[raster]{overlay}} 
 #' @export
 #' @examples
-#' r <- raster(ncol=10,nrow=10)
-#' r[] <- sample(1:155, 100, TRUE)
-#' r <- stack(r, r + 90 + rnorm(100, 10)) 
-#' names(r) <- c("red", "nir")
-#' SI <- spectralIndices(r, red = 1, nir = 2, indices = "NDVI")
-#' plot(SI)
+#' library(ggplot2)
+#' data(rlogo)
+#' rlogo[["nir"]] <- rlogo[[2]] + 100
+#' SI <- spectralIndices(rlogo, red = "red", nir = "nir", indices = "NDVI")
+#' ggR(SI, annotation=FALSE) + 
+#'     scale_fill_gradient(low = "white", high = "green", na.value = NA)
 spectralIndices <- function(img, blue=NULL, red=NULL, nir=NULL, mir=NULL, indices=NULL, index = NULL, coefs = list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5, s = 1),
         ... ) {
     # TODO: add further indices

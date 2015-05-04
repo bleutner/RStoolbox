@@ -24,23 +24,24 @@
 #' @return RasterBrick
 #' @export 
 #' @examples 
-#' input <- brick(system.file("external/rlogo.grd", package="raster"))
+#' library(ggplot2)
+#' library(reshape2)
+#' data(rlogo)
+#' ggRGB(rlogo, 1,2,3)
 #' 
-#' ## Plot 
-#' olpar <- par(no.readonly = TRUE) # back-up par
-#' par(mfrow=c(1,2))
-#' plotRGB(input)
-#' 
-#' ## Run classification
+#' ## Run PCA
 #' set.seed(25)
-#' rpc <- rasterPCA(input)
+#' rpc <- rasterPCA(rlogo)
 #' rpc
 #' summary(rpc$model)
 #' 
-#' ## Plots
-#' plotRGB(rpc$map, stretch="lin") 
-#' 
-#' par(olpar) # reset par
+#' ggRGB(rpc$map,1,2,3, stretch="lin", q=0)
+#' if(require(gridExtra)){
+#' plots <- lapply(1:3, function(x) ggR(rpc$map, x, anno = FALSE))
+#' grid.arrange(plots[[1]],plots[[2]], plots[[3]], ncol=2)
+#' }
+
+
 rasterPCA <- function(img, nSamples = NULL, nComp = nlayers(img), spca = FALSE, maskCheck = TRUE, ...){      
     
     if(nlayers(img) <= 1) stop("Need at least two layers to calculate PCA.")    

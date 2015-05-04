@@ -16,6 +16,7 @@
 #' @param ... further arguments to be passed to \link[raster]{writeRaster}, e.g. filename
 #' @export
 #' @examples 
+#' library(raster)
 #' input <- brick(system.file("external/rlogo.grd", package="raster"))
 #' 
 #' ## Plot 

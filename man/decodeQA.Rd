@@ -10,9 +10,12 @@ decodeQA(x)
 \item{x}{Integer (16bit)}
 }
 \description{
-Decode QA flags to bit-words
+Intended for use with the Landsat 8 OLI QA band. Decodes pixel quality flags from integer to bit-words.
 }
 \examples{
 decodeQA(53248)
+}
+\seealso{
+\link{encodeQA}
 }
 
