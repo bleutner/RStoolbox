@@ -8,7 +8,7 @@
 #' @param refmask RasterLayer. Mask layer for \code{ref}. Any NA pixel in \code{refmask} will be ignored (\code{maskvalue = NA}). 
 #' @param nSamples integer. Number of random samples to build the histograms.
 #' @param intersectOnly logical. If \code{TRUE} sampling will only take place in the overlap extent of the two rasters. Otherwise the full rasters will be used for sampling.
-#' @param precise logical. If \code{TRUE} the exact same pixels will be used in the overlap.
+#' @param paired logical. If \code{TRUE} the corresponding pixels will be used in the overlap.
 #' @param ... Further arguments to be passed to \link[raster]{writeRaster}.
 #' @param forceInteger logical. Force integer output.
 #' @return A RasterLayer of x adjusted to the histogram of ref.
@@ -46,16 +46,16 @@
 #' redLayers <- stack(img_a, img_b, img_b_matched)[[c(1,4,7)]]
 #' names(redLayers) <- c("img_a", "img_b", "img_b_matched")
 #' 
-#' hist(redLayers)
+#' hist(redLayers) 
 #' ## Reset par 
 #' par(opar)
-histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e5, intersectOnly = TRUE, precise = TRUE, forceInteger = FALSE, ...){
+histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e5, intersectOnly = TRUE, paired = TRUE, forceInteger = FALSE, ...){
     if(nSamples > ncell(ref)) nSamples <- ncell(ref)
     
     ## Define intersecting extent if required. Returns NULL if FALSE
-    ext <- if(precise | intersectOnly) intersect(extent(x), extent(ref)) 
-    if(precise & is.null(ext)) {
-        precise <- FALSE
+    ext <- if(paired | intersectOnly) intersect(extent(x), extent(ref)) 
+    if(paired & is.null(ext)) {
+        paired <- FALSE
         warning("Rasters do not overlap. Precise sampling disabled.", call. = FALSE)
     }
     
@@ -71,9 +71,9 @@ histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e5, inte
     ## Sample histogram data  
     .vMessage("Extract samples")
 
-    ref.sample  <- sampleRandom(ref, nSamples, na.rm = TRUE, ext = ext, xy = precise)
+    ref.sample  <- sampleRandom(ref, nSamples, na.rm = TRUE, ext = ext, xy = paired)
  
-    if(precise) {
+    if(paired) {
         x.sample   <- extract(x, ref.sample[,c("x","y")])
         if(is.vector(x.sample)) x.sample <- as.matrix(x.sample)
         valid <- complete.cases(x.sample)
