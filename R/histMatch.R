@@ -71,7 +71,7 @@ histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e5, inte
     ## Sample histogram data  
     .vMessage("Extract samples")
 
-    ref.sample  <- sampleRandom(ref, nSamples, na.rm = TRUE, ext = ext, xy = paired)
+    ref.sample  <- sampleRandom(ref, size = nSamples, na.rm = TRUE, ext = ext, xy = paired)
  
     if(paired) {
         x.sample   <- extract(x, ref.sample[,c("x","y")])
@@ -80,8 +80,7 @@ histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e5, inte
         ref.sample <- ref.sample[valid, -c(1:2), drop = FALSE] 
         x.sample      <- x.sample[valid, , drop = FALSE]
     } else {
-        ref.sample  <- ref.sample[,-c(1:2)] 
-        x.sample 	<- sampleRandom(x, nSamples, na.rm = T, ext = ext)
+        x.sample 	<- sampleRandom(x, size = nSamples, na.rm = T, ext = ext)
     }
     
     .vMessage("Calculate empirical cumulative histograms")
@@ -102,12 +101,19 @@ histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e5, inte
                         else {
                             function(values, na.rm = FALSE){       inverse.ref.ecdf( source.ecdf(values))}
                         }
-                histMatchFun
+                histMatchFun    
             })
     
+    totalFun <- function(x, f = layerFun) {
+        app <- lapply(1:ncol(x), function(i) {
+            f[[i]](x[,i])       
+        })
+        do.call("cbind", app)
+    }
     ## Apply histMatch to raster 
     .vMessage("Apply histogram match functions")
-    out <- stack(lapply(1:nlayers(x), FUN = function(i) raster::calc(x[[i]], fun = layerFun[[i]], ...)))
+    out <- raster::calc(x, fun = totalFun, forcefun = TRUE, ...)
+    
     if(!is.null(xmask)) out <- merge(xfull, out)
     names(out) <- names(x)
     
