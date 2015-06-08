@@ -1,17 +1,20 @@
 #' Image to Image Contrast Matching
 #' 
-#' Performs image to image contrast adjustments based on histogram matching using empirical cumulative distribution functions from both images.
+#' Performs image to image contrast adjustments based on histogram matching using empirical cumulative
+#'  distribution functions from both images.
 #' 
-#' @param x RasterLayer. Source raster which is to be modified.
-#' @param ref RasterLayer. Reference raster, to which x will be matched.
+#' @param x Raster*. Source raster which is to be modified.
+#' @param ref Raster*. Reference raster, to which x will be matched.  
 #' @param xmask RasterLayer. Mask layer for \code{x} to exclude pixels which might distort the histogram, i.e. are not present in \code{ref}. Any NA pixel in \code{xmask} will be ignored (\code{maskvalue = NA}). 
 #' @param refmask RasterLayer. Mask layer for \code{ref}. Any NA pixel in \code{refmask} will be ignored (\code{maskvalue = NA}). 
-#' @param nSamples integer. Number of random samples to build the histograms.
+#' @param nSamples Integer. Number of random samples to build the histograms.
 #' @param intersectOnly logical. If \code{TRUE} sampling will only take place in the overlap extent of the two rasters. Otherwise the full rasters will be used for sampling.
-#' @param paired logical. If \code{TRUE} the corresponding pixels will be used in the overlap.
+#' @param paired Logical. If \code{TRUE} the corresponding pixels will be used in the overlap.
+#' @param returnFunctions Logical. If \code{TRUE} the matching functions themselves will be returned instead of applying them to \code{x}. 
 #' @param ... Further arguments to be passed to \link[raster]{writeRaster}.
 #' @param forceInteger logical. Force integer output.
-#' @return A RasterLayer of x adjusted to the histogram of ref.
+#' @note \code{x} and \code{ref} must have the same number of layers.
+#' @return A Raster* object of \code{x} adjusted to the histogram of \code{ref}. If \code{returnFunctions  = TRUE} a list of functions (one for each layer) will be returned instead. 
 #' @references Richards and Jia: Remote Sensing Digital Image Analysis. Springer, Berlin, Heidelberg, Germany, 439pp.
 #' @export
 #' @examples 
@@ -49,7 +52,8 @@
 #' hist(redLayers) 
 #' ## Reset par 
 #' par(opar)
-histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e5, intersectOnly = TRUE, paired = TRUE, forceInteger = FALSE, ...){
+histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e5, intersectOnly = TRUE, paired = TRUE, 
+        forceInteger = FALSE, returnFunctions = FALSE, ...){
     if(nSamples > ncell(ref)) nSamples <- ncell(ref)
     
     ## Define intersecting extent if required. Returns NULL if FALSE
@@ -58,6 +62,7 @@ histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e5, inte
         paired <- FALSE
         warning("Rasters do not overlap. Precise sampling disabled.", call. = FALSE)
     }
+    if(nlayers(x) != nlayers(ref)) stop("x and ref must have the same number of layers.")
     
     if(!is.null(xmask)) {
         .vMessage("Apply xmask")
@@ -104,17 +109,23 @@ histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e5, inte
                 histMatchFun    
             })
     
-    totalFun <- function(x, f = layerFun) {
-        app <- lapply(1:ncol(x), function(i) {
-            f[[i]](x[,i])       
+    totalFun <- function(xvals, f = layerFun) {
+        app <- lapply(1:ncol(xvals), function(i) {
+            f[[i]](xvals[,i])       
         })
         do.call("cbind", app)
+    }
+    
+    ## Return LUT functions
+    if(returnFunctions) {
+        names(layerFun) <- names(x)
+        return(layerFun)
     }
     ## Apply histMatch to raster 
     .vMessage("Apply histogram match functions")
     out <- raster::calc(x, fun = totalFun, forcefun = TRUE, ...)
     
-    if(!is.null(xmask)) out <- merge(xfull, out)
+    if(!is.null(xmask)) out <- merge(xfull, out, ..., overwrite = TRUE)
     names(out) <- names(x)
     
     out

@@ -5,32 +5,39 @@
 \title{Image to Image Contrast Matching}
 \usage{
 histMatch(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e+05,
-  intersectOnly = TRUE, paired = TRUE, forceInteger = FALSE, ...)
+  intersectOnly = TRUE, paired = TRUE, forceInteger = FALSE,
+  returnFunctions = FALSE, ...)
 }
 \arguments{
-\item{x}{RasterLayer. Source raster which is to be modified.}
+\item{x}{Raster*. Source raster which is to be modified.}
 
-\item{ref}{RasterLayer. Reference raster, to which x will be matched.}
+\item{ref}{Raster*. Reference raster, to which x will be matched.}
 
 \item{xmask}{RasterLayer. Mask layer for \code{x} to exclude pixels which might distort the histogram, i.e. are not present in \code{ref}. Any NA pixel in \code{xmask} will be ignored (\code{maskvalue = NA}).}
 
 \item{refmask}{RasterLayer. Mask layer for \code{ref}. Any NA pixel in \code{refmask} will be ignored (\code{maskvalue = NA}).}
 
-\item{nSamples}{integer. Number of random samples to build the histograms.}
+\item{nSamples}{Integer. Number of random samples to build the histograms.}
 
 \item{intersectOnly}{logical. If \code{TRUE} sampling will only take place in the overlap extent of the two rasters. Otherwise the full rasters will be used for sampling.}
 
-\item{paired}{logical. If \code{TRUE} the corresponding pixels will be used in the overlap.}
+\item{paired}{Logical. If \code{TRUE} the corresponding pixels will be used in the overlap.}
 
 \item{forceInteger}{logical. Force integer output.}
+
+\item{returnFunctions}{Logical. If \code{TRUE} the matching functions themselves will be returned instead of applying them to \code{x}.}
 
 \item{...}{Further arguments to be passed to \link[raster]{writeRaster}.}
 }
 \value{
-A RasterLayer of x adjusted to the histogram of ref.
+A Raster* object of \code{x} adjusted to the histogram of \code{ref}. If \code{returnFunctions  = TRUE} a list of functions (one for each layer) will be returned instead.
 }
 \description{
-Performs image to image contrast adjustments based on histogram matching using empirical cumulative distribution functions from both images.
+Performs image to image contrast adjustments based on histogram matching using empirical cumulative
+ distribution functions from both images.
+}
+\note{
+\code{x} and \code{ref} must have the same number of layers.
 }
 \examples{
 library(ggplot2)
