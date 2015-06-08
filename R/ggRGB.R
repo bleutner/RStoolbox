@@ -8,6 +8,7 @@
 #' @param r Integer or character. Red layer in x. Can be set to \code{NULL}, in which case the red channel will be set to zero.
 #' @param g Integer or character. Green layer in x. Can be set to \code{NULL}, in which case the green channel will be set to zero.
 #' @param b Integer or character. Blue layer in x. Can be set to \code{NULL}, in which case the blue channel will be set to zero.
+#' @param nullValue Numeric. Value used for NULL layers in color compositing. E.g. set g=NULL and fix green value at 0.5 (defaults to 0).
 #' @param scale Numeric. Maximum possible pixel value (optional). Defaults to 255 or to the maximum value of x if that is larger than 255
 #' @param maxpixels Integer. Maximal number of pixels used for plotting.
 #' @param stretch Character. Either 'none', 'lin', 'hist', 'sqrt' or 'log' for no stretch, linear, histogram, square-root or logarithmic stretch.
@@ -56,7 +57,7 @@
 #'        geom_polygon(aes(x, y), fill = "blue", alpha = 0.4) +
 #'        coord_equal(ylim=c(0,75))
 ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = "none", ext = NULL,  limits = NULL, clipValues  = "limits", quantiles = c(0.02,0.98),
-		ggObj = TRUE, ggLayer = FALSE, alpha = 1, coordEqual = TRUE, annotation = TRUE) { 
+		ggObj = TRUE, ggLayer = FALSE, alpha = 1, coordEqual = TRUE, annotation = TRUE, nullValue = 0) { 
     
     ## TODO: handle single value rasters (e.g. masks)
     
@@ -127,8 +128,9 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
 	naind <- as.vector( attr(RGB, "na.action") ) 
 	nullbands <- sapply(list(r,g,b), is.null)       
 	
+	
 	if(any(nullbands)) {
-		RGBm <- matrix(0, ncol = 3, nrow = NROW(RGB))
+		RGBm <- matrix(nullValue, ncol = 3, nrow = NROW(RGB))
 		RGBm[,!nullbands] <- RGB
 		RGB <- RGBm      
 	}
