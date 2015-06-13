@@ -9,6 +9,10 @@ specSimC <- function(x, em) {
     .Call('RStoolbox_specSimC', PACKAGE = 'RStoolbox', x, em)
 }
 
+spectralIndicesCpp <- function(x, indices, redBand, blueBand, greenBand, nirBand, mirBand, swirBand, L, s, G, C1, C2, Levi) {
+    .Call('RStoolbox_spectralIndicesCpp', PACKAGE = 'RStoolbox', x, indices, redBand, blueBand, greenBand, nirBand, mirBand, swirBand, L, s, G, C1, C2, Levi)
+}
+
 whichColMinC <- function(x, centers) {
     .Call('RStoolbox_whichColMinC', PACKAGE = 'RStoolbox', x, centers)
 }
