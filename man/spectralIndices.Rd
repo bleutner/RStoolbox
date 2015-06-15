@@ -13,11 +13,15 @@ spectralIndices(img, blue = NULL, green = NULL, red = NULL, nir = NULL,
 
 \item{blue}{Character or integer. Blue band.}
 
+\item{green}{Character or integer. Green band.}
+
 \item{red}{Character or integer. Red band.}
 
 \item{nir}{Character or integer. Near-infrared band.}
 
-\item{mir}{Character or integer. Midwave-infrared band.}
+\item{mir}{Character or integer. Mid-wave-infrared band.}
+
+\item{swir}{Character or integer. Short-wave-infrared band.}
 
 \item{indices}{Character. One or more spectral indices to calculate (see Details). By default (NULL) all implemented indices given the spectral bands which are provided will be calculated.}
 

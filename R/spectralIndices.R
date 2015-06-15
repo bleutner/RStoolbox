@@ -4,9 +4,11 @@
 #' 
 #' @param img Raster* object. Typically remote sensing imagery, which is to be classified.
 #' @param blue Character or integer. Blue band. 
+#' @param green Character or integer. Green band. 
 #' @param red Character or integer. Red band. 
 #' @param nir Character or integer. Near-infrared band. 
-#' @param mir Character or integer. Midwave-infrared band. 
+#' @param swir Character or integer. Short-wave-infrared band. 
+#' @param mir Character or integer. Mid-wave-infrared band. 
 #' @param indices Character. One or more spectral indices to calculate (see Details). By default (NULL) all implemented indices given the spectral bands which are provided will be calculated.
 #' @param index Character. Alias for \code{indices}.
 #' @param coefs List of coefficients (see Details).  
