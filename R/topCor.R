@@ -52,7 +52,7 @@ topCor <- function(img, dem, metaData, solarAngles, method = "C", stratImg, stra
     
     .vMessage("Correct imagery")
     if (method == "cos") {
-        ## valid range: <55°
+        ## valid range: <55 degree
         ## Eq 3 in Riano2003
         ## Lambertian assumption
         return(Lh <- img * (cos(sz) / illu))  

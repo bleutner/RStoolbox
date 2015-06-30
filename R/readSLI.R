@@ -4,7 +4,6 @@
 #' Wavelength, Spectrum 1, Spectrum 2 ...
 #' 
 #' @param path path to spectral library file with ending .sli.
-#' @references \href{http://geol.hu/data/online_help/ENVI_Header_Format.html}{ENVI header format}
 #' @seealso \code{\link{writeSLI}}
 #' @export 
 #' @examples
@@ -84,7 +83,6 @@ readSLI <- function(path) {
 #' @param scaleF optional reflectance scaling factor. Defaults to 1.
 #' @param mode character string specifying output file type. Must be one of \code{"bin"} for binary .sli files or \code{"ASCII"} for --guess what-- ASCII spectral library files (still in an ENVI compatible format).
 #' @seealso \code{\link{readSLI}}
-#' @references \href{http://geol.hu/data/online_help/ENVI_Header_Format.html}{ENVI header format}
 #' @export
 #' @examples
 #' ## Create fake spectra

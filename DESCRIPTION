@@ -2,7 +2,7 @@ Package: RStoolbox
 Type: Package
 Title: Tools for Remote Sensing Data Analysis 
 Version: 0.0.0.9000
-Date: 2015-02-04
+Date: 2015-06-30
 Authors@R: c(
     person("Benjamin", "Leutner", role=c("cre", "aut"), email="benjamin.leutner@uni-wuerzburg.de"),
     person("Ned", "Horning", role ="ctb", email="horning@amnh.org"),

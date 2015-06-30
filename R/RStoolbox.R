@@ -47,6 +47,10 @@
 #' @importFrom geosphere areaPolygon
 #' @importFrom parallel parLapply parSapply parApply clusterExport
 #' @importFrom XML xmlParse xmlToList
+#' @importFrom stats coefficients lm ecdf approxfun knots kmeans na.omit complete.cases
+#' @importFrom graphics par abline
+#' @importFrom grDevices hsv
+#' @importFrom utils read.csv
 #' @useDynLib RStoolbox
 #' @importFrom Rcpp sourceCpp
 #' @docType package

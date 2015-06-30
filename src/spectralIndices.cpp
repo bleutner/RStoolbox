@@ -35,21 +35,21 @@ NumericMatrix spectralIndicesCpp(NumericMatrix& x, CharacterVector& indices,
 			out(_,j) = G * ((nir - red) / (nir + C1 * red - C2 * blue + Levi));
 		}
 		else if(indices[j] == "GEMI") {
-			out(_,j) = (((pow(nir,2) - pow(red,2)) * 2 + (nir * 1.5) + (red * 0.5) ) /
+			out(_,j) = (((pow(nir, 2) - pow(red, 2)) * 2.0 + (nir * 1.5) + (red * 0.5) ) /
 					(nir + red + 0.5)) * (1 - ((((pow(nir,2) - pow(red,2)) * 2 + (nir * 1.5) + (red * 0.5) ) /
 							(nir + red + 0.5)) * 0.25)) - ((red - 0.125) / (1 - red));
 		}
 		else if(indices[j] == "LSWI") {
 			out(_,j) = (nir-swir) / (nir+swir);
-			out(_,j) = ifelse(out(_,j) > 1 | out(_,j) < -1, NA_REAL, out(_,j));
+			out(_,j) = ifelse((out(_,j) > 1 )| (out(_,j) < -1), NA_REAL, out(_,j));
 		}
 		else if(indices[j] == "MSAVI") {
 			// Modified soil adjusted vegetation index
-			out(_,j) = nir + 0.5 - (0.5 * sqrt(pow(2 * nir + 1, 2) - 8 * (nir - (2 * red))));
+			out(_,j) = nir + 0.5 - (0.5 * sqrt(pow(2.0 * nir + 1.0, 2) - 8.0 * (nir - (2.0 * red))));
 		}
 		else if(indices[j] == "MSAVI2") {
 			// Modified soil adjusted vegetation index 2
-			out(_,j) = (2 * (nir + 1) - sqrt(pow(2 * nir + 1, 2) - 8 * (nir - red))) / 2;
+			out(_,j) = (2.0 * (nir + 1) - sqrt(pow(2.0 * nir + 1.0, 2) - 8.0 * (nir - red))) / 2.0;
 		}
 		else if(indices[j] == "MSI") {
 			// Moisture stress index
@@ -58,12 +58,12 @@ NumericMatrix spectralIndicesCpp(NumericMatrix& x, CharacterVector& indices,
 		else if(indices[j] == "NDVI") {
 			//Normalized difference vegetation index
 			out(_,j) = (nir - red) / (nir + red);
-			out(_,j) = ifelse(out(_,j) > 1 | out(_,j) < -1, NA_REAL, out(_,j));
+			out(_,j) = ifelse((out(_,j) > 1 )| (out(_,j) < -1), NA_REAL, out(_,j));
 		}
 		else if(indices[j] == "NDWI") {
 			// Normalized difference water index
 			out(_,j) = (green - nir)/(green + nir);
-			out(_,j) = ifelse(out(_,j) > 1 | out(_,j) < -1, NA_REAL, out(_,j));
+			out(_,j) = ifelse((out(_,j) > 1 )| (out(_,j) < -1), NA_REAL, out(_,j));
 		}
 		else if(indices[j] == "RVI") {
 			// Ratio Vegetation Index

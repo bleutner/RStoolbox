@@ -40,9 +40,6 @@ all.equal(data, dataRe)
 ## oops? nope, only colnames mismatch. numbers are fine.
 cat("colnames:\\noriginal: ",colnames(data),"\\nre-read: ",colnames(dataRe))
 }
-\references{
-\href{http://geol.hu/data/online_help/ENVI_Header_Format.html}{ENVI header format}
-}
 \seealso{
 \code{\link{readSLI}}
 }
