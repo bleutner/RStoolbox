@@ -10,7 +10,7 @@
 #' @param quantiles Numeric vector with two elements. Min and max quantiles to stretch to. Defaults to 2\% stretch, i.e. c(0.02,0.98). 
 #' @param ggObj Logical. Return a stand-alone ggplot object (TRUE) or just the data.frame with values and colors
 #' @param ggLayer Logical. Return only a ggplot layer which must be added to an existing ggplot. If \code{FALSE} s stand-alone ggplot will be returned.
-#' @param annotation Logical. Uses annotation_raster by default (good to keep aestetic mappings free). If \code{FALSE} uses geom_raster (and aes(fill)).
+#' @param geomRaster Logical. If \code{FALSE} uses annotation_raster (good to keep aestetic mappings free). If \code{TRUE} uses \code{geom_raster} (and \code{aes(fill)}).
 #' @param coordEqual Logical. Force addition of coord_equal, i.e. aspect ratio of 1:1. Typically usefull for remote sensing data (depending on your projection), hence it defaults to TRUE.
 #'         Note however, that this does not apply if (\code{ggLayer=FALSE}).
 #' @param alpha Numeric. Transparency (0-1).
@@ -43,36 +43,39 @@
 #' 
 #' ## ggplot with geom_raster instead of annotation_raster
 #' ## and default scale_fill*
-#' ggR(rlogo, annotation = FALSE)
+#' ggR(rlogo, geomRaster = TRUE)
 #' 
 #' ## with different scale
-#' ggR(rlogo, annotation=FALSE) + scale_fill_gradientn(name = "mojo", colours = rainbow(10)) +
+#' ggR(rlogo, geomRaster = TRUE) +
+#'         scale_fill_gradientn(name = "mojo", colours = rainbow(10)) +
 #'         ggtitle("**Funkadelic**")
 #' 
 #' ## Layermode (ggLayer=TRUE)
 #' data <- data.frame(x = c(0, 0:100,100), y = c(0,sin(seq(0,2*pi,pi/50))*10+20, 0))
-#' ggplot(data, aes(x, y)) +  ggR(rlogo, annotation= TRUE, ggLayer = TRUE) +
+#' ggplot(data, aes(x, y)) +  ggR(rlogo, geomRaster= FALSE, ggLayer = TRUE) +
 #'        geom_polygon(aes(x, y), fill = "blue", alpha = 0.4) +
 #'        coord_equal(ylim=c(0,75))
 #' 
 #' ## Categorical data 
-#' ## In this case you probably want to use annotation=FALSE 
+#' ## In this case you probably want to use geomRaster=TRUE 
 #' ## in order to perform aestetic mapping (i.e. a meaningful legend)
 #' rc <- raster(rlogo)
 #' rc[] <- cut(rlogo[[1]][], seq(0,300, 50))
-#' ggR(rc, annotation = FALSE)
+#' ggR(rc, geomRaster = TRUE)
 #' 
 #' ## Legend cusomization etc. ...
-#' ggR(rc, annotation = FALSE) + scale_fill_discrete(labels=paste("Class", 1:6))
+#' ggR(rc, geomRaster = TRUE) + scale_fill_discrete(labels=paste("Class", 1:6))
 #'  
-ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, stretch = "none", quantiles = c(0.02,0.98), coordEqual = TRUE, ggLayer=FALSE, ggObj = TRUE, annotation = TRUE, forceCat = FALSE) {
-     
+ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, stretch = "none", quantiles = c(0.02,0.98), 
+        coordEqual = TRUE, ggLayer=FALSE, ggObj = TRUE, geomRaster = FALSE, forceCat = FALSE) {
+    
+    annotation <- !geomRaster
     
 	layer <- unlist(.numBand(img, layer))
     xfort <- sampleRegular(img[[layer]], maxpixels, asRaster = TRUE)
     if(is.factor(img[[layer]])) {
         rat <- levels(xfort)
-        xfort <- stack(xfort,xfort)  ## workaround raster bug #6043        
+        xfort <- stack(xfort,xfort)  ## workaround raster bug #6043    FIXME: apparently solved now in raster    
         names(xfort)[1] <- names(img)[layer]   
     }
     df 	  <- as.data.frame(xfort, xy = T)[,-4]

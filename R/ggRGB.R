@@ -26,7 +26,7 @@
 #' @param alpha Numeric. Transparency (0-1).
 #' @param coordEqual Logical. Force addition of coord_equal, i.e. aspect ratio of 1:1. Typically usefull for remote sensing data (depending on your projection), hence it defaults to TRUE.
 #'         Note howver, that this does not apply if (\code{ggLayer=FALSE}).
-#' @param annotation Logical. If \code{TRUE} annotation_raster is used, otherwise geom_raster()+scale_fill_identity is used.
+#' @param geomRaster Logical. If \code{FALSE} annotation_raster is used, otherwise geom_raster()+scale_fill_identity is used.
 #'  Note that you can't use scale_fill* in addition to the latter, because it already requires scale_fill_identity().
 #' @return A ggplot2 object, or a three column data frame with coordinates and fill colour.
 #' @export
@@ -57,7 +57,7 @@
 #'        geom_polygon(aes(x, y), fill = "blue", alpha = 0.4) +
 #'        coord_equal(ylim=c(0,75))
 ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = "none", ext = NULL,  limits = NULL, clipValues  = "limits", quantiles = c(0.02,0.98),
-		ggObj = TRUE, ggLayer = FALSE, alpha = 1, coordEqual = TRUE, annotation = TRUE, nullValue = 0) { 
+		ggObj = TRUE, ggLayer = FALSE, alpha = 1, coordEqual = TRUE, geomRaster = FALSE, nullValue = 0) { 
     
     ## TODO: handle single value rasters (e.g. masks)
     
@@ -67,6 +67,7 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
 	# Licence GPL v3
 	# partly based on functions in the pixmap package by Friedrich Leisch
 	verbose <- getOption("RStoolbox.verbose")
+    annotation <- !geomRaster
 	## Subsample raster		
 	rgb <- unlist(.numBand(raster=img,r,g,b))
 	nComps <- length(rgb)

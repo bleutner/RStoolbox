@@ -22,7 +22,7 @@
 #' data(rlogo)
 #' rlogo[["nir"]] <- rlogo[[2]] + 100
 #' SI <- spectralIndices(rlogo, red = "red", nir = "nir", indices = "NDVI")
-#' ggR(SI, annotation=FALSE) + 
+#' ggR(SI, geomRaster = TRUE) + 
 #'     scale_fill_gradient(low = "white", high = "green", na.value = NA)
 spectralIndices <- function(img,
 		blue=NULL, green=NULL, red=NULL, nir=NULL, mir=NULL, swir = NULL, 
