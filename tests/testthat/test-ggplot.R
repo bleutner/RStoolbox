@@ -5,7 +5,7 @@ test_that("ggR returns proper ggplot2 classes or data.frames", {
             data(rlogo) 
             
             tests <- expand.grid(forceCat = c(TRUE, FALSE), anno = c(TRUE, FALSE), ggLayer = c(TRUE, FALSE), ggObj = c(TRUE,FALSE))
-            builds <- lapply(1:nrow(tests), function(i) ggR(rlogo, forceCat = tests$forceCat[i], ggObj = tests$ggObj[i], annotation = tests$anno[i], ggLayer = tests$ggLayer[i]))            
+            builds <- lapply(1:nrow(tests), function(i) ggR(rlogo, forceCat = tests$forceCat[i], ggObj = tests$ggObj[i], geomRaster = !tests$anno[i], ggLayer = tests$ggLayer[i]))            
             tinfo <- paste0("forceCat=", tests[,1], ", anno=", tests[,2], ", ggLayer=", tests[,3], ", ggObj=", tests[,4])
             
             ## Annotation vs geom_raster    
@@ -30,7 +30,7 @@ test_that("ggRGB returns proper ggplot2 classes or data.frames", {
             data(rlogo) 
             
             tests  <- expand.grid(anno = c(TRUE, FALSE), ggLayer = c(TRUE, FALSE), ggObj = c(TRUE,FALSE))
-            builds <- lapply(1:nrow(tests), function(i) ggRGB(rlogo, ggObj = tests$ggObj[i], annotation = tests$anno[i], ggLayer = tests$ggLayer[i]))            
+            builds <- lapply(1:nrow(tests), function(i) ggRGB(rlogo, ggObj = tests$ggObj[i], geomRaster = !tests$anno[i], ggLayer = tests$ggLayer[i]))            
             tinfo <- paste0("anno=", tests$anno, ", ggLayer=", tests$ggLayer, ", ggObj=", tests$ggObj)
             
             ## Stand-alone

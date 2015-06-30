@@ -37,7 +37,7 @@
 #' 
 #' ggRGB(rpc$map,1,2,3, stretch="lin", q=0)
 #' if(require(gridExtra)){
-#' plots <- lapply(1:3, function(x) ggR(rpc$map, x, anno = FALSE))
+#' plots <- lapply(1:3, function(x) ggR(rpc$map, x, geomRaster = TRUE))
 #' grid.arrange(plots[[1]],plots[[2]], plots[[3]], ncol=2)
 #' }
 

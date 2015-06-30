@@ -6,7 +6,7 @@
 \usage{
 ggR(img, layer = 1, maxpixels = 5e+05, alpha = 1, stretch = "none",
   quantiles = c(0.02, 0.98), coordEqual = TRUE, ggLayer = FALSE,
-  ggObj = TRUE, annotation = TRUE, forceCat = FALSE)
+  ggObj = TRUE, geomRaster = FALSE, forceCat = FALSE)
 }
 \arguments{
 \item{img}{raster}
@@ -28,7 +28,7 @@ Note however, that this does not apply if (\code{ggLayer=FALSE}).}
 
 \item{ggObj}{Logical. Return a stand-alone ggplot object (TRUE) or just the data.frame with values and colors}
 
-\item{annotation}{Logical. Uses annotation_raster by default (good to keep aestetic mappings free). If \code{FALSE} uses geom_raster (and aes(fill)).}
+\item{geomRaster}{Logical. If \code{FALSE} uses annotation_raster (good to keep aestetic mappings free). If \code{TRUE} uses \code{geom_raster} (and \code{aes(fill)}).}
 
 \item{forceCat}{Logical. If \code{TRUE} the raster values will be forced to be categorical (will be converted to factor if needed).}
 }
@@ -61,27 +61,28 @@ head(df)
 
 ## ggplot with geom_raster instead of annotation_raster
 ## and default scale_fill*
-ggR(rlogo, annotation = FALSE)
+ggR(rlogo, geomRaster = TRUE)
 
 ## with different scale
-ggR(rlogo, annotation=FALSE) + scale_fill_gradientn(name = "mojo", colours = rainbow(10)) +
+ggR(rlogo, geomRaster = TRUE) +
+        scale_fill_gradientn(name = "mojo", colours = rainbow(10)) +
         ggtitle("**Funkadelic**")
 
 ## Layermode (ggLayer=TRUE)
 data <- data.frame(x = c(0, 0:100,100), y = c(0,sin(seq(0,2*pi,pi/50))*10+20, 0))
-ggplot(data, aes(x, y)) +  ggR(rlogo, annotation= TRUE, ggLayer = TRUE) +
+ggplot(data, aes(x, y)) +  ggR(rlogo, geomRaster= FALSE, ggLayer = TRUE) +
        geom_polygon(aes(x, y), fill = "blue", alpha = 0.4) +
        coord_equal(ylim=c(0,75))
 
 ## Categorical data
-## In this case you probably want to use annotation=FALSE
+## In this case you probably want to use geomRaster=TRUE
 ## in order to perform aestetic mapping (i.e. a meaningful legend)
 rc <- raster(rlogo)
 rc[] <- cut(rlogo[[1]][], seq(0,300, 50))
-ggR(rc, annotation = FALSE)
+ggR(rc, geomRaster = TRUE)
 
 ## Legend cusomization etc. ...
-ggR(rc, annotation = FALSE) + scale_fill_discrete(labels=paste("Class", 1:6))
+ggR(rc, geomRaster = TRUE) + scale_fill_discrete(labels=paste("Class", 1:6))
 }
 \seealso{
 \link{ggRGB}, \link[=fortify.raster]{fortify}

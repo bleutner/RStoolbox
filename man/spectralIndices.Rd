@@ -4,20 +4,24 @@
 \alias{spectralIndices}
 \title{Spectral indices}
 \usage{
-spectralIndices(img, blue = NULL, red = NULL, nir = NULL, mir = NULL,
-  indices = NULL, index = NULL, coefs = list(L = 0.5, G = 2.5, L_evi = 1,
-  C1 = 6, C2 = 7.5, s = 1), ...)
+spectralIndices(img, blue = NULL, green = NULL, red = NULL, nir = NULL,
+  mir = NULL, swir = NULL, indices = NULL, index = NULL,
+  coefs = list(L = 0.5, G = 2.5, L_evi = 1, C1 = 6, C2 = 7.5, s = 1), ...)
 }
 \arguments{
 \item{img}{Raster* object. Typically remote sensing imagery, which is to be classified.}
 
 \item{blue}{Character or integer. Blue band.}
 
+\item{green}{Character or integer. Green band.}
+
 \item{red}{Character or integer. Red band.}
 
 \item{nir}{Character or integer. Near-infrared band.}
 
-\item{mir}{Character or integer. Midwave-infrared band.}
+\item{mir}{Character or integer. Mid-wave-infrared band.}
+
+\item{swir}{Character or integer. Short-wave-infrared band.}
 
 \item{indices}{Character. One or more spectral indices to calculate (see Details). By default (NULL) all implemented indices given the spectral bands which are provided will be calculated.}
 
@@ -53,7 +57,7 @@ library(ggplot2)
 data(rlogo)
 rlogo[["nir"]] <- rlogo[[2]] + 100
 SI <- spectralIndices(rlogo, red = "red", nir = "nir", indices = "NDVI")
-ggR(SI, annotation=FALSE) +
+ggR(SI, geomRaster = TRUE) +
     scale_fill_gradient(low = "white", high = "green", na.value = NA)
 }
 \seealso{
