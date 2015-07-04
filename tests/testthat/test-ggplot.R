@@ -1,4 +1,4 @@
-context("ggplot")
+context("ggplot: ggR, ggRGB & fortify")
 
 
 test_that("ggR returns proper ggplot2 classes or data.frames", {

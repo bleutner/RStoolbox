@@ -25,96 +25,93 @@
 #' ggR(SI, geomRaster = TRUE) + 
 #'     scale_fill_gradient(low = "white", high = "green", na.value = NA)
 spectralIndices <- function(img,
-		blue=NULL, green=NULL, red=NULL, nir=NULL, mir=NULL, swir = NULL, 
-		indices=NULL, index = NULL, coefs = list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5, s = 1),
-                            ... ) {
-  # TODO: add further indices
-  
-  if(!is.null(index)) indices <- index  ## argument translation for convenience
-  
-  ## Coefficients
-  defaultCoefs <- list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5, s = 1)     
-  implem <- names(coefs) %in% names(defaultCoefs)
-  if(any(!implem)) warning("Non-implemented coefficients are ignored: ", paste0(names(coefs)[!implem], collapse=", "),
-                           "\nimplemented coefficients are: ", paste0(names(defaultCoefs), collapse = ", "))
-  list2env(c(coefs, defaultCoefs[!names(defaultCoefs) %in% names(coefs)]), envir = environment())
-  
-  ## Check indices
-  ind <- if(is.null(indices)) names(BANDSdb) else toupper(indices)  
-  if(!any(ind %in% names(BANDSdb))) stop("indices must either be NULL to calculate all indices",
-                                        "\nor element of c(", paste0(names(BANDSdb),collapse=","),") for specific indices.", call. = FALSE)
-  
-  ## Gather function arguments (all provided bands) and create args
-  potArgs    <- c("blue", "green", "red", "nir", "mir", "swir")
-  actArgs <- vapply(potArgs, function(x) !is.null(get(x)), logical(1))    
-  bands <- potArgs[actArgs]
-  
-  ## Subset calculated indices to possible based on band inputs and / or user request
-  requested    <- BANDSdb[ind]
-  
-  canCalc  <- names(requested)[!vapply(requested, function(x) any(!x %in% bands), logical(1))]
-  ind  <- ind[ind %in% canCalc]   
-  if(!length(ind)) stop("No index could be calculated. At least for one index you must specify *all* required bands.",
-                            "\n  See ?spectralIndices for information on required bands per index.")
-  if(length(ind) < length(indices)){
-    not <- setdiff(indices,ind)
-    notbands <- setdiff(unlist(requested[not]), bands)
-    warning("The following indices were requested but cannot be calculated: ", not,
-            "\n  because the following required bands were not specified: ",
-            notbands,
-            "\n  The remaining fully specified indices will be calculated.")
-  }
-  
-  
- ## Treat mixture of character and integer band assignment
-  if(is.list(bands)){
-    chr 	   <- sapply(bands, is.character)
-    bands[chr] <- match(bands[chr], names(img))
-    bands 	   <- unlist(bands)
-  }
-  if(is.character(bands)) {
-	  bands <- match(bands, names(img))
-	  names(bands) <- names(actArgs)[actArgs]
-  }
-  
-
-  bandsCalc <- vapply(potArgs, function(n) match(n, names(bands)), integer(1))
-  # Perform calculations (each pixel must be read only once due to the function assembly above)
-  # this should save some significant time for large Rasters   
-  indexMagic <- .paraRasterFun(img[[bands]], rasterFun = raster::calc,
-                               args = list(fun = function(m) spectralIndicesCpp(
-					   x = m,
-                                           indices = indices,
-                                           blueBand = bandsCalc[["blue"]],
-                                           greenBand  = bandsCalc[["green"]], 
-                                           redBand = bandsCalc[["red"]],
-                                           nirBand = bandsCalc[["nir"]], 
-                                           mirBand = bandsCalc[["mir"]], 
-                                           swirBand = bandsCalc[["swir"]],
-                                           L = coefs[["L"]],  G = coefs[["G"]], Levi = coefs[["L_evi"]], 
-                                           C1 = coefs[["C1"]], C2 = coefs[["C2"]], s = coefs[["s"]]
-								   ), forcefun =TRUE), wrArgs = list(...))
-  
-  names(indexMagic) <- indices      
-  
-  return(indexMagic)
+        blue=NULL, green=NULL, red=NULL, nir=NULL, mir=NULL, swir = NULL, 
+        indices=NULL, index = NULL, coefs = list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5, s = 1),
+        ... ) {
+    # TODO: add further indices
+    # TODO: soil line estimator
+    # TODO: change mir to swir1 and swir 2
+    if(!is.null(index)) indices <- index  ## argument translation for convenience
+    
+    ## Coefficients
+    defaultCoefs <- list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5, s = 1)     
+    implem <- names(coefs) %in% names(defaultCoefs)
+    if(any(!implem)) warning("Non-implemented coefficients are ignored: ", paste0(names(coefs)[!implem], collapse=", "),
+                "\nimplemented coefficients are: ", paste0(names(defaultCoefs), collapse = ", "))
+    list2env(c(coefs, defaultCoefs[!names(defaultCoefs) %in% names(coefs)]), envir = environment())
+    
+    ## Check indices
+    ind <- if(is.null(indices)) names(BANDSdb) else toupper(indices)  
+    if(!any(ind %in% names(BANDSdb))) stop("indices must either be NULL to calculate all indices",
+                "\nor element of c(", paste0(names(BANDSdb),collapse=","),") for specific indices.", call. = FALSE)
+    
+    ## Gather function arguments (all provided bands) and create args
+    potArgs  <- c("blue", "green", "red", "nir", "mir", "swir")
+    actArgs  <- vapply(potArgs, function(x) !is.null(get(x)), logical(1))    
+    bands    <- potArgs[actArgs]
+    
+    ## Subset calculated indices to possible based on band inputs and / or user request
+    requested    <- BANDSdb[ind]
+    
+    canCalc  <- names(requested)[!vapply(requested, function(x) any(!x %in% bands), logical(1))]
+    ind  <- ind[ind %in% canCalc]   
+    if(!length(ind)) stop("No index could be calculated. At least for one index you must specify *all* required bands.",
+                "\n  See ?spectralIndices for information on required bands per index.")
+    if(length(ind) < length(indices)){
+        not <- setdiff(indices,ind)
+        notbands <- setdiff(unlist(requested[not]), bands)
+        warning("The following indices were requested but cannot be calculated: ", not,
+                "\n  because the following required bands were not specified: ",
+                notbands,
+                "\n  The remaining fully specified indices will be calculated.")
+    }
+    
+    ## Get required designated bands
+    retrieve   <- lapply(bands, get, envir=environment())
+    bandsCalc  <- vapply(retrieve, function(xi) {  if(is.character(xi)) match(xi, names(img)) else xi  }, numeric(1))
+    names(bandsCalc) <- bands       
+    
+    ## Adjust layer argument so that the first layer we use is now layer 1, etc.
+    ## This way we don't have to sample the whole stack if we only need a few layers
+    fullSet <- vapply(potArgs, function(n) match(n, names(bandsCalc)), integer(1))
+    
+    # Perform calculations 
+    indexMagic <- .paraRasterFun(img[[bandsCalc]], rasterFun = raster::calc,
+            args = list(fun = function(m) {
+                        spectralIndicesCpp(
+                                x = m,
+                                indices   = canCalc,
+                                blueBand  = fullSet[["blue"]],
+                                greenBand = fullSet[["green"]], 
+                                redBand   = fullSet[["red"]],
+                                nirBand   = fullSet[["nir"]], 
+                                mirBand   = fullSet[["mir"]], 
+                                swirBand  = fullSet[["swir"]],
+                                L = coefs[["L"]],  G = coefs[["G"]], Levi = coefs[["L_evi"]], 
+                                C1 = coefs[["C1"]], C2 = coefs[["C2"]], s = coefs[["s"]]
+                        )},
+                    forcefun =TRUE), wrArgs = list(...))
+    
+    names(indexMagic) <- canCalc      
+    
+    return(indexMagic)
 }
 
 
 BANDSdb <-  list(               
-  DVI  	= c("red", "nir"),
-  EVI		=  c("red", "nir", "blue"),
-  GEMI	=  c("red", "nir"),
-  LSWI	=  c("red", "swir"),
-  MSAVI	=  c("red", "nir"),
-  MSAVI2	=  c("red", "nir"),
-  NDVI	=  c("red", "nir"),
-  NDWI 	=  c("green", "nir"),
-  SAVI    =  c("red", "nir"), 
-  SLAVI	=  c("red", "nir", "mir"),
-  SR 		=  c("red", "nir"),     
-  TVI 	=  c("red", "nir"),
-  WDVI    =  c("red", "nir")
+        DVI  	= c("red", "nir"),
+        EVI		=  c("red", "nir", "blue"),
+        GEMI	=  c("red", "nir"),
+        LSWI	=  c("red", "swir"),
+        MSAVI	=  c("red", "nir"),
+        MSAVI2	=  c("red", "nir"),
+        NDVI	=  c("red", "nir"),
+        NDWI 	=  c("green", "nir"),
+        SAVI    =  c("red", "nir"), 
+        SLAVI	=  c("red", "nir", "mir"),
+        SR 		=  c("red", "nir"),     
+        TVI 	=  c("red", "nir"),
+        WDVI    =  c("red", "nir")
 )
 
 
@@ -122,38 +119,38 @@ BANDSdb <-  list(
 #' Database of spectral indices
 #' @keywords internal
 .IDXdb <-  list(               
-  DVI		= function(red, nir) {s*nir-red},
-  EVI		= function(red, nir, blue) {G * ((nir - red) / (nir + C1 * red - C2 * blue + L_evi))},
-  GEMI	= function(red, nir) {(((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5) ) / (nir + red + 0.5)) * (1 - ((((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5) ) / (nir + red + 0.5)) * 0.25)) - ((red - 0.125) / (1 - red))},
-  LSWI	= function(nir, swir) {(nir-swir)/(nir+swir)},
-  MSAVI	= function(red, nir) {nir + 0.5 - (0.5 * sqrt((2 * nir + 1)^2 - 8 * (nir - (2 * red))))},
-  MSAVI2	= function(red, nir) {(2 * (nir + 1) - sqrt((2 * nir + 1)^2 - 8 * (nir - red))) / 2},
-  NDVI	= function(red, nir) {(nir-red)/(nir+red)}, 
-  NDWI 	= function(green, nir) {(green - nir)/(green + nir)},
-  SAVI    = function(red, nir) {(nir - red) * (1+L) / (nir + red + L)}, 
-  SLAVI	= function(red, nir, mir) {nir / (red + mir)},
-  SR 		= function(red, nir) {nir / red},     
-  TVI 	= function(red, nir) {sqrt(((nir-red)/(nir+red))+0.5)},
-  #CTVI	= function(red, nir) {}
-  WDVI    = function(red, nir) {nir - s * red}
+        DVI		= function(red, nir) {s*nir-red},
+        EVI		= function(red, nir, blue) {G * ((nir - red) / (nir + C1 * red - C2 * blue + L_evi))},
+        GEMI	= function(red, nir) {(((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5) ) / (nir + red + 0.5)) * (1 - ((((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5) ) / (nir + red + 0.5)) * 0.25)) - ((red - 0.125) / (1 - red))},
+        LSWI	= function(nir, swir) {(nir-swir)/(nir+swir)},
+        MSAVI	= function(red, nir) {nir + 0.5 - (0.5 * sqrt((2 * nir + 1)^2 - 8 * (nir - (2 * red))))},
+        MSAVI2	= function(red, nir) {(2 * (nir + 1) - sqrt((2 * nir + 1)^2 - 8 * (nir - red))) / 2},
+        NDVI	= function(red, nir) {(nir-red)/(nir+red)}, 
+        NDWI 	= function(green, nir) {(green - nir)/(green + nir)},
+        SAVI    = function(red, nir) {(nir - red) * (1+L) / (nir + red + L)}, 
+        SLAVI	= function(red, nir, mir) {nir / (red + mir)},
+        SR 		= function(red, nir) {nir / red},     
+        TVI 	= function(red, nir) {sqrt(((nir-red)/(nir+red))+0.5)},
+        #CTVI	= function(red, nir) {}
+        WDVI    = function(red, nir) {nir - s * red}
 )
 
 #' References and names to .IDXdb
 #' @keywords internal
 .IDX.REFdb <- list(
-  DVI     = c("Richardson1977", "Difference Vegetation Index") ,
-  EVI     = c("Huete1999", "Enhanced Vegetation Index"),
-  GEMI    = c("Pinty1992","Global Environmental Monitoring Index"),
-  LSWI    = c("", "Land Surface Water Index"),
-  MSAVI	= c("Qi1994","Modified Soil Adjusted Vegetation Index"),
-  MSAVI2	= c("Qi1994","Modified Soil Adjusted Vegetation Index 2"),
-  NDVI	= c("Rouse1974", "Normalised Difference Vegetation Index"),
-  NDWI	= c("", "Normalised Difference Water Index"),
-  SAVI    = c("Huete1988", "Soil Adjusted Vegetation Index"),
-  SLAVI	= c("Lymburger2000","Specific Leaf Area Vegetation Index"),
-  SR 		= c("Birth1968", "Simple Ratio Vegetation Index"),  #or Jordan1969
-  TVI 	= c("Deering1975","Transformed Vegetation Index"),
-  WDVI    = c("Richardson1977","Weighted Difference Vegetation Index")
+        DVI     = c("Richardson1977", "Difference Vegetation Index") ,
+        EVI     = c("Huete1999", "Enhanced Vegetation Index"),
+        GEMI    = c("Pinty1992","Global Environmental Monitoring Index"),
+        LSWI    = c("", "Land Surface Water Index"),
+        MSAVI	= c("Qi1994","Modified Soil Adjusted Vegetation Index"),
+        MSAVI2	= c("Qi1994","Modified Soil Adjusted Vegetation Index 2"),
+        NDVI	= c("Rouse1974", "Normalised Difference Vegetation Index"),
+        NDWI	= c("", "Normalised Difference Water Index"),
+        SAVI    = c("Huete1988", "Soil Adjusted Vegetation Index"),
+        SLAVI	= c("Lymburger2000","Specific Leaf Area Vegetation Index"),
+        SR 		= c("Birth1968", "Simple Ratio Vegetation Index"),  #or Jordan1969
+        TVI 	= c("Deering1975","Transformed Vegetation Index"),
+        WDVI    = c("Richardson1977","Weighted Difference Vegetation Index")
 )
 
 

@@ -6,6 +6,16 @@ NumericMatrix spectralIndicesCpp(NumericMatrix& x, CharacterVector& indices,
 		const int redBand, const int blueBand, const int greenBand,  const int nirBand, const int mirBand, const int swirBand,
 		const double L, const double s, const double G, const double C1, const double C2, const double Levi) {
 
+	int nind = indices.size();
+	int nsamp = x.nrow();
+/***
+	for(int ro = 0; ro < nsamp; ++r) {
+		for(int co = 0; co < nind; ++c) {
+			if(ISNAN(x(ro,co))) x(ro,co) = NA_REAL;
+		}
+	}
+***/
+	NumericMatrix out(nsamp, nind);
 	NumericVector blue, green, red, nir, swir, mir;
 
 	if(blueBand != NA_INTEGER)  blue = x(_,blueBand - 1);
@@ -15,9 +25,7 @@ NumericMatrix spectralIndicesCpp(NumericMatrix& x, CharacterVector& indices,
 	if(mirBand != NA_INTEGER)  mir = x(_,mirBand - 1);
 	if(swirBand != NA_INTEGER)  swir = x(_,swirBand - 1);
 
-	int nind = indices.size();
-	int nsamp = x.nrow();
-	NumericMatrix out(nsamp, nind);
+
 	for(int j = 0; j < nind; ++j) {
 
 		if(indices[j] == "DVI") {
@@ -41,7 +49,7 @@ NumericMatrix spectralIndicesCpp(NumericMatrix& x, CharacterVector& indices,
 		}
 		else if(indices[j] == "LSWI") {
 			out(_,j) = (nir-swir) / (nir+swir);
-			out(_,j) = ifelse((out(_,j) > 1 )| (out(_,j) < -1), NA_REAL, out(_,j));
+		//	out(_,j) = ifelse((out(_,j) > 1.0 ) | (out(_,j) < -1.0)), NA_REAL, out(_,j));
 		}
 		else if(indices[j] == "MSAVI") {
 			// Modified soil adjusted vegetation index
@@ -58,7 +66,7 @@ NumericMatrix spectralIndicesCpp(NumericMatrix& x, CharacterVector& indices,
 		else if(indices[j] == "NDVI") {
 			//Normalized difference vegetation index
 			out(_,j) = (nir - red) / (nir + red);
-			out(_,j) = ifelse((out(_,j) > 1 )| (out(_,j) < -1), NA_REAL, out(_,j));
+			out(_,j) = ifelse((out(_,j) > 1.0 )| (out(_,j) < -1.0)), NA_REAL, out(_,j));
 		}
 		else if(indices[j] == "NDWI") {
 			// Normalized difference water index

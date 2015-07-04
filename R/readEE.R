@@ -1,4 +1,4 @@
-#' Tidy import tool for EarthExplorer .csv Expors
+#' Tidy import tool for EarthExplorer .csv export files
 #' 
 #' @param x Character, Character or list. One or more paths to EarthExplorer export files.
 #' @export 
