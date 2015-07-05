@@ -23,15 +23,22 @@ test_that("returns", {
             vi <- list(
                     spectralIndices(r, red = 1, nir = 2, indices = "NDVI"),
                     spectralIndices(r, red = "L1", nir = 2, indices = "NDVI"),
-                    spectralIndices(r, red = "L1", nir = "L2", indices = "NDVI")           
+                    spectralIndices(r, red = "L1", nir = "L2", indices = "NDVI"),         
+					spectralIndices(r, red = 1, nir = 2, indices = c("NDVI", "DVI", "MSAVI2"))
             )
             ## Check numeric, mixed and character band indices
             expect_identical(vi[[1]], vi[[2]], info = "numeric vs. mixed band indexes")
             expect_identical(vi[[1]], vi[[3]], info = "numeric vs. character band indexes")
             
-            ## Check layer number and names
+            ## Check layer numbers and names
             expect_identical(nlayers(vi[[1]]), 1)
             expect_identical(names(vi[[1]]), "NDVI")
             expect_identical(nlayers(suppressWarnings(spectralIndices(r, red = 1, nir = 2, indices = c("NDVI", "EVI")))), 1)
-            
+			expect_identical(nlayers(vi[[4]]), 3L, info = "nlayers: 3 indices NDVI, MSAVI2, DVI")
+			expect_identical(names(vi[[4]]), c("NDVI", "DVI", "MSAVI2"), info = "names: 3 indices NDVI, MSAVI2, DVI")
+			
+			## Check index values
+			## NDVI like
+			expect_identical(range(vi[[1]][], na.rm = TRUE), c(-1, 1))
+			
         })

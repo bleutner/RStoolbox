@@ -2,7 +2,7 @@
 % Please edit documentation in R/readEE.R
 \name{readEE}
 \alias{readEE}
-\title{Tidy import tool for EarthExplorer .csv Expors}
+\title{Tidy import tool for EarthExplorer .csv export files}
 \usage{
 readEE(x)
 }
@@ -10,6 +10,6 @@ readEE(x)
 \item{x}{Character, Character or list. One or more paths to EarthExplorer export files.}
 }
 \description{
-Tidy import tool for EarthExplorer .csv Expors
+Tidy import tool for EarthExplorer .csv export files
 }
 
