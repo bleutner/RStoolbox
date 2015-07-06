@@ -92,7 +92,7 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, stretch = "none"
     if(!fac & stretch != "none")  df[,layer] <- .stretch(df[,layer], method = stretch, quantiles = quantiles)    
     
     if(!(ggObj & !annotation)  ){
-        normVals 	<- normImage(df[,layer], ymin = 0, ymax = 1)    
+        normVals 	<- rescaleImage(df[,layer], ymin = 0, ymax = 1)    
         nona 		<- !is.na(normVals)
         df$fill  	<- NA
         df[nona, "fill"] <- hsv(h = 1, s = 0, v = normVals[nona], alpha = alpha)

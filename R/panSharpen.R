@@ -35,7 +35,7 @@ panSharpen <- function(img, pan, r, g, b, pc = 1, method = "brovey", norm=TRUE) 
         imgpcaHiRes <- raster::resample(imgpca$map, pan, method = "ngb")
         
         if(norm) {
-            panMa <- normImage(pan, imgpca$map[[1]])
+            panMa <- rescaleImage(pan, imgpca$map[[1]])
         }else{
             panMa <- histMatch(pan, imgpca$map[[1]])
         }
@@ -46,7 +46,7 @@ panSharpen <- function(img, pan, r, g, b, pc = 1, method = "brovey", norm=TRUE) 
     }
     if(method == "ihs")     {  
         #xmax <- .DATATYPEdb[dataType(img[[c(r,g,b)]]),"max"]
-        #img <- normImage(img[[c(r,g,b)]], xmin = 0, xmax = xmax, ymin=0, ymax=1)          
+        #img <- rescaleImage(img[[c(r,g,b)]], xmin = 0, xmax = xmax, ymin=0, ymax=1)          
         
         Mfwd <- t(matrix(c(rep(1/3,3), rep(sqrt(6)^-1,2), -2/sqrt(6), 1/sqrt(2), -1/sqrt(2), 0), ncol=3, byrow = T))   ## Carper1990
         Mbwd <- t(Mfwd)

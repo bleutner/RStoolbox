@@ -5,7 +5,7 @@
 \title{Principal Component Analysis for Rasters}
 \usage{
 rasterPCA(img, nSamples = NULL, nComp = nlayers(img), spca = FALSE,
-  maskCheck = TRUE, ...)
+  norm = TRUE, maskCheck = TRUE, ...)
 }
 \arguments{
 \item{img}{RasterBrick or RasterStack.}
@@ -15,6 +15,8 @@ rasterPCA(img, nSamples = NULL, nComp = nlayers(img), spca = FALSE,
 \item{nComp}{Integer. Number of PCA components to return.}
 
 \item{spca}{Logical. If \code{TRUE}, perform standardized PCA.}
+
+\item{norm}{Logical. Center and normalize image befor calculating PCA. It is usually benefitial to do this.}
 
 \item{maskCheck}{Logical. Masks all pixels which have at least one NA (default TRUE is reccomended but introduces a slowdown, see Details when it is wise to disable maskCheck).
 Takes effect only if nSamples is NULL.}
@@ -39,6 +41,8 @@ by setting maskCheck=FALSE which speeds up the computation.
 
 Standardised PCA (SPCA) can be usefull if imagery or bands of different dynamic ranges are combined. SPC uses the correlation matrix instead of the covariance matrix, which
 has the same effect as using normalised bands of unit variance.
+
+The norm argument should in most cases be set to TRUE  (unless your input img is already normalized). It subtracts the mean and divides by the standard deviation.
 }
 \examples{
 library(ggplot2)

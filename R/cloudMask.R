@@ -42,7 +42,7 @@ cloudMask <- function(x, threshold = 0.8,  blue = "B1_sre", tir = "B6_sre", buff
         .vMessage("Re-using NDTCI layer from previous run.") 
         ndtci <- x[["NDTCI"]]
     } else {
-        tirn <- normImage(x[[tir]], x[[blue]])
+        tirn <- rescaleImage(x[[tir]], x[[blue]])
         ndtci <- overlay(stack(tirn, x[[blue]]), fun = function(high, low) (high - low) / (high + low))
         names(ndtci) <- "NDTCI" 
     }

@@ -17,11 +17,14 @@
 #' @param img RasterBrick or RasterStack.
 #' @param nSamples Integer or NULL. Number of pixels to sample for PCA fitting. If NULL, all pixels will be used.
 #' @param nComp Integer. Number of PCA components to return.
+#' @param norm Logical. Center and normalize image befor calculating PCA. It is usually benefitial to do this. 
 #' @param spca Logical. If \code{TRUE}, perform standardized PCA.
 #' @param maskCheck Logical. Masks all pixels which have at least one NA (default TRUE is reccomended but introduces a slowdown, see Details when it is wise to disable maskCheck). 
 #' Takes effect only if nSamples is NULL.
 #' @param ... further arguments to be passed to \link[raster]{writeRaster}, e.g. filename.
 #' @return RasterBrick
+#' @details
+#' The norm argument should in most cases be set to TRUE  (unless your input img is already normalized). It subtracts the mean and divides by the standard deviation.
 #' @export 
 #' @examples 
 #' library(ggplot2)
@@ -41,12 +44,13 @@
 #' grid.arrange(plots[[1]],plots[[2]], plots[[3]], ncol=2)
 #' }
 
-
-rasterPCA <- function(img, nSamples = NULL, nComp = nlayers(img), spca = FALSE, maskCheck = TRUE, ...){      
+rasterPCA <- function(img, nSamples = NULL, nComp = nlayers(img), spca = FALSE, norm = TRUE, maskCheck = TRUE, ...){      
     
     if(nlayers(img) <= 1) stop("Need at least two layers to calculate PCA.")    
     if(nComp > nlayers(img)) nComp <- nlayers(img)
     
+    if(norm) img <- normImage(img)
+     
     if(!is.null(nSamples)){    
         trainData <- sampleRandom(img, size = nSamples, na.rm = TRUE)
         if(nrow(trainData) < nlayers(img)) stop("nSamples too small or img contains a layer with NAs only")

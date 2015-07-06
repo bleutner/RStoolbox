@@ -2,30 +2,28 @@
 % Please edit documentation in R/normImage.R
 \name{normImage}
 \alias{normImage}
-\title{Linear image normalization}
+\title{Center and/or Normalize Raster Images}
 \usage{
-normImage(x, y, xmin, xmax, ymin, ymax, forceMinMax = FALSE)
+normImage(img, norm = TRUE, ...)
 }
 \arguments{
-\item{x}{Raster* object. Image to normalise.}
+\item{img}{Raster*. Image to transform. Transformation will be performed separately for each layer.}
 
-\item{y}{Raster* object. Reference image.}
+\item{norm}{Logical. Perform normalization in addition to centering.}
 
-\item{xmin}{Numeric. Min value of x.}
-
-\item{xmax}{Numeric. Max value of x.}
-
-\item{ymin}{Numeric. Min value of y.}
-
-\item{ymax}{Numeric. Max value of y.}
-
-\item{forceMinMax}{Logical. Forces update of min and max data slots in x or y.}
+\item{...}{further arguments passed to writeRaster.}
+}
+\value{
+Returns a Raster* with the same number layers as input layers with each layer being centered and optionally normalized.
 }
 \description{
-performs linear shifts of value ranges either to match another image
-or to any other min and max value.
+Normalize / Center an image or image stack.
 }
-\seealso{
-\link{histMatch}
+\examples{
+data(rlogo)
+# Normalization
+normImage(rlogo)
+# Centering
+normImage(rlogo, norm = FALSE)
 }
 
