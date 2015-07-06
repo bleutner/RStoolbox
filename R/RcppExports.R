@@ -5,6 +5,10 @@ gainOffsetRescale <- function(x, g, o) {
     .Call('RStoolbox_gainOffsetRescale', PACKAGE = 'RStoolbox', x, g, o)
 }
 
+normImageCpp <- function(x, M, S) {
+    .Call('RStoolbox_normImageCpp', PACKAGE = 'RStoolbox', x, M, S)
+}
+
 specSimC <- function(x, em) {
     .Call('RStoolbox_specSimC', PACKAGE = 'RStoolbox', x, em)
 }

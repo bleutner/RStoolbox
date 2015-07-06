@@ -18,6 +18,19 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// normImageCpp
+NumericMatrix normImageCpp(NumericMatrix& x, NumericVector& M, NumericVector& S);
+RcppExport SEXP RStoolbox_normImageCpp(SEXP xSEXP, SEXP MSEXP, SEXP SSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericMatrix& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericVector& >::type M(MSEXP);
+    Rcpp::traits::input_parameter< NumericVector& >::type S(SSEXP);
+    __result = Rcpp::wrap(normImageCpp(x, M, S));
+    return __result;
+END_RCPP
+}
 // specSimC
 NumericMatrix specSimC(NumericMatrix& x, NumericMatrix& em);
 RcppExport SEXP RStoolbox_specSimC(SEXP xSEXP, SEXP emSEXP) {

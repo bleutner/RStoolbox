@@ -14,9 +14,20 @@
 #' # Centering
 #' normImage(rlogo, norm = FALSE)
 normImage <- function(img, norm = TRUE, ...) {
-    means <- cellStats(img, "mean")   
-    sds   <- if(norm) cellStats(img, "sd") else 1
-    sds[sds == 0] <- 1
-    calc(img, function(x) {(x - means) / sds}, forcefun = TRUE, ...) 
+    if(canProcessInMemory(img)) {
+        out <- img
+        out[] <- scale(img[], center = TRUE, scale = norm)     
+        if("filename" %in% names(list(...))) writeRaster(out, ...)
+    } else {    
+        means <- cellStats(img, "mean")   
+        sds   <- if(norm) cellStats(img, "sd") else rep(1, nlayers(img))
+        sds[sds == 0] <- 1
+        if(nlayers(img) == 1) {
+            out <- calc(img, function(x) {(x - means)/sds}, forcefun = TRUE, ...) 
+        } else {
+            out <- calc(img, function(x) normImageCpp(x, M = means, S = sds), forcefun = TRUE, ...)
+        }
+    }
+    return(out)
 }
 
