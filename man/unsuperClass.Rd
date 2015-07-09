@@ -4,8 +4,8 @@
 \alias{unsuperClass}
 \title{Unsupervised Classification}
 \usage{
-unsuperClass(img, nSamples = 1000, nClasses = 5, nStarts = 25,
-  clusterMap = TRUE, algorithm = "Hartigan-Wong", ...)
+unsuperClass(img, nSamples = 10000, nClasses = 5, nStarts = 25,
+  norm = FALSE, clusterMap = TRUE, algorithm = "Hartigan-Wong", ...)
 }
 \arguments{
 \item{img}{Raster* object.}
@@ -15,6 +15,8 @@ unsuperClass(img, nSamples = 1000, nClasses = 5, nStarts = 25,
 \item{nClasses}{integer. Number of classes.}
 
 \item{nStarts}{integer. Number of random starts for kmeans algorithm.}
+
+\item{norm}{Logical. If \code{TRUE} will normalize img first using \link{normImage}. Normalizing is beneficial if your predictors have different scales.}
 
 \item{clusterMap}{logical. Fit kmeans model to a random subset of the img (see Details).}
 
@@ -29,7 +31,7 @@ Unsupervised clustering of Raster* data using kmeans clustering
 Clustering is done using stats::kmeans. This can be done for all pixels of the image (clusterMap=FALSE), however this can be slow and is
 not memory safe. Therefore if you have large raster data (> memory), as is typically the case with remote sensing imagery it is adviseable to choose clusterMap=TRUE (the default).
 This means that a kmeans cluster map is calculated based on a random subset of pixels (nSamples). Then the distance of *all* pixels to the cluster centers
-is calculated in a stepwise fashion using raster::predict. Class assignment is based on minimum distance to the cluster centers.
+is calculated in a stepwise fashion using raster::predict. Class assignment is based on minimum euclidean distance to the cluster centers.
 }
 \examples{
 library(raster)
