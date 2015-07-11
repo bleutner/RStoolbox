@@ -143,6 +143,23 @@
     x           
 }   
 
+#' Update layer names after calc/overlay/predict etc.
+#' this is useful if a filename was specified during calculations but 
+#' layernames can only be changed in retrospect. If we don't do this and a file
+#' was written to disk (filename), it would not have the new names.
+#' @param x Raster
+#' @param n Character. New names
+#' @keywords internal
+#' @noRd 
+.updateLayerNames<-function(x, n){
+    if(!identical(names(x),n)){
+        names(x) <- n
+        if(!inMemory(x) && extension(filename(x)) == ".grd") {
+            hdr(x, format = "RASTER")
+        }
+    }
+    x
+}
 
 #' Print data.frame in roxygen2 table format
 #' @param x data.frame

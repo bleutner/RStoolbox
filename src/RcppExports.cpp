@@ -5,6 +5,17 @@
 
 using namespace Rcpp;
 
+// entropyCpp
+NumericVector entropyCpp(NumericMatrix& x);
+RcppExport SEXP RStoolbox_entropyCpp(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericMatrix& >::type x(xSEXP);
+    __result = Rcpp::wrap(entropyCpp(x));
+    return __result;
+END_RCPP
+}
 // gainOffsetRescale
 NumericMatrix gainOffsetRescale(NumericMatrix x, NumericVector g, NumericVector o);
 RcppExport SEXP RStoolbox_gainOffsetRescale(SEXP xSEXP, SEXP gSEXP, SEXP oSEXP) {
