@@ -198,7 +198,8 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL, nSamp
     if(mode == "classification"){   
         if(!is.factor(dataSet$response)) dataSet$response <- as.factor(dataSet$response)
         classes 	 <- unique(dataSet$response)
-        classMapping <- data.frame(classID = as.numeric(classes), class = levels(classes))
+        classMapping <- data.frame(classID = as.numeric(classes), class = as.character(classes))
+        classMapping <- classMapping[order(classMapping$classID),]
     }
     
     ## Meaningless predictors
@@ -263,7 +264,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL, nSamp
     
     out <- list(model = caretModel, modelFit = modelFit, validation = validation, map = spatPred)
     if(exists("training")) out <- c(out, trainingPartitionIndices = training)
-    if(mode == "classification") out <- c(out, classMapping = classMapping) 
+    if(mode == "classification") out$classMapping <- classMapping 
     structure(out, class = c("superClass", "RStoolbox"))
 }
 
