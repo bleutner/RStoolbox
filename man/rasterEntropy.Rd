@@ -24,6 +24,6 @@ Entropy is calculated as -sum(p log(p)); p being the class frequency per pixel.
 \examples{
 data(rlogo)
 re <- rasterEntropy(rlogo)
-ggR(re, geomRaster = TRUE)
+ggR(re, geom_raster = TRUE)
 }
 

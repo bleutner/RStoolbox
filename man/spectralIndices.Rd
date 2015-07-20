@@ -57,7 +57,7 @@ library(ggplot2)
 data(rlogo)
 rlogo[["nir"]] <- rlogo[[2]] + 100
 SI <- spectralIndices(rlogo, red = "red", nir = "nir", indices = "NDVI")
-ggR(SI, geomRaster = TRUE) +
+ggR(SI, geom_raster = TRUE) +
     scale_fill_gradient(low = "white", high = "green", na.value = NA)
 }
 \seealso{

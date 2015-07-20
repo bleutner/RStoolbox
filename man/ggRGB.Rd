@@ -7,7 +7,7 @@
 ggRGB(img, r = 3, g = 2, b = 1, scale, maxpixels = 5e+05,
   stretch = "none", ext = NULL, limits = NULL, clipValues = "limits",
   quantiles = c(0.02, 0.98), ggObj = TRUE, ggLayer = FALSE, alpha = 1,
-  coordEqual = TRUE, geomRaster = FALSE, nullValue = 0)
+  coord_equal = TRUE, geom_raster = FALSE, nullValue = 0)
 }
 \arguments{
 \item{img}{RasterStack or RasterBrick}
@@ -43,10 +43,10 @@ Note that if \code{TRUE} & \code{annotate = FALSE} you have to add a scale_fill_
 
 \item{alpha}{Numeric. Transparency (0-1).}
 
-\item{coordEqual}{Logical. Force addition of coord_equal, i.e. aspect ratio of 1:1. Typically usefull for remote sensing data (depending on your projection), hence it defaults to TRUE.
+\item{coord_equal}{Logical. Force addition of coord_equal, i.e. aspect ratio of 1:1. Typically usefull for remote sensing data (depending on your projection), hence it defaults to TRUE.
 Note howver, that this does not apply if (\code{ggLayer=FALSE}).}
 
-\item{geomRaster}{Logical. If \code{FALSE} annotation_raster is used, otherwise geom_raster()+scale_fill_identity is used.
+\item{geom_raster}{Logical. If \code{FALSE} annotation_raster is used, otherwise geom_raster()+scale_fill_identity is used.
 Note that you can't use scale_fill* in addition to the latter, because it already requires scale_fill_identity().}
 
 \item{nullValue}{Numeric. Value used for NULL layers in color compositing. E.g. set g=NULL and fix green value at 0.5 (defaults to 0).}

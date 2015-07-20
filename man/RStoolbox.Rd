@@ -7,6 +7,7 @@
 \title{RStoolbox: A Collection of Remote Sensing Tools}
 \description{
 The RStoolbox package provides a set of functions which simplify performing standard remote sensing tasks in R.
+Most functions have built-in parallel support. All that is required is to run \code{\link[raster]{beginCluster}} beforehand.
 }
 \section{Data Import and Export}{
 

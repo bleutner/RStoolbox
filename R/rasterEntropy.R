@@ -13,7 +13,7 @@
 #' @examples 
 #' data(rlogo)
 #' re <- rasterEntropy(rlogo)
-#' ggR(re, geomRaster = TRUE)
+#' ggR(re, geom_raster = TRUE)
 rasterEntropy <- function(img, ...){
     if(nlayers(img) <= 1) stop("img must have at least two layers")
     out <- calc(img, fun = entropyCpp, forcefun = TRUE, ...)

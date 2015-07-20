@@ -15,7 +15,8 @@
 #' @param kfold Integer. Number of cross-validation resamples during model tuning.
 #' @param minDist Numeric. Minumum distance factor between training and validation data, e.g. minDist=1 will clip validation polygons to ensure a minimal distance of one pixel to the next training polygon. Applies onl if trainData and valData overlap or forceBuffer is \code{TRUE}.
 #' @param forceBuffer Logical. Forces a buffer distance of width \code{minDist} betwenn training and validation data.
-#' @param filename path to output file (optional). If \code{NULL}, standard raster handling will apply, i.e. storage either in memory or in the raster temp directory.
+#' @param mode Character. Model type: 'regression' or 'classification'. Will be detected automatically based on the response type. However for classification based on integer classes you will have to specify this explicitly: model='classification'.
+#' @param filename path to output file (optional). If \code{NULL}, standard raster handling will apply, i.e. storage either in memory or in the raster temp directory. 
 #' @param verbose logical. prints progress and statistics during execution
 #' @param predict logical. \code{TRUE} (default) will return a classified map, \code{FALSE} will only train the classifier
 #' @param overwrite logical. Overwrite spatial prediction raster if it already exists.
@@ -51,13 +52,15 @@
 #' legend(1,1, legend = levels(train$class), fill = colors , title = "Classes", 
 #' horiz = TRUE,  bty = "n")
 #' par(olpar) # reset par
-superClass <- function(img, trainData, valData = NULL, responseCol = NULL, nSamples = 100,
+superClass <- function(img, trainData, valData = NULL, responseCol = NULL, nSamples = 1000,
         areaWeightedSampling = TRUE, polygonBasedCV = FALSE, trainPartition = NULL,
         model = "rf", tuneLength = 3,  kfold = 5,
-        minDist = 2, forceBuffer = FALSE,
+        minDist = 2, forceBuffer = FALSE, mode = c("regression", "classification"),
         filename = NULL, verbose,
         predict = TRUE, overwrite = TRUE, ...) {
     # TODO: check applicability of raster:::.intersectExtent 
+    # TODO: check for empty factor levels
+    # TODO: consider splitting large polygons if there are few polygons in total
     
     if(!missing("verbose")) .initVerbose(verbose)
     verbose <- getOption("RStoolbox.verbose")
@@ -89,6 +92,8 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL, nSamp
         stop(paste0("The column ", responseCol, " does not exist in valData. \nAvailable columns are: ", paste0(colnames(valData@data),collapse=", ")), call. = FALSE) 
     if(!is.null(valData) && !all.equal(class(trainData), class(valData)))
         stop("trainData and valData must be of the same class. Either SpatialPointsDataFrame or SpatialPolygonsDataFrame.")
+    if(any(!mode %in% c("regression", "classification"))) 
+        stop("unknown mode. must be 'regression', 'classification' or c('regression','classification)")
     
     ## Check projections
     if(!compareCRS(img, trainData)) 
@@ -99,8 +104,14 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL, nSamp
         stop("img and trainData do not overlap")
     
     ## What's happening? Class or Reg
-    mode <- if(is.numeric(trainData[[responseCol]])) "regression" else "classification"
-    
+    if(length(mode) == 1 && mode == "classification" && is.numeric(trainData[[responseCol]])) {
+        trainData[[responseCol]] <- as.factor(trainData[[responseCol]])       
+    } else if(is.numeric(trainData[[responseCol]])){
+        mode <- "regression"
+    } else {
+        mode <- "classification"
+    }
+        
     ## Split into training and validation data (polygon basis)
     if(is.null(valData) & !is.null(trainPartition)){
         training  <- createDataPartition(trainData[[responseCol]], p = trainPartition)[[1]] ## this works for polygons as well because every polygon has only one entry in the attribnute table @data
@@ -138,11 +149,11 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL, nSamp
     
     ## Creade hold out indices on polygon level
     if(polygonBasedCV){
-        folds <- createFolds(trainData@data[[responseCol]], k = kfold)
+        folds        <- createFolds(trainData@data[[responseCol]], k = kfold)
         names(folds) <- NULL
-        folds <- melt(folds) 
-        foldCol <- "excludeFromFold"
-        trainData@data[[foldCol]]<- folds[order(folds$value),"L1"]
+        folds        <- melt(folds) 
+        foldCol      <- "excludeFromFold"
+        trainData@data[[foldCol]] <- folds[order(folds$value),"L1"]
     } else {
         foldCol <- NULL
     }
@@ -200,6 +211,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL, nSamp
         classes 	 <- unique(dataSet$response)
         classMapping <- data.frame(classID = as.numeric(classes), class = as.character(classes))
         classMapping <- classMapping[order(classMapping$classID),]
+        rownames(classMapping) <- NULL
     }
     
     ## Meaningless predictors
@@ -231,9 +243,9 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL, nSamp
         modelFit <- list(modelFit, confusionMatrix(caretModel, norm = "average"))     
     } 
     
-    wrArgs <- list(filename = filename, progress = progress, datatype = dataType, overwrite = overwrite)
+    wrArgs          <- list(filename = filename, progress = progress, datatype = dataType, overwrite = overwrite)
     wrArgs$filename <- filename ## remove filename from args if is.null(filename) --> standard writeRaster handling applies
-    spatPred <- .paraRasterFun(img, rasterFun=raster::predict, args = list(model=caretModel), wrArgs = wrArgs)
+    spatPred        <- .paraRasterFun(img, rasterFun=raster::predict, args = list(model=caretModel), wrArgs = wrArgs)
     names(spatPred) <- responseCol
     
     ## VALIDATION ########################

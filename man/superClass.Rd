@@ -5,10 +5,11 @@
 \title{Supervised Classification}
 \usage{
 superClass(img, trainData, valData = NULL, responseCol = NULL,
-  nSamples = 100, areaWeightedSampling = TRUE, polygonBasedCV = FALSE,
+  nSamples = 1000, areaWeightedSampling = TRUE, polygonBasedCV = FALSE,
   trainPartition = NULL, model = "rf", tuneLength = 3, kfold = 5,
-  minDist = 2, forceBuffer = FALSE, filename = NULL, verbose,
-  predict = TRUE, overwrite = TRUE, ...)
+  minDist = 2, forceBuffer = FALSE, mode = c("regression",
+  "classification"), filename = NULL, verbose, predict = TRUE,
+  overwrite = TRUE, ...)
 }
 \arguments{
 \item{img}{Raster* object. Typically remote sensing imagery, which is to be classified.}
@@ -36,6 +37,8 @@ superClass(img, trainData, valData = NULL, responseCol = NULL,
 \item{minDist}{Numeric. Minumum distance factor between training and validation data, e.g. minDist=1 will clip validation polygons to ensure a minimal distance of one pixel to the next training polygon. Applies onl if trainData and valData overlap or forceBuffer is \code{TRUE}.}
 
 \item{forceBuffer}{Logical. Forces a buffer distance of width \code{minDist} betwenn training and validation data.}
+
+\item{mode}{Character. Model type: 'regression' or 'classification'. Will be detected automatically based on the response type. However for classification based on integer classes you will have to specify this explicitly: model='classification'.}
 
 \item{filename}{path to output file (optional). If \code{NULL}, standard raster handling will apply, i.e. storage either in memory or in the raster temp directory.}
 

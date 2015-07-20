@@ -1,6 +1,7 @@
 #' RStoolbox: A Collection of Remote Sensing Tools
 #' 
 #' The RStoolbox package provides a set of functions which simplify performing standard remote sensing tasks in R.
+#' Most functions have built-in parallel support. All that is required is to run \code{\link[raster]{beginCluster}} beforehand.
 #' 
 #' @section Data Import and Export:
 #'  
@@ -40,17 +41,15 @@
 #' \item \code{\link{ggRGB}}: efficient plotting of remote sensing imagery in RGB with ggplot2
 #' }
 #' 
-#' @import raster sp rgeos plyr caret stringr reshape2 ggplot2 
+#' @import raster sp rgeos plyr caret stringr reshape2 ggplot2 utils stats
 #' @importFrom foreach getDoParRegistered 
 #' @importFrom doParallel registerDoParallel
 #' @importFrom codetools findGlobals
 #' @importFrom geosphere areaPolygon
 #' @importFrom parallel parLapply parSapply parApply clusterExport
 #' @importFrom XML xmlParse xmlToList
-#' @importFrom stats coefficients lm ecdf approxfun knots kmeans na.omit complete.cases
 #' @importFrom graphics par abline
 #' @importFrom grDevices hsv
-#' @importFrom utils read.csv
 #' @useDynLib RStoolbox
 #' @importFrom Rcpp sourceCpp
 #' @docType package
