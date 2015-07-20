@@ -5,7 +5,7 @@
 \title{Spectral indices}
 \usage{
 spectralIndices(img, blue = NULL, green = NULL, red = NULL, nir = NULL,
-  mir = NULL, swir = NULL, indices = NULL, index = NULL,
+  swir1 = NULL, swir2 = NULL, indices = NULL, index = NULL,
   coefs = list(L = 0.5, G = 2.5, L_evi = 1, C1 = 6, C2 = 7.5, s = 1), ...)
 }
 \arguments{
@@ -17,11 +17,11 @@ spectralIndices(img, blue = NULL, green = NULL, red = NULL, nir = NULL,
 
 \item{red}{Character or integer. Red band.}
 
-\item{nir}{Character or integer. Near-infrared band.}
+\item{nir}{Character or integer. Near-infrared band (700-1100nm).}
 
-\item{mir}{Character or integer. Mid-wave-infrared band.}
+\item{swir1}{Character or integer. Short-wave-infrared band (1100 1351nm).}
 
-\item{swir}{Character or integer. Short-wave-infrared band.}
+\item{swir2}{Character or integer. Short-wave-infrared band (1400-1800nm).}
 
 \item{indices}{Character. One or more spectral indices to calculate (see Details). By default (NULL) all implemented indices given the spectral bands which are provided will be calculated.}
 
@@ -50,7 +50,7 @@ Although the defaults are sensible values, it can make sense to adjust the SAVI 
 
 
 
-\tabular{lllll}{ \strong{ Index } \tab \strong{ Description } \tab \strong{ Source } \tab \strong{ Bands } \tab \strong{ Formula } \cr DVI \tab Difference Vegetation Index \tab Richardson1977 \tab \code{red, nir} \tab \eqn{s * nir - red} \cr EVI \tab Enhanced Vegetation Index \tab Huete1999 \tab \code{red, nir, blue} \tab \eqn{G * ((nir - red)/(nir + C1 * red - C2 * blue + L_evi))} \cr GEMI \tab Global Environmental Monitoring Index \tab Pinty1992 \tab \code{red, nir} \tab \eqn{(((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5))/(nir + red + 0.5)) * (1 - ((((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5))/(nir + red + 0.5)) * 0.25)) - ((red - 0.125)/(1 - red))} \cr LSWI \tab Land Surface Water Index \tab  \tab \code{nir, swir} \tab \eqn{(nir - swir)/(nir + swir)} \cr MSAVI \tab Modified Soil Adjusted Vegetation Index \tab Qi1994 \tab \code{red, nir} \tab \eqn{nir + 0.5 - (0.5 * sqrt((2 * nir + 1)^2 - 8 * (nir - (2 * red))))} \cr MSAVI2 \tab Modified Soil Adjusted Vegetation Index 2 \tab Qi1994 \tab \code{red, nir} \tab \eqn{(2 * (nir + 1) - sqrt((2 * nir + 1)^2 - 8 * (nir - red)))/2} \cr NDVI \tab Normalised Difference Vegetation Index \tab Rouse1974 \tab \code{red, nir} \tab \eqn{(nir - red)/(nir + red)} \cr NDWI \tab Normalised Difference Water Index \tab  \tab \code{green, nir} \tab \eqn{(green - nir)/(green + nir)} \cr SAVI \tab Soil Adjusted Vegetation Index \tab Huete1988 \tab \code{red, nir} \tab \eqn{(nir - red) * (1 + L)/(nir + red + L)} \cr SLAVI \tab Specific Leaf Area Vegetation Index \tab Lymburger2000 \tab \code{red, nir, mir} \tab \eqn{nir/(red + mir)} \cr SR \tab Simple Ratio Vegetation Index \tab Birth1968 \tab \code{red, nir} \tab \eqn{nir/red} \cr TVI \tab Transformed Vegetation Index \tab Deering1975 \tab \code{red, nir} \tab \eqn{sqrt(((nir - red)/(nir + red)) + 0.5)} \cr WDVI \tab Weighted Difference Vegetation Index \tab Richardson1977 \tab \code{red, nir} \tab \eqn{nir - s * red} \cr DVI \tab Difference Vegetation Index \tab Richardson1977 \tab \code{red, nir} \tab \eqn{s * nir - red} }
+\tabular{lllll}{ \strong{ Index } \tab \strong{ Description } \tab \strong{ Source } \tab \strong{ Bands } \tab \strong{ Formula } \cr DVI \tab Difference Vegetation Index \tab Richardson1977 \tab \code{red, nir} \tab \eqn{s * nir - red} \cr CTVI \tab Corrected Transformed Vegetation Index \tab Perry1984 \tab \code{red, nir} \tab \eqn{(nir - red)/(nir + red) + 0.5} \cr EVI \tab Enhanced Vegetation Index \tab Huete1999 \tab \code{red, nir, blue} \tab \eqn{G * ((nir - red)/(nir + C1 * red - C2 * blue + L_evi))} \cr GEMI \tab Global Environmental Monitoring Index \tab Pinty1992 \tab \code{red, nir} \tab \eqn{(((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5))/(nir + red + 0.5)) * (1 - ((((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5))/(nir + red + 0.5)) * 0.25)) - ((red - 0.125)/(1 - red))} \cr LSWI \tab Land Surface Water Index \tab Xiao2004 \tab \code{nir, swir1} \tab \eqn{(nir - swir1)/(nir + swir1)} \cr MNDWI \tab Modified Normalised Difference Water Index \tab  \tab \code{green, swir1} \tab \eqn{(green - swir1)/(green + swir1)} \cr MSAVI \tab Modified Soil Adjusted Vegetation Index \tab Qi1994 \tab \code{red, nir} \tab \eqn{nir + 0.5 - (0.5 * sqrt((2 * nir + 1)^2 - 8 * (nir - (2 * red))))} \cr MSAVI2 \tab Modified Soil Adjusted Vegetation Index 2 \tab Qi1994 \tab \code{red, nir} \tab \eqn{(2 * (nir + 1) - sqrt((2 * nir + 1)^2 - 8 * (nir - red)))/2} \cr NBRI \tab Normalised Burn Ratio Index \tab  \tab \code{nir, swir2} \tab \eqn{(nir - swir2)/(nir + swir2)} \cr NDVI \tab Normalised Difference Vegetation Index \tab Rouse1974 \tab \code{red, nir} \tab \eqn{(nir - red)/(nir + red)} \cr NDWI \tab Normalised Difference Water Index \tab Gao1996 \tab \code{green, nir} \tab \eqn{(green - nir)/(green + nir)} \cr NRVI \tab Normalised Ratio Vegetation Index \tab Baret1991 \tab \code{red, nir} \tab \eqn{(red/nir - 1)/(red/nir + 1)} \cr RVI \tab Ratio Vegetation Index \tab  \tab \code{red, nir} \tab \eqn{red/nir} \cr SATVI \tab Soil Adjusted Total Vegetation Index \tab  \tab \code{red, swir1, swir2} \tab \eqn{(swir1 - red)/(swir1 + red + L) * (1 + L) - (swir2/2)} \cr SAVI \tab Soil Adjusted Vegetation Index \tab Huete1988 \tab \code{red, nir} \tab \eqn{(nir - red) * (1 + L)/(nir + red + L)} \cr SLAVI \tab Specific Leaf Area Vegetation Index \tab Lymburger2000 \tab \code{red, nir, swir2} \tab \eqn{nir/(red + swir2)} \cr SR \tab Simple Ratio Vegetation Index \tab Birth1968 \tab \code{red, nir} \tab \eqn{nir/red} \cr TVI \tab Transformed Vegetation Index \tab Deering1975 \tab \code{red, nir} \tab \eqn{sqrt((nir - red)/(nir + red) + 0.5)} \cr TTVI \tab Thiam's Transformed Vegetation Index \tab Thiam1997 \tab \code{red, nir} \tab \eqn{sqrt(abs((nir - red)/(nir + red) + 0.5))} \cr WDVI \tab Weighted Difference Vegetation Index \tab Richardson1977 \tab \code{red, nir} \tab \eqn{nir - s * red} \cr DVI \tab Difference Vegetation Index \tab Richardson1977 \tab \code{red, nir} \tab \eqn{s * nir - red} }
 }
 \examples{
 library(ggplot2)
