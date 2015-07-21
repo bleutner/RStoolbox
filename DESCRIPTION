@@ -17,7 +17,7 @@ Depends:
     R (>= 3.1.0)
 Imports: 
 	raster (>= 2.3-40),
-	caret (>= 6.0-49),
+	caret (>= 6.0-52),
     sp,
     stringr,
     XML,
