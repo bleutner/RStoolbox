@@ -15,7 +15,7 @@
 #' @param kfold Integer. Number of cross-validation resamples during model tuning.
 #' @param minDist Numeric. Minumum distance factor between training and validation data, e.g. minDist=1 will clip validation polygons to ensure a minimal distance of one pixel to the next training polygon. Applies onl if trainData and valData overlap or forceBuffer is \code{TRUE}.
 #' @param forceBuffer Logical. Forces a buffer distance of width \code{minDist} betwenn training and validation data.
-#' @param mode Character. Model type: 'regression' or 'classification'. Will be detected automatically based on the response type. However for classification based on integer classes you will have to specify this explicitly: model='classification'.
+#' @param mode Character. Model type: 'regression' or 'classification'. 
 #' @param filename path to output file (optional). If \code{NULL}, standard raster handling will apply, i.e. storage either in memory or in the raster temp directory. 
 #' @param verbose logical. prints progress and statistics during execution
 #' @param predict logical. \code{TRUE} (default) will return a classified map, \code{FALSE} will only train the classifier
@@ -55,7 +55,7 @@
 superClass <- function(img, trainData, valData = NULL, responseCol = NULL, nSamples = 1000,
         areaWeightedSampling = TRUE, polygonBasedCV = FALSE, trainPartition = NULL,
         model = "rf", tuneLength = 3,  kfold = 5,
-        minDist = 2, forceBuffer = FALSE, mode = c("regression", "classification"),
+        minDist = 2, forceBuffer = FALSE, mode = "classification",
         filename = NULL, verbose,
         predict = TRUE, overwrite = TRUE, ...) {
     # TODO: check applicability of raster:::.intersectExtent 
@@ -93,7 +93,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL, nSamp
     if(!is.null(valData) && !all.equal(class(trainData), class(valData)))
         stop("trainData and valData must be of the same class. Either SpatialPointsDataFrame or SpatialPolygonsDataFrame.")
     if(any(!mode %in% c("regression", "classification"))) 
-        stop("unknown mode. must be 'regression', 'classification' or c('regression','classification)")
+        stop("unknown mode. must be 'regression' or 'classification'")
     
     ## Check projections
     if(!compareCRS(img, trainData)) 
@@ -104,13 +104,9 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL, nSamp
         stop("img and trainData do not overlap")
     
     ## What's happening? Class or Reg
-    if(length(mode) == 1 && mode == "classification" && is.numeric(trainData[[responseCol]])) {
+    if(mode == "classification" && is.numeric(trainData[[responseCol]])) {
         trainData[[responseCol]] <- as.factor(trainData[[responseCol]])       
-    } else if(is.numeric(trainData[[responseCol]])){
-        mode <- "regression"
-    } else {
-        mode <- "classification"
-    }
+    } 
         
     ## Split into training and validation data (polygon basis)
     if(is.null(valData) & !is.null(trainPartition)){

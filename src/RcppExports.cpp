@@ -42,6 +42,18 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// predKmeansCpp
+IntegerVector predKmeansCpp(NumericMatrix x, NumericMatrix centers);
+RcppExport SEXP RStoolbox_predKmeansCpp(SEXP xSEXP, SEXP centersSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericMatrix >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type centers(centersSEXP);
+    __result = Rcpp::wrap(predKmeansCpp(x, centers));
+    return __result;
+END_RCPP
+}
 // specSimC
 NumericMatrix specSimC(NumericMatrix& x, NumericMatrix& em);
 RcppExport SEXP RStoolbox_specSimC(SEXP xSEXP, SEXP emSEXP) {
@@ -75,18 +87,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type C2(C2SEXP);
     Rcpp::traits::input_parameter< const double >::type Levi(LeviSEXP);
     __result = Rcpp::wrap(spectralIndicesCpp(x, indices, redBand, blueBand, greenBand, nirBand, swir2Band, swir1Band, L, s, G, C1, C2, Levi));
-    return __result;
-END_RCPP
-}
-// whichColMinC
-IntegerVector whichColMinC(NumericMatrix x, NumericMatrix centers);
-RcppExport SEXP RStoolbox_whichColMinC(SEXP xSEXP, SEXP centersSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< NumericMatrix >::type x(xSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type centers(centersSEXP);
-    __result = Rcpp::wrap(whichColMinC(x, centers));
     return __result;
 END_RCPP
 }

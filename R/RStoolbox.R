@@ -48,8 +48,9 @@
 #' @importFrom geosphere areaPolygon
 #' @importFrom parallel parLapply parSapply parApply clusterExport
 #' @importFrom XML xmlParse xmlToList
-#' @importFrom stats coefficients lm ecdf median approxfun knots kmeans na.omit complete.cases
+#' @importFrom stats coefficients lm ecdf median approxfun knots kmeans na.omit complete.cases loadings princomp
 #' @importFrom graphics par abline
+#' @importFrom methods as
 #' @importFrom utils read.csv read.delim str write.table data
 #' @importFrom grDevices hsv
 #' @useDynLib RStoolbox
