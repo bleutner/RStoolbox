@@ -44,6 +44,24 @@
 #' 
 #' @references S. Goslee (2011): Analyzing Remote Sensing Data in R: The landsat Package. Journal of Statistical Software 43(4).
 #' @export
+#' @examples 
+#' library(rgdal)
+#' ## Import meta-data and bands based on MTL file
+#' mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
+#' metaData <- readMeta(mtlFile)
+#' lsat     <- stackMeta(mtlFile)
+#' 
+#' ## Convert DN to top of atmosphere reflectance and brightness temperature
+#' lsat_ref <- radCor(lsat, metaData = metaData, method = "apref")
+#' 
+#' ## Correct DN to at-surface-reflecatance with DOS (Chavez decay model)
+#' lsat_sref <- radCor(lsat, metaData = metaData, method = "dos")
+#' 
+#' ## Correct DN to at-surface-reflecatance with simple DOS 
+#' ## Automatic haze estimation
+#' hazeDN    <- estimateHaze(lsat, hazeBands = 1:4, darkProp = 0.01, plot = TRUE)
+#' lsat_sref <- radCor(lsat, metaData = metaData, method = "sdos", 
+#'                     hazeValues = hazeDN, hazeBands = 1:4)
 radCor <-	function(img, metaData, method = "apref", bandSet = "full", hazeValues, hazeBands, atmosphere, darkProp = 0.02, verbose){
     # http://landsat.usgs.gov/Landsat8_Using_Product.php
     if(!missing("verbose")) .initVerbose(verbose)
@@ -86,7 +104,7 @@ radCor <-	function(img, metaData, method = "apref", bandSet = "full", hazeValues
     corBands 	<- sDB[!sDB$bandtype %in% c("TIR", "PAN"), "band"]
     bandSet 	<- bandSet[bandSet %in% corBands]
     
-    tirBands	<- list(LANDSAT5 = "B6_dn", LANDSAT7 = c("B6", "B6_VCID_1_dn", "B6_VCID_2_dn"), LANDSAT8 = c("B10_dn", "B11_dn") )[[sat]]	
+    tirBands	<- list(LANDSAT5 = "B6_dn", LANDSAT7 = c("B6_dn", "B6_VCID_1_dn", "B6_VCID_2_dn"), LANDSAT8 = c("B10_dn", "B11_dn") )[[sat]]	
     tirBands 	<- origBands[origBands %in% tirBands]  
     if(length(tirBands) == 0) tirBands <- NULL
     
