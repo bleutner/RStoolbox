@@ -1,0 +1,260 @@
+U.S. Geological Survey
+LEVEL-1 PRODUCT README: GeoTIFF
+
+TABLE OF CONTENTS
+INTRODUCTION
+FORMAT
+ORGANIZATION
+* DATA FILE NAMES
+* GAP MASKS
+* README
+* READING DATA
+GENERAL INFORMATION and DOCUMENTATION
+PRODUCT SUPPORT
+DISCLAIMER
+
+
+INTRODUCTION
+
+This product was created by the U.S. Geological Survey (USGS) 
+and contains Landsat data files in Geographic Tagged 
+Image-File Format (GeoTIFF).
+
+The Landsat 1, 2, and 3 satellites carried the Multispectral 
+Scanner (MSS) sensor; the Landsat 4 and 5 satellites carried 
+both the MSS and the Thematic Mapper (TM) sensors; and the 
+Landsat 7 satellite carries the Enhanced Thematic Mapper Plus 
+(ETM+) sensor. These sensors support the Landsat Project's 
+mission to provide quality remote sensing data in support of 
+research and applications activities. 
+
+For information on MSS products (Landsats 1-5): 
+http://eros.usgs.gov/#/Find_Data/Products_and_Data_Available/MSS
+
+For information on TM products (Landsats 4-5):
+http://eros.usgs.gov/#/Find_Data/Products_and_Data_Available/TM
+
+For information on ETM+ products (Landsat 7):
+http://eros.usgs.gov/#/Find_Data/Products_and_Data_Available/ETM
+
+For information on the Landsat Project, the Landsat Data Continuity 
+Mission (LDCM), project documentation, and data acquisitions: 
+http://landsat.usgs.gov
+
+For detailed information on the Landsat 7 satellite, the ETM+ sensor, 
+and Landsat 7 data products: 
+http://landsathandbook.gsfc.nasa.gov/
+http://landsat.usgs.gov
+http://landsat.usgs.gov/Landsat_Search_and_Download.php
+
+
+FORMAT
+
+Landsat MSS, TM, and ETM+ data are provided in GeoTIFF for Level 1T
+(terrain corrected) products, or for either Level 1Gt (systematic 
+terrain corrected) or Level 1G (systematic corrected) products, 
+if Level 1T processing is not available. GeoTIFF defines a set of 
+publicly available TIFF tags that describe cartographic and geodetic 
+information associated with TIFF images. GeoTIFF is a format that 
+enables referencing a raster image to a known geodetic model or map 
+projection. 
+
+The initial tags are followed by image data that, in turn, may be 
+interrupted by more descriptive tags. By using the GeoTIFF format, 
+both metadata and image data can be encoded into the same file.
+
+The Landsat 7 ETM+ GeoTIFF file format is described in detail in the 
+"Landsat 7 ETM+ Level 1 Product Data Format Control Book (DFCB), 
+LS-DFCB-04":
+http://landsat.usgs.gov/documents/LS-DFCB-04.pdf
+
+The Landsat 4-5 TM GeoTIFF file format is described in detail in the 
+"Landsat Thematic Mapper (TM) Level 1 (L1) Data Format Control Book 
+(DFCB), LS-DFCB-20":
+http://landsat.usgs.gov/documents/LS-DFCB-20.pdf
+
+The Landsat MSS file format is described in detail in the "Landsat 
+Multispectral Scanner (MSS) Level 1 (L1) Data Format Control Book (DFCB)"
+http://landsat.usgs.gov/documents/LS-DFCB-22.pdf
+
+For more information on GeoTIFF visit:
+http://trac.osgeo.org/geotiff
+
+
+ORGANIZATION
+
+Each band of Landsat data in the GeoTIFF format is delivered as
+a grayscale, uncompressed, 8-bit string of unsigned integers.
+A metadata (MTL) file is included with data processed through the
+Level-1 Product Generation System (LPGS). A file containing the
+ground control points (GCP) used during image processing is also
+included. A processing history (WO) file is included with data
+processed through the National Landsat Archive Production System 
+(NLAPS). Landsat 7 ETM+ SLC-off products processed after
+December 11, 2008, will include an additional directory (gap_mask)
+that contains a set of flat binary scan gap mask files (one per band).
+(Please note that the processing date and acquisition date are not
+necessarily the same.)
+
+* DATA FILE NAMES
+
+The file naming convention for Landsat LPGS-processed GeoTIFF data
+is as follows:
+
+LMSppprrrYYYYDOYGSIVV_BN.TIF where:
+     L           = Landsat  
+     M           = Mission (E for ETM+ data; T for TM data; M for MSS)
+     S           = Satellite (7 = Landsat 7, 5 = Landsat 5, 4 = Landsat 4)
+     ppp         = starting path of the product
+     rrr         = starting and ending rows of the product
+     YYYY        = acquisition year
+     DOY         = Julian date
+     GSI         = Ground Station Identifier 
+     VV          = 2 digit version number
+     BN          = file type:
+          B1         = band 1
+          B2         = band 2
+          B3         = band 3
+          B4         = band 4
+          B5         = band 5
+          B6_VCID_1  = band 6L (low gain)  (ETM+)
+          B6_VCID_2  = band 6H (high gain) (ETM+)
+          B6         = band 6 (TM and MSS)
+          B7         = band 7 
+          B8         = band 8 (ETM+)
+          MTL        = Level-1 metadata
+          GCP        = ground control points
+     TIF         = GeoTIFF file extension
+
+The file naming convention for Landsat NLAPS-processed GeoTIFF data 
+is as follows:
+
+LLNppprrrOOYYDDDMM_AA.TIF  where:
+     LL          = Landsat sensor (LT for TM data)
+     N           = satellite number
+     ppp         = starting path of the product
+     rrr         = starting row of the product
+     OO          = WRS row offset (set to 00)
+     YY          = last two digits of the year of 
+                   acquisition
+     DDD         = Julian date of acquisition
+     MM          = instrument mode (10 for MSS; 50 for TM)
+     AA          = file type:
+          B1          = band 1
+          B2          = band 2
+          B3          = band 3
+          B4          = band 4
+          B5          = band 5
+          B6          = band 6
+          B7          = band 7
+          WO          = processing history file 
+     TIF         = GeoTIFF file extension
+
+
+* GAP MASKS
+
+All Landsat 7 ETM+ SLC-off imagery processed on or after December 11,
+2008, will include gap mask files. (Please note the difference between
+acquisition date and processing date, files dates are not necessarily the same.) 
+The gap mask files are bit mask files showing the locations of the image 
+gaps (areas that fall between ETM+ scans). One tarred and gzip-compressed 
+gap mask file is provided for each band in GeoTIFF format. The file naming 
+convention for gap mask files is identical to that described above for 
+LPGS-processed GeoTIFF data, with "_GM" inserted before file type.
+
+If gap mask files are not included with the data, a tutorial for 
+creating them can be found at:
+http://landsat.usgs.gov/gap_mask_files_are_not_provided_can_I_create_my_own.php
+
+
+* README
+
+The README_GTF.TXT (or README.GTF) is an ASCII text file and is this 
+file.
+
+
+* READING DATA    
+
+Delivered via file transfer protocol (FTP): data files are tarred and
+g-zip compressed and will need to be unzipped and untarred before the 
+data files can be used. UNIX systems should have the "gunzip" and "tar"
+commands available for uncompressing and accessing the data. For PC 
+users, free software can be downloaded from an online source. Otherwise, 
+check your PC, as you may already have appropriate software available.
+
+No software is included on this product for viewing Landsat data. 
+
+
+GENERAL INFORMATION and DOCUMENTATION
+
+Landsat and the Landsat Data Continuity Mission (LDCM):
+http://landsat.usgs.gov
+
+Landsat 7 (ETM+):
+http://eros.usgs.gov/#Find_Data/Products_and_Data_Available/ETM
+
+Landsat 4-5 (TM):
+http://eros.usgs.gov/#Find_Data/Products_and_Data_Available/TM
+
+Landsat 1-5 (MSS):
+http://eros.usgs.gov/#Find_Data/Products_and_Data_Available/MSS
+
+Landsat data access:
+  * USGS Global Visualization Viewer (GloVis):  http://glovis.usgs.gov
+  * USGS EarthExplorer:  http://earthexplorer.usgs.gov
+  * Landsat International Ground Station (IGS) network:  
+                     http://landsat.usgs.gov/about_ground_stations.php
+
+FGDC metadata:
+http://www.fgdc.gov/metadata   
+
+Data restrictions and citation:
+http://eros.usgs.gov/#/About_Us/Customer_Service/Data_Citation
+
+* National Snow and Ice Data Center (NSIDC) 
+Radarsat Antarctic Mapping Project (RAMP) elevation data citation:
+
+Liu, H., K. Jezek, B. Li, and Z. Zhao. 2001. 
+Radarsat Antarctic Mapping Project digital elevation model version 2. 
+Boulder, CO: National Snow and Ice Data Center. Digital media. 
+
+For information on the data, please refer to the data set documentation 
+available at the following web site: 
+http://nsidc.org/data/nsidc-0082.html
+
+
+PRODUCT SUPPORT
+ 
+For further information on this product, contact USGS 
+EROS Customer Services:
+
+Customer Services (ATTN: Landsat)
+U.S. Geological Survey
+Earth Resources Observation and Science (EROS) Center
+47914 252nd Street
+Sioux Falls, SD 57198-0001
+
+Tel: 800-252-4547
+Tel: 605-594-6151 
+Fax: 605-594-6589 
+Email: custserv@usgs.gov 
+Web:  http://eros.usgs.gov/ 
+
+For information on other products from USGS EROS:
+http://eros.usgs.gov/
+
+For information on other USGS products:
+http://ask.usgs.gov/  
+or call 1-888-ASK-USGS (275-8747)
+
+
+DISCLAIMER
+
+Any use of trade, product, or firm names is for descriptive 
+purposes only and does not imply endorsement by the U.S. 
+Government.
+
+
+Publication Date:  November 2012
+
+

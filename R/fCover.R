@@ -91,82 +91,83 @@
 #' par(mfrow=c(1,1))
 #' }
 fCover <- function(classImage, predImage, nSamples = 1000, classes = 1, model = "rf", tuneLength = 3, 
-        method = "cv",  maxNA = 0, clamp = TRUE, filename = NULL, verbose, ...){
-   
-    if(!missing("verbose")) .initVerbose(verbose)
-    
-    ## Resolution check
-    r1 		<- res(predImage)
-    r2 		<- res(classImage)[1]
-    if(r2 >= max(r1)) stop("Resolution of classImage must be smaller than the resolution of predImage")
-    
-    ## Spit ellipsis into caret::trainControl and raster::writeRaster
-    frmls_train <- names(formals(caret::trainControl))
-    args  <- c(list(...), method = method)
-    args_trainControl  <- args[names(args) %in% frmls_train]
-    args_writeRaster   <- args[!names(args) %in% frmls_train]
-    args_writeRaster$filename <- if(length(classes) == 1) filename else NULL ## write raster here already during predict if only one layer is output
-    
-    ## Draw random sample from coarse res image
-    .vMessage("Collecting random samples")
-    dummy   <- raster(predImage) 
-    dummyEx <- extent(crop(dummy, classImage, snap = "in")) ## crop properly to avoid sampling in marginal pixels (otherwise sampleRandom uses sanp='near', potentially resulting in incomple pixels)
-    ranSam  <- sampleRandom(predImage, size = nSamples, ext = dummyEx*0.8, xy = TRUE, na.rm = TRUE)
-    
-    ## Extract classified (high res) values
-    .vMessage("Extracting classified pixels")
-    d 	 <- ranSam[,c("x","y")]
-    exts <- apply(cbind(d[,1] - r1[1]/2, d[,1] + r1[1]/2, d[,2]+r1[2]/2, d[,2] + r1[2]/2), 1, extent) ## tried this with SpatialPolygons but thats even slower
-    vals <- .parXapply(X = exts, XFUN = "lapply", FUN = function(ext, classIm=classImage) extract(x = classIm, y = ext, na.rm=FALSE), envir=environment())
-     
-    ## Calculate fractional cover
-    .vMessage("Calculating fractional cover")
-    
-    tabl <- lapply(vals, function(x) table(x, useNA = "always") / length(x))
-    fCov <- do.call("rbind", lapply(tabl, "[", as.character(classes)))
-    fCov[is.na(fCov)] <- 0
-    colnames(fCov)    <- classes
-    
-    ## NA handling
-    ##
-    ## This means_ that if there is a NA pixel, it will be weighted proportionately and
-    ## to the area of the occuring classes. This is a design decision. Alternatively we
-    ## could count it as non-class pixel for either class, however, then these don't sum up 
-    ## to unity anymore. ==> In general we should not make use of this option because of the
-    ## required assumptions and simply ignore samples with NAs ==> default argument maxNA=0
-    ## Maybe we should ditch the maxNA argument alltogether
-    fCovNA  <- lapply(tabl, tail, 1)
-    include <- unlist(fCovNA <= maxNA)
-    fCov    <- fCov/rowSums(fCov)
-    if(!any(include)) stop("No non-NA samples!")
-    
-    .registerDoParallel()
-    ## Fit regression model and predict
-    fCL <- lapply(1:length(classes), function(cl){
-                .vMessage("Fitting regression model for class ", cl)
-                
-                ## Assemble training data (and remove cells exceeding maxNA)
-                trainingData <- data.frame(response = fCov[include, cl], ranSam[include, -c(1:2)])
-                
-                ## Fit model
-                modelFit 	 <- train(response ~ ., data = trainingData, method = model,
-                        tuneLength = tuneLength,  
-                        trControl = do.call("trainControl", args_trainControl))
-                
-                ## Predict  
-                .vMessage(paste0("Predicting fractional cover for class ", cl))               
-                out <- .paraRasterFun(predImage, rasterFun = raster::predict, args = list(model = modelFit, na.rm = TRUE), wrArgs =  args_writeRaster)              
-                list(modelFit, out)                
-    })
-    
-    ## Prepare output and return
-    out 	<- stack(lapply(fCL, "[[", 2))
-    models  <- lapply(fCL, "[[", 1)
-    atts 	<- attr(classImage@data, "attributes")
-    if(clamp) out <- clamp(out, 0, 1, useValues = TRUE)
-    names(models) <- names(out) <- paste0("fC_", if(length(atts) > 0) atts[[1]][classes,"value"] else paste0("class",classes))
-    
-    if(!is.null(filename) & length(classes) > 1) out <- writeRaster(out, filename, ...)
-    structure(list(model = models, trainData = d[include,], map = out), class = c("fCover", "RStoolbox"))
-    
+		method = "cv",  maxNA = 0, clamp = TRUE, filename = NULL, verbose, ...){
+	
+	if(!missing("verbose")) .initVerbose(verbose)
+	
+	## Resolution check
+	r1 		<- res(predImage)
+	r2 		<- res(classImage)[1]
+	if(r2 >= max(r1)) stop("Resolution of classImage must be smaller than the resolution of predImage")
+	
+	## Spit ellipsis into caret::trainControl and raster::writeRaster
+	frmls_train <- names(formals(caret::trainControl))
+	args  <- c(list(...), method = method)
+	args_trainControl  <- args[names(args) %in% frmls_train]
+	args_writeRaster   <- args[!names(args) %in% frmls_train]
+	args_writeRaster$filename <- if(length(classes) == 1) filename else NULL ## write raster here already during predict if only one layer is output
+	
+	## Draw random sample from coarse res image
+	.vMessage("Collecting random samples")
+	dummy   <- raster(predImage) 
+	dummyEx <- extent(crop(dummy, classImage, snap = "in")) ## crop properly to avoid sampling in marginal pixels (otherwise sampleRandom uses sanp='near', potentially resulting in incomple pixels)
+	ranSam  <- sampleRandom(predImage, size = nSamples, ext = dummyEx*0.8, xy = TRUE, na.rm = TRUE)
+	
+	## Extract classified (high res) values
+	.vMessage("Extracting classified pixels")
+	d 	 <- ranSam[,c("x","y")]
+	exts <- apply(cbind(d[,1] - r1[1]/2, d[,1] + r1[1]/2, d[,2] - r1[2]/2, d[,2] + r1[2]/2), 1, extent) ## tried this with SpatialPolygons but thats even slower
+	vals <- .parXapply(X = exts, XFUN = "lapply", FUN = function(ext) {
+				extract(x = classImage, y = ext, na.rm=FALSE)
+			}, envir=environment())
+	
+	## Calculate fractional cover
+	.vMessage("Calculating fractional cover")
+	
+	tabl <- lapply(vals, function(x) table(x, useNA = "always") / length(x))
+	fCov <- do.call("rbind", lapply(tabl, "[", as.character(classes)))
+	fCov[is.na(fCov)] <- 0
+	colnames(fCov)    <- classes
+	
+	## NA handling
+	##
+	## This means_ that if there is a NA pixel, it will be weighted proportionately and
+	## to the area of the occuring classes. This is a design decision. Alternatively we
+	## could count it as non-class pixel for either class, however, then these don't sum up 
+	## to unity anymore. ==> In general we should not make use of this option because of the
+	## required assumptions and simply ignore samples with NAs ==> default argument maxNA=0
+	## Maybe we should ditch the maxNA argument alltogether
+	fCovNA  <- lapply(tabl, tail, 1)
+	include <- unlist(fCovNA <= maxNA)
+	fCov    <- fCov/rowSums(fCov)
+	if(!any(include)) stop("No non-NA samples!")
+	
+	.registerDoParallel()
+	## Fit regression model and predict
+	fCL <- lapply(1:length(classes), function(cl){
+				.vMessage("Fitting regression model for class ", cl)
+				
+				## Assemble training data (and remove cells exceeding maxNA)
+				trainingData <- data.frame(response = fCov[include, cl], ranSam[include, -c(1:2)])
+				
+				## Fit model
+				modelFit 	 <- train(response ~ ., data = trainingData, method = model, tuneLength = tuneLength,  
+						trControl = do.call("trainControl", args_trainControl))
+				
+				## Predict  
+				.vMessage(paste0("Predicting fractional cover for class ", cl))               
+				out <- .paraRasterFun(predImage, rasterFun = raster::predict, args = list(model = modelFit, na.rm = TRUE), wrArgs =  args_writeRaster)              
+				list(modelFit, out)                
+			})
+	
+	## Prepare output and return
+	out 	<- stack(lapply(fCL, "[[", 2))
+	models  <- lapply(fCL, "[[", 1)
+	atts 	<- attr(classImage@data, "attributes")
+	if(clamp) out <- clamp(out, 0, 1, useValues = TRUE)
+	names(models) <- names(out) <- paste0("fC_", if(length(atts) > 0) atts[[1]][classes,"value"] else paste0("class",classes))
+	
+	if(!is.null(filename) & length(classes) > 1) out <- writeRaster(out, filename, ...)
+	structure(list(model = models, trainData = d[include,], map = out), class = c("fCover", "RStoolbox"))
+	
 }

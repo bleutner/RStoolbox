@@ -11,6 +11,7 @@
 #' @param nSamples integer. Number of random samples to draw to fit cluster map. Only relevant if clusterMap = FALSE.
 #' @param nClasses integer. Number of classes.
 #' @param nStarts  integer. Number of random starts for kmeans algorithm.
+#' @param nIter integer. Maximal number of iterations allowed.
 #' @param norm Logical. If \code{TRUE} will normalize img first using \link{normImage}. Normalizing is beneficial if your predictors have different scales.
 #' @param clusterMap logical. Fit kmeans model to a random subset of the img (see Details).
 #' @param algorithm character. \link[stats]{kmeans} algorithm. One of c("Hartigan-Wong", "Lloyd", "MacQueen")
@@ -37,50 +38,42 @@
 #'        title = "Classes", horiz = TRUE,  bty = "n")
 #' 
 #' par(olpar) # reset par
-unsuperClass <- function(img, nSamples = 10000, nClasses = 5, nStarts = 25, norm = FALSE, clusterMap = TRUE, algorithm = "Hartigan-Wong", ...){      
-    if(atMax <- nSamples > ncell(img)) nSamples <- ncell(img)
-    wrArgs <- list(...)
-    if(norm) img <- normImage(img)
-    if(!clusterMap | atMax && canProcessInMemory(img, n = 4)){
-        trainData <- img[]
-        complete  <- complete.cases(trainData)
-        model     <- kmeans(trainData[complete,], centers = nClasses, nstart = nStarts, algorithm = algorithm)
-        out   	  <- raster(img)
-        out[]     <- NA
-        out[complete] <- model$cluster      
-        if("filename" %in% names(wrArgs)) out <- writeRaster(out, ...)
-    } else {
-        if(!clusterMap) warning("Raster is > memory. Resetting clusterMap to TRUE")
-        trainData <- sampleRandom(img, size = nSamples, na.rm = TRUE)
-        model     <- kmeans(trainData, centers = nClasses, nstart = nStarts, algorithm = algorithm)
-        out 	  <- .paraRasterFun(img, rasterFun=raster::predict, args = list(model=model, na.rm = TRUE), wrArgs = wrArgs)
-    }
-    structure(list(call = match.call(), model = model, map = out), class = c("unsuperClass", "RStoolbox"))
+unsuperClass <- function(img, nSamples = 10000, nClasses = 5, nStarts = 25, nIter = 100, norm = FALSE, clusterMap = TRUE, algorithm = "Hartigan-Wong", ...){      
+	if(atMax <- nSamples > ncell(img)) nSamples <- ncell(img)
+	wrArgs <- list(...)
+	if(norm) img <- normImage(img)
+	if(!clusterMap | atMax && canProcessInMemory(img, n = 4)){
+		.vMessage("Load full raster into memory")
+		trainData <- img[]
+		complete  <- complete.cases(trainData)
+		.vMessage("Starting kmeans fitting")
+		model     <- kmeans(trainData[complete,], centers = nClasses, iter.max = nIter, nstart = nStarts, algorithm = algorithm)
+		out   	  <- raster(img)
+		out[]     <- NA
+		out[complete] <- model$cluster      
+		if("filename" %in% names(wrArgs)) out <- writeRaster(out, ...)
+	} else {
+		if(!clusterMap) warning("Raster is > memory. Resetting clusterMap to TRUE")
+		.vMessage("Starting random sampling")
+		trainData <- sampleRandom(img, size = nSamples, na.rm = TRUE)
+		.vMessage("Starting kmeans fitting")
+		model     <- kmeans(trainData, centers = nClasses, nstart = nStarts, iter.max = nIter, algorithm = algorithm)
+		.vMessage("Starting spatial prediction")
+		out 	  <- .paraRasterFun(img, rasterFun=raster::calc, args = list(fun=function(x, kmeans=force(model)){
+							predKmeansCpp(x, centers=kmeans$centers)}, forcefun=TRUE), wrArgs = wrArgs)
+	}
+	structure(list(call = match.call(), model = model, map = out), class = c("unsuperClass", "RStoolbox"))
 }
 
-#' Predict method for kmeans objects
-#' 
-#' Prediction for kmeans models based on minimum distance to cluster centers
-#' 
-#' @param object \link[stats]{kmeans} object
-#' @param newdata matrix 
-#' @param ... further arguments. None implemented.
-#' @method predict kmeans
-#' @export 
-predict.kmeans <- function(object, newdata, ...){
-    stopifnot(colnames(newdata) %in% colnames(object$centers)) 
-    newdata <- as.matrix(newdata)
-    whichColMinC(newdata, centers=object$centers)
-}
-
-
+	
+		
 #' @method print unsuperClass
 #' @export 
-print.unsuperClass <- function(x, ...){
-    cat("unsuperClass results\n")    
-    cat("\n*************** Map ******************\n")
-    cat("$map\n")
-    show(x$map)
+		print.unsuperClass <- function(x, ...){
+	cat("unsuperClass results\n")    
+	cat("\n*************** Map ******************\n")
+	cat("$map\n")
+	show(x$map)
 }
 
 

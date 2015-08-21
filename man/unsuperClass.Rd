@@ -5,7 +5,8 @@
 \title{Unsupervised Classification}
 \usage{
 unsuperClass(img, nSamples = 10000, nClasses = 5, nStarts = 25,
-  norm = FALSE, clusterMap = TRUE, algorithm = "Hartigan-Wong", ...)
+  nIter = 100, norm = FALSE, clusterMap = TRUE,
+  algorithm = "Hartigan-Wong", ...)
 }
 \arguments{
 \item{img}{Raster* object.}
@@ -15,6 +16,8 @@ unsuperClass(img, nSamples = 10000, nClasses = 5, nStarts = 25,
 \item{nClasses}{integer. Number of classes.}
 
 \item{nStarts}{integer. Number of random starts for kmeans algorithm.}
+
+\item{nIter}{integer. Maximal number of iterations allowed.}
 
 \item{norm}{Logical. If \code{TRUE} will normalize img first using \link{normImage}. Normalizing is beneficial if your predictors have different scales.}
 
