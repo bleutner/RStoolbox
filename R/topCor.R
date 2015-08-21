@@ -32,7 +32,8 @@ topCor <- function(img, dem, metaData, solarAngles, method = "C", stratImg, stra
         .vMessage("Calculate slope and aspect")
         topo <- terrain(dem, c("slope", "aspect"))
     } else {
-        compareRaster(img, illu)
+        compareRaster(img, dem)
+        topo <- dem
         .vMessage("Using pre-calculated slope and aspect")
     }
     slope <- topo[["slope"]]

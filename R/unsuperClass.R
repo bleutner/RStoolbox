@@ -57,8 +57,9 @@ unsuperClass <- function(img, nSamples = 10000, nClasses = 5, nStarts = 25, nIte
 		.vMessage("Starting random sampling")
 		trainData <- sampleRandom(img, size = nSamples, na.rm = TRUE)
 		.vMessage("Starting kmeans fitting")
-		model     <- kmeans(trainData, centers = nClasses, nstart = nStarts, iter.max = nIter, algorithm = algorithm)
-		.vMessage("Starting spatial prediction")
+		model     <- tryCatch(kmeans(trainData, centers = nClasses, nstart = nStarts, iter.max = nIter, algorithm = algorithm))
+        if (model$ifault==4) { warning("The Harian-Wong algorithm doesn't converge properly. Consider setting algorithm to 'Lloyd' or 'MacQueen'") }
+        .vMessage("Starting spatial prediction")
 		out 	  <- .paraRasterFun(img, rasterFun=raster::calc, args = list(fun=function(x, kmeans=force(model)){
 							predKmeansCpp(x, centers=kmeans$centers)}, forcefun=TRUE), wrArgs = wrArgs)
 	}

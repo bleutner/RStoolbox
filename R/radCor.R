@@ -1,6 +1,6 @@
-#' Radiometric calibration and correction
+#' Radiometric Calibration and Correction
 #' 
-#' Implements several different methods for absolute radiometric correction of Landsat data.
+#' Implements several different methods for radiometric calibraion and correction of Landsat data.
 #' You can either specify a metadata file, or supply all neccesary values manually. 
 #' With proper parametrization apref and sdos should work for other sensors as well.
 #' 
@@ -15,33 +15,31 @@
 #' @param darkProp numeric. Estimated proportion of dark pixels in the scene. Used only for automatic guessing of hazeValues.
 #' @param verbose Logical. Print status information. 
 #' @note This was originally a fork of randcorr in the landsat package. However it works on Raster* objects and hence is suitable for large rasters.
+#' @return 
+#' RasterStack with top-of-atmosphere radiance (\eqn{W/(m^2 * srad * \mu m)}), at-satellite brightness temperature (K),
+#' top-of-atmosphere reflectance (unitless) corrected for the sun angle or at-surface reflectance (unitless).
 #' @details 
-#' 
-#' Conversion to top of atmosphere radiance (\eqn{W/(m^2 * srad * \mu m)}) 
-#' Conversion to at-satellite brightness temperature (K)
-#' Conversion to top of atmosphere reflectance (unitless) corrected for the sun angle
-#' Estimation of at-surface spectral reflectance (unitless)
-#'  
-#' \describe{
-#' \item{rad}{Radiance}
-#' \item{apref}{Apparent reflectance}
-#' \item{dos}{Dark object subtratction following Chavez (1989)}
-#' \item{costz}{Dark object subtraction following Chaves(1996)}
-#' \item{sdos}{Simple dark object subtraction. Classical dos, Lhaze must be estimated for each band separately.}
-#' }
-#'  
-#' The implemented sun-earth distances neglect the earth's eccentricity. Instead it uses a 100 year daily average (1979-2070).
-#' 
-#' 
-#' Atmospheric haze decay model according to Chavez (1989)
-#' \describe{
-#' \item{veryClear}{\eqn{\lambda^{-4.0}}}
-#' \item{clear}{\eqn{\lambda^{-2.0}}}
-#' \item{moderate}{\eqn{\lambda^{-1.0}}}
-#' \item{hazy}{\eqn{\lambda^{-0.7}}}
-#' \item{veryHazy}{\eqn{\lambda^{-0.5}}} 
+#'
+#' The folloiwing \code{methods} are available:  
+#' \tabular{ll}{
+#' rad   \tab Radiance \cr
+#' apref \tab Apparent reflectance (top-of-atmosphere reflectance) \cr
+#' dos   \tab Dark object subtratction following Chavez (1989) \cr
+#' costz \tab Dark object subtraction following Chavez (1996) \cr
+#' sdos  \tab Simple dark object subtraction. Classical DOS, Lhaze must be estimated for each band separately. 
 #' }
 #' 
+#' If either "dos" or "costz"  are selected, radCor will use the atmospheric haze decay model described by Chavez (1989).
+#' Depending on the \code{atmosphere} the following coefficients are used:
+#' \tabular{ll}{
+#' veryClear \tab \eqn{\lambda^{-4.0}} \cr
+#' clear     \tab \eqn{\lambda^{-2.0}} \cr
+#' moderate  \tab \eqn{\lambda^{-1.0}} \cr
+#' hazy      \tab \eqn{\lambda^{-0.7}} \cr
+#' veryHazy  \tab \eqn{\lambda^{-0.5}} 
+#' }
+#' 
+#' The implemented sun-earth distances neglect the earth's eccentricity. Instead we use a 100 year daily average (1979-2070).
 #' @references S. Goslee (2011): Analyzing Remote Sensing Data in R: The landsat Package. Journal of Statistical Software 43(4).
 #' @export
 #' @examples 

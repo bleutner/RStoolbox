@@ -30,7 +30,8 @@ Imports:
     parallel,
     doParallel,
     foreach,
-    Rcpp
+    Rcpp,
+    methods
 Suggests: 
     rgdal,
     randomForest,

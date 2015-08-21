@@ -2,7 +2,7 @@
 % Please edit documentation in R/radCor.R
 \name{radCor}
 \alias{radCor}
-\title{Radiometric calibration and correction}
+\title{Radiometric Calibration and Correction}
 \usage{
 radCor(img, metaData, method = "apref", bandSet = "full", hazeValues,
   hazeBands, atmosphere, darkProp = 0.02, verbose)
@@ -17,7 +17,7 @@ radCor(img, metaData, method = "apref", bandSet = "full", hazeValues,
 
 \item{bandSet}{numeric or character. original Landsat band numbers or names in the form of ("B1", "B2" etc). If set to 'full' all bands in the solar region will be processed.}
 
-\item{hazeValues}{starting haze value, can be estimated using estimatehazeValues(). if not provided and method is "dos" or "costz" hazeValues will be estimated in an automated fashion. Not needed for apparent reflectance.}
+\item{hazeValues}{starting haze value, can be estimated using link{estimateHaze}. if not provided and method is "dos" or "costz" hazeValues will be estimated in an automated fashion. Not needed for apparent reflectance.}
 
 \item{hazeBands}{Bands corresponding to hazeValues.}
 
@@ -27,41 +27,42 @@ radCor(img, metaData, method = "apref", bandSet = "full", hazeValues,
 
 \item{verbose}{Logical. Print status information.}
 }
+\value{
+RasterStack with top-of-atmosphere radiance (\eqn{W/(m^2 * srad * \mu m)}), at-satellite brightness temperature (K),
+top-of-atmosphere reflectance (unitless) corrected for the sun angle or at-surface reflectance (unitless).
+}
 \description{
-Implements several different methods for absolute radiometric correction of Landsat data.
+Implements several different methods for radiometric calibraion and correction of Landsat data.
 You can either specify a metadata file, or supply all neccesary values manually.
 With proper parametrization apref and sdos should work for other sensors as well.
 }
 \details{
-Conversion to top of atmosphere radiance (\eqn{W/(m^2 * srad * \mu m)})
-Conversion to at-satellite brightness temperature (K)
-Conversion to top of atmosphere reflectance (unitless) corrected for the sun angle
-Estimation of at-surface spectral reflectance (unitless)
-
-\describe{
-\item{rad}{Radiance}
-\item{apref}{Apparent reflectance}
-\item{dos}{Dark object subtratction following Chavez (1989)}
-\item{costz}{Dark object subtraction following Chaves(1996)}
-\item{sdos}{Simple dark object subtraction. Classical dos, Lhaze must be estimated for each band separately.}
+The folloiwing \code{methods} are available:
+\tabular{ll}{
+rad   \tab Radiance \cr
+apref \tab Apparent reflectance (top-of-atmosphere reflectance) \cr
+dos   \tab Dark object subtratction following Chavez (1989) \cr
+costz \tab Dark object subtraction following Chavez (1996) \cr
+sdos  \tab Simple dark object subtraction. Classical DOS, Lhaze must be estimated for each band separately.
 }
 
-The implemented sun-earth distances neglect the earth's eccentricity. Instead it uses a 100 year daily average (1979-2070).
-
-
-Atmospheric haze decay model according to Chavez (1989)
-\describe{
-\item{veryClear}{\eqn{\lambda^{-4.0}}}
-\item{clear}{\eqn{\lambda^{-2.0}}}
-\item{moderate}{\eqn{\lambda^{-1.0}}}
-\item{hazy}{\eqn{\lambda^{-0.7}}}
-\item{veryHazy}{\eqn{\lambda^{-0.5}}}
+If either "dos" or "costz"  are selected, radCor will use the atmospheric haze decay model described by Chavez (1989).
+Depending on the \code{atmosphere} the following coefficients are used:
+\tabular{ll}{
+veryClear \tab \eqn{\lambda^{-4.0}} \cr
+clear     \tab \eqn{\lambda^{-2.0}} \cr
+moderate  \tab \eqn{\lambda^{-1.0}} \cr
+hazy      \tab \eqn{\lambda^{-0.7}} \cr
+veryHazy  \tab \eqn{\lambda^{-0.5}}
 }
+
+The implemented sun-earth distances neglect the earth's eccentricity. Instead we use a 100 year daily average (1979-2070).
 }
 \note{
 This was originally a fork of randcorr in the landsat package. However it works on Raster* objects and hence is suitable for large rasters.
 }
 \examples{
+library(rgdal)
 ## Import meta-data and bands based on MTL file
 mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
 metaData <- readMeta(mtlFile)
