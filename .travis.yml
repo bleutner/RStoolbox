@@ -4,3 +4,4 @@ warnings_are_errors: true
 
 before_install: 
   - sudo apt-get install libhdf5-serial-dev hdf5-tools 
+  - sudo apt-get install gdal-bin
