@@ -12,10 +12,19 @@ test_that("ggR returns proper ggplot2 classes or data.frames", {
             for(s in which(with(tests, ggObj & !ggLayer))) expect_is(builds[[s]], c("gg", "ggplot"), info = tinfo[s])
             
             ## ggLayers
-            for(s in which(with(tests, ggObj & ggLayer))) expect_is(builds[[s]], "proto", info = tinfo[s])
-            for(s in which(with(tests, ggObj & ggLayer & anno))) expect_equal(builds[[s]]$geom$objname, "raster_ann", info = tinfo[s])
-            for(s in which(with(tests, ggObj & ggLayer & !anno))) expect_equal(builds[[s]]$geom$objname, "raster", info = tinfo[s])
-            
+            if(!inherits(builds[[which(with(tests, ggObj & ggLayer))[1]]], "ggproto")){
+                ## Current ggplot2 release version
+                for(s in which(with(tests, ggObj & ggLayer))) expect_is(builds[[s]], c("proto"), info = tinfo[s])
+                for(s in which(with(tests, ggObj & ggLayer & anno)))  expect_equal(builds[[s]]$geom$objname, "raster_ann", info = tinfo[s])
+                for(s in which(with(tests, ggObj & ggLayer & !anno))) expect_equal(builds[[s]]$geom$objname, "raster", info = tinfo[s])                       
+            } else {
+                ## Upcoming ggplot2 version (>=1.0.1.9002)
+                for(s in which(with(tests, ggObj & ggLayer))) expect_is(builds[[s]]$geom, "GeomRaster", info = tinfo[s])
+                for(s in which(with(tests, ggObj & ggLayer & anno)))  expect_is(builds[[s]]$geom, "GeomRasterAnn", info = tinfo[s])
+                for(s in which(with(tests, ggObj & ggLayer & !anno))) expect_is(builds[[s]]$geom, "GeomRaster", info = tinfo[s])                       
+                
+                
+            }
             ## Data.frames
             for(s in  which(with(tests, !ggObj))) expect_is(builds[[s]], "data.frame", info = tinfo[s])
             for(s in  which(with(tests, !ggObj & forceCat))) expect_is(builds[[s]][,3], "factor", info = tinfo[s])
@@ -37,9 +46,17 @@ test_that("ggRGB returns proper ggplot2 classes or data.frames", {
             for(s in which(with(tests, ggObj & !ggLayer))) expect_is(builds[[s]], c("gg", "ggplot"), info = tinfo[s])
             
             ## ggLayers
-            for(s in which(with(tests, ggObj & ggLayer))) expect_is(builds[[s]], "proto", info = tinfo[s])
-            for(s in which(with(tests, ggObj & ggLayer & anno))) expect_equal(builds[[s]]$geom$objname, "raster_ann", info = tinfo[s])
-            for(s in which(with(tests, ggObj & ggLayer & !anno))) expect_equal(builds[[s]]$geom$objname, "raster", info = tinfo[s])
+            if(!inherits(builds[[which(with(tests, ggObj & ggLayer))[1]]], "ggproto")){
+                ## Current ggplot2 release version
+                for(s in which(with(tests, ggObj & ggLayer))) expect_is(builds[[s]], c("proto"), info = tinfo[s])
+                for(s in which(with(tests, ggObj & ggLayer & anno)))  expect_equal(builds[[s]]$geom$objname, "raster_ann", info = tinfo[s])
+                for(s in which(with(tests, ggObj & ggLayer & !anno))) expect_equal(builds[[s]]$geom$objname, "raster", info = tinfo[s])                       
+            } else {
+                ## Upcoming ggplot2 version (>=1.0.1.9002)
+                for(s in which(with(tests, ggObj & ggLayer))) expect_is(builds[[s]]$geom, "GeomRaster", info = tinfo[s])
+                for(s in which(with(tests, ggObj & ggLayer & anno)))  expect_is(builds[[s]]$geom, "GeomRasterAnn", info = tinfo[s])
+                for(s in which(with(tests, ggObj & ggLayer & !anno))) expect_is(builds[[s]]$geom, "GeomRaster", info = tinfo[s])                       
+            }    
             
             ## Data.frames
             for(s in  which(with(tests, !ggObj))) expect_is(builds[[s]], "data.frame", info = tinfo[s])
