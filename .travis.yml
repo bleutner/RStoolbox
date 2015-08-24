@@ -2,7 +2,7 @@ language: R
 sudo: required
 warnings_are_errors: true
 
-before_install:
+before_script:
   - sudo rm /etc/apt/sources.list.d/pgdg-source.list* 
   - sudo apt-get -q remove libpq5* libpq-dev* postgis* postgres* libgdal* gdal* libhdf5* libnetcdf* libhdf4*
   - sudo rm -Rf /var/lib/postgresql /etc/postgresql
