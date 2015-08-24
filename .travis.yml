@@ -2,8 +2,5 @@ language: R
 sudo: required
 warnings_are_errors: true
 
-before_install:
-  - sudo apt-get install libhdf5-7
-  - sudo apt-get install libhdf5-dev
-  - sudo apt-get install libhdf5-serial-dev
-  - sudo apt-get install libgdal-dev netcdf-bin libproj-dev
+before_install: 
+  - sudo apt-get install libhdf5-serial-dev hdf5-tools 
