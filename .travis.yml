@@ -5,4 +5,4 @@ warnings_are_errors: true
 before_install:
   - sudo add-apt-repository ppa:ubuntugis/ppa -y
   - sudo apt-get update
-  - sudo apt-get install libgdal-dev
+  - sudo apt-get install libhdf5-serial-dev libgdal-dev
