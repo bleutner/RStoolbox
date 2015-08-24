@@ -1,0 +1,3 @@
+language: R
+sudo: required
+warnings_are_errors: true
