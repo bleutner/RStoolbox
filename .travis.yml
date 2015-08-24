@@ -4,7 +4,7 @@ warnings_are_errors: true
 
 before_install:
   - sudo rm /etc/apt/sources.list.d/pgdg-source.list* 
-  - sudo apt-get -qq purge postgis* postgresql*
+  - sudo apt-get -qq purge  postgis libpq5 libpq-dev postgresql-9.1-postgis postgresql-9.2-postgis postgresql-9.3-postgis postgresql-9.1 postgresql-9.2 postgresql-9.3 libgdal1
   - sudo rm -Rf /var/lib/postgresql /etc/postgresql
   - sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
   - sudo apt-get update -qq
