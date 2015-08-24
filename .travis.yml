@@ -3,6 +3,6 @@ sudo: required
 warnings_are_errors: true
 
 before_install:
-  - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable -y
+  - sudo add-apt-repository ppa:ubuntugis/ubuntugis-stable -y
   - sudo apt-get update
-  - sudo apt-get install libgdal-dev
+  - sudo apt-get install libhdf5-serial-dev libgdal libgdal-dev
