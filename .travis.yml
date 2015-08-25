@@ -12,8 +12,8 @@ before_script:
 #- sudo aptitude install -q  libhdf5-dev libhdf5-7 libhdf5-serial-dev hdf5-tools libpng12-dev libjpeg-dev libgeos-dev libgd2-xpm-dev libfreetype6-dev libgdal1-dev libproj-dev 
   - sudo aptitude install -y gdal-bin 
   - sudo aptitude install -y libgdal1-dev 
-  - Rscript -e "install.packages('devtools', repos = 'http://cran.r-project.org/')
-  - Rscript -e "install.packages('rgdal', repos = 'http://cran.r-project.org/')
+  - Rscript -e "install.packages('devtools', repos = 'http://cran.r-project.org/')"
+  - Rscript -e "install.packages('rgdal', repos = 'http://cran.r-project.org/')"
 
    
  
