@@ -13,3 +13,7 @@ before_script:
   - sudo aptitude install -y gdal-bin 
   - sudo aptitude install -y libgdal1-dev 
    
+ 
+r_packages   
+  - devtools
+  - rgdal
