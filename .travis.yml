@@ -17,7 +17,3 @@ before_script:
   - Rscript -e "install.packages('rgdal', repos = 'http://cran.r-project.org/')"
 
    
- 
-#r_packages:   
-#  - devtools
-#  - rgdal
