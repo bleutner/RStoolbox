@@ -5,6 +5,18 @@
 
 using namespace Rcpp;
 
+// classQA
+IntegerVector classQA(NumericVector& x, NumericMatrix rcl);
+RcppExport SEXP RStoolbox_classQA(SEXP xSEXP, SEXP rclSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type rcl(rclSEXP);
+    __result = Rcpp::wrap(classQA(x, rcl));
+    return __result;
+END_RCPP
+}
 // entropyCpp
 NumericVector entropyCpp(NumericMatrix& x);
 RcppExport SEXP RStoolbox_entropyCpp(SEXP xSEXP) {

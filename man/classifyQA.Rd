@@ -4,15 +4,18 @@
 \alias{classifyQA}
 \title{Classify Landsat8 QA Band}
 \usage{
-classifyQA(img, ...)
+classifyQA(img, type = c("background", "cloud", "cirrus", "snow", "water"),
+  ...)
 }
 \arguments{
 \item{img}{RasterLayer. Landsat 8 OLI QA band.}
 
+\item{type}{Character. Classes which should be returned. One or more of c("background", "cloud", "cirrus","snow", "water").}
+
 \item{...}{further arguments passed to \link[raster]{writeRaster}}
 }
 \value{
-Returns a RasterLayer with five classes:
+Returns a RasterLayer with maximal five classes:
 \tabular{rr}{
 class \tab value \cr
 background \tab 1L \cr
@@ -24,6 +27,15 @@ water  \tab 5L \cr
 }
 \description{
 extracts five classes from QA band: background, cloud, cirrus, snow and water.
+}
+\details{
+Each class is queried for *high* confidence. See \link{encodeQA} for details.
+This approach corresponds to the way LandsatLook Quality Images are produced by the USGS.
+}
+\examples{
+library(raster)
+qa <- raster(ncol = 100, nrow=100, val = sample(1:2^14,  10000))
+qacs <- classifyQA(img = qa)
 }
 \seealso{
 \link{encodeQA} \link{decodeQA}
