@@ -22,6 +22,9 @@ cloudMask(x, threshold = 0.8, blue = "B1_sre", tir = "B6_sre",
 
 \item{verbose}{logical. Print messages or suppress.}
 }
+\value{
+Returns a RasterStack with two layers: CMASK contains the binary cloud mask (1 = cloud, NA = not-cloud) and NDTCI contains the cloud index.
+}
 \description{
 Developed for use with Landsat data \code{cloudMask} relies on the distinctive difference between the blue (or any other short-wave band)
 and thermal band for semi-automated creation of a cloud mask. Since it relies on thermal information it doesn't work well for sensors without
@@ -29,7 +32,7 @@ thermal bands.
 }
 \note{
 Typically clouds are cold in the thermal region and have high reflectance in short wavelengths (blue). By calculating a normalized difference index between the two bands and thresholding a rough cloud mask can be obtained.
-Before calculating the normalized difference thermal cloud index (NDTCI) the thermal band will be matched to the same value range as the blue band. Therefore, it doesn't matter whether you
+Before calculating the spectral cloud index (let's call it Normalized Difference Thermal Cloud Index (NDTCI)) the thermal band will be matched to the same value range as the blue band. Therefore, it doesn't matter whether you
 provide DN, radiance or brightness temperature.
 
 This approach to cloud masking is very simplistic. And aims only at rough removal of potentially clouded areas. Nevertheless, it is able to provide satisfactory results.
@@ -40,13 +43,32 @@ Buffering should be seen as final polishing, i.e. as long as the pure cloud cent
 Once your mask detects obvious cloud pixels properly re-enable buffering for fine tuning if desired. Finally, once a suitable threshold is established re-run cloudMask on the whole scene with this threshold and go get a coffee.
 }
 \examples{
-\dontrun{
-ls <- stackMeta("path/to/MTL.txt")
-ls_cor <- radCor(ls, "path/to/MTL.txt")
-ls_cmask <-cloudMask(ls_cor, returnDiffLayer = TRUE)
-}
+library(ggplot2)
+data(rlogo)
+
+ggRGB(rlogo, r=1, g=2, b=3)
+
+## Define minMax ranges
+ggRGB(rlogo, r=1,g=2, b=3, limits = matrix(c(100,150,10,200,50,255),  ncol = 2, by = TRUE))
+
+## Perform stong linear contrast stretch
+ggRGB(rlogo, r = 1, g = 2, b = 3,stretch = "lin", quantiles = c(0.2, 0.8))
+
+## Use only two layers for color calculation
+ggRGB(rlogo, r = 1, g = 2, b = NULL)
+
+## Return only data.frame
+df <- ggRGB(rlogo, ggObj = FALSE)
+head(df)
+
+## Use in layer-mode, e.g. to add to another plot
+wave <- data.frame(x = c(0, 0:100,100), y = c(0,sin(seq(0,2*pi,pi/50))*10+20, 0))
+p <- ggplot(wave, aes(x, y))
+p + ggRGB(rlogo, ggLayer = TRUE) +
+       geom_polygon(aes(x, y), fill = "blue", alpha = 0.4) +
+       coord_equal(ylim=c(0,75))
 }
 \seealso{
-\link[raster]{mask}
+\code{\link{cloudShadowMask}}
 }
 

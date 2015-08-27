@@ -12,7 +12,7 @@
 #' @param plot logical. Plots of the cloud mask for all sub-steps (sanitizing etc.) Helpful to find proper parametrization.
 #' @param verbose logical. Print messages or suppress.
 #' @note Typically clouds are cold in the thermal region and have high reflectance in short wavelengths (blue). By calculating a normalized difference index between the two bands and thresholding a rough cloud mask can be obtained.
-#' Before calculating the normalized difference thermal cloud index (NDTCI) the thermal band will be matched to the same value range as the blue band. Therefore, it doesn't matter whether you
+#' Before calculating the spectral cloud index (let's call it Normalized Difference Thermal Cloud Index (NDTCI)) the thermal band will be matched to the same value range as the blue band. Therefore, it doesn't matter whether you
 #' provide DN, radiance or brightness temperature.
 #' 
 #' This approach to cloud masking is very simplistic. And aims only at rough removal of potentially clouded areas. Nevertheless, it is able to provide satisfactory results. 
@@ -22,14 +22,11 @@
 #' Buffering should be seen as final polishing, i.e. as long as the pure cloud centers are not detected properly, you might want to turn it off. since it takes some time to calculate.
 #' Once your mask detects obvious cloud pixels properly re-enable buffering for fine tuning if desired. Finally, once a suitable threshold is established re-run cloudMask on the whole scene with this threshold and go get a coffee.
 #' @export
+#' @return
+#' Returns a RasterStack with two layers: CMASK contains the binary cloud mask (1 = cloud, NA = not-cloud) and NDTCI contains the cloud index.
 #' @seealso 
-#' \link[raster]{mask}
-#' @examples 
-#' \dontrun{
-#' ls <- stackMeta("path/to/MTL.txt")
-#' ls_cor <- radCor(ls, "path/to/MTL.txt") 
-#' ls_cmask <-cloudMask(ls_cor, returnDiffLayer = TRUE)  
-#' }
+#' \code{\link{cloudShadowMask}}
+#' @template examples_cloudMask
 cloudMask <- function(x, threshold = 0.8,  blue = "B1_sre", tir = "B6_sre", buffer = NULL, plot = FALSE, verbose){
     
     if(!missing("verbose")) .initVerbose(verbose)
@@ -83,38 +80,36 @@ cloudMask <- function(x, threshold = 0.8,  blue = "B1_sre", tir = "B6_sre", buff
 }
 
 
-
-
 #' Cloud Shadow Masking for Flat Terrain
 #' 
-#' Intended for interactive use \code{cloudShadowMask} will ask the user to select a few 
+#' Intended for interactive use, \code{cloudShadowMask} will ask the user to select a few 
 #' corresponding cloud/cloudShadow pixels which will be used to estimate coordinates 
 #' for a linear cloudmask shift.
 #' 
-#' @param img Raster* Object containing the scene 
-#' @param cm RasterBrick. Cloud mask (typically the result of \code{cloudMask})
+#' @param img Raster* object containing the scene 
+#' @param cm Raster* object. Cloud mask (typically the result of \code{\link{cloudMask}})
 #' @param nc Integer. Number of control points. A few points (default) are fine because the final shift is estimated by \link{coregisterImages}.
 #' @param shiftEstimate NULL or numeric vector of length two (x,y). Estimated displacement of shadows in map units. If \code{NULL}, the user will be asked to select control points interactively.
 #' @param preciseShift NULL or numeric vector of length two (x,y). Use this if cloud/cloud-shadow displacement is already known, e.g. from a previous run of \code{cloudShadowMask}.
-#' @param threshold Numeric (between 0 and 1). Threshold used for image co-registration (see details). Doesn't usually require tweaking.
-#' @param returnShift Logical. Return a numeric vector containing the shift parameters. Usefull if you estimate parameters on a subset of the image.
+#' @param quantile Numeric (between 0 and 1). Quantile threshold used for image co-registration. By default the 20\% quantile of the total intensity (sum) of the image is used as potential shadow mask.
+#' @param returnShift Logical. Return a numeric vector containing the shift parameters. Useful if you estimate parameters on a subset of the image.
 #' @details 
 #' This is a very simplistic approach to cloud shadow masking (simple shift of the cloud mask). It is not image based and accuracy will suffer from clouds at different altitudes. However, just as cloudMask
 #' this is a quick and easy to use tool for Landsat data if you're just working on a few scenes and don't have fMask or CDR data at hand. Although for some test scenes
 #' it does perform surprisingly well.
-#' 
+#' @return 
+#' Returns a RasterLayer with the cloud shadow mask (0 = shadow, NA = not-shadow).
 #' @seealso \link{cloudMask}
 #' @export
-cloudShadowMask <- function (img, cm, nc = 5, shiftEstimate = NULL, preciseShift = NULL, threshold = 0.1, returnShift = FALSE) {
+#' @template examples_cloudMask
+cloudShadowMask <- function (img, cm, nc = 5, shiftEstimate = NULL, preciseShift = NULL, quantile = 0.2, returnShift = FALSE) {
     
-    stopifnot(threshold > 0 & threshold < 1) 
+    stopifnot(quantile > 0 & quantile < 1) 
     #csind <- overlay(stack(tir, x[[]]), fun = function(high, low) (high - low) / (high + low))
     if(is.null(preciseShift)){ 
         
         csind <- sum(img)
-        threshold <- threshold * maxValue(csind) 
-        
-        csindm <- csind < threshold
+        csindm <- csind < quantile(csind, quantile)
         if(is.null(shiftEstimate)){
             
             plotRGB(img, stretch = "hist")
@@ -125,13 +120,13 @@ cloudShadowMask <- function (img, cm, nc = 5, shiftEstimate = NULL, preciseShift
             shiftEstimate <- colMeans(apply(sel[,1:2], 2, diff)[seq(1,nrow(sel),2),])   
             shiftEstimate <- shiftEstimate / res(img)[1] 
         } else if(!(is.vector(shiftEstimate) && length(shiftEstimate) == 2) ) {
-            stop("meanShift must be a numeric vector of length two (x,y) or NULL")
+            stop("shiftEstimat must be a numeric vector of length two (x,y) or NULL")
         }
         
         cma <- is.na(cm[[1]])
         shifts <- matrix(shiftEstimate + rep(seq(-3,3,0.5), each = 2), ncol=2, byrow=TRUE)
         colnames(shifts) <- c("x", "y")
-        cms <- coregisterImages(cma, csindm, shift = shifts, nBins = 2, nSamples = ncell(cm), reportStats = TRUE)
+        cms <- coregisterImages(cma, csindm, shift = shifts, nBins = 2, nSamples = ncell(cma), reportStats = TRUE)
         shiftPar <- cms$bestShift
         cms <- cms$coregImg
         cms[cms == 1] <- NA

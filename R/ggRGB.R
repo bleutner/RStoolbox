@@ -1,4 +1,4 @@
-#' Create ggplot raster with RGB from 3 rasterLayers
+#' Create ggplot2 Raster Plots with RGB from 3 RasterLayers
 #' 
 #' Calculates RGB color composite raster for plotting with ggplot2. Optional value clipping and and stretching can be used to enhance the imagery.
 #' 
@@ -8,7 +8,7 @@
 #' @param r Integer or character. Red layer in x. Can be set to \code{NULL}, in which case the red channel will be set to zero.
 #' @param g Integer or character. Green layer in x. Can be set to \code{NULL}, in which case the green channel will be set to zero.
 #' @param b Integer or character. Blue layer in x. Can be set to \code{NULL}, in which case the blue channel will be set to zero.
-#' @param nullValue Numeric. Value used for NULL layers in color compositing. E.g. set g=NULL and fix green value at 0.5 (defaults to 0).
+#' @param nullValue Numeric. Intensity value used for NULL layers in color compositing. E.g. set g=NULL and fix green value at 0.5 (defaults to 0).
 #' @param scale Numeric. Maximum possible pixel value (optional). Defaults to 255 or to the maximum value of x if that is larger than 255
 #' @param maxpixels Integer. Maximal number of pixels used for plotting.
 #' @param stretch Character. Either 'none', 'lin', 'hist', 'sqrt' or 'log' for no stretch, linear, histogram, square-root or logarithmic stretch.
@@ -56,8 +56,9 @@
 #' p + ggRGB(rlogo, ggLayer = TRUE) + 
 #'        geom_polygon(aes(x, y), fill = "blue", alpha = 0.4) +
 #'        coord_equal(ylim=c(0,75))
-ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = "none", ext = NULL,  limits = NULL, clipValues  = "limits", quantiles = c(0.02,0.98),
-		ggObj = TRUE, ggLayer = FALSE, alpha = 1, coord_equal = TRUE, geom_raster = FALSE, nullValue = 0) { 
+ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch = "none", ext = NULL,  limits = NULL,
+        clipValues  = "limits", quantiles = c(0.02,0.98), ggObj = TRUE, ggLayer = FALSE, 
+        alpha = 1, coord_equal = TRUE, geom_raster = FALSE, nullValue = 0) { 
     
     ## TODO: handle single value rasters (e.g. masks)
     

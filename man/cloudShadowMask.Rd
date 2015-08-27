@@ -5,12 +5,12 @@
 \title{Cloud Shadow Masking for Flat Terrain}
 \usage{
 cloudShadowMask(img, cm, nc = 5, shiftEstimate = NULL,
-  preciseShift = NULL, threshold = 0.1, returnShift = FALSE)
+  preciseShift = NULL, quantile = 0.2, returnShift = FALSE)
 }
 \arguments{
-\item{img}{Raster* Object containing the scene}
+\item{img}{Raster* object containing the scene}
 
-\item{cm}{RasterBrick. Cloud mask (typically the result of \code{cloudMask})}
+\item{cm}{Raster* object. Cloud mask (typically the result of \code{\link{cloudMask}})}
 
 \item{nc}{Integer. Number of control points. A few points (default) are fine because the final shift is estimated by \link{coregisterImages}.}
 
@@ -18,12 +18,15 @@ cloudShadowMask(img, cm, nc = 5, shiftEstimate = NULL,
 
 \item{preciseShift}{NULL or numeric vector of length two (x,y). Use this if cloud/cloud-shadow displacement is already known, e.g. from a previous run of \code{cloudShadowMask}.}
 
-\item{threshold}{Numeric (between 0 and 1). Threshold used for image co-registration (see details). Doesn't usually require tweaking.}
+\item{quantile}{Numeric (between 0 and 1). Quantile threshold used for image co-registration. By default the 20\% quantile of the total intensity (sum) of the image is used as potential shadow mask.}
 
-\item{returnShift}{Logical. Return a numeric vector containing the shift parameters. Usefull if you estimate parameters on a subset of the image.}
+\item{returnShift}{Logical. Return a numeric vector containing the shift parameters. Useful if you estimate parameters on a subset of the image.}
+}
+\value{
+Returns a RasterLayer with the cloud shadow mask (0 = shadow, NA = not-shadow).
 }
 \description{
-Intended for interactive use \code{cloudShadowMask} will ask the user to select a few
+Intended for interactive use, \code{cloudShadowMask} will ask the user to select a few
 corresponding cloud/cloudShadow pixels which will be used to estimate coordinates
 for a linear cloudmask shift.
 }
@@ -31,6 +34,32 @@ for a linear cloudmask shift.
 This is a very simplistic approach to cloud shadow masking (simple shift of the cloud mask). It is not image based and accuracy will suffer from clouds at different altitudes. However, just as cloudMask
 this is a quick and easy to use tool for Landsat data if you're just working on a few scenes and don't have fMask or CDR data at hand. Although for some test scenes
 it does perform surprisingly well.
+}
+\examples{
+library(ggplot2)
+data(rlogo)
+
+ggRGB(rlogo, r=1, g=2, b=3)
+
+## Define minMax ranges
+ggRGB(rlogo, r=1,g=2, b=3, limits = matrix(c(100,150,10,200,50,255),  ncol = 2, by = TRUE))
+
+## Perform stong linear contrast stretch
+ggRGB(rlogo, r = 1, g = 2, b = 3,stretch = "lin", quantiles = c(0.2, 0.8))
+
+## Use only two layers for color calculation
+ggRGB(rlogo, r = 1, g = 2, b = NULL)
+
+## Return only data.frame
+df <- ggRGB(rlogo, ggObj = FALSE)
+head(df)
+
+## Use in layer-mode, e.g. to add to another plot
+wave <- data.frame(x = c(0, 0:100,100), y = c(0,sin(seq(0,2*pi,pi/50))*10+20, 0))
+p <- ggplot(wave, aes(x, y))
+p + ggRGB(rlogo, ggLayer = TRUE) +
+       geom_polygon(aes(x, y), fill = "blue", alpha = 0.4) +
+       coord_equal(ylim=c(0,75))
 }
 \seealso{
 \link{cloudMask}

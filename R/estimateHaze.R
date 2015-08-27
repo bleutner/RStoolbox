@@ -1,11 +1,37 @@
-#' Estimate image haze for dark object subtraction procedures
+#' Estimate Image Haze for Dark Object Subtraction (DOS) 
 #' 
-#' @param x raster object or a previous result from \code{estimateSHV(x , returnTables = TRUE} from which to estimate haze
+#' estimates the digital number (DN) pixel value of *dark* objects for the visible wavelength range.
+#' 
+#' @param x Raster* object or a previous result from \code{estimateHaze(x , returnTables = TRUE} from which to estimate haze
 #' @param hazeBands character. Band or bandname from which to estimate SHV (optional if x contains only one layer)
 #' @param darkProp proportion of pixels estimated to be dark
 #' @param plot display histograms and haze values
-#' @param returnTables return the frequency table per layer. Only takes effect if x is a Raster* object. If x is a result of estimateSHV tables will always be returned.
+#' @param returnTables return the frequency table per layer. Only takes effect if x is a Raster* object. If x is a result of estimateHaze tables will always be returned.
+#' @details 
+#' It is assumed that any radiation originating from *dark* pixels is due to atmospheric haze and 
+#' not the reflectance of the surface itself (the surface is dark, i.e. it has a reflectance close to zero).
+#' Hence, the haze values are estimates of path radiance, which can be subtracted in a dark object subtraction (DOS) procedure (see \code{\link{radCor}})
+#' @return 
+#' If returnTables is FALSE (default). Then a vector of length(hazeBands) containing the estimated haze DNs will be returned.
+#' If returnTables is TRUE a list with two components will be returned. The list element 'SHV' contains the haze values, while 'table' 
+#' contains another list with the sampled frequency tables. The latter can be re-used to try different darkProp thresholds without having to sample 
+#' the raster again.
 #' @export 
+#' @examples
+#' mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
+#' lsat <- stackMeta(mtlFile)
+#' 
+#' ## Estimate haze for blue, green and red band
+#' haze <- estimateHaze(lsat, hazeBands = 1:3, plot = TRUE)
+#' haze
+#' 
+#' ## Find threshold interactively
+#' #### Return the frequency tables for re-use 
+#' #### avoids having to sample the Raster again and again
+#' haze <- estimateHaze(lsat, hazeBands = 1:3, returnTables = TRUE)
+#' ## Use frequency table instead of lsat and fiddle with 
+#' haze <- estimateHaze(haze, hazeBands = 1:3, darkProp = .1, plot = TRUE)
+#' haze$SHV
 estimateHaze <- function(x, hazeBands, darkProp = 0.02, plot = FALSE, returnTables = FALSE) {
     
     ## Initial or repeated run?
@@ -13,9 +39,10 @@ estimateHaze <- function(x, hazeBands, darkProp = 0.02, plot = FALSE, returnTabl
         preCalc <- FALSE
     } else {
         if(is.list(x) & "table" %in% names(x)) {
-            preCalc <- TRUE 
+            preCalc <- TRUE
+            returnTables <- TRUE
         } else {
-            stop("x must be a Raster* object or the result of a previous run of estimateSHV(Raster*, ) with argument 'returnTables = TRUE'", call. = FALSE)
+            stop("x must be a Raster* object or the result of a previous run of estimateHaze(Raster*, ) with argument 'returnTables = TRUE'", call. = FALSE)
         }	
     }
     

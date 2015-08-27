@@ -39,6 +39,10 @@ mutual information.
 \details{
 Currently only a simple linear x - y shift is considered and tested. No higher order shifts (e.g. rotation, non-linear transformation) are performed. This means that your imagery
 should already be properly geometrically corrected.
+
+\href{https://en.wikipedia.org/wiki/Mutual_information}{Mutual information} is a similarity metric originating from information theory.
+Roughly speaking, the higher the mutual information of two data-sets, the higher is their shared information content, i.e. their similarity.
+When two images are exactly co-registered their mutual information is maximal. By trying different image shifts, we aim to find the best overlap which maximises the mutual information.
 }
 \examples{
 library(raster)

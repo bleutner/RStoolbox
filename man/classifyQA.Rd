@@ -24,6 +24,7 @@ cirrus \tab 3L \cr
 snow   \tab 4L \cr
 water  \tab 5L \cr
 }
+Values outside of these classes are returned as NA.
 }
 \description{
 extracts five classes from QA band: background, cloud, cirrus, snow and water.

@@ -18,6 +18,7 @@
 #' snow   \tab 4L \cr
 #' water  \tab 5L \cr 
 #' }
+#' Values outside of these classes are returned as NA.
 #' @export 
 #' @examples
 #' library(raster)
@@ -25,6 +26,7 @@
 #' qacs <- classifyQA(img = qa)
 classifyQA <- function(img, type = c("background", "cloud", "cirrus","snow", "water"), ...){
     if(any(!type %in% c("background", "cloud", "cirrus","snow", "water")) | !length(type)) stop("type must be element of c('background', 'cloud', 'cirrus','snow', 'water')")
+    if(nlayers(img) != 1) stop("img should be a single RasterLayer")   
     rclx <- rbind(
             if("background" %in% type) cbind(is = encodeQA(fill = "yes"),    becomes = 1L),
             if("cloud" %in% type) cbind(is = encodeQA(cloud = "high"),  becomes = 2L),

@@ -16,6 +16,10 @@
 #' @details 
 #' Currently only a simple linear x - y shift is considered and tested. No higher order shifts (e.g. rotation, non-linear transformation) are performed. This means that your imagery
 #' should already be properly geometrically corrected.
+#' 
+#' \href{https://en.wikipedia.org/wiki/Mutual_information}{Mutual information} is a similarity metric originating from information theory.
+#' Roughly speaking, the higher the mutual information of two data-sets, the higher is their shared information content, i.e. their similarity.
+#' When two images are exactly co-registered their mutual information is maximal. By trying different image shifts, we aim to find the best overlap which maximises the mutual information.
 #' @return 
 #' \code{reportStats=FALSE} returns a Raster* object (x-y shifted slave image).  
 #' \code{reportStats=TRUE} returns a list containing a data.frame with mutual information per shift ($MI), the shift of maximum MI ($bestShift),
@@ -55,6 +59,7 @@
 coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, nSamples = 1e5, reportStats = FALSE, verbose, nBins = 100, ...) {
     
 	## TODO: allow user selected pseudo control points
+    ## TODO: add computation of MI to docu
 	#if(!swin%%2 | !mwin%%2) stop("swin and mwin must be odd numbers")
     if(!missing("verbose")) .initVerbose(verbose)
     if(!compareCRS(master,  slave)) stop("Projection must be the same for master and slave")
@@ -73,7 +78,7 @@ coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, nSamples = 
     minex <- extent(shift(slave, ran[1,1], ran[1,2]))
     maxex <- extent(shift(slave, ran[2,1], ran[2,2]))   
 
-    XYslaves <- sampleRandom(master, size = nSamples, ext = .getExtentOverlap(minex, maxex)*0.9, xy = TRUE)
+    XYslaves <- sampleRandom(master, size = nSamples, ext = RStoolbox:::.getExtentOverlap(minex, maxex)*0.9, xy = TRUE)
     xy <- XYslaves[,c(1,2)]
     me <- XYslaves[,-c(1,2)]     
     mmin <- min(minValue(master))
