@@ -1,25 +1,36 @@
 #' @examples   
-#' library(ggplot2)
-#' data(rlogo)
+#' ## Import Landsat example subset
+#' mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
+#' lsat     <- stackMeta(mtlFile)
+#' ## We have two tiny clouds in the east
+#' ggRGB(lsat, stretch = "lin")
 #' 
-#' ggRGB(rlogo, r=1, g=2, b=3)
+#' ## Calculate cloud index
+#' cldmsk    <- cloudMask(lsat, blue = 1, tir = 6)
+#' plot(cldmsk)
 #' 
-#' ## Define minMax ranges
-#' ggRGB(rlogo, r=1,g=2, b=3, limits = matrix(c(100,150,10,200,50,255),  ncol = 2, by = TRUE))
+#' ## Define threshold (re-use the previously calculated index)
+#' ## Everything above the threshold is masked
+#' ## In addition we apply a region-growing around the core cloud pixels
+#' cldmsk_final <- cloudMask(cldmsk, threshold = 0.1, buffer = 5) 
 #' 
-#' ## Perform stong linear contrast stretch
-#' ggRGB(rlogo, r = 1, g = 2, b = 3,stretch = "lin", quantiles = c(0.2, 0.8))
+#' ## Plot cloudmask 
+#' ggRGB(lsat, stretch = "lin") +
+#'    ggR(cldmsk_final[[1]], ggLayer = TRUE, forceCat = TRUE, geom_raster = TRUE) +
+#'    scale_fill_manual(values = "red", na.value = NA)
 #' 
-#' ## Use only two layers for color calculation
-#' ggRGB(rlogo, r = 1, g = 2, b = NULL)
+#' ## Estimate cloud shadow displacement
+#' #### Interactively (click on cloud pixels and the corresponding shadow pixels)
+#' \dontrun{
+#' shadow <- cloudShadowMask(lsat, cldmsk_final, nc = 2)
+#' }
+#' #### Non-interactively. Pre-defined shadow displacement estimate (shiftEstimate)
+#' shadow <- cloudShadowMask(lsat, cldmsk_final, shiftEstimate = c(-16,-6))
+#'
+#' ## Plot
+#' csmask <- merge(cldmsk_final[[1]], shadow)
+#' ggRGB(lsat, stretch = "lin") +
+#'         ggR(csmask, ggLayer = TRUE, forceCat = TRUE, geom_raster = TRUE) +
+#'         scale_fill_manual(values = c("blue", "yellow"), 
+#'         labels = c("shadow", "cloud"), na.value = NA)
 #' 
-#' ## Return only data.frame
-#' df <- ggRGB(rlogo, ggObj = FALSE)
-#' head(df)
-#' 
-#' ## Use in layer-mode, e.g. to add to another plot
-#' wave <- data.frame(x = c(0, 0:100,100), y = c(0,sin(seq(0,2*pi,pi/50))*10+20, 0))
-#' p <- ggplot(wave, aes(x, y)) 
-#' p + ggRGB(rlogo, ggLayer = TRUE) + 
-#'        geom_polygon(aes(x, y), fill = "blue", alpha = 0.4) +
-#'        coord_equal(ylim=c(0,75))
