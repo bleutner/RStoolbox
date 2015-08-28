@@ -1,21 +1,21 @@
 ---
 layout: docu
-title: ' RStoolbox: A Collection of Remote Sensing Tools '
+title: '  '
 fun:  RStoolbox 
 package:  RStoolbox 
 header: Pages
 group: navigation
 ---
 {% include JB/setup %}
- <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head><title>R: RStoolbox: A Collection of Remote Sensing Tools</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link rel="stylesheet" type="text/css" href="R.css">
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: RStoolbox: A Collection of Remote Sensing Tools</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
 </head><body>
 
 <h3>Description</h3>
 
 <p>The RStoolbox package provides a set of functions which simplify performing standard remote sensing tasks in R.
+Most functions have built-in parallel support. All that is required is to run <code><a href="http://www.inside-r.org/packages/cran/raster/docs/beginCluster">beginCluster</a></code> beforehand.
 </p>
 
 
@@ -48,7 +48,10 @@ group: navigation
 <li> <p><code><a href="cloudMask.html">cloudMask</a></code>: mask clouds in Landsat or other imagery which comes with a thermal band
 </p>
 </li>
-<li> <p><code><a href="normImage.html">normImage</a></code>: norm image to match min/max from another image or a specified min/max range.
+<li> <p><code><a href="cloudShadowMask.html">cloudShadowMask</a></code>: mask cloud shadows from cloudMask
+</p>
+</li>
+<li> <p><code><a href="rescaleImage.html">rescaleImage</a></code>: norm image to match min/max from another image or a specified min/max range.
 </p>
 </li>
 <li> <p><code><a href="histMatch.html">histMatch</a></code>: matches the histograms of two scenes.
@@ -89,10 +92,13 @@ group: navigation
 
 
 <ul>
+<li> <p><code><a href="ggR.html">ggR</a></code>: single raster layer plotting with ggplot2
+</p>
+</li>
 <li> <p><code><a href="ggRGB.html">ggRGB</a></code>: efficient plotting of remote sensing imagery in RGB with ggplot2
 </p>
 </li></ul>
 
 
-<hr><div align="center">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
 </body></html>

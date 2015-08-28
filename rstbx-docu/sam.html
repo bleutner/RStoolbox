@@ -1,0 +1,53 @@
+---
+layout: docu
+title: '  '
+fun:  sam 
+package:  RStoolbox 
+header: Pages
+group: navigation
+---
+{% include JB/setup %}
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Spectral Angle Mapper</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<h3>Description</h3>
+
+<p>Spectral Angle Mapper
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+sam(x, em, angles = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>RasterBrick or RasterStack. Remote sensing imagery (usually hyperspectral)</p>
+</td></tr>
+<tr valign="top"><td><code>em</code></td>
+<td>
+<p>Matrix containing endmembers in rows and bands in columns</p>
+</td></tr>
+<tr valign="top"><td><code>angles</code></td>
+<td>
+<p>Logical. If <code>TRUE</code> a RasterBrick containing each one layer per endmember will be returned containing the spectral angles.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>RasterBrick or RasterLayer
+If <code>FALSE</code> a single Layer will be returned in which each pixel is assigned to the closest endmember class.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>

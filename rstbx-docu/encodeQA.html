@@ -1,0 +1,91 @@
+---
+layout: docu
+title: '  '
+fun:  encodeQA 
+package:  RStoolbox 
+header: Pages
+group: navigation
+---
+{% include JB/setup %}
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Encode QA Conditions to Integers</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+
+							<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+							<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+							<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+							<script>hljs.initHighlightingOnLoad();</script>
+							</head><body>
+
+<h3>Description</h3>
+
+<p>Intended for use with the Landsat 8 OLI QA band. Converts pixel quality flags from human to integer, which can then be used to
+subset the QA image. Please be aware of the default settings which differ for different parameters.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+encodeQA(fill = "no", droppedFrame = "no", terrainOcclusion = "no",
+  water = "all", snow = "all", cirrus = "all", cloud = "all")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>fill</code></td>
+<td>
+<p>Designated fill. Options: <code>c("yes", "no", "all")</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>droppedFrame</code></td>
+<td>
+<p>Dropped frame. Options: <code>c("yes", "no", "all")</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>terrainOcclusion</code></td>
+<td>
+<p>Terrain induced occlusion. Options: <code>c("yes", "no", "all")</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>water</code></td>
+<td>
+<p>Water confidence. Options: <code>c("na", "low", "med", "high", "all")</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>snow</code></td>
+<td>
+<p>Snow / ice confidence.  Options: <code>c("na", "low", "med", "high", "all")</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>cirrus</code></td>
+<td>
+<p>Cirrus confidence.  Options: <code>c("na", "low", "med", "high", "all")</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>cloud</code></td>
+<td>
+<p>Cloud confidence. Options: <code>c("na", "low", "med", "high", "all")</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Note</h3>
+
+<p>Only currently populated bits are available as arguments, i.e. vegetation confidence, cloud shadow and bit nr. 3. are currently useless and hence not available.
+</p>
+
+
+<h3>References</h3>
+
+<p><a href="http://landsat.usgs.gov/L8QualityAssessmentBand.php">http://landsat.usgs.gov/L8QualityAssessmentBand.php</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class="r">encodeQA(snow = &quot;low&quot;, cirrus = c(&quot;med&quot;, &quot;high&quot;), cloud = &quot;high&quot;)
+</code></pre>
+
+<pre><code>#&gt; [1] 58368 62464 58384 62480 58400 62496 58416 62512
+</code></pre>
+
+
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>

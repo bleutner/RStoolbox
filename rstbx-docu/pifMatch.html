@@ -1,0 +1,51 @@
+---
+layout: docu
+title: '  '
+fun:  pifMatch 
+package:  RStoolbox 
+header: Pages
+group: navigation
+---
+{% include JB/setup %}
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: PIF-based Image Matching</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<h3>Description</h3>
+
+<p>Automatically estimates pseudo-invariant-features (PIF) by pixel similarity and fits a linear model which is then applied
+to the whole scene.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+pifMatch(img, ref, method = "cor", quantile = 0.95)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>img</code></td>
+<td>
+<p>Raster*. Image to be adjusted.</p>
+</td></tr>
+<tr valign="top"><td><code>ref</code></td>
+<td>
+<p>Raster*. Reference image.</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>Method to calculate pixel similariry</p>
+</td></tr>
+<tr valign="top"><td><code>quantile</code></td>
+<td>
+<p>Numeric. Threshold quantile used to identify PIFs</p>
+</td></tr>
+</table>
+
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -5,10 +5,11 @@ header: Pages
 group: navigation
 ---
 {% include JB/setup %}
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head><title>R: Tools for Remote Sensing Data Analysis</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link rel="stylesheet" type="text/css" href="R.css">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>R: Tools for Remote Sensing Data Analysis</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
 </head><body>
 
 
@@ -16,71 +17,87 @@ group: navigation
 
 
 <table width="100%">
-<tr><td width="25%"><a href="RStoolbox.html">RStoolbox-package</a></td>
+<tr><td style="width: 25%;"><a href="RStoolbox.html">RStoolbox-package</a></td>
 <td>RStoolbox: A Collection of Remote Sensing Tools</td></tr>
-<tr><td width="25%"><a href="cloudMask.html">cloudMask</a></td>
+<tr><td style="width: 25%;"><a href="cloudMask.html">cloudMask</a></td>
 <td>Simple Cloud Detection</td></tr>
-<tr><td width="25%"><a href="cloudShadowMask.html">cloudShadowMask</a></td>
-<td>Cloud Shadow Detection</td></tr>
-<tr><td width="25%"><a href="coregisterImages.html">coregisterImages</a></td>
+<tr><td style="width: 25%;"><a href="cloudShadowMask.html">cloudShadowMask</a></td>
+<td>Cloud Shadow Masking for Flat Terrain</td></tr>
+<tr><td style="width: 25%;"><a href="coregisterImages.html">coregisterImages</a></td>
 <td>Image to Image Co-Registration based on Mutual Information</td></tr>
-<tr><td width="25%"><a href="estimateHaze.html">estimateHaze</a></td>
+<tr><td style="width: 25%;"><a href="decodeQA.html">decodeQA</a></td>
+<td>Decode QA flags to bit-words</td></tr>
+<tr><td style="width: 25%;"><a href="encodeQA.html">encodeQA</a></td>
+<td>Encode QA Conditions to Integers</td></tr>
+<tr><td style="width: 25%;"><a href="estimateHaze.html">estimateHaze</a></td>
 <td>Estimate image haze for dark object subtraction procedures</td></tr>
-<tr><td width="25%"><a href="fCover.html">fCover</a></td>
+<tr><td style="width: 25%;"><a href="fCover.html">fCover</a></td>
 <td>Estimate fractional cover using image regression</td></tr>
-<tr><td width="25%"><a href="fortify.raster.html">fortify.raster</a></td>
+<tr><td style="width: 25%;"><a href="fortify.raster.html">fortify.raster</a></td>
 <td>Fortify method for classes from the raster package.</td></tr>
-<tr><td width="25%"><a href="fortify.raster.html">fortify.RasterBrick</a></td>
+<tr><td style="width: 25%;"><a href="fortify.raster.html">fortify.RasterBrick</a></td>
 <td>Fortify method for classes from the raster package.</td></tr>
-<tr><td width="25%"><a href="fortify.raster.html">fortify.RasterLayer</a></td>
+<tr><td style="width: 25%;"><a href="fortify.raster.html">fortify.RasterLayer</a></td>
 <td>Fortify method for classes from the raster package.</td></tr>
-<tr><td width="25%"><a href="fortify.raster.html">fortify.RasterStack</a></td>
+<tr><td style="width: 25%;"><a href="fortify.raster.html">fortify.RasterStack</a></td>
 <td>Fortify method for classes from the raster package.</td></tr>
-<tr><td width="25%"><a href="getMeta.html">getMeta</a></td>
+<tr><td style="width: 25%;"><a href="getMeta.html">getMeta</a></td>
 <td>Extract bandwise information from ImageMetaData</td></tr>
-<tr><td width="25%"><a href="ggR.html">ggR</a></td>
+<tr><td style="width: 25%;"><a href="ggR.html">ggR</a></td>
 <td>Plot RasterLayers in ggplot with greyscale</td></tr>
-<tr><td width="25%"><a href="ggRGB.html">ggRGB</a></td>
+<tr><td style="width: 25%;"><a href="ggRGB.html">ggRGB</a></td>
 <td>Create ggplot raster with RGB from 3 rasterLayers</td></tr>
-<tr><td width="25%"><a href="histMatch.html">histMatch</a></td>
+<tr><td style="width: 25%;"><a href="histMatch.html">histMatch</a></td>
 <td>Image to Image Contrast Matching</td></tr>
-<tr><td width="25%"><a href="ImageMetaData.html">ImageMetaData</a></td>
+<tr><td style="width: 25%;"><a href="ImageMetaData.html">ImageMetaData</a></td>
 <td>ImageMetaData Class</td></tr>
-<tr><td width="25%"><a href="normImage.html">normImage</a></td>
-<td>Linear image normalization</td></tr>
-<tr><td width="25%"><a href="panSharpen.html">panSharpen</a></td>
+<tr><td style="width: 25%;"><a href="normImage.html">normImage</a></td>
+<td>Center and/or Normalize Raster Images</td></tr>
+<tr><td style="width: 25%;"><a href="panSharpen.html">panSharpen</a></td>
 <td>Pan sharpen imagery / Image fusion</td></tr>
-<tr><td width="25%"><a href="predict.kmeans.html">predict.kmeans</a></td>
-<td>Predict method for kmeans objects</td></tr>
-<tr><td width="25%"><a href="radCor.html">radCor</a></td>
+<tr><td style="width: 25%;"><a href="pifMatch.html">pifMatch</a></td>
+<td>PIF-based Image Matching</td></tr>
+<tr><td style="width: 25%;"><a href="radCor.html">radCor</a></td>
 <td>Radiometric calibration and correction</td></tr>
-<tr><td width="25%"><a href="rasterPCA.html">rasterPCA</a></td>
+<tr><td style="width: 25%;"><a href="rasterCVA.html">rasterCVA</a></td>
+<td>Change Vector Analysis</td></tr>
+<tr><td style="width: 25%;"><a href="rasterEntropy.html">rasterEntropy</a></td>
+<td>Multi-layer Pixel Entropy</td></tr>
+<tr><td style="width: 25%;"><a href="rasterPCA.html">rasterPCA</a></td>
 <td>Principal Component Analysis for Rasters</td></tr>
-<tr><td width="25%"><a href="readMeta.html">readMeta</a></td>
+<tr><td style="width: 25%;"><a href="readEE.html">readEE</a></td>
+<td>Tidy import tool for EarthExplorer .csv export files</td></tr>
+<tr><td style="width: 25%;"><a href="readMeta.html">readMeta</a></td>
 <td>Read landsat MTL metadata files</td></tr>
-<tr><td width="25%"><a href="saveRSTBX.html">readRSTBX</a></td>
+<tr><td style="width: 25%;"><a href="saveRSTBX.html">readRSTBX</a></td>
 <td>Save and Read RStoolbox Classification Results</td></tr>
-<tr><td width="25%"><a href="readSLI.html">readSLI</a></td>
+<tr><td style="width: 25%;"><a href="readSLI.html">readSLI</a></td>
 <td>Read ENVI spectral libraries</td></tr>
-<tr><td width="25%"><a href="rlogo.html">rlogo</a></td>
+<tr><td style="width: 25%;"><a href="rescaleImage.html">rescaleImage</a></td>
+<td>Linear image rescaling</td></tr>
+<tr><td style="width: 25%;"><a href="rlogo.html">rlogo</a></td>
 <td>Rlogo as RasterBrick</td></tr>
-<tr><td width="25%"><a href="rsOpts.html">rsOpts</a></td>
+<tr><td style="width: 25%;"><a href="rsOpts.html">rsOpts</a></td>
 <td>Set global options for RStoolbox</td></tr>
-<tr><td width="25%"><a href="RStoolbox.html">RStoolbox</a></td>
+<tr><td style="width: 25%;"><a href="RStoolbox.html">RStoolbox</a></td>
 <td>RStoolbox: A Collection of Remote Sensing Tools</td></tr>
-<tr><td width="25%"><a href="saveRSTBX.html">saveRSTBX</a></td>
+<tr><td style="width: 25%;"><a href="sam.html">sam</a></td>
+<td>Spectral Angle Mapper</td></tr>
+<tr><td style="width: 25%;"><a href="saveRSTBX.html">saveRSTBX</a></td>
 <td>Save and Read RStoolbox Classification Results</td></tr>
-<tr><td width="25%"><a href="spectralIndices.html">spectralIndices</a></td>
+<tr><td style="width: 25%;"><a href="spectralIndices.html">spectralIndices</a></td>
 <td>Spectral indices</td></tr>
-<tr><td width="25%"><a href="stackMeta.html">stackMeta</a></td>
+<tr><td style="width: 25%;"><a href="stackMeta.html">stackMeta</a></td>
 <td>Import separate Landsat files into single stack</td></tr>
-<tr><td width="25%"><a href="superClass.html">superClass</a></td>
+<tr><td style="width: 25%;"><a href="superClass.html">superClass</a></td>
 <td>Supervised Classification</td></tr>
-<tr><td width="25%"><a href="topCor.html">topCor</a></td>
+<tr><td style="width: 25%;"><a href="tasseledCap.html">tasseledCap</a></td>
+<td>Tasseled Cap Transformation</td></tr>
+<tr><td style="width: 25%;"><a href="topCor.html">topCor</a></td>
 <td>Topographic Illumination Correction</td></tr>
-<tr><td width="25%"><a href="unsuperClass.html">unsuperClass</a></td>
+<tr><td style="width: 25%;"><a href="unsuperClass.html">unsuperClass</a></td>
 <td>Unsupervised Classification</td></tr>
-<tr><td width="25%"><a href="writeSLI.html">writeSLI</a></td>
+<tr><td style="width: 25%;"><a href="writeSLI.html">writeSLI</a></td>
 <td>Write ENVI spectral libraries</td></tr>
 </table>
 </body></html>

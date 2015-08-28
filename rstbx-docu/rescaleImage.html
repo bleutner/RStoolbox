@@ -1,0 +1,69 @@
+---
+layout: docu
+title: '  '
+fun:  rescaleImage 
+package:  RStoolbox 
+header: Pages
+group: navigation
+---
+{% include JB/setup %}
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Linear image rescaling</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<h3>Description</h3>
+
+<p>performs linear shifts of value ranges either to match another image
+or to any other min and max value.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+rescaleImage(x, y, xmin, xmax, ymin, ymax, forceMinMax = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>Raster* object. Image to normalise.</p>
+</td></tr>
+<tr valign="top"><td><code>y</code></td>
+<td>
+<p>Raster* object. Reference image.</p>
+</td></tr>
+<tr valign="top"><td><code>xmin</code></td>
+<td>
+<p>Numeric. Min value of x.</p>
+</td></tr>
+<tr valign="top"><td><code>xmax</code></td>
+<td>
+<p>Numeric. Max value of x.</p>
+</td></tr>
+<tr valign="top"><td><code>ymin</code></td>
+<td>
+<p>Numeric. Min value of y.</p>
+</td></tr>
+<tr valign="top"><td><code>ymax</code></td>
+<td>
+<p>Numeric. Max value of y.</p>
+</td></tr>
+<tr valign="top"><td><code>forceMinMax</code></td>
+<td>
+<p>Logical. Forces update of min and max data slots in x or y.</p>
+</td></tr>
+</table>
+
+
+<h3>See Also</h3>
+
+<p><a href="histMatch.html">histMatch</a>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>

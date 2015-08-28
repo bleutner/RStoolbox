@@ -1,13 +1,13 @@
 ---
 layout: docu
 title: '  '
-fun:  rsOpts 
+fun:  decodeQA 
 package:  RStoolbox 
 header: Pages
 group: navigation
 ---
 {% include JB/setup %}
- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Set global options for RStoolbox</title>
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Decode QA flags to bit-words</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="R.css" />
 
@@ -19,30 +19,39 @@ group: navigation
 
 <h3>Description</h3>
 
-<p>shortcut to options(RStoolbox.*)
+<p>Intended for use with the Landsat 8 OLI QA band. Decodes pixel quality flags from integer to bit-words.
 </p>
 
 
 <h3>Usage</h3>
 
 <pre>
-rsOpts(verbose)
+decodeQA(x)
 </pre>
 
 
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><code>verbose</code></td>
+<tr valign="top"><td><code>x</code></td>
 <td>
-<p>Logical. If <code>TRUE</code> many functions will print status messages about the current processing step.</p>
+<p>Integer (16bit)</p>
 </td></tr>
 </table>
 
 
+<h3>See Also</h3>
+
+<p><a href="encodeQA.html">encodeQA</a>
+</p>
+
+
 <h3>Examples</h3>
 
-<pre><code class="r">rsOpts(verbose=TRUE)
+<pre><code class="r">decodeQA(53248)
+</code></pre>
+
+<pre><code>#&gt; [1] &quot;1101000000000000&quot;
 </code></pre>
 
 

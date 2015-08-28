@@ -1,16 +1,15 @@
 ---
 layout: docu
-title: ' Simple Cloud Detection '
+title: '  '
 fun:  cloudMask 
 package:  RStoolbox 
 header: Pages
 group: navigation
 ---
 {% include JB/setup %}
- <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head><title>R: Simple Cloud Detection</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link rel="stylesheet" type="text/css" href="R.css">
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Simple Cloud Detection</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
 
 							<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
 							<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
@@ -94,13 +93,13 @@ Once your mask detects obvious cloud pixels properly re-enable buffering for fin
 <pre><code class="r">ls &lt;- stackMeta(&quot;path/to/MTL.txt&quot;)
 </code></pre>
 
-<pre><code>#&gt; Error in readMeta(file): File does not exist.
+<pre><code>#&gt; Error: Metadata file does not exist. Looking for: path/to/MTL.txt
 </code></pre>
 
 <pre><code class="r">ls_cor &lt;- radCor(ls, &quot;path/to/MTL.txt&quot;)
 </code></pre>
 
-<pre><code>#&gt; Error in readMeta(metaData): File does not exist.
+<pre><code>#&gt; Error: Metadata file does not exist. Looking for: path/to/MTL.txt
 </code></pre>
 
 <pre><code class="r">ls_cmask &lt;-cloudMask(ls_cor, returnDiffLayer = TRUE)
@@ -110,5 +109,5 @@ Once your mask detects obvious cloud pixels properly re-enable buffering for fin
 </code></pre>
 
 
-<hr><div align="center">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
 </body></html>
