@@ -2,28 +2,32 @@
 % Please edit documentation in R/normImage.R
 \name{normImage}
 \alias{normImage}
-\title{Center and/or Normalize Raster Images}
+\title{Normalize Raster Images: Center and Scale}
 \usage{
 normImage(img, norm = TRUE, ...)
 }
 \arguments{
-\item{img}{Raster*. Image to transform. Transformation will be performed separately for each layer.}
+\item{img}{Raster* object. Image to transform. Transformation will be performed separately for each layer.}
 
-\item{norm}{Logical. Perform normalization in addition to centering.}
+\item{norm}{Logical. Perform normalization (scaling) in addition to centering, i.e. divide by standard deviation.}
 
-\item{...}{further arguments passed to writeRaster.}
+\item{...}{further arguments passed to \code[raster]{writeRaster}.}
 }
 \value{
 Returns a Raster* with the same number layers as input layers with each layer being centered and optionally normalized.
 }
 \description{
-Normalize / Center an image or image stack.
+subtracts the mean of a raster layer and divides by its standard deviation.
 }
 \examples{
+## Load example data
 data(rlogo)
-# Normalization
-normImage(rlogo)
-# Centering
-normImage(rlogo, norm = FALSE)
+
+## Normalization: Center and Scale
+rlogo_center_norm <- normImage(rlogo)
+hist(rlogo_center_norm)
+
+## Centering
+rlogo_center <- normImage(rlogo, norm = FALSE)
 }
 

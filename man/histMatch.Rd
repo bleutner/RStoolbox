@@ -17,7 +17,7 @@ histMatch(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e+05,
 
 \item{refmask}{RasterLayer. Mask layer for \code{ref}. Any NA pixel in \code{refmask} will be ignored (\code{maskvalue = NA}).}
 
-\item{nSamples}{Integer. Number of random samples to build the histograms.}
+\item{nSamples}{Integer. Number of random samples from each image to build the histograms.}
 
 \item{intersectOnly}{logical. If \code{TRUE} sampling will only take place in the overlap extent of the two rasters. Otherwise the full rasters will be used for sampling.}
 

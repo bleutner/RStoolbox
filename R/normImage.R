@@ -1,21 +1,26 @@
-#' Center and/or Normalize Raster Images
+#' Normalize Raster Images: Center and Scale
 #' 
-#' Normalize / Center an image or image stack.
+#' subtracts the mean of a raster layer and divides by its standard deviation. 
 #' 
-#' @param img Raster*. Image to transform. Transformation will be performed separately for each layer.
-#' @param norm Logical. Perform normalization in addition to centering.
-#' @param ... further arguments passed to writeRaster.
-#' @return Returns a Raster* with the same number layers as input layers with each layer being centered and optionally normalized.
+#' @param img Raster* object. Image to transform. Transformation will be performed separately for each layer.
+#' @param norm Logical. Perform normalization (scaling) in addition to centering, i.e. divide by standard deviation.
+#' @param ... further arguments passed to \code[raster]{writeRaster}.
+#' @return 
+#' Returns a Raster* with the same number layers as input layers with each layer being centered and optionally normalized.
 #' @export 
 #' @examples
+#' ## Load example data
 #' data(rlogo)
-#' # Normalization
-#' normImage(rlogo)
-#' # Centering
-#' normImage(rlogo, norm = FALSE)
+#' 
+#' ## Normalization: Center and Scale
+#' rlogo_center_norm <- normImage(rlogo)
+#' hist(rlogo_center_norm)
+#' 
+#' ## Centering
+#' rlogo_center <- normImage(rlogo, norm = FALSE)
 normImage <- function(img, norm = TRUE, ...) {
     if(canProcessInMemory(img)) {
-        out <- img
+        out   <- img
         out[] <- scale(img[], center = TRUE, scale = norm)     
         if("filename" %in% names(list(...))) writeRaster(out, ...)
     } else {    

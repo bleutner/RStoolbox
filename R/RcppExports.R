@@ -21,6 +21,10 @@ predKmeansCpp <- function(x, centers) {
     .Call('RStoolbox_predKmeansCpp', PACKAGE = 'RStoolbox', x, centers)
 }
 
+pwSimilarityCpp <- function(img, ref, method) {
+    .Call('RStoolbox_pwSimilarityCpp', PACKAGE = 'RStoolbox', img, ref, method)
+}
+
 specSimC <- function(x, em) {
     .Call('RStoolbox_specSimC', PACKAGE = 'RStoolbox', x, em)
 }

@@ -52,7 +52,11 @@ Note that you can't use scale_fill* in addition to the latter, because it alread
 \item{nullValue}{Numeric. Intensity value used for NULL layers in color compositing. E.g. set g=NULL and fix green value at 0.5 (defaults to 0).}
 }
 \value{
-A ggplot2 object, or a three column data frame with coordinates and fill colour.
+\tabular{ll}{
+ \code{ggObj = TRUE}:   \tab ggplot2 plot \cr
+ \code{ggLayer = TRUE}: \tab ggplot2 layer to be combined with an existing ggplot2 \cr
+ \code{ggObj = FALSE}:  \tab data.frame in long format suitable for plotting with ggplot2, includes the pixel values and the calculated colors \cr
+}
 }
 \description{
 Calculates RGB color composite raster for plotting with ggplot2. Optional value clipping and and stretching can be used to enhance the imagery.

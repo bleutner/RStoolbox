@@ -7,7 +7,7 @@
 #' @param ref Raster*. Reference raster, to which x will be matched.  
 #' @param xmask RasterLayer. Mask layer for \code{x} to exclude pixels which might distort the histogram, i.e. are not present in \code{ref}. Any NA pixel in \code{xmask} will be ignored (\code{maskvalue = NA}). 
 #' @param refmask RasterLayer. Mask layer for \code{ref}. Any NA pixel in \code{refmask} will be ignored (\code{maskvalue = NA}). 
-#' @param nSamples Integer. Number of random samples to build the histograms.
+#' @param nSamples Integer. Number of random samples from each image to build the histograms.
 #' @param intersectOnly logical. If \code{TRUE} sampling will only take place in the overlap extent of the two rasters. Otherwise the full rasters will be used for sampling.
 #' @param paired Logical. If \code{TRUE} the corresponding pixels will be used in the overlap.
 #' @param returnFunctions Logical. If \code{TRUE} the matching functions themselves will be returned instead of applying them to \code{x}. 
