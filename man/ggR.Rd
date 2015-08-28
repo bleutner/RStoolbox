@@ -4,18 +4,22 @@
 \alias{ggR}
 \title{Plot RasterLayers in ggplot with greyscale}
 \usage{
-ggR(img, layer = 1, maxpixels = 5e+05, alpha = 1, stretch = "none",
-  quantiles = c(0.02, 0.98), coord_equal = TRUE, ggLayer = FALSE,
-  ggObj = TRUE, geom_raster = FALSE, forceCat = FALSE)
+ggR(img, layer = 1, maxpixels = 5e+05, alpha = 1, hue = 1, sat = 0,
+  stretch = "none", quantiles = c(0.02, 0.98), coord_equal = TRUE,
+  ggLayer = FALSE, ggObj = TRUE, geom_raster = FALSE, forceCat = FALSE)
 }
 \arguments{
 \item{img}{raster}
 
-\item{layer}{layername}
+\item{layer}{Character or numeric. Layername or number.}
 
-\item{maxpixels}{Integer. Maximal number of pixels to sample}
+\item{maxpixels}{Integer. Maximal number of pixels to sample.}
 
 \item{alpha}{Numeric. Transparency (0-1).}
+
+\item{hue}{Numeric. Hue value for color calculation [0,1] (see \[grDevices]{hsv}). Change if you need anything else than greyscale. Only effective if \code{sat > 0}.}
+
+\item{sat}{Numeric. Saturation value for color calculation [0,1] (see \[grDevices]{hsv}). Change if you need anything else than greyscale.}
 
 \item{stretch}{Character. Either 'none', 'lin', 'hist', 'sqrt' or 'log' for no stretch, linear, histogram, square-root or logarithmic stretch.}
 
@@ -28,21 +32,34 @@ Note however, that this does not apply if (\code{ggLayer=FALSE}).}
 
 \item{ggObj}{Logical. Return a stand-alone ggplot object (TRUE) or just the data.frame with values and colors}
 
-\item{geom_raster}{Logical. If \code{FALSE} uses annotation_raster (good to keep aestetic mappings free). If \code{TRUE} uses \code{geom_raster} (and \code{aes(fill)}).}
+\item{geom_raster}{Logical. If \code{FALSE} uses annotation_raster (good to keep aestetic mappings free). If \code{TRUE} uses \code{geom_raster} (and \code{aes(fill)}). See Details.}
 
 \item{forceCat}{Logical. If \code{TRUE} the raster values will be forced to be categorical (will be converted to factor if needed).}
+}
+\value{
+\tabular{ll}{
+ \code{ggObj = TRUE}:   \tab ggplot2 plot \cr
+ \code{ggLayer = TRUE}: \tab ggplot2 layer to be combined with an existing ggplot2 \cr
+ \code{ggObj = FALSE}:  \tab data.frame in long format suitable for plotting with ggplot2, includes the pixel values and the calculated colors  \cr
+}
 }
 \description{
 aimed towards plotting single layer imagery in grey-scale (remote sensing data) but can be
 used with any Raster* object.
 }
-\note{
+\details{
 When \code{img} contains factor values and \code{annotation=TRUE}, the raster values will automatically be converted
-to numeric in order to proceed with the color calculation.
+to numeric in order to proceed with the brightness calculation.
 
 The raster package provides a class lookup-table for categorical rasters (e.g. what you get if you run superClass in classification mode). If your raster has one ggR will automatically treat it as categorical (see \link[raster]{factor}).
 However, the factor status of Raster objects is easily lost and the values are interpreted as numeric. In such cases you should make use of the \code{forceCat = TRUE} argument, which makes sure
 that ggplot2 uses a discrete scale, not a continuous one.
+
+The geom_raster argument switches from the default use of annotation_raster to using geom_raster. The difference between the two is that geom_raster performs
+a meaningful mapping from pixel values to fill colour, while annotation_raster is simply adding a picture to your plot. In practice this means that whenever you
+need a legend for your raster you should use \code{geom_raster = TRUE}. This also allows you to specify and modify the fill scale manually.
+The advantage of using annotation_raster (\code{geom_raster = TRUE}) is that you can still use the scale_fill* for another variable. For example you could add polygons and
+map a value to their fill colour. For more details on the theory behind aestetic mapping have a look at the ggplot2 manuals.
 }
 \examples{
 library(ggplot2)

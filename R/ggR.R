@@ -4,26 +4,39 @@
 #' used with any Raster* object.
 #' 
 #' @param img raster
-#' @param layer layername
-#' @param maxpixels Integer. Maximal number of pixels to sample
+#' @param layer Character or numeric. Layername or number.
+#' @param maxpixels Integer. Maximal number of pixels to sample.
+#' @param alpha Numeric. Transparency (0-1).
+#' @param hue Numeric. Hue value for color calculation [0,1] (see \[grDevices]{hsv}). Change if you need anything else than greyscale. Only effective if \code{sat > 0}.
+#' @param sat Numeric. Saturation value for color calculation [0,1] (see \[grDevices]{hsv}). Change if you need anything else than greyscale.
 #' @param stretch Character. Either 'none', 'lin', 'hist', 'sqrt' or 'log' for no stretch, linear, histogram, square-root or logarithmic stretch.
 #' @param quantiles Numeric vector with two elements. Min and max quantiles to stretch to. Defaults to 2\% stretch, i.e. c(0.02,0.98). 
 #' @param ggObj Logical. Return a stand-alone ggplot object (TRUE) or just the data.frame with values and colors
 #' @param ggLayer Logical. Return only a ggplot layer which must be added to an existing ggplot. If \code{FALSE} s stand-alone ggplot will be returned.
-#' @param geom_raster Logical. If \code{FALSE} uses annotation_raster (good to keep aestetic mappings free). If \code{TRUE} uses \code{geom_raster} (and \code{aes(fill)}).
+#' @param geom_raster Logical. If \code{FALSE} uses annotation_raster (good to keep aestetic mappings free). If \code{TRUE} uses \code{geom_raster} (and \code{aes(fill)}). See Details.
 #' @param coord_equal Logical. Force addition of coord_equal, i.e. aspect ratio of 1:1. Typically usefull for remote sensing data (depending on your projection), hence it defaults to TRUE.
 #'         Note however, that this does not apply if (\code{ggLayer=FALSE}).
-#' @param alpha Numeric. Transparency (0-1).
 #' @param forceCat Logical. If \code{TRUE} the raster values will be forced to be categorical (will be converted to factor if needed). 
 #' @seealso \link{ggRGB}, \link[=fortify.raster]{fortify}
-#' @note
+#' @return 
+#' \tabular{ll}{
+#'  \code{ggObj = TRUE}:   \tab ggplot2 plot \cr
+#'  \code{ggLayer = TRUE}: \tab ggplot2 layer to be combined with an existing ggplot2 \cr
+#'  \code{ggObj = FALSE}:  \tab data.frame in long format suitable for plotting with ggplot2, includes the pixel values and the calculated colors  \cr  
+#' }
+#' @details
 #' When \code{img} contains factor values and \code{annotation=TRUE}, the raster values will automatically be converted
-#' to numeric in order to proceed with the color calculation. 
+#' to numeric in order to proceed with the brightness calculation. 
 #' 
 #' The raster package provides a class lookup-table for categorical rasters (e.g. what you get if you run superClass in classification mode). If your raster has one ggR will automatically treat it as categorical (see \link[raster]{factor}). 
 #' However, the factor status of Raster objects is easily lost and the values are interpreted as numeric. In such cases you should make use of the \code{forceCat = TRUE} argument, which makes sure
 #' that ggplot2 uses a discrete scale, not a continuous one.
 #' 
+#' The geom_raster argument switches from the default use of annotation_raster to using geom_raster. The difference between the two is that geom_raster performs
+#' a meaningful mapping from pixel values to fill colour, while annotation_raster is simply adding a picture to your plot. In practice this means that whenever you 
+#' need a legend for your raster you should use \code{geom_raster = TRUE}. This also allows you to specify and modify the fill scale manually. 
+#' The advantage of using annotation_raster (\code{geom_raster = TRUE}) is that you can still use the scale_fill* for another variable. For example you could add polygons and 
+#' map a value to their fill colour. For more details on the theory behind aestetic mapping have a look at the ggplot2 manuals.
 #' 
 #' @export 
 #' @examples
@@ -66,7 +79,7 @@
 #' ## Legend cusomization etc. ...
 #' ggR(rc, geom_raster = TRUE) + scale_fill_discrete(labels=paste("Class", 1:6))
 #'  
-ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1,  stretch = "none", quantiles = c(0.02,0.98), 
+ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0, stretch = "none", quantiles = c(0.02,0.98), 
         coord_equal = TRUE, ggLayer=FALSE, ggObj = TRUE, geom_raster = FALSE, forceCat = FALSE) {
     
     annotation <- !geom_raster
@@ -85,7 +98,7 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1,  stretch = "none
     fac <- is.factor(df[,layer])
     if(fac & (annotation | !ggObj)) {
         .vMessage("img values are factors but annotation is TRUE. Converting factors as.numeric.")
-        levelLUT <- levels(df[,layer])
+        levelLUT   <- levels(df[,layer])
         df[,layer] <- as.numeric(df[,layer])
     }
     if(!fac & stretch != "none")  df[,layer] <- .stretch(df[,layer], method = stretch, quantiles = quantiles)    
@@ -94,7 +107,7 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1,  stretch = "none
         normVals 	<- rescaleImage(df[,layer], ymin = 0, ymax = 1)    
         nona 		<- !is.na(normVals)
         df$fill  	<- NA
-        df[nona, "fill"] <- hsv(h = 1, s = 0, v = normVals[nona], alpha = alpha)
+        df[nona, "fill"] <- hsv(h = hue, s = sat, v = normVals[nona], alpha = alpha)
     }
     x<-y<-NULL
     if(ggObj) {       
