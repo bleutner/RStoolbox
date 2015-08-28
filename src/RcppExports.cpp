@@ -66,6 +66,19 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// pwSimilarityCpp
+NumericVector pwSimilarityCpp(NumericMatrix& img, NumericMatrix& ref, int method);
+RcppExport SEXP RStoolbox_pwSimilarityCpp(SEXP imgSEXP, SEXP refSEXP, SEXP methodSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericMatrix& >::type img(imgSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix& >::type ref(refSEXP);
+    Rcpp::traits::input_parameter< int >::type method(methodSEXP);
+    __result = Rcpp::wrap(pwSimilarityCpp(img, ref, method));
+    return __result;
+END_RCPP
+}
 // specSimC
 NumericMatrix specSimC(NumericMatrix& x, NumericMatrix& em);
 RcppExport SEXP RStoolbox_specSimC(SEXP xSEXP, SEXP emSEXP) {

@@ -2,21 +2,63 @@
 % Please edit documentation in R/pifMatch.R
 \name{pifMatch}
 \alias{pifMatch}
-\title{PIF-based Image Matching}
+\title{Pseudo-Invariant Features based Image Matching}
 \usage{
-pifMatch(img, ref, method = "cor", quantile = 0.95)
+pifMatch(img, ref, method = "cor", quantile = 0.95, returnPifMap = FALSE,
+  returnSimMap = TRUE, returnModels = FALSE)
 }
 \arguments{
-\item{img}{Raster*. Image to be adjusted.}
+\item{img}{RasterStack or RasterBrick. Image to be adjusted.}
 
-\item{ref}{Raster*. Reference image.}
+\item{ref}{RasterStack or RasterBruck. Reference image.}
 
-\item{method}{Method to calculate pixel similariry}
+\item{method}{Method to calculate pixel similariry. Options: euclidean distance ('ed'), spectral angle}
 
 \item{quantile}{Numeric. Threshold quantile used to identify PIFs}
+
+\item{returnPifMap}{Logical. Return a binary raster map ot pixels which were identified as pesudo-invariant features.}
+
+\item{returnSimMap}{Logical. Return the similarity map as well}
+
+\item{returnModels}{Logical. Return the linear models along with the adjusted image.}
+}
+\value{
+Returns a RasterStack with the adjusted image (\code{img}) by default.
+
+If further return arguments are specified the following intermediate products will be returned in a list along with the adujsted image:
+\itemize{
+   \item \code{returnModels = TRUE}: returns the linear models; one for each layer.
+   \item \code{returnPifMap = TRUE}: returns binary map of pixels which were selected as pseudo-invariant features.
+   \item \code{returnSimMap = TRUE}: returns the pixel-wise similarity.
+}
 }
 \description{
-Automatically estimates pseudo-invariant-features (PIF) by pixel similarity and fits a linear model which is then applied
-to the whole scene.
+Match one scene to another based on linear regression of pseudo-invariant features (PIF).
+}
+\details{
+The function consists of two main steps: First, it calculates pixel-wise similarity between the two rasters and identifies pseudo-invariant pixels based on
+a similarity threshold. In the second step the values of the pseudo-invariant pixels are regressed against each other.
+
+Pixel-wise similarity can be calculated using one of three methods: euclidean distance (\code{method = "ed"}), spectral angle (\code{"sam"}) or pearsons correlation coefficient (\code{"cor"}).
+The threshold is defined as a similarity quantile. Setting \code{quantile=0.95} will select all pixels with a similarity above the 95\% quantile as pseudo-invariant features.
+
+Model fitting is performed with simple linear models (\code{\link[stats]{lm}}); fitting one model per layer.
+}
+\examples{
+## Import Landsat example data
+mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
+lsat_a <- stackMeta(mtlFile)
+## Create fake example data
+## In practice this would be an image from another acquisition date
+lsat_b <- log(lsat_a)
+## Run pifMatch
+lsat_b_adjusted <- pifMatch(lsat_b, lsat_a)
+
+## Run pifMatch and return similarity layer and pifMap
+lsat_b_adjusted <- pifMatch(lsat_b, lsat_a, returnPifMap = TRUE, returnSimMap = TRUE)
+grid.arrange(
+ggR(lsat_b_adjusted$simMap, geom_raster = TRUE) ,
+ggR(lsat_b_adjusted$pifMap),
+ncol=2)
 }
 
