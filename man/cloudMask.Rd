@@ -43,6 +43,7 @@ Buffering should be seen as final polishing, i.e. as long as the pure cloud cent
 Once your mask detects obvious cloud pixels properly re-enable buffering for fine tuning if desired. Finally, once a suitable threshold is established re-run cloudMask on the whole scene with this threshold and go get a coffee.
 }
 \examples{
+library(ggplot2)
 ## Import Landsat example subset
 mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
 lsat     <- stackMeta(mtlFile)

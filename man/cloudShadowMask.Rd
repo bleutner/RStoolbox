@@ -36,6 +36,7 @@ this is a quick and easy to use tool for Landsat data if you're just working on 
 it does perform surprisingly well.
 }
 \examples{
+library(ggplot2)
 ## Import Landsat example subset
 mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
 lsat     <- stackMeta(mtlFile)
