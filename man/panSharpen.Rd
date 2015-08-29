@@ -36,7 +36,26 @@ Pan sharpening options:
 }
 }
 \examples{
-pan <- raster("/home/benni/Documents/Seafile/RSEbook/data/raster_data/pan/LC82240632013167LGN00_B8.tif")
-crop(pan, lsat)
+library(raster)
+library(gridExtra)
+
+## Create fake example data
+mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
+lsat      <- stackMeta(mtlFile)
+## Fake panchromatic image (30m resolution, wavelength: visible (integral from blue to red)
+pan       <- sum(lsat[[1:3]])
+## Fake coarse resolution image (150m spatial resolution)
+lowResImg <- aggregate(lsat, 5)
+
+## Brovey pan sharpening
+lowResImg_pan <- panSharpen(lowResImg, pan, r = 3, g = 2, b = 1, method = "brovey")
+lowResImg_pan
+## Plot
+grid.arrange(
+		ggRGB(lowResImg, stretch = "lin"),
+		ggR(pan, stretch = "lin"),
+		ggRGB(lowResImg_pan,, stretch="lin"),
+		ncol=3
+		)
 }
 

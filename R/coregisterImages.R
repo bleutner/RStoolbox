@@ -78,7 +78,7 @@ coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, nSamples = 
     minex <- extent(shift(slave, ran[1,1], ran[1,2]))
     maxex <- extent(shift(slave, ran[2,1], ran[2,2]))   
 
-    XYslaves <- sampleRandom(master, size = nSamples, ext = RStoolbox:::.getExtentOverlap(minex, maxex)*0.9, xy = TRUE)
+    XYslaves <- sampleRandom(master, size = nSamples, ext = .getExtentOverlap(minex, maxex)*0.9, xy = TRUE)
     xy <- XYslaves[,c(1,2)]
     me <- XYslaves[,-c(1,2)]     
     mmin <- min(minValue(master))

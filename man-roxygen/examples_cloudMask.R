@@ -1,4 +1,5 @@
 #' @examples   
+#' library(raster)
 #' library(ggplot2)
 #' ## Import Landsat example subset
 #' mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")

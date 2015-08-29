@@ -36,8 +36,11 @@ If further return arguments are specified the following intermediate products wi
 Match one scene to another based on linear regression of pseudo-invariant features (PIF).
 }
 \details{
-The function consists of two main steps: First, it calculates pixel-wise similarity between the two rasters and identifies pseudo-invariant pixels based on
-a similarity threshold. In the second step the values of the pseudo-invariant pixels are regressed against each other.
+The function consists of three main steps:
+First, it calculates pixel-wise similarity between the two rasters and identifies pseudo-invariant pixels based on
+a similarity threshold.
+In the second step the values of the pseudo-invariant pixels are regressed against each other in a linear model for each layer.
+Finally the linear models are applied to all pixels in the \code{img}, thereby matching it to the reference scene.
 
 Pixel-wise similarity can be calculated using one of three methods: euclidean distance (\code{method = "ed"}), spectral angle (\code{"sam"}) or pearsons correlation coefficient (\code{"cor"}).
 The threshold is defined as a similarity quantile. Setting \code{quantile=0.95} will select all pixels with a similarity above the 95\% quantile as pseudo-invariant features.
