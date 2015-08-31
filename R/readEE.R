@@ -1,7 +1,25 @@
 #' Tidy import tool for EarthExplorer .csv export files
 #' 
+#' imports csv files exported from EarthExplorer into data.frames and annotates missing fields 
+#' 
 #' @param x Character, Character or list. One or more paths to EarthExplorer export files.
+#' @return data.frame
+#' @details 
+#' The \href{http://earthexplorer.usgs.gov/}{EarthExplorer} csv file can be produced from the search results page. Above the results click on 'export results' and select 'comma (,) delimited'.
 #' @export 
+#' @examples 
+#' library(ggplot2)
+#' ee <- readEE(system.file("external/EarthExplorer_LS8.txt", package = "RStoolbox"))
+#' 
+#' ## Scenes with cloud cover < 20%
+#' ee[ee$Cloud.Cover < 20,]
+#' 
+#' ## Available time-series
+#' ggplot(ee) + 
+#' 		geom_segment(aes(x = Date, xend = Date, y = 0, yend = 100 - Cloud.Cover, 
+#'      col = as.factor(Year))) +
+#' 		scale_y_continuous(name = "Scene quality (% clear sky)")
+#' 
 readEE <- function(x) {
 	llee <- lapply(x, function(ix){
 				df <- read.csv(ix, stringsAsFactors = FALSE, quote = "", fileEncoding = "latin1")

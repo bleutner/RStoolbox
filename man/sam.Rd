@@ -15,9 +15,35 @@ sam(x, em, angles = FALSE)
 }
 \value{
 RasterBrick or RasterLayer
-If \code{FALSE} a single Layer will be returned in which each pixel is assigned to the closest endmember class.
+If \code{angles = FALSE} a single Layer will be returned in which each pixel is assigned to the closest endmember class (integer pixel values correspond to row order of \code{em}.
 }
 \description{
-Spectral Angle Mapper
+Calculates the angle in spectral space between pixels and a set of reference spectra (endmembers) for image classification based on spectral similarity.
+}
+\details{
+For each pixel the spectral angle mapper calculates the angle between the vector defined by the pixel values and each endmember vector. The result of this is
+one raster layer for each endmember containing the spectral angle. The smaller the spectral angle the more similar a pixel is to a given endmember class.
+In a second step one can the go ahead an enforce thresholds of maximum angles or simply classify each pixel to the most similar endmember.
+}
+\examples{
+library(raster)
+library(ggplot2)
+mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
+lsat     <- stackMeta(mtlFile)
+## Sample endmember spectra
+## First location is water, second is open agricultural vegetation
+pts <- data.frame(x = c(624720, 627480), y = c(-414690, -411090))
+endmembers <- extract(lsat, pts)
+rownames(endmembers) <- c("water", "vegetation")
+
+## Calculate spectral angles
+lsat_sam <- sam(lsat, endmembers, angles = TRUE)
+plot(lsat_sam)
+
+## Classify based on minimum angle
+lsat_sam <- sam(lsat, endmembers, angles = FALSE)
+
+ggR(lsat_sam, forceCat = TRUE, geom_raster=TRUE) +
+		scale_fill_manual(values = c("blue", "green"), labels = c("water", "vegetation"))
 }
 

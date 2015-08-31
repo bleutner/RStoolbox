@@ -1,27 +1,15 @@
 #' Read ENVI spectral libraries
 #' 
-#' ENVI spectral libraries consist of a binary data file (.sli) and a corresponding header (.hdr, or .sli.hdr) file. Spectra are read into a data.frame with the columns:
-#' Wavelength, Spectrum 1, Spectrum 2 ...
+#' read/write support for ENVI spectral libraries
 #' 
 #' @param path path to spectral library file with ending .sli.
+#' @details
+#' ENVI spectral libraries consist of a binary data file (.sli) and a corresponding header (.hdr, or .sli.hdr) file. 
+#' @return 
+#' The spectral libraries are read into a data.frame. The first column contains the wavelengths and the remaining columns contain the spectra.
 #' @seealso \code{\link{writeSLI}}
 #' @export 
-#' @examples
-#' ## Create fake spectra
-#' data <- data.frame(wavelength=350:2500, spectrumA=cumsum(abs(rnorm(2151))), 
-#' 						spectrumB=cumsum(abs(rnorm(2151))))
-#' pathToFile <- paste0(tempdir(),"/specLib.sli")
-#' 
-#' ## Write to binary spectral library
-#' writeSLI(x = data, path = pathToFile)
-#' 
-#' ## Read from binary spectral library
-#' dataRe <- readSLI(path = pathToFile)
-#' 
-#' ## Check whether they are the same
-#' all.equal(data, dataRe)
-#' ## oops? nope, only colnames mismatch. numbers are fine.
-#' cat("colnames:\noriginal: ",colnames(data),"\nre-read: ",colnames(dataRe))
+#' @template examples_SLI
 readSLI <- function(path) {
     
     ## Figure out file naming convention of hdr file for either combination of 
@@ -67,6 +55,7 @@ readSLI <- function(path) {
     x[] <- readBin(path, "numeric", n = 1000000, size = bytes)
     colnames(x) <- labels
     x <- cbind(wavelengths,x)
+	colnames(x)[1] <- "wavelength"
     return(x)
     
 } ## EOF readSLI
@@ -75,7 +64,7 @@ readSLI <- function(path) {
 #' 
 #' Writes binary ENVI spectral library files (sli) with accompanying header (.sli.hdr) files OR ASCII spectral library files in ENVI format. 
 #' 
-#' ENVI spectral libraries with ending .sli are binary arrays with spectra saved in rows.
+#' ENVI spectral libraries with ending .sli are binary arrays with spectra saved in rows. 
 #' 
 #' @param path path to spectral library file to be created.
 #' @param x data.frame with first column containing wavelengths and all other columns containing spectra.
@@ -84,23 +73,8 @@ readSLI <- function(path) {
 #' @param mode character string specifying output file type. Must be one of \code{"bin"} for binary .sli files or \code{"ASCII"} for --guess what-- ASCII spectral library files (still in an ENVI compatible format).
 #' @seealso \code{\link{readSLI}}
 #' @export
-#' @examples
-#' ## Create fake spectra
-#' data <- data.frame(wavelength=350:2500, spectrumA=cumsum(abs(rnorm(2151))),
-#' 					 spectrumB=cumsum(abs(rnorm(2151))))
-#' pathToFile <- paste0(tempdir(),"/specLib.sli")
-#' 
-#' ## Write to binary spectral library
-#' writeSLI(x = data, path = pathToFile)
-#' 
-#' ## Read from binary spectral library
-#' dataRe <- readSLI(path = pathToFile)
-#' 
-#' ## Check whether they are the same
-#' all.equal(data, dataRe)
-#' ## oops? nope, only colnames mismatch. numbers are fine.
-#' cat("colnames:\noriginal: ",colnames(data),"\nre-read: ",colnames(dataRe))
-writeSLI <- function(x, path, wavl.units="Micrometers", scaleF=1.000000, mode="bin") {
+#' @template examples_SLI
+writeSLI <- function(x, path, wavl.units="Micrometers", scaleF=1, mode="bin") {
     
     ## Begin write binary mode
     if (mode== "bin") {

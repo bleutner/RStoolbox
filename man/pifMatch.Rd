@@ -48,6 +48,7 @@ The threshold is defined as a similarity quantile. Setting \code{quantile=0.95} 
 Model fitting is performed with simple linear models (\code{\link[stats]{lm}}); fitting one model per layer.
 }
 \examples{
+library(gridExtra)
 ## Import Landsat example data
 mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
 lsat_a <- stackMeta(mtlFile)

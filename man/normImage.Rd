@@ -11,7 +11,7 @@ normImage(img, norm = TRUE, ...)
 
 \item{norm}{Logical. Perform normalization (scaling) in addition to centering, i.e. divide by standard deviation.}
 
-\item{...}{further arguments passed to \code[raster]{writeRaster}.}
+\item{...}{further arguments passed to \link[raster]{writeRaster}.}
 }
 \value{
 Returns a Raster* with the same number layers as input layers with each layer being centered and optionally normalized.
@@ -20,6 +20,7 @@ Returns a Raster* with the same number layers as input layers with each layer be
 subtracts the mean of a raster layer and divides by its standard deviation.
 }
 \examples{
+library(raster)
 ## Load example data
 data(rlogo)
 

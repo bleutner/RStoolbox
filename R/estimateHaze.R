@@ -3,7 +3,7 @@
 #' estimates the digital number (DN) pixel value of *dark* objects for the visible wavelength range.
 #' 
 #' @param x Raster* object or a previous result from \code{estimateHaze(x , returnTables = TRUE} from which to estimate haze
-#' @param hazeBands character. Band or bandname from which to estimate SHV (optional if x contains only one layer)
+#' @param hazeBands character. Band or bandname from which to estimate atmospheric haze (optional if x contains only one layer)
 #' @param darkProp proportion of pixels estimated to be dark
 #' @param plot display histograms and haze values
 #' @param returnTables return the frequency table per layer. Only takes effect if x is a Raster* object. If x is a result of estimateHaze tables will always be returned.
@@ -11,6 +11,9 @@
 #' It is assumed that any radiation originating from *dark* pixels is due to atmospheric haze and 
 #' not the reflectance of the surface itself (the surface is dark, i.e. it has a reflectance close to zero).
 #' Hence, the haze values are estimates of path radiance, which can be subtracted in a dark object subtraction (DOS) procedure (see \code{\link{radCor}})
+#' 
+#' Atmospheric haze affects almost exclusively the visible wavelength range. Therefore, typically, you'd only want to estimate haze in blue, green and red bands, occasionally also in the nir band.
+#' 
 #' @return 
 #' If returnTables is FALSE (default). Then a vector of length(hazeBands) containing the estimated haze DNs will be returned.
 #' If returnTables is TRUE a list with two components will be returned. The list element 'SHV' contains the haze values, while 'table' 

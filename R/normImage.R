@@ -4,11 +4,12 @@
 #' 
 #' @param img Raster* object. Image to transform. Transformation will be performed separately for each layer.
 #' @param norm Logical. Perform normalization (scaling) in addition to centering, i.e. divide by standard deviation.
-#' @param ... further arguments passed to \code[raster]{writeRaster}.
+#' @param ... further arguments passed to \link[raster]{writeRaster}.
 #' @return 
 #' Returns a Raster* with the same number layers as input layers with each layer being centered and optionally normalized.
 #' @export 
 #' @examples
+#' library(raster)
 #' ## Load example data
 #' data(rlogo)
 #' 

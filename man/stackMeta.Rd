@@ -10,21 +10,34 @@ stackMeta(file, quantity = "all", category = "image",
 \arguments{
 \item{file}{character. Path to Landsat MTL metadata file (not an XML file!).}
 
-\item{quantity}{Character vector. Which quantity should be returned. Options: digital numbers ('dn'), top of atmosphere reflectance ('tre'), at surface reflectance ('sre'), brightness temperature ('bt'), spectral index ('idx').}
+\item{quantity}{Character vector. Which quantity should be returned. Options: digital numbers ('dn'), top of atmosphere reflectance ('tre'), at surface reflectance ('sre'), brightness temperature ('bt'), spectral index ('index'), all quantities ('all').}
 
 \item{category}{character vector. Which category of data to return. Options 'image': image data, 'pan': panchromatic image, 'index': multiband indices, 'qa' quality flag bands, 'all': all categories.}
 
 \item{allResolutions}{logical. if \code{TRUE} a list will be returned with length = unique spatial resolutions.}
 }
 \value{
-Either a list of rasterStacks comprising all resolutions or only one rasterStack comprising only 30m resolution imagery
+Returns one single RasterStack comprising all requested bands.
+If \code{allResolutions = TRUE} *and* there are different resolution layers (e.g. a 15m panchromatic band along wit 30m imagery) a list of RasterStacks will be returned.
 }
 \description{
 Reads Landsat MTL or XML metadata files and loads single Landsat Tiffs into a rasterStack.
-Be aware that by default stackLS() does NOT import panchromatic bands nor thermal bands with resolutions != 30m.
+Be aware that by default stackMeta() does NOT import panchromatic bands nor thermal bands with resolutions != 30m.
 }
 \note{
-Be aware that by default stackLS() does NOT import panchromatic bands nor thermal bands with resolutions != 30m. Use the allResolutions argument to import all layers.
+Be aware that by default stackMeta() does NOT import panchromatic bands nor thermal bands with resolutions != 30m. Use the allResolutions argument to import all layers.
 Note that nowadays the USGS uses cubic convolution to resample the TIR bands to 30m resolution.
+}
+\examples{
+## Example metadata file (MTL)
+mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
+
+## Read metadata
+metaData <- readMeta(mtlFile)
+summary(metaData)
+
+## Load rasters based on metadata file
+lsat     <- stackMeta(mtlFile)
+lsat
 }
 

@@ -9,12 +9,25 @@ readMeta(file, raw = FALSE)
 \arguments{
 \item{file}{path to Landsat MTL file (...MTL.txt)}
 
-\item{raw}{Logical. If \code{TRUE} the full raw metadate will be returned as a list. All important metadata are homogenized into a standard format (ImageMetaData) and some information is added.}
+\item{raw}{Logical. If \code{TRUE} the full raw metadata will be returned as a list as.is. if \code{FALSE} (the default) all important metadata are homogenized into a standard format (ImageMetaData) and some information is added.}
 }
 \value{
 Object of class ImageMetaData
 }
 \description{
 Besides reading metadata, readMeta deals with legacy versions of Landsat metadata files and where possible adds missing information (radiometric gain and offset, earth-sun distance).
+}
+\examples{
+## Example metadata file (MTL)
+mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
+
+## Read metadata
+metaData <- readMeta(mtlFile)
+
+## Summary
+summary(metaData)
+
+## Full meta-data
+metaData
 }
 

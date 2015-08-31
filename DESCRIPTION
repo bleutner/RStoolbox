@@ -5,11 +5,11 @@ Version: 0.0.0.9000
 Date: 2015-06-30
 Authors@R: c(
     person("Benjamin", "Leutner", role=c("cre", "aut"), email="benjamin.leutner@uni-wuerzburg.de"),
-    person("Ned", "Horning", role ="ctb", email="horning@amnh.org"),
+    person("Ned", "Horning", role ="aut", email="horning@amnh.org"),
     person("Martin", "Wegmann", role="ctb", email="martin.wegmann@uni-wuerzburg.de")
     )
 Description: Toolbox for remote sensing image processing and analysis such
-    as calculating spectral indices, principal component analysis, unsupervised
+    as calculating spectral indices, principal component transformation, unsupervised
     and supervised classification or fractional cover analyses.
 URL: https://github.com/bleutner/RStoolbox    
 BugReports: https://github.com/bleutner/RStoolbox/issues    

@@ -77,6 +77,8 @@ for(s in names(.LANDSATdb)){
 
 
 
+
+
 ## *******************************************************************************************************************
 ## Save internal data
 save(.ESdistance, .LANDSATdb, .DATATYPEdb, file = "R/sysdata.rda", compress = "gzip")

@@ -15,7 +15,7 @@ radCor(img, metaData, method = "apref", bandSet = "full", hazeValues,
 \item{method}{Radiometric conversion/correction method to be used. There are currently four methods available (see Details):
 "rad", "apref", "sdos", "dos", "costz".}
 
-\item{bandSet}{numeric or character. original Landsat band numbers or names in the form of ("B1", "B2" etc). If set to 'full' all bands in the solar region will be processed.}
+\item{bandSet}{numeric or character. original Landsat band numbers or names in the form of ("B1", "B2" etc). If set to 'full' all bands in the solar (optical) region will be processed.}
 
 \item{hazeValues}{starting haze value, can be estimated using link{estimateHaze}. if not provided and method is "dos" or "costz" hazeValues will be estimated in an automated fashion. Not needed for apparent reflectance.}
 
@@ -23,7 +23,7 @@ radCor(img, metaData, method = "apref", bandSet = "full", hazeValues,
 
 \item{atmosphere}{Character. Atmospheric characteristics. Will be estimated if not expicilty provided. Must be one of \code{"veryClear", "clear", "moderate", "hazy"} or \code{"veryHazy"}.}
 
-\item{darkProp}{numeric. Estimated proportion of dark pixels in the scene. Used only for automatic guessing of hazeValues.}
+\item{darkProp}{numeric. Estimated proportion of dark pixels in the scene. Used only for automatic guessing of hazeValues (typically one would choose 1 or 2\%).}
 
 \item{verbose}{Logical. Print status information.}
 }
@@ -37,6 +37,12 @@ You can either specify a metadata file, or supply all neccesary values manually.
 With proper parametrization apref and sdos should work for other sensors as well.
 }
 \details{
+The atmospheric correction methods (sdos, dos and costz) apply to the optical (solar) region of the spectrum and do not affect the thermal band.
+
+Dark object subtraction approaches rely on the estimation of atmospheric haze based on *dark* pixels. Dark pixels are assumed to have zero reflectance, hence the name.
+It is then assumed further that any radiation originating from such *dark* pixels is due to atmospheric haze and
+not the reflectance of the surface itself.
+
 The folloiwing \code{methods} are available:
 \tabular{ll}{
 rad   \tab Radiance \cr

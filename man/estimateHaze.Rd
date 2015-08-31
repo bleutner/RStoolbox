@@ -10,7 +10,7 @@ estimateHaze(x, hazeBands, darkProp = 0.02, plot = FALSE,
 \arguments{
 \item{x}{Raster* object or a previous result from \code{estimateHaze(x , returnTables = TRUE} from which to estimate haze}
 
-\item{hazeBands}{character. Band or bandname from which to estimate SHV (optional if x contains only one layer)}
+\item{hazeBands}{character. Band or bandname from which to estimate atmospheric haze (optional if x contains only one layer)}
 
 \item{darkProp}{proportion of pixels estimated to be dark}
 
@@ -31,6 +31,8 @@ estimates the digital number (DN) pixel value of *dark* objects for the visible 
 It is assumed that any radiation originating from *dark* pixels is due to atmospheric haze and
 not the reflectance of the surface itself (the surface is dark, i.e. it has a reflectance close to zero).
 Hence, the haze values are estimates of path radiance, which can be subtracted in a dark object subtraction (DOS) procedure (see \code{\link{radCor}})
+
+Atmospheric haze affects almost exclusively the visible wavelength range. Therefore, typically, you'd only want to estimate haze in blue, green and red bands, occasionally also in the nir band.
 }
 \examples{
 mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")

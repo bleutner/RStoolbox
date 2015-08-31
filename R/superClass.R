@@ -8,22 +8,45 @@
 #' @param responseCol Character or integer giving the column in \code{trainData}, which contains the response variable. Can be omitted, when \code{trainData} has only one column.
 #' @param nSamples Integer. Number of samples per land cover class.
 #' @param areaWeightedSampling logical. If \code{TRUE} scales sample size per polygon area. The bigger the polygon the more samples are taken.
-#' @param polygonBasedCV Logical. If \code{TRUE} model tuning during cross-validation is conducted on a per-polygon base. Use this to combat overfitting.
-#' @param trainPartition numeric. Partition (polygon based) of \code{trainData} that goes into the training data set between zero and one . Ignored if \code{valData} is provided.
+#' @param polygonBasedCV Logical. If \code{TRUE} model tuning during cross-validation is conducted on a per-polygon basis. Use this to deal with overfitting.
+#' @param trainPartition numeric. Partition (polygon based) of \code{trainData} that goes into the training data set between zero and one. Ignored if \code{valData} is provided.
 #' @param model Character. Which model to use. See \link[caret]{train} for options. Defaults to randomForest ('rf')
 #' @param tuneLength Integer. Number of levels for each tuning paramete (see \link[caret]{train} for details).
 #' @param kfold Integer. Number of cross-validation resamples during model tuning.
-#' @param minDist Numeric. Minumum distance factor between training and validation data, e.g. minDist=1 will clip validation polygons to ensure a minimal distance of one pixel to the next training polygon. Applies onl if trainData and valData overlap or forceBuffer is \code{TRUE}.
-#' @param forceBuffer Logical. Forces a buffer distance of width \code{minDist} betwenn training and validation data.
+#' @param minDist Numeric. Minumum distance factor between training and validation data, e.g. minDist=1 will clip validation polygons to ensure a minimal distance of one pixel to the next training polygon. Applies onl if trainData and valData overlap.
 #' @param mode Character. Model type: 'regression' or 'classification'. 
 #' @param filename path to output file (optional). If \code{NULL}, standard raster handling will apply, i.e. storage either in memory or in the raster temp directory. 
 #' @param verbose logical. prints progress and statistics during execution
-#' @param predict logical. \code{TRUE} (default) will return a classified map, \code{FALSE} will only train the classifier
 #' @param overwrite logical. Overwrite spatial prediction raster if it already exists.
 #' @param ... further arguments to be passed to \code{\link[caret]{train}}
-#' @note 
-#' Validation on a separate (not used for training) set of polygons/points is highly advised. Automatic validation is performed either by specifying 
-#' \code{valData} or by specifying \code{trainPartition}, the amount of \code{trainData} which is to be held out for validation. 
+#' @details 
+#' SuperClass performs the following steps:
+#' 
+#' \enumerate{
+#' \item Ensure non-overlap between training and validation data. This is neccesary to avoid biased performance estimates.
+#'  A minimum distance (\code{minDist}) in pixels can be provided to enforce a given distance between training and validation data.
+#' 
+#' \item Sample training coordinates. If \code{trainData} (and \code{valData} if present) are SpatialPolygonsDataFrames \code{superClass} will calculate the area per polygon and sample
+#' \code{nSamples} locations per class within these polygons. The number of samples per individual polygon scales with the polygon area, i.e. the bigger the polygon, the more samples.
+#' Setting \code{areaWeightedSampling = FALSE} will sample each polygon equally independent of its size.
+#' 
+#' \item Split training/validation	  
+#' If \code{valData} was provided (reccomended) the samples from these polygons will be held-out and not used for model fitting but only for validation. 
+#' If \code{trainPartition} is provided the trainingPolygons will be divied ab into training polygons and validation polygons.
+#' 
+#' \item Extract raster data
+#' The predictor values on the sample pixels are extracted from \code{img}
+#' 
+#' \item Fit the model. Using caret::train on the sampled training data the \code{model} will be fit, 
+#' including parameter tuning (\code{tuneLength}) in \code{kfold} cross-validation. \code{polygonBasedCV=TRUE} will define cross-validation folds based on polygons (reccomended)
+#' otherwise it will be performed on a per-pixel basis.
+#'
+#' \item Predict the classes of all pixels in \code{img} based on the final model.
+#' 
+#' \item Validate the model with the independent validation data.
+#' }
+#' 
+#' 
 #' @return A list containing [[1]] the model, [[2]] the predicted raster and [[3]] the class mapping  
 #' @seealso \code{\link[caret]{train}} 
 #' @export
@@ -52,12 +75,12 @@
 #' legend(1,1, legend = levels(train$class), fill = colors , title = "Classes", 
 #' horiz = TRUE,  bty = "n")
 #' par(olpar) # reset par
-superClass <- function(img, trainData, valData = NULL, responseCol = NULL, nSamples = 1000,
-        areaWeightedSampling = TRUE, polygonBasedCV = FALSE, trainPartition = NULL,
+superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
+		nSamples = 1000, areaWeightedSampling = TRUE, polygonBasedCV = FALSE, trainPartition = NULL,
         model = "rf", tuneLength = 3,  kfold = 5,
-        minDist = 2, forceBuffer = FALSE, mode = "classification",
+        minDist = 2,  mode = "classification",
         filename = NULL, verbose,
-        predict = TRUE, overwrite = TRUE, ...) {
+         overwrite = TRUE, ...) {
     # TODO: check applicability of raster:::.intersectExtent 
     # TODO: check for empty factor levels
     # TODO: consider splitting large polygons if there are few polygons in total
@@ -116,7 +139,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL, nSamp
     }
     
     ## Check for and deal with overlapping training & validation data                 
-    if(forceBuffer || trainDataType == "points" & minDist != 0) dummy <- gBuffer(trainData, width = res(img)[1]*minDist, byid = TRUE)  
+    if(trainDataType == "points" & minDist != 0) dummy <- gBuffer(trainData, width = res(img)[1]*minDist, byid = TRUE)  
     
     ## We need this cumbersome any(gDisjoint(byid=T)) action to circumvent TopologyExceptions
     if(!is.null(valData) && any(!gDisjoint(trainData, valData, byid =T)) || exists("dummy") &&  any(gIntersects(valData, dummy, byid=T))){
@@ -140,7 +163,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL, nSamp
             inter <- colnames(inter)[which(inter, arr.ind = TRUE)[,2]]
             valData <- valData[!rownames(valData@data) %in% inter,]        
         }     
-        if(!forceBuffer) warning("TrainData and valData overlap. Excluded overlapping points or polygon areas.\n" , nrow(valData), " of ", nValOrig, " remain for validation.")
+        warning("TrainData and valData overlap. Excluded overlapping points or polygon areas.\n" , nrow(valData), " of ", nValOrig, " remain for validation.")
     }   
     
     ## Creade hold out indices on polygon level

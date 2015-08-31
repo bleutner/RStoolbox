@@ -31,6 +31,7 @@
 #' }
 #' @export 
 #' @examples 
+#' library(gridExtra)
 #' ## Import Landsat example data
 #' mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
 #' lsat_a <- stackMeta(mtlFile)

@@ -9,9 +9,14 @@ readSLI(path)
 \arguments{
 \item{path}{path to spectral library file with ending .sli.}
 }
+\value{
+The spectral libraries are read into a data.frame. The first column contains the wavelengths and the remaining columns contain the spectra.
+}
 \description{
-ENVI spectral libraries consist of a binary data file (.sli) and a corresponding header (.hdr, or .sli.hdr) file. Spectra are read into a data.frame with the columns:
-Wavelength, Spectrum 1, Spectrum 2 ...
+read/write support for ENVI spectral libraries
+}
+\details{
+ENVI spectral libraries consist of a binary data file (.sli) and a corresponding header (.hdr, or .sli.hdr) file.
 }
 \examples{
 ## Create fake spectra
@@ -27,8 +32,6 @@ dataRe <- readSLI(path = pathToFile)
 
 ## Check whether they are the same
 all.equal(data, dataRe)
-## oops? nope, only colnames mismatch. numbers are fine.
-cat("colnames:\\noriginal: ",colnames(data),"\\nre-read: ",colnames(dataRe))
 }
 \seealso{
 \code{\link{writeSLI}}

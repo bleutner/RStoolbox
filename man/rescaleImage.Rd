@@ -21,9 +21,27 @@ rescaleImage(x, y, xmin, xmax, ymin, ymax, forceMinMax = FALSE)
 
 \item{forceMinMax}{Logical. Forces update of min and max data slots in x or y.}
 }
+\value{
+Returns a Raster* object of the same dimensions as the input raster \code{x} but shifted and stretched to the new limits.
+}
 \description{
-performs linear shifts of value ranges either to match another image
+performs linear shifts of value ranges either to match min and max of another image
 or to any other min and max value.
+}
+\examples{
+## Create example data
+mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
+lsat <- stackMeta(mtlFile)
+lsat2 <- lsat -1000
+lsat2
+
+## Rescale lsat2 to match original lsat value rang
+lsat2_rescaled <- rescaleImage(lsat2, lsat)
+lsat2_rescaled
+
+## Rescale lsat to value range [0,1]
+lsat2_unity <- rescaleImage(lsat2, ymin = 0, ymax = 1)
+lsat2_unity
 }
 \seealso{
 \link{histMatch}

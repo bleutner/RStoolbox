@@ -13,7 +13,7 @@ Most functions have built-in parallel support. All that is required is to run \c
 
 
 \itemize{
- \item \code{\link{readMeta}}: import Landsat metadata from MTL or XML files
+ \item \code{\link{readMeta}}:  import Landsat metadata from MTL or XML files
  \item \code{\link{stackMeta}}: load Landsat bands based on metadata
  \item \code{\link{readSLI} & \link{writeSLI}}: read and write ENVI spectral libraries
  \item \code{\link{saveRSTBX} & \link{readRSTBX}}: save and re-import RStoolbox classification objects (model and map)
@@ -27,7 +27,8 @@ Most functions have built-in parallel support. All that is required is to run \c
  \item \code{\link{radCor}}: radiometric conversions and corrections. Primarily, yet not exclusively, intended for Landsat data processing. DN to radiance to reflectance conversion as well as DOS approaches
  \item \code{\link{cloudMask}}: mask clouds in Landsat or other imagery which comes with a thermal band
 	\item \code{\link{cloudShadowMask}}: mask cloud shadows from cloudMask
- \item \code{\link{rescaleImage}}: norm image to match min/max from another image or a specified min/max range.
+ \item \code{\link{rescaleImage}}: rescale image to match min/max from another image or a specified min/max range.
+	\item \code{\link{normImage}}: normalize imagery by centering and scaling.
  \item \code{\link{histMatch}}: matches the histograms of two scenes.
  \item \code{\link{coregisterImages}}: co-register images based on mutual information.
  \item \code{\link{panSharpen}}: sharpen a coarse resolution image with a high resolution image (typically panchromatic)
@@ -39,7 +40,9 @@ Most functions have built-in parallel support. All that is required is to run \c
 
 \itemize{
 \item \code{\link{spectralIndices}}: calculate a set of predefined multispectral indices like NDVI
+\item{\code{\link{sam}}}: spectral angle mapper
 \item \code{\link{rasterPCA}}: principal components transform for raster data
+\item \code{\link{rasterCVA}}: change vector analysis
 \item \code{\link{unsuperClass}}: unsupervised classification
 \item \code{\link{superClass}}: supervised classification
 \item \code{\link{fCover}}: fractional cover of coarse resolution imagery based on high resolution classificaton

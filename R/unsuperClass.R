@@ -2,11 +2,6 @@
 #' 
 #' Unsupervised clustering of Raster* data using kmeans clustering
 #' 
-#' Clustering is done using stats::kmeans. This can be done for all pixels of the image (clusterMap=FALSE), however this can be slow and is
-#' not memory safe. Therefore if you have large raster data (> memory), as is typically the case with remote sensing imagery it is adviseable to choose clusterMap=TRUE (the default).
-#' This means that a kmeans cluster map is calculated based on a random subset of pixels (nSamples). Then the distance of *all* pixels to the cluster centers 
-#' is calculated in a stepwise fashion using raster::predict. Class assignment is based on minimum euclidean distance to the cluster centers.   
-#' 
 #' @param img Raster* object. 
 #' @param nSamples integer. Number of random samples to draw to fit cluster map. Only relevant if clusterMap = FALSE.
 #' @param nClasses integer. Number of classes.
@@ -16,6 +11,16 @@
 #' @param clusterMap logical. Fit kmeans model to a random subset of the img (see Details).
 #' @param algorithm character. \link[stats]{kmeans} algorithm. One of c("Hartigan-Wong", "Lloyd", "MacQueen")
 #' @param ... further arguments to be passed to \link[raster]{writeRaster}, e.g. filename
+#' @details 
+#' Clustering is done using \code{\link[stats]{kmeans}}. This can be done for all pixels of the image (\code{clusterMap=FALSE}), however this can be slow and is
+#' not memory safe. Therefore if you have large raster data (> memory), as is typically the case with remote sensing imagery it is adviseable to choose clusterMap=TRUE (the default).
+#' This means that a kmeans cluster map is calculated based on a random subset of pixels (nSamples). Then the distance of *all* pixels to the cluster centers 
+#' is calculated in a stepwise fashion using \code{\link[raster]{predict}}. Class assignment is based on minimum euclidean distance to the cluster centers.   
+#' 
+#' The solutions of the kmeans algorithm often depend on the initial configuration of class centers which is chosen randomly. 
+#' Therefore, kmeans is usually run with multiple random starting configurations in order to find a convergent solution from different starting configurations.
+#' The \code{nStarts} argument allows to specify how many random starts are conducted.   
+#' 
 #' @export
 #' @examples 
 #' library(raster)

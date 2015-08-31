@@ -26,7 +26,7 @@ ENVI spectral libraries with ending .sli are binary arrays with spectra saved in
 \examples{
 ## Create fake spectra
 data <- data.frame(wavelength=350:2500, spectrumA=cumsum(abs(rnorm(2151))),
-					 spectrumB=cumsum(abs(rnorm(2151))))
+						spectrumB=cumsum(abs(rnorm(2151))))
 pathToFile <- paste0(tempdir(),"/specLib.sli")
 
 ## Write to binary spectral library
@@ -37,8 +37,6 @@ dataRe <- readSLI(path = pathToFile)
 
 ## Check whether they are the same
 all.equal(data, dataRe)
-## oops? nope, only colnames mismatch. numbers are fine.
-cat("colnames:\\noriginal: ",colnames(data),"\\nre-read: ",colnames(dataRe))
 }
 \seealso{
 \code{\link{readSLI}}

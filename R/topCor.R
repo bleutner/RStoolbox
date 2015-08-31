@@ -1,18 +1,41 @@
 #' Topographic Illumination Correction
 #' 
+#' account and correct for changes in illumination due to terrain elevation.
+#' 
 #' @param img Raster*. Imagery to correct
-#' @param dem Raster*. Either a digital elevation model as a RasterLayer or a RasterStack/Brick with pre-calculated slope and aspect (see \link[raster]{terrain}) in which case the layers must be named 'slope' and 'aspect'.
+#' @param dem Raster*. Either a digital elevation model as a RasterLayer or a RasterStack/Brick with pre-calculated slope and aspect (see \link[raster]{terrain}) in which case the layers must be named 'slope' and 'aspect'. 
+#' Must have the same dimensions as \code{img}.
 #' @param metaData Character, ImageMetaData. Either a path to a Landsat meta-data file (MTL) or an ImageMetaData object (see \link{readMeta}) 
 #' @param solarAngles Numeric vector containing sun azimuth and sun zenith (in radians and in that order). Not needed if metaData is provided   
 #' @param method Character. One of c("cos", "avgcos", "minnaert", "C", "stat", "illu"). Choosing 'illu' will return only the local illumination map.
-#' @param stratMethod Character. One of c("noStrat", "stratEqualBins", "stratQuantiles").
-#' @param stratImg RasterLayer by which to stratify by, e.g. NDVI. Defaults to 'slope'
-#' @param nStrat Integer. Number of bins or quantiles to stratify by. If a bin has less than 50 samples it will be merged with the next bin.
+#' @param stratImg RasterLayer by which to stratify by, e.g. NDVI. Or the string 'slope' in which case stratification will be on \code{nStrat} slope classes. Only relevant if \code{method = 'minnaert'}.
+#' @param nStrat Integer. Number of bins or quantiles to stratify by. If a bin has less than 50 samples it will be merged with the next bin. Only relevant if \code{method = 'minnaert'}.
 #' @param illu Raster*. Optional pre-calculated ilumination map. Run topCor with method="illu" to calculate one.
+#' @details
+#' For detailed discussion of the various approaches please see Riano et al. (2003).
+#' 
+#' The minnaert correction can be stratified for different landcover characteristics. If \code{stratImg = 'slope'} the analysis is stratified by the slope, 
+#' i.e. the slope values are divided into \code{nStrat} classes and the correction coefficient k is calculated and applied separately for each slope class.
+#' An alternative could be to stratify by a vegetation index in which case an additional raster layer has to be provided via the \code{stratImg} argument.
 #' @export 
-topCor <- function(img, dem, metaData, solarAngles, method = "C", stratImg, stratMethod = "noStrat", nStrat = 5, illu){
+#' @references 
+#' Riano et al. (2003) Assessment of different topographic correction in Landsat-TM data for mapping vegetation types. IEEE Transactions on Geoscience and Remote Sensing.
+#' @examples 
+#' ## Load example data
+#' metaData <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
+#' metaData <- readMeta(metaData)
+#' lsat     <- stackMeta(metaData) 
+#' data(srtm)
+#' 
+#' ## Minnaert correction, solar angles from metaData
+#' lsat_minnaert <- topCor(lsat, dem = srtm, metaData = metaData, method = "minnaert")
+#' 
+#' ## C correction, solar angles provided manually
+#' lsat_C <- topCor(lsat, dem = srtm, solarAngles = c(1.081533, 0.7023922), method = "C")
+#' 
+topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg = NULL, nStrat = 5, illu){
     
-    stopifnot(method %in% c("cos", "avgcos", "minnaert", "C", "stat", "illu"), stratMethod %in% c("stat", "noStrat", "stratEqualBins", "stratQuantiles"))
+    stopifnot(method %in% c("cos", "avgcos", "minnaert", "C", "stat", "illu"))
     
     ## Metadata 
     if(!missing("solarAngles")) {
@@ -68,7 +91,7 @@ topCor <- function(img, dem, metaData, solarAngles, method = "C", stratImg, stra
         ## Eq 5 in Riano2003
         ## Lambertian assumption if k == 1
         ## Non-lambertian if 0 <= k < 1   
-        if(missing(stratImg)) {stratImg <- "slope"}
+        stratMethod <- if(is.null(stratImg)) {stratImg = "slope"; "noStrat"} else "stratEqualBins"
         ks <- .kestimate(img, illu, slope, method = stratMethod, stratImg = stratImg, n = nStrat, sz=sz)
         
         ks$k <- lapply(ks$k, function(x){
@@ -103,37 +126,37 @@ topCor <- function(img, dem, metaData, solarAngles, method = "C", stratImg, stra
                         })) 
         return(Lh <-  img * mult)   
     }
-    if(FALSE && method == "minnaMod"){
-        ## Richter 2009
-        if(sz < 45*pi/180) {
-            beta_t <- sz + 20*pi/180
-        } else if(sz > 55*pi/180) {
-            beta_t <- sz + 10*pi/180        
-        } else {
-            beta_t <- sz + 15*pi/180
-        }
-        
-        ## Vegetation classes: 1 = non-veg, 2 = veg
-        bvis = c(0.5,  ## non-vegetation
-                3/4)  ## vegetation (wavelength < 720nm)
-        bir = c(0.5,  ## non-vegetation
-                1/3)  ## vegetation (wavelength > 720nm)
-   
-        minnaMod <- function(x, beta_tx, b_lut) {
-            b 	 <- b_lut[x[,2]]
-            mult <- (x[,1]/beta_tx)^b
-            mult[mult > 0.25] <- 0.25
-            mult
-        }
-        
-     multvis <- calc(stack(illu, stratImg), fun = function(x) minnaMod(x, b_lut = bvis, beta_tx = beta_t))
-     multir  <- calc(stack(illu, stratImg), fun = function(x) minnaMod(x, b_lut = bir, beta_tx = beta_t))
-      
-     select <- illu > beta_t 
-     visBands <- 1:4    
-     visCo <- img[visBands]
-     visCo[select] <- img[[visBands]][select]  * multvis[select]
-    }
+#    if(FALSE && method == "minnaMod"){
+#        ## Richter 2009
+#        if(sz < 45*pi/180) {
+#            beta_t <- sz + 20*pi/180
+#        } else if(sz > 55*pi/180) {
+#            beta_t <- sz + 10*pi/180        
+#        } else {
+#            beta_t <- sz + 15*pi/180
+#        }
+#        
+#        ## Vegetation classes: 1 = non-veg, 2 = veg
+#        bvis = c(0.5,  ## non-vegetation
+#                3/4)  ## vegetation (wavelength < 720nm)
+#        bir = c(0.5,  ## non-vegetation
+#                1/3)  ## vegetation (wavelength > 720nm)
+#   
+#        minnaMod <- function(x, beta_tx, b_lut) {
+#            b 	 <- b_lut[x[,2]]
+#            mult <- (x[,1]/beta_tx)^b
+#            mult[mult > 0.25] <- 0.25
+#            mult
+#        }
+#        
+#     multvis <- calc(stack(illu, stratImg), fun = function(x) minnaMod(x, b_lut = bvis, beta_tx = beta_t))
+#     multir  <- calc(stack(illu, stratImg), fun = function(x) minnaMod(x, b_lut = bir, beta_tx = beta_t))
+#      
+#     select <- illu > beta_t 
+#     visBands <- 1:4    
+#     visCo <- img[visBands]
+#     visCo[select] <- img[[visBands]][select]  * multvis[select]
+#    }
         
 }
 

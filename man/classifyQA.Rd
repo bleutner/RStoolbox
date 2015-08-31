@@ -5,12 +5,14 @@
 \title{Classify Landsat8 QA Band}
 \usage{
 classifyQA(img, type = c("background", "cloud", "cirrus", "snow", "water"),
-  ...)
+  confLayers = FALSE, ...)
 }
 \arguments{
 \item{img}{RasterLayer. Landsat 8 OLI QA band.}
 
 \item{type}{Character. Classes which should be returned. One or more of c("background", "cloud", "cirrus","snow", "water").}
+
+\item{confLayers}{Logical. Return one layer per class classified by condidence levels, i.e. cloud:low, cloud:med, cloud:high.}
 
 \item{...}{further arguments passed to \link[raster]{writeRaster}}
 }
@@ -25,18 +27,29 @@ snow   \tab 4L \cr
 water  \tab 5L \cr
 }
 Values outside of these classes are returned as NA.
+If \code{confLayers = TRUE} then a RasterStack with one layer per condition (except 'background') is returned, whereby each layer contains the confidence level of the condition.
+\tabular{rr}{
+Confidence \tab value \cr
+low    \tab 1L \cr
+med    \tab 2L \cr
+high   \tab 3L \cr
+}
 }
 \description{
 extracts five classes from QA band: background, cloud, cirrus, snow and water.
 }
 \details{
-Each class is queried for *high* confidence. See \link{encodeQA} for details.
+By default each class is queried for *high* confidence. See \link{encodeQA} for details. To return the different confidence levels per condition use \code{confLayers=TRUE}.
 This approach corresponds to the way LandsatLook Quality Images are produced by the USGS.
 }
 \examples{
 library(raster)
 qa <- raster(ncol = 100, nrow=100, val = sample(1:2^14,  10000))
+
+## QA classes
 qacs <- classifyQA(img = qa)
+## Confidence levels
+qacs_conf <- classifyQA(img = qa, confLayers = TRUE)
 }
 \seealso{
 \link{encodeQA} \link{decodeQA}
