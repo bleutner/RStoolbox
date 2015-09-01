@@ -3,10 +3,10 @@
 #' Reads Landsat MTL or XML metadata files and loads single Landsat Tiffs into a rasterStack.
 #' Be aware that by default stackMeta() does NOT import panchromatic bands nor thermal bands with resolutions != 30m.
 #' 
-#' @param file character. Path to Landsat MTL metadata file (not an XML file!).
-#' @param category character vector. Which category of data to return. Options 'image': image data, 'pan': panchromatic image, 'index': multiband indices, 'qa' quality flag bands, 'all': all categories.
+#' @param file Character. Path to Landsat MTL metadata file (not an XML file!).
+#' @param category Character vector. Which category of data to return. Options 'image': image data, 'pan': panchromatic image, 'index': multiband indices, 'qa' quality flag bands, 'all': all categories.
 #' @param quantity Character vector. Which quantity should be returned. Options: digital numbers ('dn'), top of atmosphere reflectance ('tre'), at surface reflectance ('sre'), brightness temperature ('bt'), spectral index ('index'), all quantities ('all').
-#' @param allResolutions logical. if \code{TRUE} a list will be returned with length = unique spatial resolutions.
+#' @param allResolutions Logical. if \code{TRUE} a list will be returned with length = unique spatial resolutions.
 #' @return 
 #' Returns one single RasterStack comprising all requested bands. 
 #' If \code{allResolutions = TRUE} *and* there are different resolution layers (e.g. a 15m panchromatic band along wit 30m imagery) a list of RasterStacks will be returned.

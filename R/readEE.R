@@ -1,11 +1,11 @@
 #' Tidy import tool for EarthExplorer .csv export files
 #' 
-#' imports csv files exported from EarthExplorer into data.frames and annotates missing fields 
+#' Imports CSV files exported from EarthExplorer into data.frames and annotates missing fields 
 #' 
 #' @param x Character, Character or list. One or more paths to EarthExplorer export files.
 #' @return data.frame
 #' @details 
-#' The \href{http://earthexplorer.usgs.gov/}{EarthExplorer} csv file can be produced from the search results page. Above the results click on 'export results' and select 'comma (,) delimited'.
+#' The \href{http://earthexplorer.usgs.gov/}{EarthExplorer} CSV file can be produced from the search results page. Above the results click on 'export results' and select 'comma (,) delimited'.
 #' @export 
 #' @examples 
 #' library(ggplot2)

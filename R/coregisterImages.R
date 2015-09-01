@@ -6,7 +6,7 @@
 #' @param slave Raster* object. Slave image to shift to master. Slave and master must have equal numbers of bands.
 #' @param master Raster* object. Reference image. Slave and master must have equal numbers of bands.
 #' @param shift Numeric or matrix. If numeric, then shift is the maximal absolute radius (in pixels of \code{slave} resolution) which \code{slave} is shifted (\code{seq(-shift, shift, by=shiftInc)}). 
-#'  If shift is a matrix it must have two columns (x shift an y shift), then only these shift values will be tested.
+#'  If shift is a matrix it must have two columns (x shift and y shift), then only these shift values will be tested.
 #' @param shiftInc Numeric. Shift increment (in pixels, but not restricted to integer). Ignored if \code{shift} is a matrix.
 #' @param nSamples Integer. Number of samples to calculate mutual information. 
 #' @param nBins Integer. Number of bins to calculate joint histogram.

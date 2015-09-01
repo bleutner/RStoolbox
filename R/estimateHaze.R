@@ -3,10 +3,10 @@
 #' estimates the digital number (DN) pixel value of *dark* objects for the visible wavelength range.
 #' 
 #' @param x Raster* object or a previous result from \code{estimateHaze(x , returnTables = TRUE} from which to estimate haze
-#' @param hazeBands character. Band or bandname from which to estimate atmospheric haze (optional if x contains only one layer)
-#' @param darkProp proportion of pixels estimated to be dark
-#' @param plot display histograms and haze values
-#' @param returnTables return the frequency table per layer. Only takes effect if x is a Raster* object. If x is a result of estimateHaze tables will always be returned.
+#' @param hazeBands Integer or Character. Band number or bandname from which to estimate atmospheric haze (optional if x contains only one layer)
+#' @param darkProp Numeric. Proportion of pixels estimated to be dark
+#' @param plot Logical. Option to display histograms and haze values
+#' @param returnTables Logical. Option to return the frequency table per layer. Only takes effect if x is a Raster* object. If x is a result of estimateHaze tables will always be returned.
 #' @details 
 #' It is assumed that any radiation originating from *dark* pixels is due to atmospheric haze and 
 #' not the reflectance of the surface itself (the surface is dark, i.e. it has a reflectance close to zero).

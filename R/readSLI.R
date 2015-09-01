@@ -2,7 +2,7 @@
 #' 
 #' read/write support for ENVI spectral libraries
 #' 
-#' @param path path to spectral library file with ending .sli.
+#' @param path Path to spectral library file with ending .sli.
 #' @details
 #' ENVI spectral libraries consist of a binary data file (.sli) and a corresponding header (.hdr, or .sli.hdr) file. 
 #' @return 

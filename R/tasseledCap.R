@@ -1,6 +1,6 @@
 #' Tasseled Cap Transformation
 #' 
-#' calculates brightness, greenness and wetness from multispectral imagery.
+#' Calculates brightness, greenness and wetness from multispectral imagery.
 #' Currently implemented Landsat 4 TM, Landsat 5 TM, Landsat 7ETM+, Landsat 8 OLI and MODIS.
 #' 
 #' @param img RasterBrick or RasterStack. Input image. Band order must correspond to sensor specifications (see Details and Examples)

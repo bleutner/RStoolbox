@@ -7,16 +7,16 @@
 #' @param valData  SpatialPolygonsDataFrame or SpatialPointsDataFrame containing the validation locations (optional).
 #' @param responseCol Character or integer giving the column in \code{trainData}, which contains the response variable. Can be omitted, when \code{trainData} has only one column.
 #' @param nSamples Integer. Number of samples per land cover class.
-#' @param areaWeightedSampling logical. If \code{TRUE} scales sample size per polygon area. The bigger the polygon the more samples are taken.
+#' @param areaWeightedSampling Logical. If \code{TRUE} scales sample size per polygon area. The bigger the polygon the more samples are taken.
 #' @param polygonBasedCV Logical. If \code{TRUE} model tuning during cross-validation is conducted on a per-polygon basis. Use this to deal with overfitting.
-#' @param trainPartition numeric. Partition (polygon based) of \code{trainData} that goes into the training data set between zero and one. Ignored if \code{valData} is provided.
+#' @param trainPartition Numeric. Partition (polygon based) of \code{trainData} that goes into the training data set between zero and one. Ignored if \code{valData} is provided.
 #' @param model Character. Which model to use. See \link[caret]{train} for options. Defaults to randomForest ('rf')
 #' @param tuneLength Integer. Number of levels for each tuning paramete (see \link[caret]{train} for details).
 #' @param kfold Integer. Number of cross-validation resamples during model tuning.
 #' @param minDist Numeric. Minumum distance factor between training and validation data, e.g. minDist=1 will clip validation polygons to ensure a minimal distance of one pixel to the next training polygon. Applies onl if trainData and valData overlap.
 #' @param mode Character. Model type: 'regression' or 'classification'. 
-#' @param filename path to output file (optional). If \code{NULL}, standard raster handling will apply, i.e. storage either in memory or in the raster temp directory. 
-#' @param verbose logical. prints progress and statistics during execution
+#' @param filename Path to output file (optional). If \code{NULL}, standard raster handling will apply, i.e. storage either in memory or in the raster temp directory. 
+#' @param verbose Logical. prints progress and statistics during execution
 #' @param overwrite logical. Overwrite spatial prediction raster if it already exists.
 #' @param ... further arguments to be passed to \code{\link[caret]{train}}
 #' @details 
@@ -32,7 +32,7 @@
 #' 
 #' \item Split training/validation	  
 #' If \code{valData} was provided (reccomended) the samples from these polygons will be held-out and not used for model fitting but only for validation. 
-#' If \code{trainPartition} is provided the trainingPolygons will be divied ab into training polygons and validation polygons.
+#' If \code{trainPartition} is provided the trainingPolygons will be divided into training polygons and validation polygons.
 #' 
 #' \item Extract raster data
 #' The predictor values on the sample pixels are extracted from \code{img}
