@@ -15,7 +15,7 @@ knit_rd2 <- function(pkg, path = ".", links =  tools::findHTMLlinks(), frame = F
     for (p in topics) {
         message('** knitting documentation of ', p)
         tools::Rd2HTML(pkgRdDB[[p]], f <- tempfile(),
-                package = pkg, Links = links, no_links = is.null(links), stages = 'render')
+                package = pkg, Links = links, no_links = is.null(links), stages = 'render', commentDontrun=cdr)
         txt = readLines(f, warn = FALSE)
         extlinks <- grep("^.*\\.\\./\\.\\./", txt)
         
@@ -87,5 +87,5 @@ knit_rd2 <- function(pkg, path = ".", links =  tools::findHTMLlinks(), frame = F
     
 }
 
-knit_rd2("RStoolbox", path = "rstbx-docu")
+knit_rd2("RStoolbox", path = "rstbx-docu", cdr = TRUE)
 
