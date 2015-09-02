@@ -22,8 +22,13 @@ echo "R CMD check **********************************************"
 echo "**********************************************************"
 Rscript -e "library(devtools); library(methods); build_win(); check()"
 
-
+echo "\n**********************************************************"
+echo "Build website documentation ******************************"
+echo "**********************************************************"
 git checkout gh-pages
-#Rscript -e "						
-	
-#git checkout master									
+Rscript rstbx-docu/build_docu.R
+git commit -a -m "Automatic commit: Update gh-pages package documentation"
+git checkout master
+
+
+														
