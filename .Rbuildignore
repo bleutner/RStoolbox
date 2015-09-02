@@ -6,4 +6,4 @@ inst/demo
 .Rprofile
 man-roxygen
 data-raw
-build
+prep-release
