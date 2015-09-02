@@ -1,7 +1,7 @@
 #' Multi-layer Pixel Entropy
 #' 
 #' Shannon entropy is calculated for each pixel based on it's layer values.
-#' To be used withe categorical / integer valued rasters.
+#' To be used with categorical / integer valued rasters.
 #' 
 #' Entropy is calculated as -sum(p log(p)); p being the class frequency per pixel.
 #' 

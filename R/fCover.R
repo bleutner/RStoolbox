@@ -17,7 +17,7 @@
 #' @param ... further arguments to be passed to \link[caret]{trainControl} and \code{\link[raster]{writeRaster}}
 #' @details 
 #' fCover gets the pixel values in a high resolution classified image that correspond to 
-#' individual randomly selected moderate resolution pixels and then calculates the percent of 
+#' randomly selected moderate resolution pixels and then calculates the percent of 
 #' the classified image pixels that represent your cover type of interest. In other words, if 
 #' your high resolution image has a pixel size of 1m and your moderate resolution image has a 
 #' pixel size of 30m the sampling process would take a block of 900 of the 1m resolution pixels 
@@ -25,10 +25,10 @@
 #' are forest. For example, if there were 600 forest pixels and 300 non-forest pixels the value 
 #' given for the output pixel would be 0.67 since 67% of the block of 1m pixels were forest. 
 #' 
-#' fCover relies on train from the caret package which provides acces to a huge number of classifiers.
+#' fCover relies on the train() function from the caret package which provides acces to a huge number of classifiers.
 #' Please see the available options at \link[caret]{train}. The default classifier (randomForest) we chose has been shown
-#' to provide very good results in image regression and hence its recomended you start with this one. If you choose a different
-#' one, make sure it can run in regression mode.
+#' to provide very good results in image regression and hence it is recomended you start with this one. If you choose a different
+#' classifier, make sure it can run in regression mode.
 #' 
 #' Many models require tuning of certain parameters. Again, this is handled by \link[caret]{train} from the caret package.
 #' With the tuneLength argument you can specify how many different values of each tuning parameter should be tested. The Random Forest

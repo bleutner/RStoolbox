@@ -1,7 +1,7 @@
 #' Extract bandwise information from ImageMetaData
 #' 
 #' This is an accessor function to quickly access information stored in ImageMetaData, e.g. scale factor per band.
-#' Intended for use with imagery which was imported using stackMeta. Will return parameters according to the actual band order in img.
+#' Intended for use with imagery which was imported using stackMeta. Will return parameters using the actual band order in img.
 #' 
 #' @param img Raster* or character vector with band names. 
 #' @param metaData ImageMetaData or path to meta data file.

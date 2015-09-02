@@ -1,7 +1,7 @@
 #' Fortify method for classes from the raster package.
 #'
 #' @param x \code{Raster*} object to convert into a dataframe.
-#' @param maxpixels maximal number of pixels to sample
+#' @param maxpixels Integer. Maximum number of pixels to sample
 #' @param ... not used by this method
 #' @return Returns a data.frame with coordinates (x,y) and corresponding raster values.
 #' @name fortify.raster

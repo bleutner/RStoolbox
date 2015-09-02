@@ -5,12 +5,12 @@
 #' thermal bands. 
 #' 
 #' @param x RasterBrick or RasterStack with reflectance and brightness temperature OR the mask of a previous run of \code{cloudMask} with \code{returnDiffLayer=TRUE}. 
-#' @param threshold cloud detection threshold. If not provided it will be guessed. Everything *below* this threshold will be considered a cloud pixel (unless it is removed by filtering afterwards).
-#' @param blue bandname or number for the blue band
-#' @param tir bandname or number for the thermal band
-#' @param buffer Integer (number of pixels). If given, a buffer will be added to the identified cloud centers.
-#' @param plot logical. Plots of the cloud mask for all sub-steps (sanitizing etc.) Helpful to find proper parametrization.
-#' @param verbose logical. Print messages or suppress.
+#' @param threshold Numeric. cloud detection threshold. If not provided it will be guessed. Everything *below* this threshold will be considered a cloud pixel (unless it is removed by filtering afterwards).
+#' @param blue Character or integer. Bandname or number for the blue band
+#' @param tir Character or integer. Bandname or number for the thermal band
+#' @param buffer Integer. Number of pixels to use as a buffer that will be added to the identified cloud centers.
+#' @param plot Logical. Plots of the cloud mask for all sub-steps (sanitizing etc.) Helpful to find proper parametrization.
+#' @param verbose Logical. Print messages or suppress.
 #' @note Typically clouds are cold in the thermal region and have high reflectance in short wavelengths (blue). By calculating a normalized difference index between the two bands and thresholding a rough cloud mask can be obtained.
 #' Before calculating the spectral cloud index (let's call it Normalized Difference Thermal Cloud Index (NDTCI)) the thermal band will be matched to the same value range as the blue band. Therefore, it doesn't matter whether you
 #' provide DN, radiance or brightness temperature.

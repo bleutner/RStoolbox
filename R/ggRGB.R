@@ -1,6 +1,6 @@
 #' Create ggplot2 Raster Plots with RGB from 3 RasterLayers
 #' 
-#' Calculates RGB color composite raster for plotting with ggplot2. Optional value clipping and and stretching can be used to enhance the imagery.
+#' Calculates RGB color composite raster for plotting with ggplot2. Optional values for clipping and and stretching can be used to enhance the imagery.
 #' 
 #' Functionality is based on \code{\link[raster]{plotRGB}} from the raster package.
 #' 
@@ -12,10 +12,10 @@
 #' @param scale Numeric. Maximum possible pixel value (optional). Defaults to 255 or to the maximum value of x if that is larger than 255
 #' @param maxpixels Integer. Maximal number of pixels used for plotting.
 #' @param stretch Character. Either 'none', 'lin', 'hist', 'sqrt' or 'log' for no stretch, linear, histogram, square-root or logarithmic stretch.
-#' @param ext extent object to crop the image
+#' @param ext Extent object to crop the image
 #' @param limits Vector or matrix. Can be used to reduce the range of values. Either a vector of two values for all bands (c(min, max))
-#'  or a 3x2 matrix with separate min and max values (columns) for each layer (rows).
-#' @param quantiles Numeric vector with two elements. Min and max quantiles to stretch to. Defaults to 2\% stretch, i.e. c(0.02,0.98). 
+#'  or a 3x2 matrix with min and max values (columns) for each layer (rows).
+#' @param quantiles Numeric vector with two elements. Min and max quantiles to stretch. Defaults to 2\% stretch, i.e. c(0.02,0.98). 
 #' @param clipValues Matrix, numeric vector, string or NA. Values to reset out of range (out of \code{limits}) values to. 
 #' By default ('limits') values are reset to \code{limits}. A single value (e.g. NA) will be recycled to all lower/higher clippings,
 #' A vector of length two (c(min,max)) can be used to specify lower and higher replace values, applied to all bands. 

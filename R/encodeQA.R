@@ -1,6 +1,6 @@
 #' Encode QA Conditions to Integers
 #' 
-#' Intended for use with the Landsat 8 OLI QA band. Converts pixel quality flags from human to integer, which can then be used to 
+#' Intended for use with the Landsat 8 OLI QA band. Converts pixel quality flags from human readable to integer, which can then be used to 
 #' subset the QA image. Please be aware of the default settings which differ for different parameters.
 #' 
 #' @param fill Designated fill. Options: \code{c("yes", "no", "all")}. 
@@ -17,6 +17,8 @@
 #' @references 
 #' \url{http://landsat.usgs.gov/L8QualityAssessmentBand.php} 
 #' @export 
+#'  @return
+#' Returns the Integer value for the QA values
 #' @examples 
 #' encodeQA(snow = "low", cirrus = c("med", "high"), cloud = "high")
 encodeQA <- function(fill = "no", droppedFrame = "no", terrainOcclusion = "no", 

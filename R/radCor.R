@@ -8,13 +8,13 @@
 #' @param metaData object of class ImageMetaData or a path to the meta data (MTL) file. 
 #' @param method Radiometric conversion/correction method to be used. There are currently four methods available (see Details):
 #' "rad", "apref", "sdos", "dos", "costz".
-#' @param bandSet numeric or character. original Landsat band numbers or names in the form of ("B1", "B2" etc). If set to 'full' all bands in the solar (optical) region will be processed.
-#' @param hazeValues starting haze value, can be estimated using link{estimateHaze}. if not provided and method is "dos" or "costz" hazeValues will be estimated in an automated fashion. Not needed for apparent reflectance.
+#' @param bandSet Numeric or character. original Landsat band numbers or names in the form of ("B1", "B2" etc). If set to 'full' all bands in the solar (optical) region will be processed.
+#' @param hazeValues Starting haze value, can be estimated using \link{estimateHaze}. if not provided and method is "dos" or "costz" hazeValues will be estimated in an automated fashion. Not needed for apparent reflectance.
 #' @param hazeBands Bands corresponding to hazeValues.
 #' @param atmosphere Character. Atmospheric characteristics. Will be estimated if not expicilty provided. Must be one of \code{"veryClear", "clear", "moderate", "hazy"} or \code{"veryHazy"}.
-#' @param darkProp numeric. Estimated proportion of dark pixels in the scene. Used only for automatic guessing of hazeValues (typically one would choose 1 or 2\%).
+#' @param darkProp Numeric. Estimated proportion of dark pixels in the scene. Used only for automatic guessing of hazeValues (typically one would choose 1 or 2\%).
 #' @param verbose Logical. Print status information. 
-#' @note This was originally a fork of randcorr in the landsat package. However it works on Raster* objects and hence is suitable for large rasters.
+#' @note This was originally a fork of randcorr() function in the landsat package. This version works on Raster* objects and hence is suitable for large rasters.
 #' @return 
 #' RasterStack with top-of-atmosphere radiance (\eqn{W/(m^2 * srad * \mu m)}), at-satellite brightness temperature (K),
 #' top-of-atmosphere reflectance (unitless) corrected for the sun angle or at-surface reflectance (unitless).
