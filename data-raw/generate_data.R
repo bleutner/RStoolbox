@@ -1,3 +1,5 @@
+library(raster)
+library(RStoolbox)
 ## Rlogo example data #####################################################################
 r       <- brick(system.file("external/rlogo.grd", package="raster"))
 rlogo   <- brick(r)  ## to remove loval file connections etc (not achieved by readAll)
@@ -35,7 +37,7 @@ file.rename(files, gsub("tif", "TIF", files))
 
 ## SRTM Example Data #######################################################################
 dem   <- raster("data-raw/LandsatExample/s04_w050_1arc_v3.tif")
-lsat  <- stackMeta("external/landsat/LT52240631988227CUB02_MTL.txt")
+lsat  <- stackMeta("inst/external/landsat/LT52240631988227CUB02_MTL.txt")
 dems  <- projectRaster(dem, lsat)
 dh    <- writeRaster(dems, "/tmp/test.grd", datatype = "INT1U", overwrite=T)
 srtm  <- readAll(dh)
