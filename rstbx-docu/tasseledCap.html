@@ -103,12 +103,8 @@ Required bands are:
 data(rlogo)
 pseudoLS &lt;- stack(rlogo, rlogo, rlogo[[1]])
 names(pseudoLS) &lt;- paste0(&quot;band_&quot;, 1:7)
-</code></pre>
 
-<pre><code>#&gt; Error in `names&lt;-`(`*tmp*`, value = c(&quot;band_1&quot;, &quot;band_2&quot;, &quot;band_3&quot;, &quot;band_4&quot;, : incorrect number of layer names
-</code></pre>
-
-<pre><code class="r">## Run tasseled cap (exclude thermal band 6)
+## Run tasseled cap (exclude thermal band 6)
 tasseledCap(pseudoLS[[c(1:5,7)]], sat = &quot;Landsat5TM&quot;)
 </code></pre>
 
@@ -118,9 +114,9 @@ tasseledCap(pseudoLS[[c(1:5,7)]], sat = &quot;Landsat5TM&quot;)
 #&gt; extent      : 0, 101, 0, 77  (xmin, xmax, ymin, ymax)
 #&gt; coord. ref. : +proj=merc +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0 
 #&gt; data source : in memory
-#&gt; names       : brightness, greenness,  wetness 
-#&gt; min values  :     57.410,    36.154, -135.161 
-#&gt; max values  :   641.1815,   88.6336,  15.9400
+#&gt; names       : brightness, greenness,   wetness 
+#&gt; min values  :     0.0000,  -42.0875, -153.7389 
+#&gt; max values  :   583.7715,    7.5113,    5.3889
 </code></pre>
 
 

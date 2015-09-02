@@ -99,8 +99,7 @@ list.files(tempdir(), pattern = basename(file))
 </code></pre>
 
 <pre><code>#&gt; [1] &quot;test0.456437604967505.grd&quot; &quot;test0.456437604967505.gri&quot;
-#&gt; [3] &quot;test0.456437604967505.hdr&quot; &quot;test0.456437604967505.rds&quot;
-#&gt; [5] &quot;test0.456437604967505.stx&quot;
+#&gt; [3] &quot;test0.456437604967505.rds&quot;
 </code></pre>
 
 <pre><code class="r">## Re-read files
@@ -115,7 +114,7 @@ all.equal(re_rpc, rpc)
 <pre><code class="r">file.remove(file)
 </code></pre>
 
-<pre><code>#&gt; Warning in file.remove(file): cannot remove file &#39;/tmp/RtmpHHES0b/
+<pre><code>#&gt; Warning in file.remove(file): cannot remove file &#39;/tmp/RtmpHubi0Y/
 #&gt; test0.456437604967505&#39;, reason &#39;No such file or directory&#39;
 </code></pre>
 

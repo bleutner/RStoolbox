@@ -167,7 +167,18 @@ top-of-atmosphere reflectance (unitless) corrected for the sun angle or at-surfa
 <h3>Examples</h3>
 
 <pre><code class="r">library(rgdal)
-## Import meta-data and bands based on MTL file
+</code></pre>
+
+<pre><code>#&gt; rgdal: version: 1.0-6, (SVN revision 555)
+#&gt;  Geospatial Data Abstraction Library extensions to R successfully loaded
+#&gt;  Loaded GDAL runtime: GDAL 1.11.2, released 2015/02/10
+#&gt;  Path to GDAL shared files: /usr/share/gdal/1.11
+#&gt;  Loaded PROJ.4 runtime: Rel. 4.8.0, 6 March 2012, [PJ_VERSION: 480]
+#&gt;  Path to PROJ.4 shared files: (autodetected)
+#&gt;  Linking to sp version: 1.1-1
+</code></pre>
+
+<pre><code class="r">## Import meta-data and bands based on MTL file
 mtlFile  &lt;- system.file(&quot;external/landsat/LT52240631988227CUB02_MTL.txt&quot;, package=&quot;RStoolbox&quot;)
 metaData &lt;- readMeta(mtlFile)
 lsat     &lt;- stackMeta(mtlFile)
