@@ -1,7 +1,16 @@
 #!/bin/bash
 cd ~/eclipseWorkspace/RStoolbox
-git checkout master
 
+## Check for uncommited changes
+if [[ -n $(git status -s) ]] 
+then
+	echo "Uncommited changes. Clean-up first."
+	git status
+	exit 1
+fi
+
+## Begin build and check
+git checkout master
 echo "\n**********************************************************"
 echo "Document and install RStoolbox ***************************"
 echo "**********************************************************"
@@ -22,6 +31,10 @@ echo "R CMD check **********************************************"
 echo "**********************************************************"
 Rscript -e "library(devtools); library(methods); build_win(); check()"
 
+git commit -a -m "Automatic commit: Update sysdata and example data"
+
+
+## Website
 echo "\n**********************************************************"
 echo "Build website documentation ******************************"
 echo "**********************************************************"
