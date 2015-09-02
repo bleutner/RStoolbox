@@ -29,6 +29,3 @@ git checkout gh-pages
 Rscript rstbx-docu/build_docu.R
 git commit -a -m "Automatic commit: Update gh-pages package documentation"
 git checkout master
-
-
-														
