@@ -1,12 +1,11 @@
 Package: RStoolbox
 Type: Package
 Title: Tools for Remote Sensing Data Analysis 
-Version: 0.0.0.9000
+Version: 0.1.0
 Date: 2015-09-02
 Authors@R: c(
     person("Benjamin", "Leutner", role=c("cre", "aut"), email="benjamin.leutner@uni-wuerzburg.de"),
-    person("Ned", "Horning", role ="aut", email="horning@amnh.org"),
-    person("Martin", "Wegmann", role="ctb", email="martin.wegmann@uni-wuerzburg.de")
+    person("Ned", "Horning", role ="aut", email="horning@amnh.org")
     )
 Description: Toolbox for remote sensing image processing and analysis such
     as calculating spectral indices, principal component transformation, unsupervised
