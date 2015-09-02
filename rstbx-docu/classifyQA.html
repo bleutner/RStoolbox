@@ -1,0 +1,149 @@
+---
+layout: docu
+title: '  '
+fun:  classifyQA 
+package:  RStoolbox 
+header: Pages
+group: navigation
+---
+{% include JB/setup %}
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Classify Landsat8 QA Band</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+
+                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+                            <script>hljs.initHighlightingOnLoad();</script>
+                            </head><body>
+
+<h3>Description</h3>
+
+<p>extracts five classes from QA band: background, cloud, cirrus, snow and water.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+classifyQA(img, type = c("background", "cloud", "cirrus", "snow", "water"),
+  confLayers = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>img</code></td>
+<td>
+<p>RasterLayer. Landsat 8 OLI QA band.</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p>Character. Classes which should be returned. One or more of c(&quot;background&quot;, &quot;cloud&quot;, &quot;cirrus&quot;,&quot;snow&quot;, &quot;water&quot;).</p>
+</td></tr>
+<tr valign="top"><td><code>confLayers</code></td>
+<td>
+<p>Logical. Return one layer per class classified by condidence levels, i.e. cloud:low, cloud:med, cloud:high.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments passed to <a href="http://www.inside-r.org/packages/cran/raster/docs/writeRaster">writeRaster</a></p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>By default each class is queried for *high* confidence. See <a href="encodeQA.html">encodeQA</a> for details. To return the different confidence levels per condition use <code>confLayers=TRUE</code>.
+This approach corresponds to the way LandsatLook Quality Images are produced by the USGS.
+</p>
+
+
+<h3>Value</h3>
+
+<p>Returns a RasterLayer with maximal five classes:
+</p>
+
+<table summary="Rd table">
+<tr>
+ <td style="text-align: right;">
+class </td><td style="text-align: right;"> value </td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+background </td><td style="text-align: right;"> 1L </td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+cloud  </td><td style="text-align: right;"> 2L </td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+cirrus </td><td style="text-align: right;"> 3L </td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+snow   </td><td style="text-align: right;"> 4L </td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+water  </td><td style="text-align: right;"> 5L </td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+</td>
+</tr>
+
+</table>
+
+<p>Values outside of these classes are returned as NA.
+If <code>confLayers = TRUE</code> then a RasterStack with one layer per condition (except 'background') is returned, whereby each layer contains the confidence level of the condition.
+</p>
+
+<table summary="Rd table">
+<tr>
+ <td style="text-align: right;">
+Confidence </td><td style="text-align: right;"> value </td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+low    </td><td style="text-align: right;"> 1L </td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+med    </td><td style="text-align: right;"> 2L </td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+high   </td><td style="text-align: right;"> 3L </td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+</td>
+</tr>
+
+</table>
+
+
+
+<h3>See Also</h3>
+
+<p><a href="encodeQA.html">encodeQA</a> <a href="decodeQA.html">decodeQA</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class="r">library(raster)
+qa &lt;- raster(ncol = 100, nrow=100, val = sample(1:2^14,  10000))
+
+## QA classes
+qacs &lt;- classifyQA(img = qa)
+## Confidence levels
+qacs_conf &lt;- classifyQA(img = qa, confLayers = TRUE)
+</code></pre>
+
+
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>

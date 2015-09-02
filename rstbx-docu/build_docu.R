@@ -1,0 +1,91 @@
+library(devtools)
+library(stringr)
+
+knit_rd2 <- function(pkg, path = ".", links =  tools::findHTMLlinks(), frame = FALSE, cdr = FALSE, copycss=FALSE) {
+    library(knitr)
+    library(stringr)
+    opts_chunk$set(comment="#>")
+    force(oldworki <- getwd())
+    setwd(path) ; on.exit(setwd(oldworki))
+    library(pkg, character.only = TRUE)
+    optc = opts_chunk$get(); on.exit(opts_chunk$set(optc), add=T)
+    if(copycss) file.copy(system.file('misc', 'R.css', package = 'knitr'), './')
+    pkgRdDB = getFromNamespace('fetchRdDB', 'tools')(file.path(find.package(pkg), 'help', pkg))
+    force(links); topics = names(pkgRdDB)
+    for (p in topics) {
+        message('** knitting documentation of ', p)
+        tools::Rd2HTML(pkgRdDB[[p]], f <- tempfile(),
+                package = pkg, Links = links, no_links = is.null(links), stages = 'render')
+        txt = readLines(f, warn = FALSE)
+        extlinks <- grep("^.*\\.\\./\\.\\./", txt)
+        
+        included <- c("/base/", "/boot/", "/class/", "/cluster/", "/codetools/", 
+                "/compiler/", "/datasets/", "/foreign/", "/graphics/", "/grDevices/", 
+                "/grid/", "/KernSmooth/", "/lattice/", "/MASS/", "/Matrix/", 
+                "/methods/", "/mgcv/", "/nlme/", "/nnet/", "/parallel/", "/rpart/", 
+                "/spatial/", "/splines/", "/stats/", "/stats4/", "/survival/", 
+                "/tcltk/", "/tools/", "/utils/")
+        
+        txt[extlinks] <- gsub(".html", "", gsub("/html/", "/docs/", gsub("../../", "http://www.inside-r.org/packages/cran/", txt[extlinks])))
+        extIntLinks <- sapply(included, function(x) any(grepl(x, txt[extlinks])))
+        ints <- included[extIntLinks]
+        if(length(ints)) for(i in ints) {
+                txt[extlinks] <- gsub(paste0("/packages/cran", i, "docs/"), paste0("/r-doc/stats/"), txt[extlinks])
+            }
+        
+        
+        if (length(i <- grep('<h3>Examples</h3>', txt)) == 1L &&
+                length(grep('</pre>', txt[i:length(txt)]))) {
+            i0 = grep('<pre>', txt); i0 = i0[i0 > i][1L] - 1L
+            i1 = grep('</pre>', txt); i1 = i1[i1 > i0][1L] + 1L
+            tools::Rd2ex(pkgRdDB[[p]], ef <- tempfile(), commentDontrun=cdr)
+            ex = readLines(ef, warn = FALSE)
+            ex = ex[-(1L:grep('### ** Examples', ex, fixed = TRUE))]
+            ex = c('```{r}', ex, '```')
+            opts_chunk$set(fig.path = str_c('figure/', p, '-'), tidy = FALSE)
+            res = try(knit2html(text = ex, envir = parent.frame(2), fragment.only = TRUE, quiet = TRUE))
+            if (inherits(res, 'try-error')) {
+                res = ex; res[1] = '<pre><code class="r">'; res[length(res)] = '</code></pre>'
+            }
+            txt = c(txt[1:i0], res, txt[i1:length(txt)])
+            txt = sub('</head>', '
+                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+                            <script>hljs.initHighlightingOnLoad();</script>
+                            </head>', txt)
+        } else message('no examples found for ', p)
+        title <- txt[grep("<html><head><title>", txt) ]
+        title <- gsub("<html><head><title>R: |</title>", "", title)
+        
+        H <- grep("<table width=|<h3>Description", txt)
+        txt <- txt[-(H[1]:(H[2]-1))] 
+        txt <- paste("---\nlayout: docu\ntitle: '",title,"'\nfun: ", p ,"\npackage: ", pkg,
+                "\nheader: Pages\ngroup: navigation\n---\n{% include JB/setup %}\n", paste0(txt, collapse ="\n"))
+        writeLines(txt, str_c(p, '.html'))
+    }
+    unlink('figure/', recursive = TRUE)
+    toc = sprintf('- <a href="%s" target="content">%s</a>', str_c(topics, '.html'), topics)
+    markdown::markdownToHTML(text = paste(toc, collapse = '\n'), output = '00frame_toc.html',
+            title = paste('R Documentation of', pkg),
+            options = NULL, extensions = NULL, stylesheet = 'R.css')
+    txt = readLines(file.path(find.package(pkg), 'html', '00Index.html'))
+    unlink('00Index.html')
+    # fix image links
+    
+    index <- gsub('../../../doc/html/', 'http://stat.ethz.ch/R-manual/R-devel/doc/html/',txt, fixed = TRUE)	
+    ir <- grep("</head><body>|</div><h2>Documentation for package", index)
+    index <- index[-((ir[1]+1):ir[2])]
+    
+    index <- index[-(grep("DESCRIPTION file</a>", index)+0:2)]
+    
+    index <- paste0("---\nlayout: page\ntitle: Package Documentation\nheader: Pages\ngroup: navigation\n---\n{% include JB/setup %}\n",
+            paste(index, collapse="\n"))
+    writeLines(index, 'index.html')
+    
+    
+    
+}
+
+knit_rd2("RStoolbox", path = "rstbx-docu")
+

@@ -1,29 +1,33 @@
 ---
 layout: docu
-title: ' Topographic Illumination Correction '
+title: '  '
 fun:  topCor 
 package:  RStoolbox 
 header: Pages
 group: navigation
 ---
 {% include JB/setup %}
- <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head><title>R: Topographic Illumination Correction</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link rel="stylesheet" type="text/css" href="R.css">
-</head><body>
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Topographic Illumination Correction</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+
+                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+                            <script>hljs.initHighlightingOnLoad();</script>
+                            </head><body>
 
 <h3>Description</h3>
 
-<p>Topographic Illumination Correction
+<p>account and correct for changes in illumination due to terrain elevation.
 </p>
 
 
 <h3>Usage</h3>
 
 <pre>
-topCor(img, dem, metaData, solarAngles, method = "C", stratImg,
-  stratMethod = "noStrat", nStrat = 5, illu)
+topCor(img, dem, metaData, solarAngles = c(), method = "C",
+  stratImg = NULL, nStrat = 5, illu)
 </pre>
 
 
@@ -36,7 +40,8 @@ topCor(img, dem, metaData, solarAngles, method = "C", stratImg,
 </td></tr>
 <tr valign="top"><td><code>dem</code></td>
 <td>
-<p>Raster*. Either a digital elevation model as a RasterLayer or a RasterStack/Brick with pre-calculated slope and aspect (see <a href="http://www.inside-r.org/packages/cran/raster/docs/terrain">terrain</a>) in which case the layers must be named 'slope' and 'aspect'.</p>
+<p>Raster*. Either a digital elevation model as a RasterLayer or a RasterStack/Brick with pre-calculated slope and aspect (see <a href="http://www.inside-r.org/packages/cran/raster/docs/terrain">terrain</a>) in which case the layers must be named 'slope' and 'aspect'.
+Must have the same dimensions as <code>img</code>.</p>
 </td></tr>
 <tr valign="top"><td><code>metaData</code></td>
 <td>
@@ -52,15 +57,11 @@ topCor(img, dem, metaData, solarAngles, method = "C", stratImg,
 </td></tr>
 <tr valign="top"><td><code>stratImg</code></td>
 <td>
-<p>RasterLayer by which to stratify by, e.g. NDVI. Defaults to 'slope'</p>
-</td></tr>
-<tr valign="top"><td><code>stratMethod</code></td>
-<td>
-<p>Character. One of c(&quot;noStrat&quot;, &quot;stratEqualBins&quot;, &quot;stratQuantiles&quot;).</p>
+<p>RasterLayer by which to stratify by, e.g. NDVI. Or the string 'slope' in which case stratification will be on <code>nStrat</code> slope classes. Only relevant if <code>method = 'minnaert'</code>.</p>
 </td></tr>
 <tr valign="top"><td><code>nStrat</code></td>
 <td>
-<p>Integer. Number of bins or quantiles to stratify by. If a bin has less than 50 samples it will be merged with the next bin.</p>
+<p>Integer. Number of bins or quantiles to stratify by. If a bin has less than 50 samples it will be merged with the next bin. Only relevant if <code>method = 'minnaert'</code>.</p>
 </td></tr>
 <tr valign="top"><td><code>illu</code></td>
 <td>
@@ -68,5 +69,51 @@ topCor(img, dem, metaData, solarAngles, method = "C", stratImg,
 </td></tr>
 </table>
 
-<hr><div align="center">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+
+<h3>Details</h3>
+
+<p>For detailed discussion of the various approaches please see Riano et al. (2003).
+</p>
+<p>The minnaert correction can be stratified for different landcover characteristics. If <code>stratImg = 'slope'</code> the analysis is stratified by the slope,
+i.e. the slope values are divided into <code>nStrat</code> classes and the correction coefficient k is calculated and applied separately for each slope class.
+An alternative could be to stratify by a vegetation index in which case an additional raster layer has to be provided via the <code>stratImg</code> argument.
+</p>
+
+
+<h3>References</h3>
+
+<p>Riano et al. (2003) Assessment of different topographic correction in Landsat-TM data for mapping vegetation types. IEEE Transactions on Geoscience and Remote Sensing.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class="r">## Load example data
+metaData &lt;- system.file(&quot;external/landsat/LT52240631988227CUB02_MTL.txt&quot;, package=&quot;RStoolbox&quot;)
+metaData &lt;- readMeta(metaData)
+lsat     &lt;- stackMeta(metaData)
+data(srtm)
+
+## Minnaert correction, solar angles from metaData
+lsat_minnaert &lt;- topCor(lsat, dem = srtm, metaData = metaData, method = &quot;minnaert&quot;)
+</code></pre>
+
+<pre><code>#&gt; Calculate slope and aspect
+#&gt; Calculate illumination map
+#&gt; Correct imagery
+#&gt; Estimate coefficients
+</code></pre>
+
+<pre><code class="r">## C correction, solar angles provided manually
+lsat_C &lt;- topCor(lsat, dem = srtm, solarAngles = c(1.081533, 0.7023922), method = &quot;C&quot;)
+</code></pre>
+
+<pre><code>#&gt; Calculate slope and aspect
+#&gt; Calculate illumination map
+#&gt; Correct imagery
+#&gt; Estimate coefficients
+</code></pre>
+
+
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
 </body></html>

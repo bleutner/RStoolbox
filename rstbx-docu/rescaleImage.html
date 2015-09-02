@@ -1,0 +1,134 @@
+---
+layout: docu
+title: '  '
+fun:  rescaleImage 
+package:  RStoolbox 
+header: Pages
+group: navigation
+---
+{% include JB/setup %}
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Linear image rescaling</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+
+                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+                            <script>hljs.initHighlightingOnLoad();</script>
+                            </head><body>
+
+<h3>Description</h3>
+
+<p>performs linear shifts of value ranges either to match min and max of another image
+or to any other min and max value.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+rescaleImage(x, y, xmin, xmax, ymin, ymax, forceMinMax = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>Raster* object. Image to normalise.</p>
+</td></tr>
+<tr valign="top"><td><code>y</code></td>
+<td>
+<p>Raster* object. Reference image.</p>
+</td></tr>
+<tr valign="top"><td><code>xmin</code></td>
+<td>
+<p>Numeric. Min value of x.</p>
+</td></tr>
+<tr valign="top"><td><code>xmax</code></td>
+<td>
+<p>Numeric. Max value of x.</p>
+</td></tr>
+<tr valign="top"><td><code>ymin</code></td>
+<td>
+<p>Numeric. Min value of y.</p>
+</td></tr>
+<tr valign="top"><td><code>ymax</code></td>
+<td>
+<p>Numeric. Max value of y.</p>
+</td></tr>
+<tr valign="top"><td><code>forceMinMax</code></td>
+<td>
+<p>Logical. Forces update of min and max data slots in x or y.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Returns a Raster* object of the same dimensions as the input raster <code>x</code> but shifted and stretched to the new limits.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="histMatch.html">histMatch</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class="r">## Create example data
+mtlFile  &lt;- system.file(&quot;external/landsat/LT52240631988227CUB02_MTL.txt&quot;, package=&quot;RStoolbox&quot;)
+lsat &lt;- stackMeta(mtlFile)
+lsat2 &lt;- lsat -1000
+lsat2
+</code></pre>
+
+<pre><code>#&gt; class       : RasterBrick 
+#&gt; dimensions  : 310, 287, 88970, 7  (nrow, ncol, ncell, nlayers)
+#&gt; resolution  : 30, 30  (x, y)
+#&gt; extent      : 619395, 628005, -419505, -410205  (xmin, xmax, ymin, ymax)
+#&gt; coord. ref. : +proj=utm +zone=22 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 
+#&gt; data source : in memory
+#&gt; names       : B1_dn, B2_dn, B3_dn, B4_dn, B5_dn, B6_dn, B7_dn 
+#&gt; min values  :  -946,  -982,  -989,  -996,  -998,  -869,  -999 
+#&gt; max values  :  -815,  -913,  -908,  -873,  -852,  -854,  -921
+</code></pre>
+
+<pre><code class="r">## Rescale lsat2 to match original lsat value rang
+lsat2_rescaled &lt;- rescaleImage(lsat2, lsat)
+lsat2_rescaled
+</code></pre>
+
+<pre><code>#&gt; class       : RasterBrick 
+#&gt; dimensions  : 310, 287, 88970, 7  (nrow, ncol, ncell, nlayers)
+#&gt; resolution  : 30, 30  (x, y)
+#&gt; extent      : 619395, 628005, -419505, -410205  (xmin, xmax, ymin, ymax)
+#&gt; coord. ref. : +proj=utm +zone=22 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 
+#&gt; data source : in memory
+#&gt; names       : B1_dn, B2_dn, B3_dn, B4_dn, B5_dn, B6_dn, B7_dn 
+#&gt; min values  :    54,    18,    11,     4,     2,   131,     1 
+#&gt; max values  :   185,    87,    92,   127,   148,   146,    79
+</code></pre>
+
+<pre><code class="r">## Rescale lsat to value range [0,1]
+lsat2_unity &lt;- rescaleImage(lsat2, ymin = 0, ymax = 1)
+lsat2_unity
+</code></pre>
+
+<pre><code>#&gt; class       : RasterBrick 
+#&gt; dimensions  : 310, 287, 88970, 7  (nrow, ncol, ncell, nlayers)
+#&gt; resolution  : 30, 30  (x, y)
+#&gt; extent      : 619395, 628005, -419505, -410205  (xmin, xmax, ymin, ymax)
+#&gt; coord. ref. : +proj=utm +zone=22 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 
+#&gt; data source : in memory
+#&gt; names       : B1_dn, B2_dn, B3_dn, B4_dn, B5_dn, B6_dn, B7_dn 
+#&gt; min values  :     0,     0,     0,     0,     0,     0,     0 
+#&gt; max values  :     1,     1,     1,     1,     1,     1,     1
+</code></pre>
+
+
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>

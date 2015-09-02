@@ -1,22 +1,26 @@
 ---
 layout: docu
-title: ' Extract bandwise information from ImageMetaData '
+title: '  '
 fun:  getMeta 
 package:  RStoolbox 
 header: Pages
 group: navigation
 ---
 {% include JB/setup %}
- <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head><title>R: Extract bandwise information from ImageMetaData</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link rel="stylesheet" type="text/css" href="R.css">
-</head><body>
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Extract bandwise information from ImageMetaData</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+
+                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+                            <script>hljs.initHighlightingOnLoad();</script>
+                            </head><body>
 
 <h3>Description</h3>
 
 <p>This is an accessor function to quickly access information stored in ImageMetaData, e.g. scale factor per band.
-Intended for use with imagery which was imported using stackMeta.
+Intended for use with imagery which was imported using stackMeta. Will return parameters according to the actual band order in img.
 </p>
 
 
@@ -40,9 +44,148 @@ getMeta(img, metaData, what)
 </td></tr>
 <tr valign="top"><td><code>what</code></td>
 <td>
-<p>Character. Slot to extract.</p>
+<p>Character. Parameter to extract. Either data descriptors, or conversion parameters (see Details for options)</p>
 </td></tr>
 </table>
 
-<hr><div align="center">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+
+<h3>Details</h3>
+
+<p>Possible metadata parameters (<code>what</code> argument):
+</p>
+<p>Data descriptors
+</p>
+
+<table summary="Rd table">
+<tr>
+ <td style="text-align: left;">
+'FILES' </td><td style="text-align: left;">  </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+'QUANTITY' </td><td style="text-align: left;"> </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+'CATEGORY' </td><td style="text-align: left;"> </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+'NA_VALUE' </td><td style="text-align: left;"> </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+'SATURATE_VALUE' </td><td style="text-align: left;"> </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+'SCALE_FACTOR' </td><td style="text-align: left;"> </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+'DATA_TYPE' </td><td style="text-align: left;"> </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+'SPATIAL_RESOLUTION' </td><td style="text-align: left;"> </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+</td>
+</tr>
+
+</table>
+
+<p>Conversion parameters
+</p>
+
+<table summary="Rd table">
+<tr>
+ <td style="text-align: left;">
+'CALRAD' </td><td style="text-align: left;"> Conversion parameters from DN to radiance </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+'CALBT' </td><td style="text-align: left;"> Conversion parameters from radiance to brightness temperature </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+'CALREF' </td><td style="text-align: left;"> Conversion parameters from DN to reflectance (Landsat 8 only) </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+</td>
+</tr>
+
+</table>
+
+
+
+<h3>Value</h3>
+
+<p>If <code>what</code> is one of <code>c('CALRAD', 'CALBT', 'CALREF')</code> a data.frame is returned with bands in rows (order corresponding to <code>img</code> band order).
+Otherwise a named numeric vector with the corresponding parameter is returned (layernames as names).
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class="r">## Import example data
+mtlFile  &lt;- system.file(&quot;external/landsat/LT52240631988227CUB02_MTL.txt&quot;, package=&quot;RStoolbox&quot;)
+meta &lt;- readMeta(mtlFile)
+lsat &lt;- stackMeta(mtlFile)
+
+## Get integer scale factors
+getMeta(lsat, metaData = meta, what = &quot;SCALE_FACTOR&quot;)
+</code></pre>
+
+<pre><code>#&gt; B1_dn B2_dn B3_dn B4_dn B5_dn B6_dn B7_dn 
+#&gt;     1     1     1     1     1     1     1
+</code></pre>
+
+<pre><code class="r">## Conversion factors for brightness temperature
+getMeta(&quot;B6_dn&quot;, metaData = meta, what = &quot;CALBT&quot;)
+</code></pre>
+
+<pre><code>#&gt;           K1      K2
+#&gt; B6_dn 607.76 1260.56
+</code></pre>
+
+<pre><code class="r">## Conversion factors to top-of-atmosphere radiance
+## Band order not corresponding to metaData order
+getMeta(lsat[[5:1]], metaData = meta, what = &quot;CALRAD&quot;)
+</code></pre>
+
+<pre><code>#&gt;         offset  gain
+#&gt; B5_dn -0.49035 0.120
+#&gt; B4_dn -2.38602 0.876
+#&gt; B3_dn -2.21398 1.044
+#&gt; B2_dn -4.16220 1.322
+#&gt; B1_dn -2.19134 0.671
+</code></pre>
+
+<pre><code class="r">## Get integer scale factors
+getMeta(lsat, metaData = meta, what = &quot;SCALE_FACTOR&quot;)
+</code></pre>
+
+<pre><code>#&gt; B1_dn B2_dn B3_dn B4_dn B5_dn B6_dn B7_dn 
+#&gt;     1     1     1     1     1     1     1
+</code></pre>
+
+<pre><code class="r">## Get file basenames
+getMeta(lsat, metaData = meta, what = &quot;FILES&quot;)
+</code></pre>
+
+<pre><code>#&gt;                          B1_dn                          B2_dn 
+#&gt; &quot;LT52240631988227CUB02_B1.TIF&quot; &quot;LT52240631988227CUB02_B2.TIF&quot; 
+#&gt;                          B3_dn                          B4_dn 
+#&gt; &quot;LT52240631988227CUB02_B3.TIF&quot; &quot;LT52240631988227CUB02_B4.TIF&quot; 
+#&gt;                          B5_dn                          B6_dn 
+#&gt; &quot;LT52240631988227CUB02_B5.TIF&quot; &quot;LT52240631988227CUB02_B6.TIF&quot; 
+#&gt;                          B7_dn 
+#&gt; &quot;LT52240631988227CUB02_B7.TIF&quot;
+</code></pre>
+
+
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
 </body></html>
