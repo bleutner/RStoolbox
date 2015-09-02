@@ -1,10 +1,9 @@
 library(devtools)
 library(stringr)
-
+ library(knitr)
+   
 knit_rd2 <- function(pkg, path = ".", links =  tools::findHTMLlinks(), frame = FALSE, cdr = FALSE, copycss=FALSE) {
-    library(knitr)
-    library(stringr)
-    opts_chunk$set(comment="#>")
+   opts_chunk$set(comment="#>")
     force(oldworki <- getwd())
     setwd(path) ; on.exit(setwd(oldworki))
     library(pkg, character.only = TRUE)
@@ -55,11 +54,16 @@ knit_rd2 <- function(pkg, path = ".", links =  tools::findHTMLlinks(), frame = F
                             <script>hljs.initHighlightingOnLoad();</script>
                             </head>', txt)
         } else message('no examples found for ', p)
-        title <- txt[grep("<html><head><title>", txt) ]
-        title <- gsub("<html><head><title>R: |</title>", "", title)
+        title <- txt[grep("<head><title>", txt) ]
+        title <- gsub("^.*<head><title>R: |</title>", "", title)
         
         H <- grep("<table width=|<h3>Description", txt)
         txt <- txt[-(H[1]:(H[2]-1))] 
+       
+        ## Fix bottom index link
+        indlink <- grep(">Index</a>", txt)
+        txt[indlink] <- gsub("00Index.html", "index.html", txt[indlink])
+        
         txt <- paste("---\nlayout: docu\ntitle: '",title,"'\nfun: ", p ,"\npackage: ", pkg,
                 "\nheader: Pages\ngroup: navigation\n---\n{% include JB/setup %}\n", paste0(txt, collapse ="\n"))
         writeLines(txt, str_c(p, '.html'))
@@ -87,5 +91,5 @@ knit_rd2 <- function(pkg, path = ".", links =  tools::findHTMLlinks(), frame = F
     
 }
 
-knit_rd2("RStoolbox", path = "rstbx-docu", cdr = TRUE)
+knit_rd2(pkg = "RStoolbox", path = "rstbx-docu", cdr = TRUE)
 
