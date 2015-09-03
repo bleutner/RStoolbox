@@ -21,6 +21,7 @@ before_script:
  # - Rscript -e "install.packages('rgdal', repos = 'http://cran.r-project.org/')"
 
 script: 
+- ./pkg-build.sh install_r_old car 2.0-25
   - ./pkg-build.sh install_deps
   - ./pkg-build.sh run_build
   - ./pkg-build.sh run_check
