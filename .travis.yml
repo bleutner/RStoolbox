@@ -1,6 +1,6 @@
 language: c
 sudo: required
-#warnings_are_errors: true
+warnings_are_errors: true
 
 before_install:
   - curl -OL https://raw.githubusercontent.com/bleutner/r-builder/master/pkg-build.sh
@@ -9,9 +9,6 @@ before_install:
 #  - cp pkg-build.sh rbuildertest
 #  - cd rbuildertest
   - ./pkg-build.sh bootstrap
-
-install:
-  - ./pkg-build.sh install_deps
 
 before_script:
   - sudo apt-get install aptitude -y
@@ -23,7 +20,8 @@ before_script:
  # - Rscript -e "install.packages('devtools', repos = 'http://cran.r-project.org/')"
  # - Rscript -e "install.packages('rgdal', repos = 'http://cran.r-project.org/')"
 
-script:
+script: 
+  - ./pkg-build.sh install_deps
   - ./pkg-build.sh run_build
   - ./pkg-build.sh run_check
 
