@@ -20,8 +20,8 @@ before_script:
   - sudo aptitude install -y gdal-bin 
   - sudo aptitude install -y libgdal1-dev 
   - sudo aptitude install -y libproj-dev
-  - Rscript -e "install.packages('devtools', repos = 'http://cran.r-project.org/')"
-  - Rscript -e "install.packages('rgdal', repos = 'http://cran.r-project.org/')"
+ # - Rscript -e "install.packages('devtools', repos = 'http://cran.r-project.org/')"
+ # - Rscript -e "install.packages('rgdal', repos = 'http://cran.r-project.org/')"
  
 script:
   - ./pkg-build.sh run_build
