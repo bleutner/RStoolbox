@@ -1,6 +1,11 @@
 language: c
 sudo: required
-warnings_are_errors: true
+#warnings_are_errors: true
+
+branches:
+  except:
+   	 - example-data
+     - gh-pages
 
 before_install:
   - curl -OL https://raw.githubusercontent.com/bleutner/r-builder/master/pkg-build.sh
