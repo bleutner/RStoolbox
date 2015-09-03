@@ -4,8 +4,8 @@ sudo: required
 
 branches:
   except:
-   	 - example-data
-     - gh-pages
+    - example-data
+    - gh-pages
 
 before_install:
   - curl -OL https://raw.githubusercontent.com/bleutner/r-builder/master/pkg-build.sh
