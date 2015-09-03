@@ -16,7 +16,7 @@
 \arguments{
 \item{x}{\code{Raster*} object to convert into a dataframe.}
 
-\item{maxpixels}{maximal number of pixels to sample}
+\item{maxpixels}{Integer. Maximum number of pixels to sample}
 
 \item{...}{not used by this method}
 }

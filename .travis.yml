@@ -1,6 +1,16 @@
-language: R
+language: c
 sudo: required
 warnings_are_errors: true
+
+before_install:
+  - curl -OL https://raw.githubusercontent.com/metacran/r-builder/master/pkg-build.sh
+  - chmod 755 pkg-build.sh
+  - cp pkg-build.sh rbuildertest
+  - cd rbuildertest
+  - ./pkg-build.sh bootstrap
+
+install:
+  - ./pkg-build.sh install_deps
 
 before_script:
   - sudo apt-get install aptitude -y
@@ -11,5 +21,22 @@ before_script:
   - sudo aptitude install -y libproj-dev
   - Rscript -e "install.packages('devtools', repos = 'http://cran.r-project.org/')"
   - Rscript -e "install.packages('rgdal', repos = 'http://cran.r-project.org/')"
+ 
+script:
+  - ./pkg-build.sh run_build
+  - ./pkg-build.sh run_check
 
-   
+after_failure:
+  - ./pkg-build.sh dump_logs
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
+
+env:
+  matrix:
+    - RVERSION=oldrel
+    - RVERSION=release
+    - RVERSION=devel
+

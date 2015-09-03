@@ -1,4 +1,4 @@
-#' Estimate fractional cover using image regression
+#' Fractional Cover Analysis
 #' 
 #' fCover takes a classified high resolution image, e.g. vegetation and non-vegetation based on Landsat and calculates cover fractions for
 #' pixels of a coarser resolution, e.g. MODIS.
@@ -48,7 +48,7 @@
 #' @export 
 #' @seealso \link{superClass}
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(raster)
 #' library(caret)
 #' ## Create fake input images

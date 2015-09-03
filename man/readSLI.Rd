@@ -7,7 +7,7 @@
 readSLI(path)
 }
 \arguments{
-\item{path}{path to spectral library file with ending .sli.}
+\item{path}{Path to spectral library file with ending .sli.}
 }
 \value{
 The spectral libraries are read into a data.frame. The first column contains the wavelengths and the remaining columns contain the spectra.

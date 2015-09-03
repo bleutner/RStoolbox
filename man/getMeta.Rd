@@ -19,7 +19,7 @@ Otherwise a named numeric vector with the corresponding parameter is returned (l
 }
 \description{
 This is an accessor function to quickly access information stored in ImageMetaData, e.g. scale factor per band.
-Intended for use with imagery which was imported using stackMeta. Will return parameters according to the actual band order in img.
+Intended for use with imagery which was imported using stackMeta. Will return parameters using the actual band order in img.
 }
 \details{
 Possible metadata parameters (\code{what} argument):

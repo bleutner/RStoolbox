@@ -10,13 +10,13 @@ estimateHaze(x, hazeBands, darkProp = 0.02, plot = FALSE,
 \arguments{
 \item{x}{Raster* object or a previous result from \code{estimateHaze(x , returnTables = TRUE} from which to estimate haze}
 
-\item{hazeBands}{character. Band or bandname from which to estimate atmospheric haze (optional if x contains only one layer)}
+\item{hazeBands}{Integer or Character. Band number or bandname from which to estimate atmospheric haze (optional if x contains only one layer)}
 
-\item{darkProp}{proportion of pixels estimated to be dark}
+\item{darkProp}{Numeric. Proportion of pixels estimated to be dark}
 
-\item{plot}{display histograms and haze values}
+\item{plot}{Logical. Option to display histograms and haze values}
 
-\item{returnTables}{return the frequency table per layer. Only takes effect if x is a Raster* object. If x is a result of estimateHaze tables will always be returned.}
+\item{returnTables}{Logical. Option to return the frequency table per layer. Only takes effect if x is a Raster* object. If x is a result of estimateHaze tables will always be returned.}
 }
 \value{
 If returnTables is FALSE (default). Then a vector of length(hazeBands) containing the estimated haze DNs will be returned.

@@ -7,7 +7,7 @@
 panSharpen(img, pan, r, g, b, pc = 1, method = "brovey", norm = TRUE)
 }
 \arguments{
-\item{img}{Raster* object. Coarse resolution imagery}
+\item{img}{Raster* object. Coarse resolution multispectral image}
 
 \item{pan}{RasterLayer. High resolution image, typically panchromatic.}
 

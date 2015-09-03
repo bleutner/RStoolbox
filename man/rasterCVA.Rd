@@ -18,7 +18,7 @@ Returns a RasterBrick with two layers: change vector angle and change vector mag
 }
 \description{
 Calculateds angle and magnitude of change vectors.
-Dimensionality is limited to two bands.
+Dimensionality is limited to two bands per image.
 }
 \details{
 Change Vector Analysis (CVA) is used to identify spectral changes between two identical scenes which were acquired at different times.

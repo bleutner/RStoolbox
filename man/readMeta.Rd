@@ -2,20 +2,20 @@
 % Please edit documentation in R/readMeta.R
 \name{readMeta}
 \alias{readMeta}
-\title{Read landsat MTL metadata files}
+\title{Read Landsat MTL metadata files}
 \usage{
 readMeta(file, raw = FALSE)
 }
 \arguments{
 \item{file}{path to Landsat MTL file (...MTL.txt)}
 
-\item{raw}{Logical. If \code{TRUE} the full raw metadata will be returned as a list as.is. if \code{FALSE} (the default) all important metadata are homogenized into a standard format (ImageMetaData) and some information is added.}
+\item{raw}{Logical. If \code{TRUE} the full raw metadata will be returned as a list. if \code{FALSE} (the default) all important metadata are homogenized into a standard format (ImageMetaData) and some information is added.}
 }
 \value{
 Object of class ImageMetaData
 }
 \description{
-Besides reading metadata, readMeta deals with legacy versions of Landsat metadata files and where possible adds missing information (radiometric gain and offset, earth-sun distance).
+Reads metadata and deals with legacy versions of Landsat metadata files and where possible adds missing information (radiometric gain and offset, earth-sun distance).
 }
 \examples{
 ## Example metadata file (MTL)

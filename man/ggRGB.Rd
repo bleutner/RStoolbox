@@ -24,17 +24,17 @@ ggRGB(img, r = 3, g = 2, b = 1, scale, maxpixels = 5e+05,
 
 \item{stretch}{Character. Either 'none', 'lin', 'hist', 'sqrt' or 'log' for no stretch, linear, histogram, square-root or logarithmic stretch.}
 
-\item{ext}{extent object to crop the image}
+\item{ext}{Extent object to crop the image}
 
 \item{limits}{Vector or matrix. Can be used to reduce the range of values. Either a vector of two values for all bands (c(min, max))
-or a 3x2 matrix with separate min and max values (columns) for each layer (rows).}
+or a 3x2 matrix with min and max values (columns) for each layer (rows).}
 
 \item{clipValues}{Matrix, numeric vector, string or NA. Values to reset out of range (out of \code{limits}) values to.
 By default ('limits') values are reset to \code{limits}. A single value (e.g. NA) will be recycled to all lower/higher clippings,
 A vector of length two (c(min,max)) can be used to specify lower and higher replace values, applied to all bands.
 A two column matrix (typically with three rows) can be used to fully control lower and upper clipping values differently for each band.}
 
-\item{quantiles}{Numeric vector with two elements. Min and max quantiles to stretch to. Defaults to 2\% stretch, i.e. c(0.02,0.98).}
+\item{quantiles}{Numeric vector with two elements. Min and max quantiles to stretch. Defaults to 2\% stretch, i.e. c(0.02,0.98).}
 
 \item{ggObj}{Logical. If \code{TRUE} a ggplot2 object is returned. If \code{FALSE} a data.frame with coordinates and color will be returned.}
 
@@ -59,7 +59,7 @@ Note that you can't use scale_fill* in addition to the latter, because it alread
 }
 }
 \description{
-Calculates RGB color composite raster for plotting with ggplot2. Optional value clipping and and stretching can be used to enhance the imagery.
+Calculates RGB color composite raster for plotting with ggplot2. Optional values for clipping and and stretching can be used to enhance the imagery.
 }
 \details{
 Functionality is based on \code{\link[raster]{plotRGB}} from the raster package.

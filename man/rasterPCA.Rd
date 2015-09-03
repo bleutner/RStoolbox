@@ -31,7 +31,7 @@ Calculates R-mode PCA for RasterBricks or RasterStacks and returns a RasterBrick
 }
 \details{
 Internally rasterPCA relies on the use of \link[stats]{princomp} (R-mode PCA). If nSamples is given the PCA will be calculated
-based on a random sample of pixels and the predicted for the full raster. If nSamples is NULL then the covariance matrix will be calculated
+based on a random sample of pixels and then predicted for the full raster. If nSamples is NULL then the covariance matrix will be calculated
 first and will then be used to calculate princomp and predict the full raster. The latter is more precise, since it considers all pixels,
 however, it may be slower than calculating the PCA only on a subset of pixels.
 

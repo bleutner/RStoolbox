@@ -11,19 +11,19 @@ unsuperClass(img, nSamples = 10000, nClasses = 5, nStarts = 25,
 \arguments{
 \item{img}{Raster* object.}
 
-\item{nSamples}{integer. Number of random samples to draw to fit cluster map. Only relevant if clusterMap = FALSE.}
+\item{nSamples}{Integer. Number of random samples to draw to fit cluster map. Only relevant if clusterMap = FALSE.}
 
-\item{nClasses}{integer. Number of classes.}
+\item{nClasses}{Integer. Number of classes.}
 
-\item{nStarts}{integer. Number of random starts for kmeans algorithm.}
+\item{nStarts}{Integer. Number of random starts for kmeans algorithm.}
 
-\item{nIter}{integer. Maximal number of iterations allowed.}
+\item{nIter}{Integer. Maximal number of iterations allowed.}
 
 \item{norm}{Logical. If \code{TRUE} will normalize img first using \link{normImage}. Normalizing is beneficial if your predictors have different scales.}
 
-\item{clusterMap}{logical. Fit kmeans model to a random subset of the img (see Details).}
+\item{clusterMap}{Logical. Fit kmeans model to a random subset of the img (see Details).}
 
-\item{algorithm}{character. \link[stats]{kmeans} algorithm. One of c("Hartigan-Wong", "Lloyd", "MacQueen")}
+\item{algorithm}{Character. \link[stats]{kmeans} algorithm. One of c("Hartigan-Wong", "Lloyd", "MacQueen")}
 
 \item{...}{further arguments to be passed to \link[raster]{writeRaster}, e.g. filename}
 }
@@ -32,11 +32,11 @@ Unsupervised clustering of Raster* data using kmeans clustering
 }
 \details{
 Clustering is done using \code{\link[stats]{kmeans}}. This can be done for all pixels of the image (\code{clusterMap=FALSE}), however this can be slow and is
-not memory safe. Therefore if you have large raster data (> memory), as is typically the case with remote sensing imagery it is adviseable to choose clusterMap=TRUE (the default).
+not memory safe. Therefore if you have large raster data (> memory), as is typically the case with remote sensing imagery it is advisable to choose clusterMap=TRUE (the default).
 This means that a kmeans cluster map is calculated based on a random subset of pixels (nSamples). Then the distance of *all* pixels to the cluster centers
 is calculated in a stepwise fashion using \code{\link[raster]{predict}}. Class assignment is based on minimum euclidean distance to the cluster centers.
 
-The solutions of the kmeans algorithm often depend on the initial configuration of class centers which is chosen randomly.
+The solution of the kmeans algorithm often depend on the initial configuration of class centers which is chosen randomly.
 Therefore, kmeans is usually run with multiple random starting configurations in order to find a convergent solution from different starting configurations.
 The \code{nStarts} argument allows to specify how many random starts are conducted.
 }

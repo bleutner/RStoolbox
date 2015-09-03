@@ -22,8 +22,11 @@ encodeQA(fill = "no", droppedFrame = "no", terrainOcclusion = "no",
 
 \item{cloud}{Cloud confidence. Options: \code{c("na", "low", "med", "high", "all")}.}
 }
+\value{
+Returns the Integer value for the QA values
+}
 \description{
-Intended for use with the Landsat 8 OLI QA band. Converts pixel quality flags from human to integer, which can then be used to
+Intended for use with the Landsat 8 OLI QA band. Converts pixel quality flags from human readable to integer, which can then be used to
 subset the QA image. Please be aware of the default settings which differ for different parameters.
 }
 \note{

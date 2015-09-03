@@ -44,22 +44,21 @@ Note however, that this does not apply if (\code{ggLayer=FALSE}).}
 }
 }
 \description{
-aimed towards plotting single layer imagery in grey-scale (remote sensing data) but can be
-used with any Raster* object.
+Plot single layer imagery in grey-scale. Can be used with any Raster* object.
 }
 \details{
 When \code{img} contains factor values and \code{annotation=TRUE}, the raster values will automatically be converted
 to numeric in order to proceed with the brightness calculation.
 
-The raster package provides a class lookup-table for categorical rasters (e.g. what you get if you run superClass in classification mode). If your raster has one ggR will automatically treat it as categorical (see \link[raster]{factor}).
+The raster package provides a class lookup-table for categorical rasters (e.g. what you get if you run superClass in classification mode). If your raster has a lookup-table ggR will automatically treat it as categorical (see \link[raster]{factor}).
 However, the factor status of Raster objects is easily lost and the values are interpreted as numeric. In such cases you should make use of the \code{forceCat = TRUE} argument, which makes sure
 that ggplot2 uses a discrete scale, not a continuous one.
 
-The geom_raster argument switches from the default use of annotation_raster to using geom_raster. The difference between the two is that geom_raster performs
+The geom_raster argument switches from the default use of annotation_raster to geom_raster. The difference between the two is that geom_raster performs
 a meaningful mapping from pixel values to fill colour, while annotation_raster is simply adding a picture to your plot. In practice this means that whenever you
 need a legend for your raster you should use \code{geom_raster = TRUE}. This also allows you to specify and modify the fill scale manually.
 The advantage of using annotation_raster (\code{geom_raster = TRUE}) is that you can still use the scale_fill* for another variable. For example you could add polygons and
-map a value to their fill colour. For more details on the theory behind aestetic mapping have a look at the ggplot2 manuals.
+map a value to their fill colour. For more details on the theory behind aestetic mapping have a look at the \href{https://cran.r-project.org/web/packages/ggplot2/ggplot2.pdf}{ggplot2} manuals.
 }
 \examples{
 library(ggplot2)

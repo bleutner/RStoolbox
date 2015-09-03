@@ -19,13 +19,13 @@ histMatch(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e+05,
 
 \item{nSamples}{Integer. Number of random samples from each image to build the histograms.}
 
-\item{intersectOnly}{logical. If \code{TRUE} sampling will only take place in the overlap extent of the two rasters. Otherwise the full rasters will be used for sampling.}
+\item{intersectOnly}{Logical. If \code{TRUE} sampling will only take place in the overlap extent of the two rasters. Otherwise the full rasters will be used for sampling.}
 
 \item{paired}{Logical. If \code{TRUE} the corresponding pixels will be used in the overlap.}
 
-\item{forceInteger}{logical. Force integer output.}
+\item{forceInteger}{Logical. Force integer output.}
 
-\item{returnFunctions}{Logical. If \code{TRUE} the matching functions themselves will be returned instead of applying them to \code{x}.}
+\item{returnFunctions}{Logical. If \code{TRUE} the matching functions will be returned instead of applying them to \code{x}.}
 
 \item{...}{Further arguments to be passed to \link[raster]{writeRaster}.}
 }

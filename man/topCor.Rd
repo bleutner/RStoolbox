@@ -19,11 +19,11 @@ Must have the same dimensions as \code{img}.}
 
 \item{method}{Character. One of c("cos", "avgcos", "minnaert", "C", "stat", "illu"). Choosing 'illu' will return only the local illumination map.}
 
-\item{stratImg}{RasterLayer by which to stratify by, e.g. NDVI. Or the string 'slope' in which case stratification will be on \code{nStrat} slope classes. Only relevant if \code{method = 'minnaert'}.}
+\item{stratImg}{RasterLayer to define strata, e.g. NDVI. Or the string 'slope' in which case stratification will be on \code{nStrat} slope classes. Only relevant if \code{method = 'minnaert'}.}
 
 \item{nStrat}{Integer. Number of bins or quantiles to stratify by. If a bin has less than 50 samples it will be merged with the next bin. Only relevant if \code{method = 'minnaert'}.}
 
-\item{illu}{Raster*. Optional pre-calculated ilumination map. Run topCor with method="illu" to calculate one.}
+\item{illu}{Raster*. Optional pre-calculated ilumination map. Run topCor with method="illu" to calculate an ilumination map}
 }
 \description{
 account and correct for changes in illumination due to terrain elevation.

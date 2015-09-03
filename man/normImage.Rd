@@ -17,7 +17,7 @@ normImage(img, norm = TRUE, ...)
 Returns a Raster* with the same number layers as input layers with each layer being centered and optionally normalized.
 }
 \description{
-subtracts the mean of a raster layer and divides by its standard deviation.
+For each pixel subtracts the mean of the raster layer and optionally divide by its standard deviation.
 }
 \examples{
 library(raster)

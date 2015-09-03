@@ -13,8 +13,6 @@ rsOpts(verbose)
 shortcut to options(RStoolbox.*)
 }
 \examples{
-\dontrun{
-rsOpts(verbose=TRUE)
-}
+# rsOpts(verbose=TRUE)
 }
 

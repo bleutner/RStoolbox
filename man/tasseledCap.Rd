@@ -17,7 +17,7 @@ tasseledCap(img, sat, ...)
 Returns a RasterBrick with the thee bands: brigthness, greenness, and (soil) wetness.
 }
 \description{
-calculates brightness, greenness and wetness from multispectral imagery.
+Calculates brightness, greenness and wetness from multispectral imagery.
 Currently implemented Landsat 4 TM, Landsat 5 TM, Landsat 7ETM+, Landsat 8 OLI and MODIS.
 }
 \details{

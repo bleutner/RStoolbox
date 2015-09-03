@@ -21,11 +21,11 @@ superClass(img, trainData, valData = NULL, responseCol = NULL,
 
 \item{nSamples}{Integer. Number of samples per land cover class.}
 
-\item{areaWeightedSampling}{logical. If \code{TRUE} scales sample size per polygon area. The bigger the polygon the more samples are taken.}
+\item{areaWeightedSampling}{Logical. If \code{TRUE} scales sample size per polygon area. The bigger the polygon the more samples are taken.}
 
 \item{polygonBasedCV}{Logical. If \code{TRUE} model tuning during cross-validation is conducted on a per-polygon basis. Use this to deal with overfitting.}
 
-\item{trainPartition}{numeric. Partition (polygon based) of \code{trainData} that goes into the training data set between zero and one. Ignored if \code{valData} is provided.}
+\item{trainPartition}{Numeric. Partition (polygon based) of \code{trainData} that goes into the training data set between zero and one. Ignored if \code{valData} is provided.}
 
 \item{model}{Character. Which model to use. See \link[caret]{train} for options. Defaults to randomForest ('rf')}
 
@@ -37,9 +37,9 @@ superClass(img, trainData, valData = NULL, responseCol = NULL,
 
 \item{mode}{Character. Model type: 'regression' or 'classification'.}
 
-\item{filename}{path to output file (optional). If \code{NULL}, standard raster handling will apply, i.e. storage either in memory or in the raster temp directory.}
+\item{filename}{Path to output file (optional). If \code{NULL}, standard raster handling will apply, i.e. storage either in memory or in the raster temp directory.}
 
-\item{verbose}{logical. prints progress and statistics during execution}
+\item{verbose}{Logical. prints progress and statistics during execution}
 
 \item{overwrite}{logical. Overwrite spatial prediction raster if it already exists.}
 
@@ -64,7 +64,7 @@ Setting \code{areaWeightedSampling = FALSE} will sample each polygon equally ind
 
 \item Split training/validation
 If \code{valData} was provided (reccomended) the samples from these polygons will be held-out and not used for model fitting but only for validation.
-If \code{trainPartition} is provided the trainingPolygons will be divied ab into training polygons and validation polygons.
+If \code{trainPartition} is provided the trainingPolygons will be divided into training polygons and validation polygons.
 
 \item Extract raster data
 The predictor values on the sample pixels are extracted from \code{img}

@@ -13,7 +13,7 @@ coregisterImages(slave, master, shift = 3, shiftInc = 1, nSamples = 1e+05,
 \item{master}{Raster* object. Reference image. Slave and master must have equal numbers of bands.}
 
 \item{shift}{Numeric or matrix. If numeric, then shift is the maximal absolute radius (in pixels of \code{slave} resolution) which \code{slave} is shifted (\code{seq(-shift, shift, by=shiftInc)}).
-If shift is a matrix it must have two columns (x shift an y shift), then only these shift values will be tested.}
+If shift is a matrix it must have two columns (x shift and y shift), then only these shift values will be tested.}
 
 \item{shiftInc}{Numeric. Shift increment (in pixels, but not restricted to integer). Ignored if \code{shift} is a matrix.}
 

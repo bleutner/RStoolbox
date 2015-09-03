@@ -15,15 +15,15 @@ radCor(img, metaData, method = "apref", bandSet = "full", hazeValues,
 \item{method}{Radiometric conversion/correction method to be used. There are currently four methods available (see Details):
 "rad", "apref", "sdos", "dos", "costz".}
 
-\item{bandSet}{numeric or character. original Landsat band numbers or names in the form of ("B1", "B2" etc). If set to 'full' all bands in the solar (optical) region will be processed.}
+\item{bandSet}{Numeric or character. original Landsat band numbers or names in the form of ("B1", "B2" etc). If set to 'full' all bands in the solar (optical) region will be processed.}
 
-\item{hazeValues}{starting haze value, can be estimated using link{estimateHaze}. if not provided and method is "dos" or "costz" hazeValues will be estimated in an automated fashion. Not needed for apparent reflectance.}
+\item{hazeValues}{Starting haze value, can be estimated using \link{estimateHaze}. if not provided and method is "dos" or "costz" hazeValues will be estimated in an automated fashion. Not needed for apparent reflectance.}
 
 \item{hazeBands}{Bands corresponding to hazeValues.}
 
 \item{atmosphere}{Character. Atmospheric characteristics. Will be estimated if not expicilty provided. Must be one of \code{"veryClear", "clear", "moderate", "hazy"} or \code{"veryHazy"}.}
 
-\item{darkProp}{numeric. Estimated proportion of dark pixels in the scene. Used only for automatic guessing of hazeValues (typically one would choose 1 or 2\%).}
+\item{darkProp}{Numeric. Estimated proportion of dark pixels in the scene. Used only for automatic guessing of hazeValues (typically one would choose 1 or 2\%).}
 
 \item{verbose}{Logical. Print status information.}
 }
@@ -65,7 +65,7 @@ veryHazy  \tab \eqn{\lambda^{-0.5}}
 The implemented sun-earth distances neglect the earth's eccentricity. Instead we use a 100 year daily average (1979-2070).
 }
 \note{
-This was originally a fork of randcorr in the landsat package. However it works on Raster* objects and hence is suitable for large rasters.
+This was originally a fork of randcorr() function in the landsat package. This version works on Raster* objects and hence is suitable for large rasters.
 }
 \examples{
 library(rgdal)

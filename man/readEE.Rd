@@ -13,10 +13,10 @@ readEE(x)
 data.frame
 }
 \description{
-imports csv files exported from EarthExplorer into data.frames and annotates missing fields
+Imports CSV files exported from EarthExplorer into data.frames and annotates missing fields
 }
 \details{
-The \href{http://earthexplorer.usgs.gov/}{EarthExplorer} csv file can be produced from the search results page. Above the results click on 'export results' and select 'comma (,) delimited'.
+The \href{http://earthexplorer.usgs.gov/}{EarthExplorer} CSV file can be produced from the search results page. Above the results click on 'export results' and select 'comma (,) delimited'.
 }
 \examples{
 library(ggplot2)
