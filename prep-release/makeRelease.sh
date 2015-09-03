@@ -42,7 +42,6 @@ echo "R CMD check **********************************************"
 echo "**********************************************************"
 Rscript -e "library(devtools); library(methods); build_win(); check()"
 
-
 ## Website
 echo "\n**********************************************************"
 echo "Build website documentation ******************************"
