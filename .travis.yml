@@ -19,11 +19,11 @@ before_script:
   - sudo aptitude install -y libproj-dev
  # - Rscript -e "install.packages('devtools', repos = 'http://cran.r-project.org/')"
  # - Rscript -e "install.packages('rgdal', repos = 'http://cran.r-project.org/')"
-	- ./pkg-build.sh install_devtools
-	- ./pkg-build.sh install_r_old car 2.0-25
-	- ./pkg-build.sh install_deps
 	
-script: 
+script:
+ - ./pkg-build.sh install_devtools
+ - ./pkg-build.sh install_r_old car 2.0-25
+ - ./pkg-build.sh install_deps 
   - ./pkg-build.sh run_build
   - ./pkg-build.sh run_check
 
