@@ -17,18 +17,18 @@ echo "**********************************************************"
 Rscript -e "library(devtools);library(methods); document(); install()"
 
 echo "\n**********************************************************"
-echo "Generate example data ************************************"
+echo "Generate sysdata *****************************************"
 echo "**********************************************************"
-Rscript data-raw/generate_data.R
+Rscript data-raw/generate_sysdata.R
 git commit -a -m "Automatic commit: Document & Update sysdata"
 
 
 ## Re-build example data
 git checkout example-data
 echo "\n**********************************************************"
-echo "Generate sysdata *****************************************"
+echo "Generate example data ************************************"
 echo "**********************************************************"
-Rscript data-raw/generate_sysdata.R
+Rscript data-raw/generate_data.R
 git commit -a -m "Automatic commit: Update example data (landsat, rlogo, srtm)"
 
 git checkout master
