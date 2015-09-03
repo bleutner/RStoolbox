@@ -1,10 +1,11 @@
 language: c
 sudo: required
-warnings_are_errors: true
+#warnings_are_errors: true
 
 before_install:
   - curl -OL https://raw.githubusercontent.com/metacran/r-builder/master/pkg-build.sh
   - chmod 755 pkg-build.sh
+  - mkdir rbuildertest
   - cp pkg-build.sh rbuildertest
   - cd rbuildertest
   - ./pkg-build.sh bootstrap
