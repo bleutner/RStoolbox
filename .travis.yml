@@ -5,9 +5,9 @@ sudo: required
 before_install:
   - curl -OL https://raw.githubusercontent.com/metacran/r-builder/master/pkg-build.sh
   - chmod 755 pkg-build.sh
-  - mkdir rbuildertest
-  - cp pkg-build.sh rbuildertest
-  - cd rbuildertest
+#  - mkdir rbuildertest
+#  - cp pkg-build.sh rbuildertest
+#  - cd rbuildertest
   - ./pkg-build.sh bootstrap
 
 install:
