@@ -29,11 +29,10 @@ file.copy(mtl, paste0("inst/external/landsat/", basename(mtl)), overwrite = TRUE
 files <- list.files("inst/external/landsat/", "tif", full = TRUE)
 file.rename(files, gsub("tif", "TIF", files))
 
-#lsatf <- writeRaster(lsat, "/tmp/test.grd", datatype = "INT1U", overwrite = TRUE)
-#lsato <- readAll(lsatf)
-#size(lsato)
-#save(lsato, file = "test.rda", compress = "bzip2")  #257Kb
-
+lsat  <- stackMeta(list.files("inst/external/landsat", "MTL", full = TRUE))
+lsatf <- writeRaster(lsat, "/tmp/test.grd", datatype = "INT1U", overwrite = TRUE)
+lsat  <- readAll(lsatf)
+save(lsat, file = "data/lsat.rda", compress = "bzip2")  #257Kb
 
 ## SRTM Example Data #######################################################################
 dem   <- raster("data-raw/LandsatExample/s04_w050_1arc_v3.tif")
