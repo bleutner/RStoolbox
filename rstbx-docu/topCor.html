@@ -57,7 +57,7 @@ Must have the same dimensions as <code>img</code>.</p>
 </td></tr>
 <tr valign="top"><td><code>stratImg</code></td>
 <td>
-<p>RasterLayer by which to stratify by, e.g. NDVI. Or the string 'slope' in which case stratification will be on <code>nStrat</code> slope classes. Only relevant if <code>method = 'minnaert'</code>.</p>
+<p>RasterLayer to define strata, e.g. NDVI. Or the string 'slope' in which case stratification will be on <code>nStrat</code> slope classes. Only relevant if <code>method = 'minnaert'</code>.</p>
 </td></tr>
 <tr valign="top"><td><code>nStrat</code></td>
 <td>
@@ -65,7 +65,7 @@ Must have the same dimensions as <code>img</code>.</p>
 </td></tr>
 <tr valign="top"><td><code>illu</code></td>
 <td>
-<p>Raster*. Optional pre-calculated ilumination map. Run topCor with method=&quot;illu&quot; to calculate one.</p>
+<p>Raster*. Optional pre-calculated ilumination map. Run topCor with method=&quot;illu&quot; to calculate an ilumination map</p>
 </td></tr>
 </table>
 
@@ -93,27 +93,17 @@ metaData &lt;- system.file(&quot;external/landsat/LT52240631988227CUB02_MTL.txt&
 metaData &lt;- readMeta(metaData)
 lsat     &lt;- stackMeta(metaData)
 data(srtm)
+## Don&#39;t show: 
+data(lsat)
+## End(Don&#39;t show)
 
 ## Minnaert correction, solar angles from metaData
 lsat_minnaert &lt;- topCor(lsat, dem = srtm, metaData = metaData, method = &quot;minnaert&quot;)
-</code></pre>
 
-<pre><code>#&gt; Calculate slope and aspect
-#&gt; Calculate illumination map
-#&gt; Correct imagery
-#&gt; Estimate coefficients
-</code></pre>
-
-<pre><code class="r">## C correction, solar angles provided manually
+## C correction, solar angles provided manually
 lsat_C &lt;- topCor(lsat, dem = srtm, solarAngles = c(1.081533, 0.7023922), method = &quot;C&quot;)
 </code></pre>
 
-<pre><code>#&gt; Calculate slope and aspect
-#&gt; Calculate illumination map
-#&gt; Correct imagery
-#&gt; Estimate coefficients
-</code></pre>
 
-
-<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="index.html">Index</a>]</div>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.1.0 <a href="index.html">Index</a>]</div>
 </body></html>

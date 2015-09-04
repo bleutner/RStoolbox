@@ -1,13 +1,13 @@
 ---
 layout: docu
-title: ' Read landsat MTL metadata files '
+title: ' Read Landsat MTL metadata files '
 fun:  readMeta 
 package:  RStoolbox 
 header: Pages
 group: navigation
 ---
 {% include JB/setup %}
- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Read landsat MTL metadata files</title>
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Read Landsat MTL metadata files</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="R.css" />
 
@@ -19,7 +19,7 @@ group: navigation
 
 <h3>Description</h3>
 
-<p>Besides reading metadata, readMeta deals with legacy versions of Landsat metadata files and where possible adds missing information (radiometric gain and offset, earth-sun distance).
+<p>Reads metadata and deals with legacy versions of Landsat metadata files and where possible adds missing information (radiometric gain and offset, earth-sun distance).
 </p>
 
 
@@ -39,7 +39,7 @@ readMeta(file, raw = FALSE)
 </td></tr>
 <tr valign="top"><td><code>raw</code></td>
 <td>
-<p>Logical. If <code>TRUE</code> the full raw metadata will be returned as a list as.is. if <code>FALSE</code> (the default) all important metadata are homogenized into a standard format (ImageMetaData) and some information is added.</p>
+<p>Logical. If <code>TRUE</code> the full raw metadata will be returned as a list. if <code>FALSE</code> (the default) all important metadata are homogenized into a standard format (ImageMetaData) and some information is added.</p>
 </td></tr>
 </table>
 
@@ -84,91 +84,6 @@ summary(metaData)
 #&gt;  dn -&gt; brightness temperature (toa)
 </code></pre>
 
-<pre><code class="r">## Full meta-data
-metaData
-</code></pre>
 
-<pre><code>#&gt; $METADATA_FILE
-#&gt; [1] &quot;/home/bel03nu/R/x86_64-pc-linux-gnu-library/3.2/RStoolbox/external/landsat/LT52240631988227CUB02_MTL.txt&quot;
-#&gt; 
-#&gt; $METADATA_FORMAT
-#&gt; [1] &quot;MTL&quot;
-#&gt; 
-#&gt; $SATELLITE
-#&gt; [1] &quot;LANDSAT5&quot;
-#&gt; 
-#&gt; $SENSOR
-#&gt; [1] &quot;TM&quot;
-#&gt; 
-#&gt; $SCENE_ID
-#&gt; [1] &quot;LT52240631988227CUB02&quot;
-#&gt; 
-#&gt; $ACQUISITION_DATE
-#&gt; [1] &quot;1988-08-14 13:00:47 CEST&quot;
-#&gt; 
-#&gt; $PROCESSING_DATE
-#&gt; [1] &quot;2014-04-19 CEST&quot;
-#&gt; 
-#&gt; $PATH_ROW
-#&gt; path  row 
-#&gt;  224   63 
-#&gt; 
-#&gt; $PROJECTION
-#&gt; CRS arguments:
-#&gt;  +proj=utm +zone=22 +units=m +datum=WGS84 +ellps=WGS84
-#&gt; +towgs84=0,0,0 
-#&gt; 
-#&gt; $SOLAR_PARAMETERS
-#&gt;   azimuth elevation  distance 
-#&gt; 61.967250 49.755889  1.012913 
-#&gt; 
-#&gt; $DATA
-#&gt;                              FILES BANDS QUANTITY CATEGORY NA_VALUE
-#&gt; B1_dn LT52240631988227CUB02_B1.TIF B1_dn       dn    image       NA
-#&gt; B2_dn LT52240631988227CUB02_B2.TIF B2_dn       dn    image       NA
-#&gt; B3_dn LT52240631988227CUB02_B3.TIF B3_dn       dn    image       NA
-#&gt; B4_dn LT52240631988227CUB02_B4.TIF B4_dn       dn    image       NA
-#&gt; B5_dn LT52240631988227CUB02_B5.TIF B5_dn       dn    image       NA
-#&gt; B6_dn LT52240631988227CUB02_B6.TIF B6_dn       dn    image       NA
-#&gt; B7_dn LT52240631988227CUB02_B7.TIF B7_dn       dn    image       NA
-#&gt;       SATURATE_VALUE SCALE_FACTOR DATA_TYPE SPATIAL_RESOLUTION
-#&gt; B1_dn             NA            1        NA                 30
-#&gt; B2_dn             NA            1        NA                 30
-#&gt; B3_dn             NA            1        NA                 30
-#&gt; B4_dn             NA            1        NA                 30
-#&gt; B5_dn             NA            1        NA                 30
-#&gt; B6_dn             NA            1        NA                 30
-#&gt; B7_dn             NA            1        NA                 30
-#&gt;       RADIOMETRIC_RESOLUTION
-#&gt; B1_dn                      8
-#&gt; B2_dn                      8
-#&gt; B3_dn                      8
-#&gt; B4_dn                      8
-#&gt; B5_dn                      8
-#&gt; B6_dn                      8
-#&gt; B7_dn                      8
-#&gt; 
-#&gt; $CALRAD
-#&gt;         offset  gain
-#&gt; B1_dn -2.19134 0.671
-#&gt; B2_dn -4.16220 1.322
-#&gt; B3_dn -2.21398 1.044
-#&gt; B4_dn -2.38602 0.876
-#&gt; B5_dn -0.49035 0.120
-#&gt; B6_dn  1.18243 0.055
-#&gt; B7_dn -0.21555 0.066
-#&gt; 
-#&gt; $CALREF
-#&gt; [1] NA
-#&gt; 
-#&gt; $CALBT
-#&gt;           K1      K2
-#&gt; B6_dn 607.76 1260.56
-#&gt; 
-#&gt; attr(,&quot;class&quot;)
-#&gt; [1] &quot;ImageMetaData&quot; &quot;RStoolbox&quot;
-</code></pre>
-
-
-<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="index.html">Index</a>]</div>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.1.0 <a href="index.html">Index</a>]</div>
 </body></html>

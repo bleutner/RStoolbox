@@ -136,7 +136,13 @@ high   </td><td style="text-align: right;"> 3L </td>
 <h3>Examples</h3>
 
 <pre><code class="r">library(raster)
-qa &lt;- raster(ncol = 100, nrow=100, val = sample(1:2^14,  10000))
+</code></pre>
+
+<pre><code>#&gt; Loading required package: methods
+#&gt; Loading required package: sp
+</code></pre>
+
+<pre><code class="r">qa &lt;- raster(ncol = 100, nrow=100, val = sample(1:2^14,  10000))
 
 ## QA classes
 qacs &lt;- classifyQA(img = qa)
@@ -145,5 +151,5 @@ qacs_conf &lt;- classifyQA(img = qa, confLayers = TRUE)
 </code></pre>
 
 
-<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="index.html">Index</a>]</div>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.1.0 <a href="index.html">Index</a>]</div>
 </body></html>

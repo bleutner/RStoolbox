@@ -51,11 +51,11 @@ radCor(img, metaData, method = "apref", bandSet = "full", hazeValues,
 </td></tr>
 <tr valign="top"><td><code>bandSet</code></td>
 <td>
-<p>numeric or character. original Landsat band numbers or names in the form of (&quot;B1&quot;, &quot;B2&quot; etc). If set to 'full' all bands in the solar (optical) region will be processed.</p>
+<p>Numeric or character. original Landsat band numbers or names in the form of (&quot;B1&quot;, &quot;B2&quot; etc). If set to 'full' all bands in the solar (optical) region will be processed.</p>
 </td></tr>
 <tr valign="top"><td><code>hazeValues</code></td>
 <td>
-<p>starting haze value, can be estimated using linkestimateHaze. if not provided and method is &quot;dos&quot; or &quot;costz&quot; hazeValues will be estimated in an automated fashion. Not needed for apparent reflectance.</p>
+<p>Starting haze value, can be estimated using <a href="estimateHaze.html">estimateHaze</a>. if not provided and method is &quot;dos&quot; or &quot;costz&quot; hazeValues will be estimated in an automated fashion. Not needed for apparent reflectance.</p>
 </td></tr>
 <tr valign="top"><td><code>hazeBands</code></td>
 <td>
@@ -67,7 +67,7 @@ radCor(img, metaData, method = "apref", bandSet = "full", hazeValues,
 </td></tr>
 <tr valign="top"><td><code>darkProp</code></td>
 <td>
-<p>numeric. Estimated proportion of dark pixels in the scene. Used only for automatic guessing of hazeValues (typically one would choose 1 or 2%).</p>
+<p>Numeric. Estimated proportion of dark pixels in the scene. Used only for automatic guessing of hazeValues (typically one would choose 1 or 2%).</p>
 </td></tr>
 <tr valign="top"><td><code>verbose</code></td>
 <td>
@@ -154,7 +154,7 @@ top-of-atmosphere reflectance (unitless) corrected for the sun angle or at-surfa
 
 <h3>Note</h3>
 
-<p>This was originally a fork of randcorr in the landsat package. However it works on Raster* objects and hence is suitable for large rasters.
+<p>This was originally a fork of randcorr() function in the landsat package. This version works on Raster* objects and hence is suitable for large rasters.
 </p>
 
 
@@ -166,36 +166,23 @@ top-of-atmosphere reflectance (unitless) corrected for the sun angle or at-surfa
 
 <h3>Examples</h3>
 
-<pre><code class="r">library(rgdal)
+<pre><code class="r">library(raster)
 ## Import meta-data and bands based on MTL file
 mtlFile  &lt;- system.file(&quot;external/landsat/LT52240631988227CUB02_MTL.txt&quot;, package=&quot;RStoolbox&quot;)
 metaData &lt;- readMeta(mtlFile)
 lsat     &lt;- stackMeta(mtlFile)
 
+## Don&#39;t show: 
+lsat &lt;- readAll(lsat)
+## End(Don&#39;t show)
+
 ## Convert DN to top of atmosphere reflectance and brightness temperature
 lsat_ref &lt;- radCor(lsat, metaData = metaData, method = &quot;apref&quot;)
-</code></pre>
 
-<pre><code>#&gt; Bands to convert to reflectance: B1_dn, B2_dn, B3_dn, B4_dn, B5_dn, B7_dn
-#&gt; Thermal bands to convert to brightness temperature: B6_dn
-#&gt; Processing thermal band(s)
-#&gt; Processing radiance / reflectance
-</code></pre>
-
-<pre><code class="r">## Correct DN to at-surface-reflecatance with DOS (Chavez decay model)
+## Correct DN to at-surface-reflecatance with DOS (Chavez decay model)
 lsat_sref &lt;- radCor(lsat, metaData = metaData, method = &quot;dos&quot;)
-</code></pre>
 
-<pre><code>#&gt; Bands to convert to reflectance: B1_dn, B2_dn, B3_dn, B4_dn, B5_dn, B7_dn
-#&gt; Thermal bands to convert to brightness temperature: B6_dn
-#&gt; Processing thermal band(s)
-#&gt; hazeValues was not provided -&gt; Estimating hazeValues automatically
-#&gt; hazeValues estimated as: 57
-#&gt; Selecting atmosphere: &#39;veryClear&#39;
-#&gt; Processing radiance / reflectance
-</code></pre>
-
-<pre><code class="r">## Correct DN to at-surface-reflecatance with simple DOS
+## Correct DN to at-surface-reflecatance with simple DOS
 ## Automatic haze estimation
 hazeDN    &lt;- estimateHaze(lsat, hazeBands = 1:4, darkProp = 0.01, plot = TRUE)
 </code></pre>
@@ -206,12 +193,6 @@ hazeDN    &lt;- estimateHaze(lsat, hazeBands = 1:4, darkProp = 0.01, plot = TRUE
                     hazeValues = hazeDN, hazeBands = 1:4)
 </code></pre>
 
-<pre><code>#&gt; Bands to convert to reflectance: B1_dn, B2_dn, B3_dn, B4_dn, B5_dn, B7_dn
-#&gt; Thermal bands to convert to brightness temperature: B6_dn
-#&gt; Processing thermal band(s)
-#&gt; Processing radiance / reflectance
-</code></pre>
 
-
-<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="index.html">Index</a>]</div>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.1.0 <a href="index.html">Index</a>]</div>
 </body></html>

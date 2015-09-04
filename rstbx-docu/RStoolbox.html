@@ -34,6 +34,9 @@ Most functions have built-in parallel support. All that is required is to run <c
 </li>
 <li> <p><code><a href="saveRSTBX.html">saveRSTBX</a> &amp; <a href="saveRSTBX.html">readRSTBX</a></code>: save and re-import RStoolbox classification objects (model and map)
 </p>
+</li>
+<li> <p><code><a href="readEE.html">readEE</a></code>: import and tidy EarthExplorer search results
+</p>
 </li></ul>
 
 
@@ -45,22 +48,25 @@ Most functions have built-in parallel support. All that is required is to run <c
 <li> <p><code><a href="radCor.html">radCor</a></code>: radiometric conversions and corrections. Primarily, yet not exclusively, intended for Landsat data processing. DN to radiance to reflectance conversion as well as DOS approaches
 </p>
 </li>
-<li> <p><code><a href="cloudMask.html">cloudMask</a></code>: mask clouds in Landsat or other imagery which comes with a thermal band
+<li> <p><code><a href="topCor.html">topCor</a></code>: topographic illumination correction
 </p>
 </li>
-<li> <p><code><a href="cloudShadowMask.html">cloudShadowMask</a></code>: mask cloud shadows from cloudMask
+<li> <p><code><a href="cloudMask.html">cloudMask</a> &amp; <a href="cloudShadowMask.html">cloudShadowMask</a></code>: mask clouds and cloud shadows in Landsat or other imagery which comes with a thermal band
 </p>
 </li>
-<li> <p><code><a href="rescaleImage.html">rescaleImage</a></code>: rescale image to match min/max from another image or a specified min/max range.
+<li> <p><code><a href="classifyQA.html">classifyQA</a></code>: extract layers from Landsat 8 QA bands, e.g. cloud confidence
 </p>
 </li>
-<li> <p><code><a href="normImage.html">normImage</a></code>: normalize imagery by centering and scaling.
+<li> <p><code><a href="rescaleImage.html">rescaleImage</a></code>: rescale image to match min/max from another image or a specified min/max range
 </p>
 </li>
-<li> <p><code><a href="histMatch.html">histMatch</a></code>: matches the histograms of two scenes.
+<li> <p><code><a href="normImage.html">normImage</a></code>: normalize imagery by centering and scaling
 </p>
 </li>
-<li> <p><code><a href="coregisterImages.html">coregisterImages</a></code>: co-register images based on mutual information.
+<li> <p><code><a href="histMatch.html">histMatch</a></code>: matches the histograms of two scenes
+</p>
+</li>
+<li> <p><code><a href="coregisterImages.html">coregisterImages</a></code>: co-register images based on mutual information
 </p>
 </li>
 <li> <p><code><a href="panSharpen.html">panSharpen</a></code>: sharpen a coarse resolution image with a high resolution image (typically panchromatic)
@@ -76,7 +82,10 @@ Most functions have built-in parallel support. All that is required is to run <c
 <li> <p><code><a href="spectralIndices.html">spectralIndices</a></code>: calculate a set of predefined multispectral indices like NDVI
 </p>
 </li>
-<li><p><code><a href="http://www.inside-r.org/packages/cran/magic/docs/sam">sam</a></code>: spectral angle mapper
+<li> <p><code><a href="tasseledCap.html">tasseledCap</a></code>: tasseled cap transformation
+</p>
+</li>
+<li> <p><code><a href="http://www.inside-r.org/packages/cran/magic/docs/sam">sam</a></code>: spectral angle mapper
 </p>
 </li>
 <li> <p><code><a href="rasterPCA.html">rasterPCA</a></code>: principal components transform for raster data
@@ -109,5 +118,5 @@ Most functions have built-in parallel support. All that is required is to run <c
 </li></ul>
 
 
-<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="index.html">Index</a>]</div>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.1.0 <a href="index.html">Index</a>]</div>
 </body></html>

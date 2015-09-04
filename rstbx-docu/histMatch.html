@@ -58,7 +58,7 @@ histMatch(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e+05,
 </td></tr>
 <tr valign="top"><td><code>intersectOnly</code></td>
 <td>
-<p>logical. If <code>TRUE</code> sampling will only take place in the overlap extent of the two rasters. Otherwise the full rasters will be used for sampling.</p>
+<p>Logical. If <code>TRUE</code> sampling will only take place in the overlap extent of the two rasters. Otherwise the full rasters will be used for sampling.</p>
 </td></tr>
 <tr valign="top"><td><code>paired</code></td>
 <td>
@@ -66,11 +66,11 @@ histMatch(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e+05,
 </td></tr>
 <tr valign="top"><td><code>forceInteger</code></td>
 <td>
-<p>logical. Force integer output.</p>
+<p>Logical. Force integer output.</p>
 </td></tr>
 <tr valign="top"><td><code>returnFunctions</code></td>
 <td>
-<p>Logical. If <code>TRUE</code> the matching functions themselves will be returned instead of applying them to <code>x</code>.</p>
+<p>Logical. If <code>TRUE</code> the matching functions will be returned instead of applying them to <code>x</code>.</p>
 </td></tr>
 <tr valign="top"><td><code>...</code></td>
 <td>
@@ -120,14 +120,8 @@ ggRGB(img_a,1,2,3)+
 
 <pre><code class="r">## Do histogram matching
 img_b_matched &lt;- histMatch(img_b, img_a)
-</code></pre>
 
-<pre><code>#&gt; Extract samples
-#&gt; Calculate empirical cumulative histograms
-#&gt; Apply histogram match functions
-</code></pre>
-
-<pre><code class="r">## Compare Images after histMatching
+## Compare Images after histMatching
 ggRGB(img_a, 1, 2, 3)+
         ggRGB(img_b_matched, 1, 2, 3, ggLayer = TRUE, stretch = &quot;lin&quot;, q = 0:1) +
         geom_vline(aes(xintercept = 50))+
@@ -152,5 +146,5 @@ par(opar)
 </code></pre>
 
 
-<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="index.html">Index</a>]</div>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.1.0 <a href="index.html">Index</a>]</div>
 </body></html>
