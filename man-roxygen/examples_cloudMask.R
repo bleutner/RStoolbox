@@ -30,7 +30,7 @@
 #' shadow <- cloudShadowMask(lsat, cldmsk_final, shiftEstimate = c(-16,-6))
 #'
 #' ## Plot
-#' csmask <- merge(cldmsk_final[[1]], shadow)
+#' csmask <- raster::merge(cldmsk_final[[1]], shadow)
 #' ggRGB(lsat, stretch = "lin") +
 #'         ggR(csmask, ggLayer = TRUE, forceCat = TRUE, geom_raster = TRUE) +
 #'         scale_fill_manual(values = c("blue", "yellow"), 
