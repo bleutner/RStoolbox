@@ -48,11 +48,15 @@
 #' @references S. Goslee (2011): Analyzing Remote Sensing Data in R: The landsat Package. Journal of Statistical Software 43(4).
 #' @export
 #' @examples 
-#' library(rgdal)
+#' library(raster)
 #' ## Import meta-data and bands based on MTL file
 #' mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
 #' metaData <- readMeta(mtlFile)
 #' lsat     <- stackMeta(mtlFile)
+#' 
+#' \dontshow{
+#' lsat <- readAll(lsat)
+#' }
 #' 
 #' ## Convert DN to top of atmosphere reflectance and brightness temperature
 #' lsat_ref <- radCor(lsat, metaData = metaData, method = "apref")

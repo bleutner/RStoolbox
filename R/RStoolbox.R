@@ -10,18 +10,20 @@
 #'  \item \code{\link{stackMeta}}: load Landsat bands based on metadata
 #'  \item \code{\link{readSLI} & \link{writeSLI}}: read and write ENVI spectral libraries
 #'  \item \code{\link{saveRSTBX} & \link{readRSTBX}}: save and re-import RStoolbox classification objects (model and map)
+#' \item \code{\link{readEE}}: import and tidy EarthExplorer search results
 #' }
 #' 
 #' @section Data Pre-Processing:
 #' 
 #' \itemize{
 #'  \item \code{\link{radCor}}: radiometric conversions and corrections. Primarily, yet not exclusively, intended for Landsat data processing. DN to radiance to reflectance conversion as well as DOS approaches
-#'  \item \code{\link{cloudMask}}: mask clouds in Landsat or other imagery which comes with a thermal band
-#' 	\item \code{\link{cloudShadowMask}}: mask cloud shadows from cloudMask
-#'  \item \code{\link{rescaleImage}}: rescale image to match min/max from another image or a specified min/max range.
-#' 	\item \code{\link{normImage}}: normalize imagery by centering and scaling.
-#'  \item \code{\link{histMatch}}: matches the histograms of two scenes.
-#'  \item \code{\link{coregisterImages}}: co-register images based on mutual information.
+#'  \item \code{\link{topCor}}: topographic illumination correction
+#'  \item \code{\link{cloudMask} & \link{cloudShadowMask}}: mask clouds and cloud shadows in Landsat or other imagery which comes with a thermal band
+#'  \item \code{\link{classifyQA}}: extract layers from Landsat 8 QA bands, e.g. cloud confidence
+#'  \item \code{\link{rescaleImage}}: rescale image to match min/max from another image or a specified min/max range
+#' 	\item \code{\link{normImage}}: normalize imagery by centering and scaling
+#'  \item \code{\link{histMatch}}: matches the histograms of two scenes
+#'  \item \code{\link{coregisterImages}}: co-register images based on mutual information
 #'  \item \code{\link{panSharpen}}: sharpen a coarse resolution image with a high resolution image (typically panchromatic)
 #' }
 #' 
@@ -29,7 +31,8 @@
 #' 
 #' \itemize{
 #' \item \code{\link{spectralIndices}}: calculate a set of predefined multispectral indices like NDVI
-#' \item{\code{\link{sam}}}: spectral angle mapper
+#' \item \code{\link{tasseledCap}}: tasseled cap transformation
+#' \item \code{\link{sam}}: spectral angle mapper
 #' \item \code{\link{rasterPCA}}: principal components transform for raster data
 #' \item \code{\link{rasterCVA}}: change vector analysis
 #' \item \code{\link{unsuperClass}}: unsupervised classification
@@ -71,6 +74,8 @@ NULL
 #' @docType data
 #' @keywords datasets
 #' @name rlogo
+#' @examples 
+#' ggRGB(rlogo,r = 1,g = 2,b = 3)
 NULL
 
 
@@ -82,15 +87,21 @@ NULL
 #' @docType data
 #' @keywords datasets
 #' @name srtm
+#' @examples 
+#' ggR(srtm)
 NULL
 
 
 #' Landsat 5TM Example Data
 #' 
 #' Subset of Landsat 5 TM Scene: LT52240631988227CUB02
+#' Contains all seven bands in DN format.
 #' 
 #' @usage data(lsat)
 #' @docType data
 #' @keywords datasets
 #' @name lsat
+#' @examples 
+#' data(lsat)
+#' ggRGB(lsat, stretch = "lin")
 NULL

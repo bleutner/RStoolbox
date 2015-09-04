@@ -15,8 +15,9 @@
 #' @examples 
 #' library(raster)
 #' library(ggplot2)
-#' mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
-#' lsat     <- stackMeta(mtlFile) 
+#' ## Load example data-set
+#' data(lsat) 
+#' 
 #' ## Sample endmember spectra 
 #' ## First location is water, second is open agricultural vegetation
 #' pts <- data.frame(x = c(624720, 627480), y = c(-414690, -411090))

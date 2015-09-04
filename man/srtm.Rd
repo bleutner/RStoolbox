@@ -10,5 +10,8 @@ data(srtm)
 \description{
 DEM for the Landsat example area taken from SRTM v3 tile: s04_w050_1arc_v3.tif
 }
+\examples{
+ggR(srtm)
+}
 \keyword{datasets}
 

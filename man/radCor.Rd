@@ -68,11 +68,15 @@ The implemented sun-earth distances neglect the earth's eccentricity. Instead we
 This was originally a fork of randcorr() function in the landsat package. This version works on Raster* objects and hence is suitable for large rasters.
 }
 \examples{
-library(rgdal)
+library(raster)
 ## Import meta-data and bands based on MTL file
 mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
 metaData <- readMeta(mtlFile)
 lsat     <- stackMeta(mtlFile)
+
+\dontshow{
+lsat <- readAll(lsat)
+}
 
 ## Convert DN to top of atmosphere reflectance and brightness temperature
 lsat_ref <- radCor(lsat, metaData = metaData, method = "apref")

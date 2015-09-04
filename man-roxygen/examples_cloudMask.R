@@ -2,14 +2,13 @@
 #' library(raster)
 #' library(ggplot2)
 #' ## Import Landsat example subset
-#' mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
-#' lsat     <- stackMeta(mtlFile)
+#' data(lsat)
 #' ## We have two tiny clouds in the east
 #' ggRGB(lsat, stretch = "lin")
 #' 
 #' ## Calculate cloud index
 #' cldmsk    <- cloudMask(lsat, blue = 1, tir = 6)
-#' plot(cldmsk)
+#' ggR(cldmsk, 2, geom_raster = TRUE)
 #' 
 #' ## Define threshold (re-use the previously calculated index)
 #' ## Everything above the threshold is masked

@@ -30,9 +30,8 @@ or to any other min and max value.
 }
 \examples{
 ## Create example data
-mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
-lsat <- stackMeta(mtlFile)
-lsat2 <- lsat -1000
+data(lsat)
+lsat2 <- lsat - 1000
 lsat2
 
 ## Rescale lsat2 to match original lsat value rang

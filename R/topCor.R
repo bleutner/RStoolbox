@@ -26,6 +26,9 @@
 #' metaData <- readMeta(metaData)
 #' lsat     <- stackMeta(metaData) 
 #' data(srtm)
+#' \dontshow{
+#' data(lsat)
+#' }
 #' 
 #' ## Minnaert correction, solar angles from metaData
 #' lsat_minnaert <- topCor(lsat, dem = srtm, metaData = metaData, method = "minnaert")

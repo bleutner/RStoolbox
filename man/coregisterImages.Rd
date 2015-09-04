@@ -65,12 +65,13 @@ coreg <- coregisterImages(missreg, master = reference, nSamples = 500, reportSta
 ggplot(coreg$MI) + geom_raster(aes(x,y,fill=mi))
 
 ## Plot joint histograms per shift (x/y shift in facet labels)
+\donttest{
 df <- melt(coreg$jointHist)
 df$L1 <- factor(df$L1, levels = names(coreg$jointHist))
 df[df$value == 0, "value"] <- NA ## don't display p = 0
 ggplot(df) + geom_raster(aes(x = Var2, y = Var1,fill=value)) + facet_wrap(~L1) +
        scale_fill_gradientn(name = "p", colours =  heat.colors(10), na.value = NA)
-
+}
 ## Compare correction
 p <- ggRGB(reference, NULL, NULL, 3)
 p

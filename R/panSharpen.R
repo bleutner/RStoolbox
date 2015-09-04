@@ -23,9 +23,8 @@
 #' library(raster)
 #' library(gridExtra)
 #' 
-#' ## Create fake example data
-#' mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
-#' lsat      <- stackMeta(mtlFile)
+#' ## Load example data
+#' data(lsat)
 #' ## Fake panchromatic image (30m resolution, wavelength: visible (integral from blue to red)
 #' pan       <- sum(lsat[[1:3]]) 
 #' ## Fake coarse resolution image (150m spatial resolution)

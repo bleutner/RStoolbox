@@ -9,6 +9,11 @@ data(lsat)
 }
 \description{
 Subset of Landsat 5 TM Scene: LT52240631988227CUB02
+Contains all seven bands in DN format.
+}
+\examples{
+data(lsat)
+ggRGB(lsat, stretch = "lin")
 }
 \keyword{datasets}
 
