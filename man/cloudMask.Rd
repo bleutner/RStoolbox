@@ -65,11 +65,12 @@ ggRGB(lsat, stretch = "lin") +
    scale_fill_manual(values = "red", na.value = NA)
 
 ## Estimate cloud shadow displacement
-#### Interactively (click on cloud pixels and the corresponding shadow pixels)
+## Interactively (click on cloud pixels and the corresponding shadow pixels)
 \dontrun{
 shadow <- cloudShadowMask(lsat, cldmsk_final, nc = 2)
 }
-#### Non-interactively. Pre-defined shadow displacement estimate (shiftEstimate)
+
+## Non-interactively. Pre-defined shadow displacement estimate (shiftEstimate)
 shadow <- cloudShadowMask(lsat, cldmsk_final, shiftEstimate = c(-16,-6))
 
 ## Plot
