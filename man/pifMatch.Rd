@@ -50,16 +50,16 @@ Model fitting is performed with simple linear models (\code{\link[stats]{lm}}); 
 \examples{
 library(gridExtra)
 ## Import Landsat example data
-mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
-lsat_a <- stackMeta(mtlFile)
+data(lsat)
+
 ## Create fake example data
 ## In practice this would be an image from another acquisition date
-lsat_b <- log(lsat_a)
+lsat_b <- log(lsat)
 ## Run pifMatch
-lsat_b_adjusted <- pifMatch(lsat_b, lsat_a)
+lsat_b_adjusted <- pifMatch(lsat_b, lsat)
 
 ## Run pifMatch and return similarity layer and pifMap
-lsat_b_adjusted <- pifMatch(lsat_b, lsat_a, returnPifMap = TRUE, returnSimMap = TRUE)
+lsat_b_adjusted <- pifMatch(lsat_b, lsat, returnPifMap = TRUE, returnSimMap = TRUE)
 grid.arrange(
 ggR(lsat_b_adjusted$simMap, geom_raster = TRUE) ,
 ggR(lsat_b_adjusted$pifMap),

@@ -63,9 +63,6 @@
 NULL
 
 
-
-
-
 #' Rlogo as RasterBrick
 #'
 #' Tiny example of raster data used to run examples. 
@@ -85,4 +82,15 @@ NULL
 #' @docType data
 #' @keywords datasets
 #' @name srtm
+NULL
+
+
+#' Landsat 5TM Example Data
+#' 
+#' Subset of Landsat 5 TM Scene: LT52240631988227CUB02
+#' 
+#' @usage data(lsat)
+#' @docType data
+#' @keywords datasets
+#' @name lsat
 NULL

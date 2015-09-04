@@ -29,11 +29,11 @@ echo "\n**********************************************************"
 echo "Generate example data ************************************"
 echo "**********************************************************"
 Rscript data-raw/generate_data.R
-git commit -a -m "Automatic commit: Update example data (landsat, rlogo, srtm)"
+git commit -a -m "Automatic commit: Update example data (landsat, rlogo, srtm, lsat)"
 
 ## Back to master
 git checkout master
-git checkout example-data data/rlogo.rda data/srtm.rda inst/external/landsat
+git checkout example-data data/rlogo.rda data/srtm.rda  data/lsat.rda inst/external/landsat
 Rscript -e "library(devtools); library(methods); document()"
 git commit -a -m "Automatic commit: Pull example data from branch example-data"
 
