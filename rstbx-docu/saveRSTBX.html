@@ -88,20 +88,20 @@ This is because x$map is a Raster* object and hence contains only a static link 
 <h3>Examples</h3>
 
 <pre><code class="r">## Not run: 
-##D input &lt;- brick(system.file(&quot;external/rlogo.grd&quot;, package=&quot;raster&quot;))
-##D ## Create filename
-##D file  &lt;- paste0(tempdir(), &quot;/test&quot;, runif(1))
-##D ## Run PCA
-##D rpc   &lt;- rasterPCA(input, filename = file, nSample = 100)
-##D ## Save object
-##D saveRSTBX(rpc, filename=file)
-##D ## Which files were written?
-##D list.files(tempdir(), pattern = basename(file))
-##D ## Re-read files
-##D re_rpc &lt;- readRSTBX(file)
-##D ## Compare
-##D all.equal(re_rpc, rpc)
-##D file.remove(file)
+## input &lt;- brick(system.file(&quot;external/rlogo.grd&quot;, package=&quot;raster&quot;))
+## ## Create filename
+## file  &lt;- paste0(tempdir(), &quot;/test&quot;, runif(1))
+## ## Run PCA
+## rpc   &lt;- rasterPCA(input, filename = file, nSample = 100)
+## ## Save object
+## saveRSTBX(rpc, filename=file)
+## ## Which files were written?
+## list.files(tempdir(), pattern = basename(file))
+## ## Re-read files
+## re_rpc &lt;- readRSTBX(file)
+## ## Compare
+## all.equal(re_rpc, rpc)
+## file.remove(file)
 ## End(Not run)
 </code></pre>
 

@@ -136,13 +136,7 @@ high   </td><td style="text-align: right;"> 3L </td>
 <h3>Examples</h3>
 
 <pre><code class="r">library(raster)
-</code></pre>
-
-<pre><code>#&gt; Loading required package: methods
-#&gt; Loading required package: sp
-</code></pre>
-
-<pre><code class="r">qa &lt;- raster(ncol = 100, nrow=100, val = sample(1:2^14,  10000))
+qa &lt;- raster(ncol = 100, nrow=100, val = sample(1:2^14,  10000))
 
 ## QA classes
 qacs &lt;- classifyQA(img = qa)

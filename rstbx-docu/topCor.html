@@ -88,14 +88,7 @@ An alternative could be to stratify by a vegetation index in which case an addit
 
 <h3>Examples</h3>
 
-<pre><code class="r">## Load example data
-metaData &lt;- system.file(&quot;external/landsat/LT52240631988227CUB02_MTL.txt&quot;, package=&quot;RStoolbox&quot;)
-metaData &lt;- readMeta(metaData)
-lsat     &lt;- stackMeta(metaData)
-data(srtm)
-## Don&#39;t show: 
-data(lsat)
-## End(Don&#39;t show)
+NA
 
 ## Minnaert correction, solar angles from metaData
 lsat_minnaert &lt;- topCor(lsat, dem = srtm, metaData = metaData, method = &quot;minnaert&quot;)
