@@ -16,8 +16,6 @@
 #' ## Summary
 #' summary(metaData)
 #' 
-#' ## Full meta-data
-#' metaData
 readMeta <- function(file, raw = FALSE){
     ## TODO: make modular for additional sensors
     if(!file.exists(file)) stop("Metadata file does not exist. Looking for: ", file, call. = FALSE)

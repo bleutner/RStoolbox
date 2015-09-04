@@ -26,8 +26,5 @@ metaData <- readMeta(mtlFile)
 
 ## Summary
 summary(metaData)
-
-## Full meta-data
-metaData
 }
 
