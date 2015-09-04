@@ -15,4 +15,3 @@ Apart from R itself, you'll also need to have r-base-dev (Linux) or Rtools (Wind
     library(devtools)
     install_github("bleutner/RStoolbox")
     
-    
