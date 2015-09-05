@@ -172,7 +172,7 @@
             paste(apply(x, 1, paste, collapse = " \\tab "), c(rep("\\cr", nrow(x)), "}")))
 }
 
-#' Convert character to numric band
+#' Convert character to numeric band
 #' @param raster Raster*
 #' @param ... Character or Numeric bands
 #' @keywords internal
