@@ -1,5 +1,5 @@
 ## Test environments
-* ubuntu 15.04 64bit, (R 3.2.2 and R-devel)
+* ubuntu 15.04 64bit, (R 3.2.2)
 * ubuntu 12.04 (on travis-ci), (oldrel, release, devel)
 * win-builder (release, devel)
 
