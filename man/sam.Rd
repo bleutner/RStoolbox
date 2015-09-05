@@ -44,7 +44,7 @@ plot(lsat_sam)
 ## Classify based on minimum angle
 lsat_sam <- sam(lsat, endmembers, angles = FALSE)
 
-ggR(lsat_sam, forceCat = TRUE, geom_raster=TRUE) +
-		scale_fill_manual(values = c("blue", "green"), labels = c("water", "vegetation"))
+\donttest{ggR(lsat_sam, forceCat = TRUE, geom_raster=TRUE) +
+		scale_fill_manual(values = c("blue", "green"), labels = c("water", "vegetation"))}
 }
 

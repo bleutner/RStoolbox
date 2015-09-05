@@ -31,8 +31,8 @@
 #' ## Classify based on minimum angle
 #' lsat_sam <- sam(lsat, endmembers, angles = FALSE)
 #' 
-#' ggR(lsat_sam, forceCat = TRUE, geom_raster=TRUE) + 
-#' 		scale_fill_manual(values = c("blue", "green"), labels = c("water", "vegetation"))
+#' \donttest{ggR(lsat_sam, forceCat = TRUE, geom_raster=TRUE) + 
+#' 		scale_fill_manual(values = c("blue", "green"), labels = c("water", "vegetation"))}
 sam <- function(x, em, angles = FALSE){
     
     if(ncol(em) != nlayers(x)) stop("The number of columns in em must match the number of bands in x.")

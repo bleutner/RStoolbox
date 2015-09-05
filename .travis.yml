@@ -22,6 +22,7 @@ before_script:
   - ./pkg-build.sh install_devtools 
   - ./pkg-build.sh install_r_old car 2.0-25
   - ./pkg-build.sh install_deps
+  - ./pkg-build.sh install_deps
 
 script: 
   - ./pkg-build.sh run_build

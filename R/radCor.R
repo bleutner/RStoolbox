@@ -52,17 +52,15 @@
 #' ## Import meta-data and bands based on MTL file
 #' mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
 #' metaData <- readMeta(mtlFile)
-#' lsat     <- stackMeta(mtlFile)
+#' \donttest{lsat     <- stackMeta(mtlFile)}
 #' 
-#' \dontshow{
-#' lsat <- readAll(lsat)
-#' }
+#' \dontshow{lsat <- readAll(lsat)}
 #' 
 #' ## Convert DN to top of atmosphere reflectance and brightness temperature
 #' lsat_ref <- radCor(lsat, metaData = metaData, method = "apref")
 #' 
 #' ## Correct DN to at-surface-reflecatance with DOS (Chavez decay model)
-#' lsat_sref <- radCor(lsat, metaData = metaData, method = "dos")
+#' \donttest{lsat_sref <- radCor(lsat, metaData = metaData, method = "dos")}
 #' 
 #' ## Correct DN to at-surface-reflecatance with simple DOS 
 #' ## Automatic haze estimation

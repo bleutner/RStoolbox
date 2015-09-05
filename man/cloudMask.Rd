@@ -69,7 +69,7 @@ cldmsk_final <- cloudMask(cldmsk, threshold = 0.1, buffer = 5)
 \dontrun{ shadow <- cloudShadowMask(lsat, cldmsk_final, nc = 2) }
 
 ## Non-interactively. Pre-defined shadow displacement estimate (shiftEstimate)
-shadow <- cloudShadowMask(lsat, cldmsk_final, shiftEstimate = c(-16,-6))
+\donttest{shadow <- cloudShadowMask(lsat, cldmsk_final, shiftEstimate = c(-16,-6))}
 
 ## Plot
 \donttest{csmask <- raster::merge(cldmsk_final[[1]], shadow)
