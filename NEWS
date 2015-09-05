@@ -1,12 +1,46 @@
-RStoolbox 0.0.0.9000
+RStoolbox 0.1.0
 =====================================
-* new function ggRGB as an raster::plotRGB equivalent for ggplot2
+Initial release to CRAN (2015-09-05) with the following functions: 
+ * classifyQA()
+ * cloudMask()
+ * cloudShadowMask()
+ * coregisterImages()
+ * decodeQA()
+ * encodeQA()
+ * estimateHaze()
+ * fortify.raster()
+ * fCover()
+ * getMeta()
+ * ggR()
+ * ggRGB()
+ * histMatch()
+ * ImageMetaData()
+ * normImage()
+ * panSharpen()
+ * pifMatch()
+ * radCor()
+ * rasterCVA()
+ * rasterEntropy()
+ * rasterPCA()
+ * readEE()
+ * readMeta()
+ * readRSTBX()
+ * readSLI()
+ * rescaleImage()
+ * rsOpts()
+ * sam()
+ * saveRSTBX()
+ * spectralIndices()
+ * stackMeta()
+ * superClass()
+ * tasseledCap()
+ * topCor()
+ * unsuperClass()
+ * writeSLI() 
+ 
+Included example data sets: 
+* data(srtm)
+* data(lsat)
+* data(rlogo)
 
-* new functions `readSLI` and `writeSLI` to read and write binary ENVI spectral libraries
 
-* new family of functions for Landsat processing: 
-	`readMeta()` reads Landsat Metadata from MTL files
-   	`stackLS()` loads all Landsat bands into a raster stack in one go based on MTL metadata
-   	`radCor()` performs radiometric calibration and correction for LS5 TM, LS7 TM and LS8 TM
-
-* new function `superClass()` for random forest based supervised classification 
