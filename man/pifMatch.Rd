@@ -60,9 +60,9 @@ lsat_b_adjusted <- pifMatch(lsat_b, lsat)
 
 ## Run pifMatch and return similarity layer and pifMap
 lsat_b_adjusted <- pifMatch(lsat_b, lsat, returnPifMap = TRUE, returnSimMap = TRUE)
-grid.arrange(
+\donttest{grid.arrange(
 ggR(lsat_b_adjusted$simMap, geom_raster = TRUE) ,
 ggR(lsat_b_adjusted$pifMap),
-ncol=2)
+ncol=2)}
 }
 
