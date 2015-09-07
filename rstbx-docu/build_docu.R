@@ -15,7 +15,7 @@ knit_rd2 <- function(pkg, path = ".", links =  tools::findHTMLlinks(pkg), frame 
     if(copycss) file.copy(system.file('misc', 'R.css', package = 'knitr'), './')
     pkgRdDB = getFromNamespace('fetchRdDB', 'tools')(file.path(find.package(pkg), 'help', pkg))
     
-#    mylinks <-  paste0( "/", ls("package:RStoolbox"), ".html")
+    mylinks <-  paste0( "/", ls("package:RStoolbox"), ".html")
 #    missed <- vapply(mylinks, function(x) any(grepl(x, links[grep("RStoolbox", links)])), logical(1))
 #    missvec <- paste0("../..",names(missed)[!missed])
 #    names(missvec) <- gsub("/|.html", "", names(missed)[!missed])
@@ -39,9 +39,10 @@ knit_rd2 <- function(pkg, path = ".", links =  tools::findHTMLlinks(pkg), frame 
         
         ## Fix issue where findHTMLlinks failed 
         for(i in extlinks){
-            for(myi in mylinks){
-                if(grepl(myi, txt[i])) {
-                    txt[i] <- (gsub("\\.\\./\\.\\./.*/sam\\.html", myi, txt[i])) 
+            for(myi in mylinks){                    
+                if(grepl(myi, txt[i])) {           
+                    lox <-  str_locate(txt[i],paste0("\\.\\./\\.\\..+?",myi))
+                    txt[i]   <- paste0(substr(txt[i], 1, lox[1]-1), substr(myi,2,nchar(myi)), substr(txt[i], lox[2]+1, nchar(txt[i])))
                     extlinks <- extlinks[extlinks!=i]
                 }
             }
