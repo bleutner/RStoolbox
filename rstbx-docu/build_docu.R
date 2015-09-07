@@ -118,7 +118,7 @@ knit_rd2 <- function(pkg, path = ".", links =  tools::findHTMLlinks(pkg), frame 
 #            txt[nosho] <- su
 #        }
         
-        
+        txt
         ## Concatenate lines
         txt <- paste("---\nlayout: docu\ntitle: '",title,"'\nfun: ", topici ,"\npackage: ", pkg,
                 "\nheader: Pages\ngroup: navigation\n---\n{% include JB/setup %}\n", paste0(txt, collapse ="\n"))
@@ -135,12 +135,12 @@ knit_rd2 <- function(pkg, path = ".", links =  tools::findHTMLlinks(pkg), frame 
     unlink('00Index.html')
     
     # fix external links in index
-    index <- gsub('../../../doc/html/', 'http://stat.ethz.ch/R-manual/R-devel/doc/html/', txt, fixed = TRUE)
+    # index <- gsub('../../../doc/html/', 'http://stat.ethz.ch/R-manual/R-devel/doc/html/', txt, fixed = TRUE)
     index <- txt
     ir <- grep("</head><body>|</div><h2>Documentation for package", index)
     index <- index[-((ir[1]+1):ir[2])]
-    
-    index <- index[-(grep("DESCRIPTION file</a>", index)+0:2)]
+    index <- index[-(grep("DESCRIPTION file</a>", index)+0:2)]      
+    index <- index[- grep("<h2>Help Pages</h2>", index)]                 
     
     index <- paste0("---\nlayout: page\ntitle: Package Documentation\nheader: Pages\ngroup: navigation\n---\n{% include JB/setup %}\n",
             paste(index, collapse="\n"))
