@@ -5,7 +5,7 @@ library(knitr)
 library(raster)
 library(RStoolbox)
 
-knit_rd2 <- function(pkg, path = ".", links =  tools::findHTMLlinks(), frame = FALSE, cdr = FALSE, copycss=FALSE) {
+knit_rd2 <- function(pkg, path = ".", links =  tools::findHTMLlinks(pkg), frame = FALSE, cdr = FALSE, copycss=FALSE) {
     opts_chunk$set(comment="#>")
     force(oldworki <- getwd())
     setwd(path) ; on.exit(setwd(oldworki))
@@ -15,14 +15,21 @@ knit_rd2 <- function(pkg, path = ".", links =  tools::findHTMLlinks(), frame = F
     if(copycss) file.copy(system.file('misc', 'R.css', package = 'knitr'), './')
     pkgRdDB = getFromNamespace('fetchRdDB', 'tools')(file.path(find.package(pkg), 'help', pkg))
     
-    force(links); topics = names(pkgRdDB)
+#    mylinks <-  paste0( "/", ls("package:RStoolbox"), ".html")
+#    missed <- vapply(mylinks, function(x) any(grepl(x, links[grep("RStoolbox", links)])), logical(1))
+#    missvec <- paste0("../..",names(missed)[!missed])
+#    names(missvec) <- gsub("/|.html", "", names(missed)[!missed])
+#    links <- c(missvec, links)    
+    force(links)
+    topics = names(pkgRdDB)
     for (topici in topics) { 
         message('** knitting documentation of ', topici)
         tools::Rd2HTML(pkgRdDB[[topici]], f <- tempfile(),
                 package = pkg, Links = links, no_links = is.null(links), stages = 'render')
-        txt = readLines(f, warn = FALSE)
+        txt      <- readLines(f, warn = FALSE)
         extlinks <- grep("^.*\\.\\./\\.\\./", txt)
         
+        ## Check for links to other packages
         included <- c("/base/", "/boot/", "/class/", "/cluster/", "/codetools/", 
                 "/compiler/", "/datasets/", "/foreign/", "/graphics/", "/grDevices/", 
                 "/grid/", "/KernSmooth/", "/lattice/", "/MASS/", "/Matrix/", 
@@ -30,14 +37,25 @@ knit_rd2 <- function(pkg, path = ".", links =  tools::findHTMLlinks(), frame = F
                 "/spatial/", "/splines/", "/stats/", "/stats4/", "/survival/", 
                 "/tcltk/", "/tools/", "/utils/")
         
+        ## Fix issue where findHTMLlinks failed 
+        for(i in extlinks){
+            for(myi in mylinks){
+                if(grepl(myi, txt[i])) {
+                    txt[i] <- (gsub("\\.\\./\\.\\./.*/sam\\.html", myi, txt[i])) 
+                    extlinks <- extlinks[extlinks!=i]
+                }
+            }
+        }
+        
+        ## Replace links to other packages with external link
         txt[extlinks] <- gsub(".html", "", gsub("/html/", "/docs/", gsub("../../", "http://www.inside-r.org/packages/cran/", txt[extlinks])))
-        extIntLinks <- sapply(included, function(x) any(grepl(x, txt[extlinks])))
+        extIntLinks   <- sapply(included, function(x) any(grepl(x, txt[extlinks])))
         ints <- included[extIntLinks]
         if(length(ints)) for(i in ints) {
                 txt[extlinks] <- gsub(paste0("/packages/cran", i, "docs/"), paste0("/r-doc/stats/"), txt[extlinks])
             }
         
-        
+        ## Run examples
         if (length(i <- grep('<h3>Examples</h3>', txt)) == 1L &&
                 length(grep('</pre>', txt[i:length(txt)]))) {
             i0 = grep('<pre>', txt); i0 = i0[i0 > i][1L] - 1L
@@ -48,7 +66,7 @@ knit_rd2 <- function(pkg, path = ".", links =  tools::findHTMLlinks(), frame = F
             ex = ex[-(1L:grep('### ** Examples', ex, fixed = TRUE))]
             ex = c('```{r}', ex, '```')
             
-           
+            
             noru <- grep("##D", ex)
             ex[noru] <- gsub("##D", "##", ex[noru])
             
@@ -82,7 +100,7 @@ knit_rd2 <- function(pkg, path = ".", links =  tools::findHTMLlinks(), frame = F
             fro <- str_locate( su, "\\n\\n## Don&#39;t show:")
             fre <- str_locate( su, "## End\\(Don&#39;t show\\)")
             for(i in 1:nrow(fre)){
-               su <- paste0(substr(su, 1, fro[i,1]-1), substr(su, fre[i,2]+1, nchar(su))) 
+                su <- paste0(substr(su, 1, fro[i,1]-1), substr(su, fre[i,2]+1, nchar(su))) 
             }
             txt[nosho] <- su
         }
@@ -99,7 +117,7 @@ knit_rd2 <- function(pkg, path = ".", links =  tools::findHTMLlinks(), frame = F
 #            txt[nosho] <- su
 #        }
         
-         
+        
         ## Concatenate lines
         txt <- paste("---\nlayout: docu\ntitle: '",title,"'\nfun: ", topici ,"\npackage: ", pkg,
                 "\nheader: Pages\ngroup: navigation\n---\n{% include JB/setup %}\n", paste0(txt, collapse ="\n"))
@@ -114,9 +132,10 @@ knit_rd2 <- function(pkg, path = ".", links =  tools::findHTMLlinks(), frame = F
             options = NULL, extensions = NULL, stylesheet = 'R.css')
     txt = readLines(file.path(find.package(pkg), 'html', '00Index.html'))
     unlink('00Index.html')
-    # fix image links
     
-    index <- gsub('../../../doc/html/', 'http://stat.ethz.ch/R-manual/R-devel/doc/html/',txt, fixed = TRUE)	
+    # fix external links in index
+    index <- gsub('../../../doc/html/', 'http://stat.ethz.ch/R-manual/R-devel/doc/html/', txt, fixed = TRUE)
+    index <- txt
     ir <- grep("</head><body>|</div><h2>Documentation for package", index)
     index <- index[-((ir[1]+1):ir[2])]
     

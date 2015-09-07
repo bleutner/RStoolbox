@@ -170,13 +170,17 @@ top-of-atmosphere reflectance (unitless) corrected for the sun angle or at-surfa
 ## Import meta-data and bands based on MTL file
 mtlFile  &lt;- system.file(&quot;external/landsat/LT52240631988227CUB02_MTL.txt&quot;, package=&quot;RStoolbox&quot;)
 metaData &lt;- readMeta(mtlFile)
+## No test: 
 lsat     &lt;- stackMeta(mtlFile)
+## End(No test)
 
 ## Convert DN to top of atmosphere reflectance and brightness temperature
 lsat_ref &lt;- radCor(lsat, metaData = metaData, method = &quot;apref&quot;)
 
 ## Correct DN to at-surface-reflecatance with DOS (Chavez decay model)
+## No test: 
 lsat_sref &lt;- radCor(lsat, metaData = metaData, method = &quot;dos&quot;)
+## End(No test)
 
 ## Correct DN to at-surface-reflecatance with simple DOS
 ## Automatic haze estimation
