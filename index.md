@@ -27,7 +27,7 @@ To get the latest development version, install RStoolbox directly from the [gith
     install_github("bleutner/RStoolbox")
   
 
-####e the Source
+#### Use the Source
 
 You can view or fork the most recent code on my [GitHub repository](http://www.github.com/bleutner/RStoolbox) or grab the latest source tarball from [here](https://github.com/bleutner/RStoolbox/tarball/master).
     
