@@ -1,6 +1,6 @@
-## Resubmission
-This is a resubmission. I have reduced the running times of the examples from cloudMask, cloudShadowMask and pifMatch to
-stay below 5s on my machines by excluding unnecessary plots from running in tests.
+## Patch release: fixes \donttest{} example
+I added the kernlab package to Suggests in the DESCRIPTION.
+The package was required by a *donttest* example but not declared and therefore caused an ERROR when CRAN was running R CMD check --run-donttest
 
 ## Test environments
 * ubuntu 15.04 64bit, (R 3.2.2)
@@ -8,14 +8,7 @@ stay below 5s on my machines by excluding unnecessary plots from running in test
 * win-builder (release, devel)
 
 ## R CMD check results
-There were no ERRORs or WARNINGs. 
-
-There was 1 NOTE:
-
-* checking CRAN incoming feasibility ... NOTE  
-  Maintainer: ‘Benjamin Leutner <benjamin.leutner@uni-wuerzburg.de>’  
-  New submission
-
+There were no ERRORs, WARNINGs or NOTEs. 
 
 ## Downstream dependencies
 none 
