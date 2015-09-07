@@ -184,8 +184,9 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
 	
 }
 
-
-## Perform histogram, log and 98% linear stretching
+#' Perform histogram, log and 98% linear stretching
+#' @keywords internal
+#' @noRd
 .stretch <- function (x, method = "lin", quantiles = c(0.02,0.98)) {
 	if(!method %in% c("lin", "hist", "log", "sqrt")) stop("Stretch method must be 'lin', 'hist', 'sqrt' or 'log'", call. = FALSE)
 	if(method == "lin"){
@@ -212,4 +213,27 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
 	}
 }
 
+#' Transforms a raster* colors from RGB space into HSV space (hue/saturation/value)
+#' @param gg A gg plot object with RGB colors
+#' @examples   
+#' library(ggplot2)
+#' data(rlogo)
+#' 
+#' gg <- ggRGB(rlogo, r=1, g=2, b=3)
+#' gg + color_transform_rgb2his(gg)
+#' @export
+#' @seealso \link{ggRGB}, \link[=fortify.raster]{fortify}
 
+color_transform_rgb2his <- function(gg, ...){
+  # Catch raster objectGet number of layers in previous object
+  for(i in 1:length(gg$layers)){
+    ggl <- gg$layers[[i]]
+    if(grepl("raster",ggl$geom$objname)) break
+  }
+  # Convert r colors into RGB colors
+  rgb <- col2rgb(ggl$geom_params$raster)
+  # Convert into HSV space
+  ct <- rgb2hsv(rgb)
+  
+  scale_color_manual(values=ct, ...)
+}
