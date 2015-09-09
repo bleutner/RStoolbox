@@ -37,8 +37,10 @@ sam <- function(x, em, angles = FALSE){
     
     if(ncol(em) != nlayers(x)) stop("The number of columns in em must match the number of bands in x.")
     
+    
     ## Calculate angles
     out <- calc(x, fun = function(xi, emc=em) {specSimC(x=xi, em=emc)}, forcefun = TRUE)     
+    if(is.null(rownames(em))) rownames(em) <- paste0("s", 1:nrow(em)) 
     names(out) <- paste0(rownames(em), "_sa")
    
     ## Select minimum angle

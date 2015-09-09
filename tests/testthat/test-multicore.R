@@ -1,5 +1,4 @@
 context("Multicore/Singlecore")
-
 	
 test_that(".paraRasterFun is equal to predict, calc, overlay, Both single and multicore.", {
             skip_on_cran() # hadley says its risky to test paralell code on cran :-)
@@ -40,7 +39,6 @@ test_that(".parXapply family returns identical results to ?pply family. Both sin
                 cluster <- "singlecore"
             }
         })  
-
 
 
 

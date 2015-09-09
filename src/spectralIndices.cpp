@@ -2,12 +2,14 @@
 using namespace Rcpp;
 
 //[[Rcpp::export]]
-NumericMatrix spectralIndicesCpp(NumericMatrix& x, CharacterVector& indices,
-		const int redBand, const int blueBand, const int greenBand,  const int nirBand, const int swir2Band, const int swir1Band,
-		const double L, const double s, const double G, const double C1, const double C2, const double Levi) {
+NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
+		 const int redBand,  const int blueBand, const int greenBand, const int nirBand,
+		 const int swir2Band, const int swir1Band,
+		 double L,  double s,  double G,  double C1,  double C2,  double Levi) {
 
 	int nind = indices.size();
 	int nsamp = x.nrow();
+
 /***
 	for(int ro = 0; ro < nsamp; ++ro) {
 		for(int co = 0; co < nind; ++co) {
@@ -20,14 +22,16 @@ NumericMatrix spectralIndicesCpp(NumericMatrix& x, CharacterVector& indices,
 
 	if(blueBand != NA_INTEGER)    blue = x(_,blueBand - 1);
 	if(greenBand != NA_INTEGER)  green = x(_,greenBand - 1);
-	if(redBand != NA_INTEGER)      red = x(_,redBand - 1);
+	if(redBand != NA_INTEGER)    red = x(_,redBand - 1);
 	if(nirBand != NA_INTEGER)      nir = x(_,nirBand - 1);
 	if(swir1Band != NA_INTEGER)  swir1 = x(_,swir1Band - 1);
 	if(swir2Band != NA_INTEGER)  swir2 = x(_,swir2Band - 1);
+
+
 	for(int j = 0; j < nind; ++j) {
 
 		if(indices[j] == "DVI") {
-			// Difference vegeation index
+			// Difference vegetation index
 			out(_,j) = (s * nir - red);
 			out(_,j) = ifelse(is_na(out(_,j)), NA_REAL, out(_,j));
 		}
@@ -42,7 +46,7 @@ NumericMatrix spectralIndicesCpp(NumericMatrix& x, CharacterVector& indices,
 			// Enhanced vegetation index
 			// Huete et al 1990
 			out(_,j) = G * ((nir - red) / (nir + C1 * red - C2 * blue + Levi));
-			out(_,j) = ifelse(is_na(out(_,j)), NA_REAL, out(_,j));
+			out(_,j) = ifelse( is_na(out(_,j)), NA_REAL, out(_,j));
 
 		}
 		else if(indices[j] == "GEMI") {
@@ -54,12 +58,12 @@ NumericMatrix spectralIndicesCpp(NumericMatrix& x, CharacterVector& indices,
 		else if(indices[j] == "LSWI") {
                         // Land surface water index
 			out(_,j) = (nir-swir1) / (nir+swir1);
-			out(_,j) = ifelse((out(_,j) > 1.0) | (out(_,j) < -1.0) | is_na(out(_,j)), NA_REAL, out(_,j));
+			out(_,j) = ifelse(is_na(out(_,j)) | (out(_,j) > 1.0) | (out(_,j) < -1.0) , NA_REAL, out(_,j));
 		}
 		else if(indices[j] == "MNDWI") {
                         // Modified Normalised Difference Water Index
 			out(_,j) = (green-swir1) / (green+swir1);
-			out(_,j) = ifelse((out(_,j) > 1.0) | (out(_,j) < -1.0) | is_na(out(_,j)), NA_REAL, out(_,j));
+			out(_,j) = ifelse(is_na(out(_,j)) | (out(_,j) > 1.0) | (out(_,j) < -1.0) , NA_REAL, out(_,j));
 		}
 		else if(indices[j] == "MSAVI") {
 			// Modified soil adjusted vegetation index
@@ -82,17 +86,17 @@ NumericMatrix spectralIndicesCpp(NumericMatrix& x, CharacterVector& indices,
 		else if(indices[j] == "NBRI"){
                         // Normalised Burn Ratio Index
 			out(_,j) = (nir - swir2) / (nir + swir2);
-			out(_,j) = ifelse((out(_,j) > 1.0) | (out(_,j) < -1.0) | is_na(out(_,j)), NA_REAL, out(_,j));
+			out(_,j) = ifelse(is_na(out(_,j)) | (out(_,j) > 1.0) | (out(_,j) < -1.0), NA_REAL, out(_,j));
 		}
 		else if(indices[j] == "NDVI") {
 			//Normalized difference vegetation index
 			out(_,j) = (nir - red) / (nir + red);
-			out(_,j) = ifelse((out(_,j) > 1.0) | (out(_,j) < -1.0) | is_na(out(_,j)), NA_REAL, out(_,j));
+			out(_,j) = ifelse(is_na(out(_,j)) | (out(_,j) > 1.0) | (out(_,j) < -1.0), NA_REAL, out(_,j));
 		}
 		else if(indices[j] == "NDWI") {
 			// Normalized difference water index
 			out(_,j) = (green - nir)/(green + nir);
-			out(_,j) = ifelse((out(_,j) > 1.0) | (out(_,j) < -1.0) | is_na(out(_,j)), NA_REAL, out(_,j));
+			out(_,j) = ifelse(is_na(out(_,j)) | (out(_,j) > 1.0) | (out(_,j) < -1.0) , NA_REAL, out(_,j));
 		}
 	        else if(indices[j] == "NRVI") {
 			// Normalized Ratio Vegetation Index
@@ -135,10 +139,10 @@ NumericMatrix spectralIndicesCpp(NumericMatrix& x, CharacterVector& indices,
 			// Transformed Vegetation Index
 			// Deering 1975
 			out(_,j) = sqrt((nir-red)/(nir+red) + 0.5);
-			out(_,j) = ifelse((out(_,j) > sqrt(1.5)) | is_na(out(_,j)), NA_REAL, out(_,j));
+			out(_,j) = ifelse(is_na(out(_,j)) | (out(_,j) > sqrt(1.5)), NA_REAL, out(_,j));
 		}
 		else if(indices[j] == "TTVI") {
-			// Thiam's Transformed Vegetation Index
+			// Thiams Transformed Vegetation Index
 			// Thiam 1997
 			out(_,j) = sqrt(abs((nir-red)/(nir+red) + 0.5));
 			out(_,j) = ifelse(is_na(out(_,j)), NA_REAL, out(_,j));
@@ -152,6 +156,5 @@ NumericMatrix spectralIndicesCpp(NumericMatrix& x, CharacterVector& indices,
 
 	return out;
 }
-
 
 

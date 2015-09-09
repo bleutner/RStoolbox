@@ -93,7 +93,7 @@ spectralIndices <- function(img,
     ## Adjust layer argument so that the first layer we use is now layer 1, etc.
     ## This way we don't have to sample the whole stack if we only need a few layers
     fullSet <- vapply(potArgs, function(n) match(n, names(bandsCalc)), integer(1))
-    
+
     # Perform calculations 
     indexMagic <- .paraRasterFun(img[[bandsCalc]], rasterFun = raster::calc,
             args = list(fun = function(m) {

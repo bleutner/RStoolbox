@@ -10,14 +10,12 @@ r    <- stack(r,r)
 names(r) <- c("L1", "L2")
 r[[2]]<-vals[,2]
 
-#indices_to_test <- 
-
-
 test_that("gives proper errors and warnings", {
             expect_error(spectralIndices(r, red = 1, indices = "NDVI"), "you must specify \\*all\\* required bands")
             expect_error(spectralIndices(r, red = 1), "you must specify \\*all\\* required bands")
             expect_warning(spectralIndices(r, red = 1, nir = 2, indices = c("NDVI", "EVI")), "not specified: blue")
         })
+
 
 test_that("returns", {
             vi <- list(
@@ -42,3 +40,5 @@ test_that("returns", {
 			expect_identical(range(vi[[1]][], na.rm = TRUE), c(-1, 1))
 			
         })
+
+

@@ -1,7 +1,7 @@
 Package: RStoolbox
 Type: Package
 Title: Tools for Remote Sensing Data Analysis 
-Version: 0.1.1
+Version: 0.1.1.9000
 Date: 2015-09-07
 Authors@R: c(
     person("Benjamin", "Leutner", role=c("cre", "aut"), email="benjamin.leutner@uni-wuerzburg.de"),
@@ -10,7 +10,7 @@ Authors@R: c(
 Description: Toolbox for remote sensing image processing and analysis such
     as calculating spectral indices, principal component transformation, unsupervised
     and supervised classification or fractional cover analyses.
-URL: https://github.com/bleutner/RStoolbox    
+URL: http://bleutner.github.io/RStoolbox, https://github.com/bleutner/RStoolbox    
 BugReports: https://github.com/bleutner/RStoolbox/issues    
 Depends: 
     R (>= 3.1.0)

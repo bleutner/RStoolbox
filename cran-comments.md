@@ -3,7 +3,7 @@
 
 #### UBSAN Error
 I believe to have fixed the issue responsible for the clang-UBSAN errors in RStoolbox 0.1.0.
-However, I could not reproduce the error with --use-valgrind in r-devel. 
+However, as of now I did not manage to reproduce the UBSAN checks.
 
 #### \donttest{} example
 I added the kernlab package to Suggests in the DESCRIPTION.

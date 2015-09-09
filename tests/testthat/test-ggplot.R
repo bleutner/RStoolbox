@@ -1,6 +1,5 @@
 context("ggplot: ggR, ggRGB & fortify")
 
-
 test_that("ggR returns proper ggplot2 classes or data.frames", {
             data(rlogo) 
             
@@ -80,3 +79,4 @@ test_that("fortify.raster returns proper data.frames", {
             
             
         })
+

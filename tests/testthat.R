@@ -5,3 +5,4 @@ Sys.setenv("R_TESTS" = "") ## needed to pass R CMD check: https://github.com/had
 
 test_check("RStoolbox")
 
+
