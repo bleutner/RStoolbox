@@ -35,12 +35,11 @@ Required bands are:
 }
 \examples{
 library(raster)
-## Make up fake data
-data(rlogo)
-pseudoLS <- stack(rlogo, rlogo, rlogo[[1]])
-names(pseudoLS) <- paste0("band_", 1:7)
+data(lsat)
 
 ## Run tasseled cap (exclude thermal band 6)
-tasseledCap(pseudoLS[[c(1:5,7)]], sat = "Landsat5TM")
+lsat_tc <- tasseledCap(lsat[[c(1:5,7)]], sat = "Landsat5TM")
+lsat_tc
+plot(lsat_tc)
 }
 

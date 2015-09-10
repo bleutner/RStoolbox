@@ -23,13 +23,12 @@
 #' Returns a RasterBrick with the thee bands: brigthness, greenness, and (soil) wetness. 
 #' @examples 
 #' library(raster)
-#' ## Make up fake data
-#' data(rlogo)
-#' pseudoLS <- stack(rlogo, rlogo, rlogo[[1]])
-#' names(pseudoLS) <- paste0("band_", 1:7)
+#' data(lsat)
 #' 
 #' ## Run tasseled cap (exclude thermal band 6)
-#' tasseledCap(pseudoLS[[c(1:5,7)]], sat = "Landsat5TM")
+#' lsat_tc <- tasseledCap(lsat[[c(1:5,7)]], sat = "Landsat5TM")
+#' lsat_tc
+#' plot(lsat_tc)
 tasseledCap <- function(img, sat, ...) {
     sat <- tolower(sat)
     if(!sat %in% c("landsat4tm" , "landsat5tm" , "landsat7etm" ,"landsat8oli", "modis")) stop("Sensor not implemented. See ?tasseledCap for options.")     

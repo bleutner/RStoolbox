@@ -75,6 +75,7 @@ NULL
 #' @keywords datasets
 #' @name rlogo
 #' @examples 
+#' data(rlogo)
 #' ggRGB(rlogo,r = 1,g = 2,b = 3)
 NULL
 
@@ -88,6 +89,7 @@ NULL
 #' @keywords datasets
 #' @name srtm
 #' @examples 
+#' data(srtm)
 #' ggR(srtm)
 NULL
 

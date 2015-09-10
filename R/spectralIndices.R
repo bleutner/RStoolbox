@@ -15,7 +15,6 @@
 #' @param ... further arguments such as filename etc. passed to \link[raster]{writeRaster}
 #' @return  RasterBrick or a RasterLayer if length(indices) == 1
 #' @template spectralIndices_table 
-#' @seealso \code{\link[raster]{overlay}} 
 #' @export
 #' @examples
 #' library(ggplot2)

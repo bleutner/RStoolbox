@@ -28,15 +28,11 @@ For example for a given pixel in image A and B for the red and nir band the chan
 \examples{
 library(raster)
 ## Create example data
-mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
-lsat  <- stackMeta(mtlFile)
-img_a <- lsat[[3:4]]
-mult  <- raster(lsat)
-mult[]<-rnorm(ncell(mult))
-img_b <- img_a * mult + 10
+data(lsat)
+pca <- rasterPCA(lsat)$map
 
 ## Do change vector analysis
-cva <- rasterCVA(img_a, img_b)
+cva <- rasterCVA(pca[[1:2]], pca[[3:4]])
 cva
 plot(cva)
 }

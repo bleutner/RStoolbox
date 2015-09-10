@@ -66,7 +66,4 @@ ggR(ndvi, geom_raster = TRUE) +
 SI <- spectralIndices(lsat, red = "B3_dn", nir = "B4_dn")
 plot(SI)
 }
-\seealso{
-\code{\link[raster]{overlay}}
-}
 
