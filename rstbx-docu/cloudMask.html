@@ -19,7 +19,7 @@ group: navigation
 
 <h3>Description</h3>
 
-<p>Developed for use with Landsat data <code>cloudMask</code> relies on the distinctive difference between the blue (or any other short-wave band)
+<p>Developed for use with Landsat data <code class="r">cloudMask</code> relies on the distinctive difference between the blue (or any other short-wave band)
 and thermal band for semi-automated creation of a cloud mask. Since it relies on thermal information it doesn't work well for sensors without
 thermal bands.
 </p>
@@ -36,31 +36,31 @@ cloudMask(x, threshold = 0.8, blue = "B1_sre", tir = "B6_sre",
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><code>x</code></td>
+<tr valign="top"><td><code class="r">x</code></td>
 <td>
-<p>RasterBrick or RasterStack with reflectance and brightness temperature OR the mask of a previous run of <code>cloudMask</code> with <code>returnDiffLayer=TRUE</code>.</p>
+<p>RasterBrick or RasterStack with reflectance and brightness temperature OR the mask of a previous run of <code class="r">cloudMask</code> with <code class="r">returnDiffLayer=TRUE</code>.</p>
 </td></tr>
-<tr valign="top"><td><code>threshold</code></td>
+<tr valign="top"><td><code class="r">threshold</code></td>
 <td>
 <p>Numeric. cloud detection threshold. If not provided it will be guessed. Everything *below* this threshold will be considered a cloud pixel (unless it is removed by filtering afterwards).</p>
 </td></tr>
-<tr valign="top"><td><code>blue</code></td>
+<tr valign="top"><td><code class="r">blue</code></td>
 <td>
 <p>Character or integer. Bandname or number for the blue band</p>
 </td></tr>
-<tr valign="top"><td><code>tir</code></td>
+<tr valign="top"><td><code class="r">tir</code></td>
 <td>
 <p>Character or integer. Bandname or number for the thermal band</p>
 </td></tr>
-<tr valign="top"><td><code>buffer</code></td>
+<tr valign="top"><td><code class="r">buffer</code></td>
 <td>
 <p>Integer. Number of pixels to use as a buffer that will be added to the identified cloud centers.</p>
 </td></tr>
-<tr valign="top"><td><code>plot</code></td>
+<tr valign="top"><td><code class="r">plot</code></td>
 <td>
 <p>Logical. Plots of the cloud mask for all sub-steps (sanitizing etc.) Helpful to find proper parametrization.</p>
 </td></tr>
-<tr valign="top"><td><code>verbose</code></td>
+<tr valign="top"><td><code class="r">verbose</code></td>
 <td>
 <p>Logical. Print messages or suppress.</p>
 </td></tr>
@@ -82,7 +82,7 @@ provide DN, radiance or brightness temperature.
 <p>This approach to cloud masking is very simplistic. And aims only at rough removal of potentially clouded areas. Nevertheless, it is able to provide satisfactory results.
 More sophisticated approaches, including cloud cast shadow detection can be found elsewhere, e.g. <a href="http://code.google.com/p/fmask">fmask</a>.
 </p>
-<p>It can make sense to find a suitable threshold on a cropped version of the scene. Also make sure you make use of the <code>returnDiffLayer</code> argument to save yourself one processing step.
+<p>It can make sense to find a suitable threshold on a cropped version of the scene. Also make sure you make use of the <code class="r">returnDiffLayer</code> argument to save yourself one processing step.
 Buffering should be seen as final polishing, i.e. as long as the pure cloud centers are not detected properly, you might want to turn it off. since it takes some time to calculate.
 Once your mask detects obvious cloud pixels properly re-enable buffering for fine tuning if desired. Finally, once a suitable threshold is established re-run cloudMask on the whole scene with this threshold and go get a coffee.
 </p>
@@ -90,7 +90,7 @@ Once your mask detects obvious cloud pixels properly re-enable buffering for fin
 
 <h3>See Also</h3>
 
-<p><code><a href="cloudShadowMask.html">cloudShadowMask</a></code>
+<p><code class="r"><a href="cloudShadowMask.html">cloudShadowMask</a></code>
 </p>
 
 

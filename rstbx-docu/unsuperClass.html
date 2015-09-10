@@ -35,39 +35,39 @@ unsuperClass(img, nSamples = 10000, nClasses = 5, nStarts = 25,
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><code>img</code></td>
+<tr valign="top"><td><code class="r">img</code></td>
 <td>
 <p>Raster* object.</p>
 </td></tr>
-<tr valign="top"><td><code>nSamples</code></td>
+<tr valign="top"><td><code class="r">nSamples</code></td>
 <td>
 <p>Integer. Number of random samples to draw to fit cluster map. Only relevant if clusterMap = FALSE.</p>
 </td></tr>
-<tr valign="top"><td><code>nClasses</code></td>
+<tr valign="top"><td><code class="r">nClasses</code></td>
 <td>
 <p>Integer. Number of classes.</p>
 </td></tr>
-<tr valign="top"><td><code>nStarts</code></td>
+<tr valign="top"><td><code class="r">nStarts</code></td>
 <td>
 <p>Integer. Number of random starts for kmeans algorithm.</p>
 </td></tr>
-<tr valign="top"><td><code>nIter</code></td>
+<tr valign="top"><td><code class="r">nIter</code></td>
 <td>
 <p>Integer. Maximal number of iterations allowed.</p>
 </td></tr>
-<tr valign="top"><td><code>norm</code></td>
+<tr valign="top"><td><code class="r">norm</code></td>
 <td>
-<p>Logical. If <code>TRUE</code> will normalize img first using <a href="normImage.html">normImage</a>. Normalizing is beneficial if your predictors have different scales.</p>
+<p>Logical. If <code class="r">TRUE</code> will normalize img first using <a href="normImage.html">normImage</a>. Normalizing is beneficial if your predictors have different scales.</p>
 </td></tr>
-<tr valign="top"><td><code>clusterMap</code></td>
+<tr valign="top"><td><code class="r">clusterMap</code></td>
 <td>
 <p>Logical. Fit kmeans model to a random subset of the img (see Details).</p>
 </td></tr>
-<tr valign="top"><td><code>algorithm</code></td>
+<tr valign="top"><td><code class="r">algorithm</code></td>
 <td>
 <p>Character. <a href="http://www.inside-r.org/r-doc/stats/kmeans">kmeans</a> algorithm. One of c(&quot;Hartigan-Wong&quot;, &quot;Lloyd&quot;, &quot;MacQueen&quot;)</p>
 </td></tr>
-<tr valign="top"><td><code>...</code></td>
+<tr valign="top"><td><code class="r">...</code></td>
 <td>
 <p>further arguments to be passed to <a href="http://www.inside-r.org/packages/cran/raster/docs/writeRaster">writeRaster</a>, e.g. filename</p>
 </td></tr>
@@ -76,14 +76,14 @@ unsuperClass(img, nSamples = 10000, nClasses = 5, nStarts = 25,
 
 <h3>Details</h3>
 
-<p>Clustering is done using <code><a href="http://www.inside-r.org/r-doc/stats/kmeans">kmeans</a></code>. This can be done for all pixels of the image (<code>clusterMap=FALSE</code>), however this can be slow and is
+<p>Clustering is done using <code class="r"><a href="http://www.inside-r.org/r-doc/stats/kmeans">kmeans</a></code>. This can be done for all pixels of the image (<code class="r">clusterMap=FALSE</code>), however this can be slow and is
 not memory safe. Therefore if you have large raster data (&gt; memory), as is typically the case with remote sensing imagery it is advisable to choose clusterMap=TRUE (the default).
 This means that a kmeans cluster map is calculated based on a random subset of pixels (nSamples). Then the distance of *all* pixels to the cluster centers
-is calculated in a stepwise fashion using <code><a href="http://www.inside-r.org/packages/cran/raster/docs/predict">predict</a></code>. Class assignment is based on minimum euclidean distance to the cluster centers.
+is calculated in a stepwise fashion using <code class="r"><a href="http://www.inside-r.org/packages/cran/raster/docs/predict">predict</a></code>. Class assignment is based on minimum euclidean distance to the cluster centers.
 </p>
 <p>The solution of the kmeans algorithm often depend on the initial configuration of class centers which is chosen randomly.
 Therefore, kmeans is usually run with multiple random starting configurations in order to find a convergent solution from different starting configurations.
-The <code>nStarts</code> argument allows to specify how many random starts are conducted.
+The <code class="r">nStarts</code> argument allows to specify how many random starts are conducted.
 </p>
 
 
@@ -103,7 +103,7 @@ unC &lt;- unsuperClass(input, nSamples = 100, nClasses = 5, nStarts = 5)
 unC
 </code></pre>
 
-<pre><code>#&gt; unsuperClass results
+<pre><code class="r">#&gt; unsuperClass results
 #&gt; 
 #&gt; *************** Map ******************
 #&gt; $map

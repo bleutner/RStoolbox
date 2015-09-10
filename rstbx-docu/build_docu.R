@@ -96,9 +96,10 @@ knit_rd2 <- function(pkg, path = ".", links =  tools::findHTMLlinks(pkg), frame 
         
         ## Remove dontshow sections
         nosho <- grep("## Don&#39;t show:", txt)
+        txt[77]
         if(length(nosho)){
             su <- txt[nosho]
-            fro <- str_locate( su, "\\n\\n## Don&#39;t show:")
+            fro <- str_locate( su, "\\n## Don&#39;t show:")
             fre <- str_locate( su, "## End\\(Don&#39;t show\\)")
             for(i in 1:nrow(fre)){
                 su <- paste0(substr(su, 1, fro[i,1]-1), substr(su, fre[i,2]+1, nchar(su))) 
@@ -106,6 +107,8 @@ knit_rd2 <- function(pkg, path = ".", links =  tools::findHTMLlinks(pkg), frame 
             txt[nosho] <- su
         }
         
+        ## Fix syntax highlighting
+        txt <- gsub("<code>",'<code class="r">', txt)
         ## Tidy up don't run section
 #        nosho <- grep("\\#\\# Not run:", txt)
 #        if(length(nosho)){

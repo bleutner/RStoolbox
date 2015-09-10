@@ -36,40 +36,40 @@ radCor(img, metaData, method = "apref", bandSet = "full", hazeValues,
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><code>img</code></td>
+<tr valign="top"><td><code class="r">img</code></td>
 <td>
 <p>raster object</p>
 </td></tr>
-<tr valign="top"><td><code>metaData</code></td>
+<tr valign="top"><td><code class="r">metaData</code></td>
 <td>
 <p>object of class ImageMetaData or a path to the meta data (MTL) file.</p>
 </td></tr>
-<tr valign="top"><td><code>method</code></td>
+<tr valign="top"><td><code class="r">method</code></td>
 <td>
 <p>Radiometric conversion/correction method to be used. There are currently four methods available (see Details):
 &quot;rad&quot;, &quot;apref&quot;, &quot;sdos&quot;, &quot;dos&quot;, &quot;costz&quot;.</p>
 </td></tr>
-<tr valign="top"><td><code>bandSet</code></td>
+<tr valign="top"><td><code class="r">bandSet</code></td>
 <td>
 <p>Numeric or character. original Landsat band numbers or names in the form of (&quot;B1&quot;, &quot;B2&quot; etc). If set to 'full' all bands in the solar (optical) region will be processed.</p>
 </td></tr>
-<tr valign="top"><td><code>hazeValues</code></td>
+<tr valign="top"><td><code class="r">hazeValues</code></td>
 <td>
 <p>Starting haze value, can be estimated using <a href="estimateHaze.html">estimateHaze</a>. if not provided and method is &quot;dos&quot; or &quot;costz&quot; hazeValues will be estimated in an automated fashion. Not needed for apparent reflectance.</p>
 </td></tr>
-<tr valign="top"><td><code>hazeBands</code></td>
+<tr valign="top"><td><code class="r">hazeBands</code></td>
 <td>
 <p>Bands corresponding to hazeValues.</p>
 </td></tr>
-<tr valign="top"><td><code>atmosphere</code></td>
+<tr valign="top"><td><code class="r">atmosphere</code></td>
 <td>
-<p>Character. Atmospheric characteristics. Will be estimated if not expicilty provided. Must be one of <code>"veryClear", "clear", "moderate", "hazy"</code> or <code>"veryHazy"</code>.</p>
+<p>Character. Atmospheric characteristics. Will be estimated if not expicilty provided. Must be one of <code class="r">"veryClear", "clear", "moderate", "hazy"</code> or <code class="r">"veryHazy"</code>.</p>
 </td></tr>
-<tr valign="top"><td><code>darkProp</code></td>
+<tr valign="top"><td><code class="r">darkProp</code></td>
 <td>
 <p>Numeric. Estimated proportion of dark pixels in the scene. Used only for automatic guessing of hazeValues (typically one would choose 1 or 2%).</p>
 </td></tr>
-<tr valign="top"><td><code>verbose</code></td>
+<tr valign="top"><td><code class="r">verbose</code></td>
 <td>
 <p>Logical. Print status information.</p>
 </td></tr>
@@ -84,7 +84,7 @@ radCor(img, metaData, method = "apref", bandSet = "full", hazeValues,
 It is then assumed further that any radiation originating from such *dark* pixels is due to atmospheric haze and
 not the reflectance of the surface itself.
 </p>
-<p>The folloiwing <code>methods</code> are available:
+<p>The folloiwing <code class="r">methods</code> are available:
 </p>
 
 <table summary="Rd table">
@@ -113,7 +113,7 @@ sdos  </td><td style="text-align: left;"> Simple dark object subtraction. Classi
 </table>
 
 <p>If either &quot;dos&quot; or &quot;costz&quot;  are selected, radCor will use the atmospheric haze decay model described by Chavez (1989).
-Depending on the <code>atmosphere</code> the following coefficients are used:
+Depending on the <code class="r">atmosphere</code> the following coefficients are used:
 </p>
 
 <table summary="Rd table">
@@ -173,6 +173,7 @@ metaData &lt;- readMeta(mtlFile)
 ## No test: 
 lsat     &lt;- stackMeta(mtlFile)
 ## End(No test)
+
 
 ## Convert DN to top of atmosphere reflectance and brightness temperature
 lsat_ref &lt;- radCor(lsat, metaData = metaData, method = &quot;apref&quot;)

@@ -36,78 +36,78 @@ ggRGB(img, r = 3, g = 2, b = 1, scale, maxpixels = 5e+05,
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><code>img</code></td>
+<tr valign="top"><td><code class="r">img</code></td>
 <td>
 <p>RasterStack or RasterBrick</p>
 </td></tr>
-<tr valign="top"><td><code>r</code></td>
+<tr valign="top"><td><code class="r">r</code></td>
 <td>
-<p>Integer or character. Red layer in x. Can be set to <code>NULL</code>, in which case the red channel will be set to zero.</p>
+<p>Integer or character. Red layer in x. Can be set to <code class="r">NULL</code>, in which case the red channel will be set to zero.</p>
 </td></tr>
-<tr valign="top"><td><code>g</code></td>
+<tr valign="top"><td><code class="r">g</code></td>
 <td>
-<p>Integer or character. Green layer in x. Can be set to <code>NULL</code>, in which case the green channel will be set to zero.</p>
+<p>Integer or character. Green layer in x. Can be set to <code class="r">NULL</code>, in which case the green channel will be set to zero.</p>
 </td></tr>
-<tr valign="top"><td><code>b</code></td>
+<tr valign="top"><td><code class="r">b</code></td>
 <td>
-<p>Integer or character. Blue layer in x. Can be set to <code>NULL</code>, in which case the blue channel will be set to zero.</p>
+<p>Integer or character. Blue layer in x. Can be set to <code class="r">NULL</code>, in which case the blue channel will be set to zero.</p>
 </td></tr>
-<tr valign="top"><td><code>scale</code></td>
+<tr valign="top"><td><code class="r">scale</code></td>
 <td>
 <p>Numeric. Maximum possible pixel value (optional). Defaults to 255 or to the maximum value of x if that is larger than 255</p>
 </td></tr>
-<tr valign="top"><td><code>maxpixels</code></td>
+<tr valign="top"><td><code class="r">maxpixels</code></td>
 <td>
 <p>Integer. Maximal number of pixels used for plotting.</p>
 </td></tr>
-<tr valign="top"><td><code>stretch</code></td>
+<tr valign="top"><td><code class="r">stretch</code></td>
 <td>
 <p>Character. Either 'none', 'lin', 'hist', 'sqrt' or 'log' for no stretch, linear, histogram, square-root or logarithmic stretch.</p>
 </td></tr>
-<tr valign="top"><td><code>ext</code></td>
+<tr valign="top"><td><code class="r">ext</code></td>
 <td>
 <p>Extent object to crop the image</p>
 </td></tr>
-<tr valign="top"><td><code>limits</code></td>
+<tr valign="top"><td><code class="r">limits</code></td>
 <td>
 <p>Vector or matrix. Can be used to reduce the range of values. Either a vector of two values for all bands (c(min, max))
 or a 3x2 matrix with min and max values (columns) for each layer (rows).</p>
 </td></tr>
-<tr valign="top"><td><code>clipValues</code></td>
+<tr valign="top"><td><code class="r">clipValues</code></td>
 <td>
-<p>Matrix, numeric vector, string or NA. Values to reset out of range (out of <code>limits</code>) values to.
-By default ('limits') values are reset to <code>limits</code>. A single value (e.g. NA) will be recycled to all lower/higher clippings,
+<p>Matrix, numeric vector, string or NA. Values to reset out of range (out of <code class="r">limits</code>) values to.
+By default ('limits') values are reset to <code class="r">limits</code>. A single value (e.g. NA) will be recycled to all lower/higher clippings,
 A vector of length two (c(min,max)) can be used to specify lower and higher replace values, applied to all bands.
 A two column matrix (typically with three rows) can be used to fully control lower and upper clipping values differently for each band.</p>
 </td></tr>
-<tr valign="top"><td><code>quantiles</code></td>
+<tr valign="top"><td><code class="r">quantiles</code></td>
 <td>
 <p>Numeric vector with two elements. Min and max quantiles to stretch. Defaults to 2% stretch, i.e. c(0.02,0.98).</p>
 </td></tr>
-<tr valign="top"><td><code>ggObj</code></td>
+<tr valign="top"><td><code class="r">ggObj</code></td>
 <td>
-<p>Logical. If <code>TRUE</code> a ggplot2 object is returned. If <code>FALSE</code> a data.frame with coordinates and color will be returned.</p>
+<p>Logical. If <code class="r">TRUE</code> a ggplot2 object is returned. If <code class="r">FALSE</code> a data.frame with coordinates and color will be returned.</p>
 </td></tr>
-<tr valign="top"><td><code>ggLayer</code></td>
+<tr valign="top"><td><code class="r">ggLayer</code></td>
 <td>
-<p>Logical. If <code>TRUE</code> a ggplot2 layer is returned. This is usefull if you want to add it to an existing ggplot2 object.
-Note that if <code>TRUE</code> &amp; <code>annotate = FALSE</code> you have to add a scale_fill_identity() manually in your call to ggplot().</p>
+<p>Logical. If <code class="r">TRUE</code> a ggplot2 layer is returned. This is usefull if you want to add it to an existing ggplot2 object.
+Note that if <code class="r">TRUE</code> &amp; <code class="r">annotate = FALSE</code> you have to add a scale_fill_identity() manually in your call to ggplot().</p>
 </td></tr>
-<tr valign="top"><td><code>alpha</code></td>
+<tr valign="top"><td><code class="r">alpha</code></td>
 <td>
 <p>Numeric. Transparency (0-1).</p>
 </td></tr>
-<tr valign="top"><td><code>coord_equal</code></td>
+<tr valign="top"><td><code class="r">coord_equal</code></td>
 <td>
 <p>Logical. Force addition of coord_equal, i.e. aspect ratio of 1:1. Typically usefull for remote sensing data (depending on your projection), hence it defaults to TRUE.
-Note howver, that this does not apply if (<code>ggLayer=FALSE</code>).</p>
+Note howver, that this does not apply if (<code class="r">ggLayer=FALSE</code>).</p>
 </td></tr>
-<tr valign="top"><td><code>geom_raster</code></td>
+<tr valign="top"><td><code class="r">geom_raster</code></td>
 <td>
-<p>Logical. If <code>FALSE</code> annotation_raster is used, otherwise geom_raster()+scale_fill_identity is used.
+<p>Logical. If <code class="r">FALSE</code> annotation_raster is used, otherwise geom_raster()+scale_fill_identity is used.
 Note that you can't use scale_fill* in addition to the latter, because it already requires scale_fill_identity().</p>
 </td></tr>
-<tr valign="top"><td><code>nullValue</code></td>
+<tr valign="top"><td><code class="r">nullValue</code></td>
 <td>
 <p>Numeric. Intensity value used for NULL layers in color compositing. E.g. set g=NULL and fix green value at 0.5 (defaults to 0).</p>
 </td></tr>
@@ -116,7 +116,7 @@ Note that you can't use scale_fill* in addition to the latter, because it alread
 
 <h3>Details</h3>
 
-<p>Functionality is based on <code><a href="http://www.inside-r.org/packages/cran/raster/docs/plotRGB">plotRGB</a></code> from the raster package.
+<p>Functionality is based on <code class="r"><a href="http://www.inside-r.org/packages/cran/raster/docs/plotRGB">plotRGB</a></code> from the raster package.
 </p>
 
 
@@ -126,15 +126,15 @@ Note that you can't use scale_fill* in addition to the latter, because it alread
 <table summary="Rd table">
 <tr>
  <td style="text-align: left;">
- <code>ggObj = TRUE</code>:   </td><td style="text-align: left;"> ggplot2 plot </td>
+ <code class="r">ggObj = TRUE</code>:   </td><td style="text-align: left;"> ggplot2 plot </td>
 </tr>
 <tr>
  <td style="text-align: left;">
- <code>ggLayer = TRUE</code>: </td><td style="text-align: left;"> ggplot2 layer to be combined with an existing ggplot2 </td>
+ <code class="r">ggLayer = TRUE</code>: </td><td style="text-align: left;"> ggplot2 layer to be combined with an existing ggplot2 </td>
 </tr>
 <tr>
  <td style="text-align: left;">
- <code>ggObj = FALSE</code>:  </td><td style="text-align: left;"> data.frame in long format suitable for plotting with ggplot2, includes the pixel values and the calculated colors </td>
+ <code class="r">ggObj = FALSE</code>:  </td><td style="text-align: left;"> data.frame in long format suitable for plotting with ggplot2, includes the pixel values and the calculated colors </td>
 </tr>
 <tr>
  <td style="text-align: left;">
@@ -184,7 +184,7 @@ df &lt;- ggRGB(rlogo, ggObj = FALSE)
 head(df)
 </code></pre>
 
-<pre><code>#&gt;     x    y      fill
+<pre><code class="r">#&gt;     x    y      fill
 #&gt; 1 0.5 76.5 #FFFFFFFF
 #&gt; 2 1.5 76.5 #FFFFFFFF
 #&gt; 3 2.5 76.5 #FFFFFFFF

@@ -33,13 +33,13 @@ readMeta(file, raw = FALSE)
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><code>file</code></td>
+<tr valign="top"><td><code class="r">file</code></td>
 <td>
 <p>path to Landsat MTL file (...MTL.txt)</p>
 </td></tr>
-<tr valign="top"><td><code>raw</code></td>
+<tr valign="top"><td><code class="r">raw</code></td>
 <td>
-<p>Logical. If <code>TRUE</code> the full raw metadata will be returned as a list. if <code>FALSE</code> (the default) all important metadata are homogenized into a standard format (ImageMetaData) and some information is added.</p>
+<p>Logical. If <code class="r">TRUE</code> the full raw metadata will be returned as a list. if <code class="r">FALSE</code> (the default) all important metadata are homogenized into a standard format (ImageMetaData) and some information is added.</p>
 </td></tr>
 </table>
 
@@ -62,7 +62,7 @@ metaData &lt;- readMeta(mtlFile)
 summary(metaData)
 </code></pre>
 
-<pre><code>#&gt; Scene:      LT52240631988227CUB02 
+<pre><code class="r">#&gt; Scene:      LT52240631988227CUB02 
 #&gt; Satellite:  LANDSAT5 
 #&gt; Sensor:     TM 
 #&gt; Date:       1988-08-14 

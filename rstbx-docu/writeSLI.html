@@ -33,25 +33,25 @@ writeSLI(x, path, wavl.units = "Micrometers", scaleF = 1, mode = "bin")
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><code>x</code></td>
+<tr valign="top"><td><code class="r">x</code></td>
 <td>
 <p>data.frame with first column containing wavelengths and all other columns containing spectra.</p>
 </td></tr>
-<tr valign="top"><td><code>path</code></td>
+<tr valign="top"><td><code class="r">path</code></td>
 <td>
 <p>path to spectral library file to be created.</p>
 </td></tr>
-<tr valign="top"><td><code>wavl.units</code></td>
+<tr valign="top"><td><code class="r">wavl.units</code></td>
 <td>
 <p>wavelength units. Defaults to Micrometers. Nanometers is another typical option.</p>
 </td></tr>
-<tr valign="top"><td><code>scaleF</code></td>
+<tr valign="top"><td><code class="r">scaleF</code></td>
 <td>
 <p>optional reflectance scaling factor. Defaults to 1.</p>
 </td></tr>
-<tr valign="top"><td><code>mode</code></td>
+<tr valign="top"><td><code class="r">mode</code></td>
 <td>
-<p>character string specifying output file type. Must be one of <code>"bin"</code> for binary .sli files or <code>"ASCII"</code> for &ndash;guess what&ndash; ASCII spectral library files (still in an ENVI compatible format).</p>
+<p>character string specifying output file type. Must be one of <code class="r">"bin"</code> for binary .sli files or <code class="r">"ASCII"</code> for &ndash;guess what&ndash; ASCII spectral library files (still in an ENVI compatible format).</p>
 </td></tr>
 </table>
 
@@ -64,7 +64,7 @@ writeSLI(x, path, wavl.units = "Micrometers", scaleF = 1, mode = "bin")
 
 <h3>See Also</h3>
 
-<p><code><a href="readSLI.html">readSLI</a></code>
+<p><code class="r"><a href="readSLI.html">readSLI</a></code>
 </p>
 
 
@@ -85,7 +85,7 @@ dataRe &lt;- readSLI(path = pathToFile)
 all.equal(data, dataRe)
 </code></pre>
 
-<pre><code>#&gt; [1] TRUE
+<pre><code class="r">#&gt; [1] TRUE
 </code></pre>
 
 

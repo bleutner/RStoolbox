@@ -34,31 +34,31 @@ pifMatch(img, ref, method = "cor", quantile = 0.95, returnPifMap = FALSE,
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><code>img</code></td>
+<tr valign="top"><td><code class="r">img</code></td>
 <td>
 <p>RasterStack or RasterBrick. Image to be adjusted.</p>
 </td></tr>
-<tr valign="top"><td><code>ref</code></td>
+<tr valign="top"><td><code class="r">ref</code></td>
 <td>
 <p>RasterStack or RasterBruck. Reference image.</p>
 </td></tr>
-<tr valign="top"><td><code>method</code></td>
+<tr valign="top"><td><code class="r">method</code></td>
 <td>
 <p>Method to calculate pixel similariry. Options: euclidean distance ('ed'), spectral angle</p>
 </td></tr>
-<tr valign="top"><td><code>quantile</code></td>
+<tr valign="top"><td><code class="r">quantile</code></td>
 <td>
 <p>Numeric. Threshold quantile used to identify PIFs</p>
 </td></tr>
-<tr valign="top"><td><code>returnPifMap</code></td>
+<tr valign="top"><td><code class="r">returnPifMap</code></td>
 <td>
 <p>Logical. Return a binary raster map ot pixels which were identified as pesudo-invariant features.</p>
 </td></tr>
-<tr valign="top"><td><code>returnSimMap</code></td>
+<tr valign="top"><td><code class="r">returnSimMap</code></td>
 <td>
 <p>Logical. Return the similarity map as well</p>
 </td></tr>
-<tr valign="top"><td><code>returnModels</code></td>
+<tr valign="top"><td><code class="r">returnModels</code></td>
 <td>
 <p>Logical. Return the linear models along with the adjusted image.</p>
 </td></tr>
@@ -71,30 +71,30 @@ pifMatch(img, ref, method = "cor", quantile = 0.95, returnPifMap = FALSE,
 First, it calculates pixel-wise similarity between the two rasters and identifies pseudo-invariant pixels based on
 a similarity threshold.
 In the second step the values of the pseudo-invariant pixels are regressed against each other in a linear model for each layer.
-Finally the linear models are applied to all pixels in the <code>img</code>, thereby matching it to the reference scene.
+Finally the linear models are applied to all pixels in the <code class="r">img</code>, thereby matching it to the reference scene.
 </p>
-<p>Pixel-wise similarity can be calculated using one of three methods: euclidean distance (<code>method = "ed"</code>), spectral angle (<code>"sam"</code>) or pearsons correlation coefficient (<code>"cor"</code>).
-The threshold is defined as a similarity quantile. Setting <code>quantile=0.95</code> will select all pixels with a similarity above the 95% quantile as pseudo-invariant features.
+<p>Pixel-wise similarity can be calculated using one of three methods: euclidean distance (<code class="r">method = "ed"</code>), spectral angle (<code class="r">"sam"</code>) or pearsons correlation coefficient (<code class="r">"cor"</code>).
+The threshold is defined as a similarity quantile. Setting <code class="r">quantile=0.95</code> will select all pixels with a similarity above the 95% quantile as pseudo-invariant features.
 </p>
-<p>Model fitting is performed with simple linear models (<code><a href="http://www.inside-r.org/r-doc/stats/lm">lm</a></code>); fitting one model per layer.
+<p>Model fitting is performed with simple linear models (<code class="r"><a href="http://www.inside-r.org/r-doc/stats/lm">lm</a></code>); fitting one model per layer.
 </p>
 
 
 <h3>Value</h3>
 
-<p>Returns a RasterStack with the adjusted image (<code>img</code>) by default.
+<p>Returns a RasterStack with the adjusted image (<code class="r">img</code>) by default.
 </p>
 <p>If further return arguments are specified the following intermediate products will be returned in a list along with the adujsted image:
 </p>
 
 <ul>
-<li> <p><code>returnModels = TRUE</code>: returns the linear models; one for each layer.
+<li> <p><code class="r">returnModels = TRUE</code>: returns the linear models; one for each layer.
 </p>
 </li>
-<li> <p><code>returnPifMap = TRUE</code>: returns binary map of pixels which were selected as pseudo-invariant features.
+<li> <p><code class="r">returnPifMap = TRUE</code>: returns binary map of pixels which were selected as pseudo-invariant features.
 </p>
 </li>
-<li> <p><code>returnSimMap = TRUE</code>: returns the pixel-wise similarity.
+<li> <p><code class="r">returnSimMap = TRUE</code>: returns the pixel-wise similarity.
 </p>
 </li></ul>
 

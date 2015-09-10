@@ -36,43 +36,43 @@ histMatch(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e+05,
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><code>x</code></td>
+<tr valign="top"><td><code class="r">x</code></td>
 <td>
 <p>Raster*. Source raster which is to be modified.</p>
 </td></tr>
-<tr valign="top"><td><code>ref</code></td>
+<tr valign="top"><td><code class="r">ref</code></td>
 <td>
 <p>Raster*. Reference raster, to which x will be matched.</p>
 </td></tr>
-<tr valign="top"><td><code>xmask</code></td>
+<tr valign="top"><td><code class="r">xmask</code></td>
 <td>
-<p>RasterLayer. Mask layer for <code>x</code> to exclude pixels which might distort the histogram, i.e. are not present in <code>ref</code>. Any NA pixel in <code>xmask</code> will be ignored (<code>maskvalue = NA</code>).</p>
+<p>RasterLayer. Mask layer for <code class="r">x</code> to exclude pixels which might distort the histogram, i.e. are not present in <code class="r">ref</code>. Any NA pixel in <code class="r">xmask</code> will be ignored (<code class="r">maskvalue = NA</code>).</p>
 </td></tr>
-<tr valign="top"><td><code>refmask</code></td>
+<tr valign="top"><td><code class="r">refmask</code></td>
 <td>
-<p>RasterLayer. Mask layer for <code>ref</code>. Any NA pixel in <code>refmask</code> will be ignored (<code>maskvalue = NA</code>).</p>
+<p>RasterLayer. Mask layer for <code class="r">ref</code>. Any NA pixel in <code class="r">refmask</code> will be ignored (<code class="r">maskvalue = NA</code>).</p>
 </td></tr>
-<tr valign="top"><td><code>nSamples</code></td>
+<tr valign="top"><td><code class="r">nSamples</code></td>
 <td>
 <p>Integer. Number of random samples from each image to build the histograms.</p>
 </td></tr>
-<tr valign="top"><td><code>intersectOnly</code></td>
+<tr valign="top"><td><code class="r">intersectOnly</code></td>
 <td>
-<p>Logical. If <code>TRUE</code> sampling will only take place in the overlap extent of the two rasters. Otherwise the full rasters will be used for sampling.</p>
+<p>Logical. If <code class="r">TRUE</code> sampling will only take place in the overlap extent of the two rasters. Otherwise the full rasters will be used for sampling.</p>
 </td></tr>
-<tr valign="top"><td><code>paired</code></td>
+<tr valign="top"><td><code class="r">paired</code></td>
 <td>
-<p>Logical. If <code>TRUE</code> the corresponding pixels will be used in the overlap.</p>
+<p>Logical. If <code class="r">TRUE</code> the corresponding pixels will be used in the overlap.</p>
 </td></tr>
-<tr valign="top"><td><code>forceInteger</code></td>
+<tr valign="top"><td><code class="r">forceInteger</code></td>
 <td>
 <p>Logical. Force integer output.</p>
 </td></tr>
-<tr valign="top"><td><code>returnFunctions</code></td>
+<tr valign="top"><td><code class="r">returnFunctions</code></td>
 <td>
-<p>Logical. If <code>TRUE</code> the matching functions will be returned instead of applying them to <code>x</code>.</p>
+<p>Logical. If <code class="r">TRUE</code> the matching functions will be returned instead of applying them to <code class="r">x</code>.</p>
 </td></tr>
-<tr valign="top"><td><code>...</code></td>
+<tr valign="top"><td><code class="r">...</code></td>
 <td>
 <p>Further arguments to be passed to <a href="http://www.inside-r.org/packages/cran/raster/docs/writeRaster">writeRaster</a>.</p>
 </td></tr>
@@ -81,13 +81,13 @@ histMatch(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e+05,
 
 <h3>Value</h3>
 
-<p>A Raster* object of <code>x</code> adjusted to the histogram of <code>ref</code>. If <code>returnFunctions  = TRUE</code> a list of functions (one for each layer) will be returned instead.
+<p>A Raster* object of <code class="r">x</code> adjusted to the histogram of <code class="r">ref</code>. If <code class="r">returnFunctions  = TRUE</code> a list of functions (one for each layer) will be returned instead.
 </p>
 
 
 <h3>Note</h3>
 
-<p><code>x</code> and <code>ref</code> must have the same number of layers.
+<p><code class="r">x</code> and <code class="r">ref</code> must have the same number of layers.
 </p>
 
 

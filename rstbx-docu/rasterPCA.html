@@ -34,32 +34,32 @@ rasterPCA(img, nSamples = NULL, nComp = nlayers(img), spca = FALSE,
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><code>img</code></td>
+<tr valign="top"><td><code class="r">img</code></td>
 <td>
 <p>RasterBrick or RasterStack.</p>
 </td></tr>
-<tr valign="top"><td><code>nSamples</code></td>
+<tr valign="top"><td><code class="r">nSamples</code></td>
 <td>
 <p>Integer or NULL. Number of pixels to sample for PCA fitting. If NULL, all pixels will be used.</p>
 </td></tr>
-<tr valign="top"><td><code>nComp</code></td>
+<tr valign="top"><td><code class="r">nComp</code></td>
 <td>
 <p>Integer. Number of PCA components to return.</p>
 </td></tr>
-<tr valign="top"><td><code>spca</code></td>
+<tr valign="top"><td><code class="r">spca</code></td>
 <td>
-<p>Logical. If <code>TRUE</code>, perform standardized PCA.</p>
+<p>Logical. If <code class="r">TRUE</code>, perform standardized PCA.</p>
 </td></tr>
-<tr valign="top"><td><code>norm</code></td>
+<tr valign="top"><td><code class="r">norm</code></td>
 <td>
 <p>Logical. Center and normalize image befor calculating PCA. It is usually benefitial to do this.</p>
 </td></tr>
-<tr valign="top"><td><code>maskCheck</code></td>
+<tr valign="top"><td><code class="r">maskCheck</code></td>
 <td>
 <p>Logical. Masks all pixels which have at least one NA (default TRUE is reccomended but introduces a slowdown, see Details when it is wise to disable maskCheck).
 Takes effect only if nSamples is NULL.</p>
 </td></tr>
-<tr valign="top"><td><code>...</code></td>
+<tr valign="top"><td><code class="r">...</code></td>
 <td>
 <p>further arguments to be passed to <a href="http://www.inside-r.org/packages/cran/raster/docs/writeRaster">writeRaster</a>, e.g. filename.</p>
 </td></tr>
@@ -106,7 +106,7 @@ rpc &lt;- rasterPCA(rlogo)
 rpc
 </code></pre>
 
-<pre><code>#&gt; $call
+<pre><code class="r">#&gt; $call
 #&gt; rasterPCA(img = rlogo)
 #&gt; 
 #&gt; $model
@@ -138,7 +138,7 @@ rpc
 <pre><code class="r">summary(rpc$model)
 </code></pre>
 
-<pre><code>#&gt; Importance of components:
+<pre><code class="r">#&gt; Importance of components:
 #&gt;                           Comp.1     Comp.2       Comp.3
 #&gt; Standard deviation     1.7154721 0.23825284 0.0197768514
 #&gt; Proportion of Variance 0.9809482 0.01892147 0.0001303746

@@ -19,7 +19,7 @@ group: navigation
 
 <h3>Description</h3>
 
-<p>Intended for interactive use, <code>cloudShadowMask</code> will ask the user to select a few
+<p>Intended for interactive use, <code class="r">cloudShadowMask</code> will ask the user to select a few
 corresponding cloud/cloudShadow pixels which will be used to estimate coordinates
 for a linear cloudmask shift.
 </p>
@@ -36,31 +36,31 @@ cloudShadowMask(img, cm, nc = 5, shiftEstimate = NULL,
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><code>img</code></td>
+<tr valign="top"><td><code class="r">img</code></td>
 <td>
 <p>Raster* object containing the scene</p>
 </td></tr>
-<tr valign="top"><td><code>cm</code></td>
+<tr valign="top"><td><code class="r">cm</code></td>
 <td>
-<p>Raster* object. Cloud mask (typically the result of <code><a href="cloudMask.html">cloudMask</a></code>)</p>
+<p>Raster* object. Cloud mask (typically the result of <code class="r"><a href="cloudMask.html">cloudMask</a></code>)</p>
 </td></tr>
-<tr valign="top"><td><code>nc</code></td>
+<tr valign="top"><td><code class="r">nc</code></td>
 <td>
 <p>Integer. Number of control points. A few points (default) are fine because the final shift is estimated by <a href="coregisterImages.html">coregisterImages</a>.</p>
 </td></tr>
-<tr valign="top"><td><code>shiftEstimate</code></td>
+<tr valign="top"><td><code class="r">shiftEstimate</code></td>
 <td>
-<p>NULL or numeric vector of length two (x,y). Estimated displacement of shadows in map units. If <code>NULL</code>, the user will be asked to select control points interactively.</p>
+<p>NULL or numeric vector of length two (x,y). Estimated displacement of shadows in map units. If <code class="r">NULL</code>, the user will be asked to select control points interactively.</p>
 </td></tr>
-<tr valign="top"><td><code>preciseShift</code></td>
+<tr valign="top"><td><code class="r">preciseShift</code></td>
 <td>
-<p>NULL or numeric vector of length two (x,y). Use this if cloud/cloud-shadow displacement is already known, e.g. from a previous run of <code>cloudShadowMask</code>.</p>
+<p>NULL or numeric vector of length two (x,y). Use this if cloud/cloud-shadow displacement is already known, e.g. from a previous run of <code class="r">cloudShadowMask</code>.</p>
 </td></tr>
-<tr valign="top"><td><code>quantile</code></td>
+<tr valign="top"><td><code class="r">quantile</code></td>
 <td>
 <p>Numeric (between 0 and 1). Quantile threshold used for image co-registration. By default the 20% quantile of the total intensity (sum) of the image is used as potential shadow mask.</p>
 </td></tr>
-<tr valign="top"><td><code>returnShift</code></td>
+<tr valign="top"><td><code class="r">returnShift</code></td>
 <td>
 <p>Logical. Return a numeric vector containing the shift parameters. Useful if you estimate parameters on a subset of the image.</p>
 </td></tr>

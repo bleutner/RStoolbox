@@ -33,17 +33,17 @@ sam(x, em, angles = FALSE)
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><code>x</code></td>
+<tr valign="top"><td><code class="r">x</code></td>
 <td>
 <p>RasterBrick or RasterStack. Remote sensing imagery (usually hyperspectral)</p>
 </td></tr>
-<tr valign="top"><td><code>em</code></td>
+<tr valign="top"><td><code class="r">em</code></td>
 <td>
 <p>Matrix containing endmembers in rows and bands in columns</p>
 </td></tr>
-<tr valign="top"><td><code>angles</code></td>
+<tr valign="top"><td><code class="r">angles</code></td>
 <td>
-<p>Logical. If <code>TRUE</code> a RasterBrick containing each one layer per endmember will be returned containing the spectral angles.</p>
+<p>Logical. If <code class="r">TRUE</code> a RasterBrick containing each one layer per endmember will be returned containing the spectral angles.</p>
 </td></tr>
 </table>
 
@@ -59,7 +59,7 @@ In a second step one can the go ahead an enforce thresholds of maximum angles or
 <h3>Value</h3>
 
 <p>RasterBrick or RasterLayer
-If <code>angles = FALSE</code> a single Layer will be returned in which each pixel is assigned to the closest endmember class (integer pixel values correspond to row order of <code>em</code>.
+If <code class="r">angles = FALSE</code> a single Layer will be returned in which each pixel is assigned to the closest endmember class (integer pixel values correspond to row order of <code class="r">em</code>.
 </p>
 
 

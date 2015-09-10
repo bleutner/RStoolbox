@@ -34,19 +34,19 @@ classifyQA(img, type = c("background", "cloud", "cirrus", "snow", "water"),
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><code>img</code></td>
+<tr valign="top"><td><code class="r">img</code></td>
 <td>
 <p>RasterLayer. Landsat 8 OLI QA band.</p>
 </td></tr>
-<tr valign="top"><td><code>type</code></td>
+<tr valign="top"><td><code class="r">type</code></td>
 <td>
 <p>Character. Classes which should be returned. One or more of c(&quot;background&quot;, &quot;cloud&quot;, &quot;cirrus&quot;,&quot;snow&quot;, &quot;water&quot;).</p>
 </td></tr>
-<tr valign="top"><td><code>confLayers</code></td>
+<tr valign="top"><td><code class="r">confLayers</code></td>
 <td>
 <p>Logical. Return one layer per class classified by condidence levels, i.e. cloud:low, cloud:med, cloud:high.</p>
 </td></tr>
-<tr valign="top"><td><code>...</code></td>
+<tr valign="top"><td><code class="r">...</code></td>
 <td>
 <p>further arguments passed to <a href="http://www.inside-r.org/packages/cran/raster/docs/writeRaster">writeRaster</a></p>
 </td></tr>
@@ -55,7 +55,7 @@ classifyQA(img, type = c("background", "cloud", "cirrus", "snow", "water"),
 
 <h3>Details</h3>
 
-<p>By default each class is queried for *high* confidence. See <a href="encodeQA.html">encodeQA</a> for details. To return the different confidence levels per condition use <code>confLayers=TRUE</code>.
+<p>By default each class is queried for *high* confidence. See <a href="encodeQA.html">encodeQA</a> for details. To return the different confidence levels per condition use <code class="r">confLayers=TRUE</code>.
 This approach corresponds to the way LandsatLook Quality Images are produced by the USGS.
 </p>
 
@@ -98,7 +98,7 @@ water  </td><td style="text-align: right;"> 5L </td>
 </table>
 
 <p>Values outside of these classes are returned as NA.
-If <code>confLayers = TRUE</code> then a RasterStack with one layer per condition (except 'background') is returned, whereby each layer contains the confidence level of the condition.
+If <code class="r">confLayers = TRUE</code> then a RasterStack with one layer per condition (except 'background') is returned, whereby each layer contains the confidence level of the condition.
 </p>
 
 <table summary="Rd table">

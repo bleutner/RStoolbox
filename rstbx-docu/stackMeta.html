@@ -35,21 +35,21 @@ stackMeta(file, quantity = "all", category = "image",
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><code>file</code></td>
+<tr valign="top"><td><code class="r">file</code></td>
 <td>
 <p>Character. Path to Landsat MTL metadata file (not an XML file!).</p>
 </td></tr>
-<tr valign="top"><td><code>quantity</code></td>
+<tr valign="top"><td><code class="r">quantity</code></td>
 <td>
 <p>Character vector. Which quantity should be returned. Options: digital numbers ('dn'), top of atmosphere reflectance ('tre'), at surface reflectance ('sre'), brightness temperature ('bt'), spectral index ('index'), all quantities ('all').</p>
 </td></tr>
-<tr valign="top"><td><code>category</code></td>
+<tr valign="top"><td><code class="r">category</code></td>
 <td>
 <p>Character vector. Which category of data to return. Options 'image': image data, 'pan': panchromatic image, 'index': multiband indices, 'qa' quality flag bands, 'all': all categories.</p>
 </td></tr>
-<tr valign="top"><td><code>allResolutions</code></td>
+<tr valign="top"><td><code class="r">allResolutions</code></td>
 <td>
-<p>Logical. if <code>TRUE</code> a list will be returned with length = unique spatial resolutions.</p>
+<p>Logical. if <code class="r">TRUE</code> a list will be returned with length = unique spatial resolutions.</p>
 </td></tr>
 </table>
 
@@ -57,7 +57,7 @@ stackMeta(file, quantity = "all", category = "image",
 <h3>Value</h3>
 
 <p>Returns one single RasterStack comprising all requested bands.
-If <code>allResolutions = TRUE</code> *and* there are different resolution layers (e.g. a 15m panchromatic band along wit 30m imagery) a list of RasterStacks will be returned.
+If <code class="r">allResolutions = TRUE</code> *and* there are different resolution layers (e.g. a 15m panchromatic band along wit 30m imagery) a list of RasterStacks will be returned.
 </p>
 
 
@@ -78,7 +78,7 @@ metaData &lt;- readMeta(mtlFile)
 summary(metaData)
 </code></pre>
 
-<pre><code>#&gt; Scene:      LT52240631988227CUB02 
+<pre><code class="r">#&gt; Scene:      LT52240631988227CUB02 
 #&gt; Satellite:  LANDSAT5 
 #&gt; Sensor:     TM 
 #&gt; Date:       1988-08-14 
@@ -105,7 +105,7 @@ lsat     &lt;- stackMeta(mtlFile)
 lsat
 </code></pre>
 
-<pre><code>#&gt; class       : RasterStack 
+<pre><code class="r">#&gt; class       : RasterStack 
 #&gt; dimensions  : 310, 287, 88970, 7  (nrow, ncol, ncell, nlayers)
 #&gt; resolution  : 30, 30  (x, y)
 #&gt; extent      : 619395, 628005, -419505, -410205  (xmin, xmax, ymin, ymax)

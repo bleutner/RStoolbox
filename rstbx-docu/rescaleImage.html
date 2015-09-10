@@ -34,31 +34,31 @@ rescaleImage(x, y, xmin, xmax, ymin, ymax, forceMinMax = FALSE)
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><code>x</code></td>
+<tr valign="top"><td><code class="r">x</code></td>
 <td>
 <p>Raster* object. Image to normalise.</p>
 </td></tr>
-<tr valign="top"><td><code>y</code></td>
+<tr valign="top"><td><code class="r">y</code></td>
 <td>
 <p>Raster* object. Reference image.</p>
 </td></tr>
-<tr valign="top"><td><code>xmin</code></td>
+<tr valign="top"><td><code class="r">xmin</code></td>
 <td>
 <p>Numeric. Min value of x.</p>
 </td></tr>
-<tr valign="top"><td><code>xmax</code></td>
+<tr valign="top"><td><code class="r">xmax</code></td>
 <td>
 <p>Numeric. Max value of x.</p>
 </td></tr>
-<tr valign="top"><td><code>ymin</code></td>
+<tr valign="top"><td><code class="r">ymin</code></td>
 <td>
 <p>Numeric. Min value of y.</p>
 </td></tr>
-<tr valign="top"><td><code>ymax</code></td>
+<tr valign="top"><td><code class="r">ymax</code></td>
 <td>
 <p>Numeric. Max value of y.</p>
 </td></tr>
-<tr valign="top"><td><code>forceMinMax</code></td>
+<tr valign="top"><td><code class="r">forceMinMax</code></td>
 <td>
 <p>Logical. Forces update of min and max data slots in x or y.</p>
 </td></tr>
@@ -67,7 +67,7 @@ rescaleImage(x, y, xmin, xmax, ymin, ymax, forceMinMax = FALSE)
 
 <h3>Value</h3>
 
-<p>Returns a Raster* object of the same dimensions as the input raster <code>x</code> but shifted and stretched to the new limits.
+<p>Returns a Raster* object of the same dimensions as the input raster <code class="r">x</code> but shifted and stretched to the new limits.
 </p>
 
 
@@ -85,7 +85,7 @@ lsat2 &lt;- lsat - 1000
 lsat2
 </code></pre>
 
-<pre><code>#&gt; class       : RasterBrick 
+<pre><code class="r">#&gt; class       : RasterBrick 
 #&gt; dimensions  : 310, 287, 88970, 7  (nrow, ncol, ncell, nlayers)
 #&gt; resolution  : 30, 30  (x, y)
 #&gt; extent      : 619395, 628005, -419505, -410205  (xmin, xmax, ymin, ymax)
@@ -101,7 +101,7 @@ lsat2_rescaled &lt;- rescaleImage(lsat2, lsat)
 lsat2_rescaled
 </code></pre>
 
-<pre><code>#&gt; class       : RasterBrick 
+<pre><code class="r">#&gt; class       : RasterBrick 
 #&gt; dimensions  : 310, 287, 88970, 7  (nrow, ncol, ncell, nlayers)
 #&gt; resolution  : 30, 30  (x, y)
 #&gt; extent      : 619395, 628005, -419505, -410205  (xmin, xmax, ymin, ymax)
@@ -117,7 +117,7 @@ lsat2_unity &lt;- rescaleImage(lsat2, ymin = 0, ymax = 1)
 lsat2_unity
 </code></pre>
 
-<pre><code>#&gt; class       : RasterBrick 
+<pre><code class="r">#&gt; class       : RasterBrick 
 #&gt; dimensions  : 310, 287, 88970, 7  (nrow, ncol, ncell, nlayers)
 #&gt; resolution  : 30, 30  (x, y)
 #&gt; extent      : 619395, 628005, -419505, -410205  (xmin, xmax, ymin, ymax)

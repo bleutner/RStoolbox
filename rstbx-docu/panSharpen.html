@@ -34,37 +34,37 @@ panSharpen(img, pan, r, g, b, pc = 1, method = "brovey", norm = TRUE)
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><code>img</code></td>
+<tr valign="top"><td><code class="r">img</code></td>
 <td>
 <p>Raster* object. Coarse resolution multispectral image</p>
 </td></tr>
-<tr valign="top"><td><code>pan</code></td>
+<tr valign="top"><td><code class="r">pan</code></td>
 <td>
 <p>RasterLayer. High resolution image, typically panchromatic.</p>
 </td></tr>
-<tr valign="top"><td><code>r</code></td>
+<tr valign="top"><td><code class="r">r</code></td>
 <td>
-<p>Character or Integer. Red band in <code>img</code>. Only relevant if <code>method!='pca'</code></p>
+<p>Character or Integer. Red band in <code class="r">img</code>. Only relevant if <code class="r">method!='pca'</code></p>
 </td></tr>
-<tr valign="top"><td><code>g</code></td>
+<tr valign="top"><td><code class="r">g</code></td>
 <td>
-<p>Character or Integer. Green band in <code>img</code>. Only relevant if <code>method!='pca'</code></p>
+<p>Character or Integer. Green band in <code class="r">img</code>. Only relevant if <code class="r">method!='pca'</code></p>
 </td></tr>
-<tr valign="top"><td><code>b</code></td>
+<tr valign="top"><td><code class="r">b</code></td>
 <td>
-<p>Character or Integer. Blue band in <code>img</code>. Only relevant if <code>method!='pca'</code></p>
+<p>Character or Integer. Blue band in <code class="r">img</code>. Only relevant if <code class="r">method!='pca'</code></p>
 </td></tr>
-<tr valign="top"><td><code>pc</code></td>
+<tr valign="top"><td><code class="r">pc</code></td>
 <td>
-<p>Integer. Only relevant if <code>method = 'pca'</code>. Which principal component to replace. Usually this should be the first component (default). Only if the first component is dominated by something else than brightness it might be worth a try to use the second component.</p>
+<p>Integer. Only relevant if <code class="r">method = 'pca'</code>. Which principal component to replace. Usually this should be the first component (default). Only if the first component is dominated by something else than brightness it might be worth a try to use the second component.</p>
 </td></tr>
-<tr valign="top"><td><code>method</code></td>
+<tr valign="top"><td><code class="r">method</code></td>
 <td>
 <p>Character. Choose method from c(&quot;pca&quot;, &quot;ihs&quot;, &quot;brovey&quot;).</p>
 </td></tr>
-<tr valign="top"><td><code>norm</code></td>
+<tr valign="top"><td><code class="r">norm</code></td>
 <td>
-<p>Logical.  Rescale pan image to match the 1st PC component. Only relevant if <code>method = 'pca'</code>. If <code>TRUE</code> only min and max are matched to the 1st PC. If <code>FALSE</code> pan will be histogram matched to the 1st PC.</p>
+<p>Logical.  Rescale pan image to match the 1st PC component. Only relevant if <code class="r">method = 'pca'</code>. If <code class="r">TRUE</code> only min and max are matched to the 1st PC. If <code class="r">FALSE</code> pan will be histogram matched to the 1st PC.</p>
 </td></tr>
 </table>
 
@@ -75,13 +75,13 @@ panSharpen(img, pan, r, g, b, pc = 1, method = "brovey", norm = TRUE)
 </p>
 
 <ul>
-<li><p><code>method='pca'</code>: Performs a pca using <a href="rasterPCA.html">rasterPCA</a>. The first component is then swapped for the pan band an the PCA is rotated backwards.
+<li><p><code class="r">method='pca'</code>: Performs a pca using <a href="rasterPCA.html">rasterPCA</a>. The first component is then swapped for the pan band an the PCA is rotated backwards.
 </p>
 </li>
-<li><p><code>method='ihs'</code>: Performs a color space transform to Intensity-Hue-Saturation space, swaps intensity for the histogram matched pan and does the backwards transformation.
+<li><p><code class="r">method='ihs'</code>: Performs a color space transform to Intensity-Hue-Saturation space, swaps intensity for the histogram matched pan and does the backwards transformation.
 </p>
 </li>
-<li><p><code>method='brovey'</code>: Performs Brovey reweighting. Pan and img must be at the same value scale (e.g. 0:1, or 0:255) otherwise you'll end up with psychodelic colors.
+<li><p><code class="r">method='brovey'</code>: Performs Brovey reweighting. Pan and img must be at the same value scale (e.g. 0:1, or 0:255) otherwise you'll end up with psychodelic colors.
 </p>
 </li></ul>
 
@@ -110,7 +110,7 @@ lowResImg_pan &lt;- panSharpen(lowResImg, pan, r = 3, g = 2, b = 1, method = &qu
 lowResImg_pan
 </code></pre>
 
-<pre><code>#&gt; class       : RasterBrick 
+<pre><code class="r">#&gt; class       : RasterBrick 
 #&gt; dimensions  : 310, 287, 88970, 3  (nrow, ncol, ncell, nlayers)
 #&gt; resolution  : 30, 30  (x, y)
 #&gt; extent      : 619395, 628005, -419505, -410205  (xmin, xmax, ymin, ymax)
