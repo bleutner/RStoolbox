@@ -99,6 +99,16 @@ ggR(rc, geom_raster = TRUE)
 
 ## Legend cusomization etc. ...
 ggR(rc, geom_raster = TRUE) + scale_fill_discrete(labels=paste("Class", 1:6))
+
+## Creating a nicely looking DEM with hillshade background
+data(srtm)
+terr <- terrain(srtm, c("slope", "aspect"))
+hill <- hillShade(terr[["slope"]], terr[["aspect"]])
+ggR(hill)
+
+ggR(hill) +
+   ggR(srtm, geom_raster = TRUE, ggLayer = TRUE, alpha = 0.3) +
+   scale_fill_gradientn(colours = terrain.colors(100), name = "elevation")
 }
 \seealso{
 \link{ggRGB}, \link[=fortify.raster]{fortify}

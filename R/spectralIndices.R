@@ -1,4 +1,4 @@
-#' Spectral indices
+#' Spectral Indices
 #' 
 #' Calculate a suite of multispectral indices such as NDVI, SAVI etc. in an efficient way.
 #' 
@@ -19,18 +19,23 @@
 #' @export
 #' @examples
 #' library(ggplot2)
-#' data(rlogo)
-#' rlogo[["nir"]] <- rlogo[[2]] + 100
-#' SI <- spectralIndices(rlogo, red = "red", nir = "nir", indices = "NDVI")
-#' ggR(SI, geom_raster = TRUE) + 
-#'     scale_fill_gradient(low = "white", high = "green", na.value = NA)
+#' library(raster)
+#' data(lsat)
+#' ## Calculate NDVI
+#' ndvi <- spectralIndices(lsat, red = "B3_dn", nir = "B4_dn", indices = "NDVI")
+#' ndvi
+#' ggR(ndvi, geom_raster = TRUE) +
+#'         scale_fill_gradientn(colours = c("black", "white")) 
+#' 
+#' ## Calculate all possible indices, given the provided bands 
+#' SI <- spectralIndices(lsat, red = "B3_dn", nir = "B4_dn")
+#' plot(SI)
 spectralIndices <- function(img,
         blue=NULL, green=NULL, red=NULL, nir=NULL, swir1 =NULL, swir2 = NULL, 
         indices=NULL, index = NULL, coefs = list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5, s = 1),
         ... ) {
     # TODO: add further indices
     # TODO: soil line estimator
-    # TODO: change swir2 to swir11 and swir1 2
     
 	## We will use the following wavlength range definitions (following Schowengerdt 2007)
 	# VIS   | Visible              |   400  -    700 nm
@@ -140,16 +145,16 @@ BANDSdb <-  list(
 #' @keywords internal
 #' @noRd 
 .IDXdb <-  list(               
-        DVI	= function(red, nir) {s*nir-red},
+        DVI 	= function(red, nir) {s*nir-red},
         CTVI    = function(red, nir) {(nir-red)/(nir+red) + 0.5},
-	EVI	= function(red, nir, blue) {G * ((nir - red) / (nir + C1 * red - C2 * blue + L_evi))},
+	    EVI  	= function(red, nir, blue) {G * ((nir - red) / (nir + C1 * red - C2 * blue + L_evi))},
         GEMI	= function(red, nir) {(((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5) ) / (nir + red + 0.5)) * (1 - ((((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5) ) / (nir + red + 0.5)) * 0.25)) - ((red - 0.125) / (1 - red))},
         LSWI	= function(nir, swir1) {(nir-swir1)/(nir+swir1)},
-	MNDWI    = function(green, swir1) {(green-swir1) / (green+swir1)},
+	   MNDWI    = function(green, swir1) {(green-swir1) / (green+swir1)},
         MSAVI	= function(red, nir) {nir + 0.5 - (0.5 * sqrt((2 * nir + 1)^2 - 8 * (nir - (2 * red))))},
         MSAVI2	= function(red, nir) {(2 * (nir + 1) - sqrt((2 * nir + 1)^2 - 8 * (nir - red))) / 2},
    #     MSI     = function(nir, swir2) {swir2/nir},
-        NBRI     = function(nir, swir2) { (nir - swir2) / (nir + swir2)},
+        NBRI    = function(nir, swir2) { (nir - swir2) / (nir + swir2)},
         NDVI	= function(red, nir) {(nir-red)/(nir+red)}, 
         NDWI 	= function(green, nir) {(green - nir)/(green + nir)},
         NRVI    = function(red, nir) {(red/nir - 1)/(red/nir + 1)},
@@ -157,7 +162,7 @@ BANDSdb <-  list(
         SATVI   = function(red, swir1, swir2) {(swir1 - red) / (swir1 + red + L) * (1 + L) - (swir2 / 2)},
         SAVI    = function(red, nir) {(nir - red) * (1+L) / (nir + red + L)}, 
         SLAVI	= function(red, nir, swir2) {nir / (red + swir2)},
-        SR 	= function(red, nir) {nir / red},     
+        SR  	= function(red, nir) {nir / red},     
         TVI 	= function(red, nir) {sqrt((nir-red)/(nir+red)+0.5)},
         TTVI    = function(red, nir) {sqrt(abs((nir-red)/(nir+red) + 0.5))},
         WDVI    = function(red, nir) {nir - s * red}

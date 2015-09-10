@@ -54,9 +54,8 @@ reference <- rlogo
 missreg <- shift(reference, x = 2, y = 3)
 
 ## Compare shift
-p <- ggRGB(reference, NULL, NULL, 3)
-p
-p + ggRGB(missreg, 3, NULL, NULL, alpha = 0.5, ggLayer=TRUE)
+p <- ggR(reference, sat = 1, alpha = .5)
+p + ggR(missreg, sat = 1, hue = .5, alpha = 0.5, ggLayer=TRUE)
 
 ## Coregister images (and report statistics)
 coreg <- coregisterImages(missreg, master = reference, nSamples = 500, reportStats = TRUE)
@@ -73,8 +72,7 @@ ggplot(df) + geom_raster(aes(x = Var2, y = Var1,fill=value)) + facet_wrap(~L1) +
        scale_fill_gradientn(name = "p", colours =  heat.colors(10), na.value = NA)
 }
 ## Compare correction
-p <- ggRGB(reference, NULL, NULL, 3)
-p
-p + ggRGB(coreg$coregImg, 3, NULL, NULL, alpha = 0.5, ggLayer=TRUE)
+ggR(reference, sat = 1, alpha = .5, 3) +
+  ggR(coreg$coregImg, sat = 1, hue = .5, alpha = 0.5, ggLayer=TRUE)
 }
 

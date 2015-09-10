@@ -2,7 +2,7 @@
 % Please edit documentation in R/spectralIndices.R
 \name{spectralIndices}
 \alias{spectralIndices}
-\title{Spectral indices}
+\title{Spectral Indices}
 \usage{
 spectralIndices(img, blue = NULL, green = NULL, red = NULL, nir = NULL,
   swir1 = NULL, swir2 = NULL, indices = NULL, index = NULL,
@@ -54,11 +54,17 @@ Although the defaults are sensible values, it can make sense to adjust the SAVI 
 }
 \examples{
 library(ggplot2)
-data(rlogo)
-rlogo[["nir"]] <- rlogo[[2]] + 100
-SI <- spectralIndices(rlogo, red = "red", nir = "nir", indices = "NDVI")
-ggR(SI, geom_raster = TRUE) +
-    scale_fill_gradient(low = "white", high = "green", na.value = NA)
+library(raster)
+data(lsat)
+## Calculate NDVI
+ndvi <- spectralIndices(lsat, red = "B3_dn", nir = "B4_dn", indices = "NDVI")
+ndvi
+ggR(ndvi, geom_raster = TRUE) +
+        scale_fill_gradientn(colours = c("black", "white"))
+
+## Calculate all possible indices, given the provided bands
+SI <- spectralIndices(lsat, red = "B3_dn", nir = "B4_dn")
+plot(SI)
 }
 \seealso{
 \code{\link[raster]{overlay}}
