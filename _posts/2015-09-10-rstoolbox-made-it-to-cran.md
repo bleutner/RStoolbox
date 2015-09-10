@@ -10,7 +10,7 @@ tags: [r,RStoolbox]
 After well over a year of (on-and-off) development we dared to knock on the menacing gates of CRAN.
 Intensive testing and an intimate relationship with `R CMD check` payed out and with little further changes RStoolbox was accepted and can now be installed via `install.packages("RStoolbox")`. Hooray :-)
 
-But not so fast! You think checking locally, checking with win-builder and checking with oldrel, release and devel on [Travis CI](https://travis-ci.org/bleutner/RStoolbox) would give you a CRAN proof jacket? Hahaha, no.  
+But not so fast! You think checking locally, checking with win-builder and checking with oldrel, release and devel on [Travis CI](https://travis-ci.org/bleutner/RStoolbox) would give you a CRAN proof jacket? Hahaha -- no.  
 Quickly after the release I was told that the tests of RStoolbox failed the CRAN clang-UBSAN check. Something I had never even heard of, since I'm pretty much new to writing compiled code (some parts of RStoolbox are written in C++ thanks to the wonderful Rcpp package). For the record: it checks for undefined behavior in C++ code, for example trying to convert `NaN` to `int`. 
 
 The first step -- to replicate the error -- turned out to be surprisingly hard. I followed this well written [blog post](http://francoismichonneau.net/2014/03/how-to-do-ubsan-tests-r-package/) but could not reproduce the error. Therefore, I fixed the part I suspected to be the culprit and resubmitted v0.1.1 to CRAN. It went smoothly and got accepted. Yet, the post-submission tests still fail (with clang only). 
