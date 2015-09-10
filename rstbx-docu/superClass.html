@@ -163,7 +163,17 @@ otherwise it will be performed on a per-pixel basis.
 <pre><code class="r">library(caret)
 library(randomForest)
 library(e1071)
-library(raster)
+</code></pre>
+
+<pre><code>#&gt; 
+#&gt; Attaching package: &#39;e1071&#39;
+#&gt; 
+#&gt; The following object is masked from &#39;package:raster&#39;:
+#&gt; 
+#&gt;     interpolate
+</code></pre>
+
+<pre><code class="r">library(raster)
 input &lt;- brick(system.file(&quot;external/rlogo.grd&quot;, package=&quot;raster&quot;))
 train &lt;- readRDS(system.file(&quot;external/training.rds&quot;, package=&quot;RStoolbox&quot;))
 
@@ -242,5 +252,5 @@ horiz = TRUE,  bty = &quot;n&quot;)
 </code></pre>
 
 
-<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.1.0 <a href="index.html">Index</a>]</div>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.1.1.9000 <a href="index.html">Index</a>]</div>
 </body></html>
