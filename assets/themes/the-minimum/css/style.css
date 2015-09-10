@@ -66,8 +66,8 @@ h1,
 
 h2,
 .h2 {
-    font-size: 42px;
-    line-height: 52px;
+    font-size: 35px;
+    line-height: 35px;
     margin-top: 52px;
     margin-bottom: 26px;
     letter-spacing: -1px;
@@ -224,8 +224,9 @@ pre {
 }
 
 pre {
+	padding: 10px;
     color: #f2f2f2;
-    background-color: #393939;
+    background-color: #626262;
     font-family: "Bitstream Vera Sans Mono", "Courier New", Courier, monospace;
     margin-left: 0;
     margin-right: 0;
