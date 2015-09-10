@@ -965,11 +965,11 @@ font-size: 9px;
 }
 
 .logobox {
-    height: 100px;
+    height: 0px;
     position: relative;
-    vertical-align: top;
+    vertical-align: bottom;
     margin-right: 20px;
     overflow: visible;
     float: right;
+    margin-top: -100px;
 }
-
