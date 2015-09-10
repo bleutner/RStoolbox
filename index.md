@@ -14,6 +14,7 @@ The available toolset covers many aspects from data import, pre-processing, data
 RStoolbox builds upon the raster package, which makes it suitable for processing large data-sets even on smaller workstations. 
 Moreover in most parts decent support for parallel processing is implemented. The package is published under GPL3.
    
+   
 #### Installing RStoolbox
 RStoolbox is now available from CRAN and can be installed as usual with
 
@@ -25,9 +26,11 @@ To get the latest development version, install RStoolbox directly from the [gith
     install_github("bleutner/RStoolbox")
   
 
+
 #### Use the Source
 You can view or fork the most recent code on my [GitHub repository](http://www.github.com/bleutner/RStoolbox) or grab the latest source tarball from [here](https://github.com/bleutner/RStoolbox/tarball/master).
     
+
 
 #### Feedback
 I am grateful for any feedback on RStoolbox. Please do not hesitate to report an issue [here](https://github.com/bleutner/RStoolbox/issues) if you discover bugs or have a feature idea.
