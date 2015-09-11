@@ -10,11 +10,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title> Linear image normalization </title>
+    <title> Normalize Raster Images: Center and Scale </title>
     <meta name="author" content="Benjamin Leutner">
     <link href='http://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,300italic' rel='stylesheet' type='text/css'>
     <link href='/assets/themes/the-minimum/css/style.css' rel="stylesheet" media="all">
-    <link href="http://feeds.feedburner.com/" rel="alternate" title=" Linear image normalization " type="application/atom+xml">
+    <link href="http://feeds.feedburner.com/" rel="alternate" title=" Normalize Raster Images: Center and Scale " type="application/atom+xml">
     <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
 </head>
 
@@ -34,10 +35,12 @@
                             </li>
                             <li class="category"><a href="/about.html">About</a>
                             </li>
-
-                        </ul>
+                            <li class="category"><a href="https://github.com/bleutner/RStoolbox">Github</a>
+                            </li>
+                       </ul>
                     </nav>
-                </div>
+                 </div>
+                 
                 <!-- unit-inner -->
             </div>
             <!-- unit-head -->
@@ -45,89 +48,90 @@
         <div class="body" role="main">
             <div class="unit-body">
                 <div class="unit-inner unit-body-inner">
-                    <div class="entry-content">
-                        
+                     <div class="entry-content">                      
+                         
 <article class="unit-article layout-page">
     <div class="unit-inner unit-article-inner">
         <div class="content">
             <header>
-                <div class="unit-head">
-                    <a class="logobox" href="/"><img alt="RStoolbox-logo" src="/assets/img/rstbx.png"> </a>
-
-                    <div class="unit-inner unit-head-inner">
+                 <div class="unit-inner unit-head-inner">
                         <div class="h4 entry-title"> 
                             <table width="100%"><tr><td><strong>normImage<strong> { <a href="index.html">RStoolbox</a>}</td><td align="right">R Documentation</td></tr></table>
-                            <h3> Linear image normalization </h2>
+                            <h3> Normalize Raster Images: Center and Scale </h2>
                         </div>
                     </div>
                     <!-- unit-inner -->
-                </div>
                 <!-- unit-head -->
             </header>
 
             <div class="bd">
                 <div class="entry-content">
                     
- <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head><title>R: Linear image normalization</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link rel="stylesheet" type="text/css" href="R.css">
-</head><body>
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Normalize Raster Images: Center and Scale</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+
+                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+                            <script>hljs.initHighlightingOnLoad();</script>
+                            </head><body>
 
 <h3>Description</h3>
 
-<p>performs linear shifts of value ranges either to match another image
-or to any other min and max value.
+<p>For each pixel subtracts the mean of the raster layer and optionally divide by its standard deviation.
 </p>
 
 
 <h3>Usage</h3>
 
 <pre>
-normImage(x, y, xmin, xmax, ymin, ymax, forceMinMax = FALSE)
+normImage(img, norm = TRUE, ...)
 </pre>
 
 
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><code>x</code></td>
+<tr valign="top"><td><code class="r">img</code></td>
 <td>
-<p>Raster* object. Image to normalise.</p>
+<p>Raster* object. Image to transform. Transformation will be performed separately for each layer.</p>
 </td></tr>
-<tr valign="top"><td><code>y</code></td>
+<tr valign="top"><td><code class="r">norm</code></td>
 <td>
-<p>Raster* object. Reference image.</p>
+<p>Logical. Perform normalization (scaling) in addition to centering, i.e. divide by standard deviation.</p>
 </td></tr>
-<tr valign="top"><td><code>xmin</code></td>
+<tr valign="top"><td><code class="r">...</code></td>
 <td>
-<p>Numeric. Min value of x.</p>
-</td></tr>
-<tr valign="top"><td><code>xmax</code></td>
-<td>
-<p>Numeric. Max value of x.</p>
-</td></tr>
-<tr valign="top"><td><code>ymin</code></td>
-<td>
-<p>Numeric. Min value of y.</p>
-</td></tr>
-<tr valign="top"><td><code>ymax</code></td>
-<td>
-<p>Numeric. Max value of y.</p>
-</td></tr>
-<tr valign="top"><td><code>forceMinMax</code></td>
-<td>
-<p>Logical. Forces update of min and max data slots in x or y.</p>
+<p>further arguments passed to <a href="http://www.inside-r.org/packages/cran/raster/docs/writeRaster">writeRaster</a>.</p>
 </td></tr>
 </table>
 
 
-<h3>See Also</h3>
+<h3>Value</h3>
 
-<p><a href="histMatch.html">histMatch</a>
+<p>Returns a Raster* with the same number layers as input layers with each layer being centered and optionally normalized.
 </p>
 
-<hr><div align="center">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+
+<h3>Examples</h3>
+
+<pre><code class="r">library(raster)
+## Load example data
+data(rlogo)
+
+## Normalization: Center and Scale
+rlogo_center_norm &lt;- normImage(rlogo)
+hist(rlogo_center_norm)
+
+## Centering
+rlogo_center &lt;- normImage(rlogo, norm = FALSE)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-1"/> </p>
+
+
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.1.1.9000 <a href="index.html">Index</a>]</div>
 </body></html>
 
                 </div>
@@ -148,8 +152,10 @@ normImage(x, y, xmin, xmax, ymin, ymax, forceMinMax = FALSE)
     </div>
     <!-- unit-inner -->
 </article>
-                    </div>
+                    </div>         
+                      
                 </div>
+                   
                 <!-- unit-inner -->
             </div>
             <!-- unit-body -->
@@ -160,7 +166,7 @@ normImage(x, y, xmin, xmax, ymin, ymax, forceMinMax = FALSE)
                 <div class="unit-inner unit-foot-inner">
                     <div class="misc vcard">
                         <div>
-                            <p>Last update 2015-03-26 00:25:20 +0100</p>
+                            <p>Last update 2015-09-11 18:40:26 +0200</p>
                         </div>
                         <h4>about</h4>
                         <ul>

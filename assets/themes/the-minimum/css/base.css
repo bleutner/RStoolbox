@@ -23,7 +23,8 @@ No styleguide reference.
 
 html { font-size: 100%; overflow-y: scroll; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
 body { background-image: url(../../../../assets/img/lsat.png);
-    background-repeat: repeat-y;
+    background-repeat: no-repeat;
+    background-size: 30% auto;
     margin: 0; 
     font-size: 1em; 
     line-height: 1.4; 

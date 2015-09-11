@@ -13,6 +13,7 @@
     <title> Topographic Illumination Correction </title>
     <meta name="author" content="Benjamin Leutner">
     <link href='http://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,300italic' rel='stylesheet' type='text/css'>
     <link href='/assets/themes/the-minimum/css/style.css' rel="stylesheet" media="all">
     <link href="http://feeds.feedburner.com/" rel="alternate" title=" Topographic Illumination Correction " type="application/atom+xml">
     <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
@@ -34,10 +35,12 @@
                             </li>
                             <li class="category"><a href="/about.html">About</a>
                             </li>
-
-                        </ul>
+                            <li class="category"><a href="https://github.com/bleutner/RStoolbox">Github</a>
+                            </li>
+                       </ul>
                     </nav>
-                </div>
+                 </div>
+                 
                 <!-- unit-inner -->
             </div>
             <!-- unit-head -->
@@ -45,91 +48,121 @@
         <div class="body" role="main">
             <div class="unit-body">
                 <div class="unit-inner unit-body-inner">
-                    <div class="entry-content">
-                        
+                     <div class="entry-content">                      
+                         
 <article class="unit-article layout-page">
     <div class="unit-inner unit-article-inner">
         <div class="content">
             <header>
-                <div class="unit-head">
-                    <a class="logobox" href="/"><img alt="RStoolbox-logo" src="/assets/img/rstbx.png"> </a>
-
-                    <div class="unit-inner unit-head-inner">
+                 <div class="unit-inner unit-head-inner">
                         <div class="h4 entry-title"> 
                             <table width="100%"><tr><td><strong>topCor<strong> { <a href="index.html">RStoolbox</a>}</td><td align="right">R Documentation</td></tr></table>
                             <h3> Topographic Illumination Correction </h2>
                         </div>
                     </div>
                     <!-- unit-inner -->
-                </div>
                 <!-- unit-head -->
             </header>
 
             <div class="bd">
                 <div class="entry-content">
                     
- <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head><title>R: Topographic Illumination Correction</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link rel="stylesheet" type="text/css" href="R.css">
-</head><body>
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Topographic Illumination Correction</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+
+                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+                            <script>hljs.initHighlightingOnLoad();</script>
+                            </head><body>
 
 <h3>Description</h3>
 
-<p>Topographic Illumination Correction
+<p>account and correct for changes in illumination due to terrain elevation.
 </p>
 
 
 <h3>Usage</h3>
 
 <pre>
-topCor(img, dem, metaData, solarAngles, method = "C", stratImg,
-  stratMethod = "noStrat", nStrat = 5, illu)
+topCor(img, dem, metaData, solarAngles = c(), method = "C",
+  stratImg = NULL, nStrat = 5, illu)
 </pre>
 
 
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><code>img</code></td>
+<tr valign="top"><td><code class="r">img</code></td>
 <td>
 <p>Raster*. Imagery to correct</p>
 </td></tr>
-<tr valign="top"><td><code>dem</code></td>
+<tr valign="top"><td><code class="r">dem</code></td>
 <td>
-<p>Raster*. Either a digital elevation model as a RasterLayer or a RasterStack/Brick with pre-calculated slope and aspect (see <a href="http://www.inside-r.org/packages/cran/raster/docs/terrain">terrain</a>) in which case the layers must be named 'slope' and 'aspect'.</p>
+<p>Raster*. Either a digital elevation model as a RasterLayer or a RasterStack/Brick with pre-calculated slope and aspect (see <a href="http://www.inside-r.org/packages/cran/raster/docs/terrain">terrain</a>) in which case the layers must be named 'slope' and 'aspect'.
+Must have the same dimensions as <code class="r">img</code>.</p>
 </td></tr>
-<tr valign="top"><td><code>metaData</code></td>
+<tr valign="top"><td><code class="r">metaData</code></td>
 <td>
 <p>Character, ImageMetaData. Either a path to a Landsat meta-data file (MTL) or an ImageMetaData object (see <a href="readMeta.html">readMeta</a>)</p>
 </td></tr>
-<tr valign="top"><td><code>solarAngles</code></td>
+<tr valign="top"><td><code class="r">solarAngles</code></td>
 <td>
 <p>Numeric vector containing sun azimuth and sun zenith (in radians and in that order). Not needed if metaData is provided</p>
 </td></tr>
-<tr valign="top"><td><code>method</code></td>
+<tr valign="top"><td><code class="r">method</code></td>
 <td>
 <p>Character. One of c(&quot;cos&quot;, &quot;avgcos&quot;, &quot;minnaert&quot;, &quot;C&quot;, &quot;stat&quot;, &quot;illu&quot;). Choosing 'illu' will return only the local illumination map.</p>
 </td></tr>
-<tr valign="top"><td><code>stratImg</code></td>
+<tr valign="top"><td><code class="r">stratImg</code></td>
 <td>
-<p>RasterLayer by which to stratify by, e.g. NDVI. Defaults to 'slope'</p>
+<p>RasterLayer to define strata, e.g. NDVI. Or the string 'slope' in which case stratification will be on <code class="r">nStrat</code> slope classes. Only relevant if <code class="r">method = 'minnaert'</code>.</p>
 </td></tr>
-<tr valign="top"><td><code>stratMethod</code></td>
+<tr valign="top"><td><code class="r">nStrat</code></td>
 <td>
-<p>Character. One of c(&quot;noStrat&quot;, &quot;stratEqualBins&quot;, &quot;stratQuantiles&quot;).</p>
+<p>Integer. Number of bins or quantiles to stratify by. If a bin has less than 50 samples it will be merged with the next bin. Only relevant if <code class="r">method = 'minnaert'</code>.</p>
 </td></tr>
-<tr valign="top"><td><code>nStrat</code></td>
+<tr valign="top"><td><code class="r">illu</code></td>
 <td>
-<p>Integer. Number of bins or quantiles to stratify by. If a bin has less than 50 samples it will be merged with the next bin.</p>
-</td></tr>
-<tr valign="top"><td><code>illu</code></td>
-<td>
-<p>Raster*. Optional pre-calculated ilumination map. Run topCor with method=&quot;illu&quot; to calculate one.</p>
+<p>Raster*. Optional pre-calculated ilumination map. Run topCor with method=&quot;illu&quot; to calculate an ilumination map</p>
 </td></tr>
 </table>
 
-<hr><div align="center">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+
+<h3>Details</h3>
+
+<p>For detailed discussion of the various approaches please see Riano et al. (2003).
+</p>
+<p>The minnaert correction can be stratified for different landcover characteristics. If <code class="r">stratImg = 'slope'</code> the analysis is stratified by the slope,
+i.e. the slope values are divided into <code class="r">nStrat</code> classes and the correction coefficient k is calculated and applied separately for each slope class.
+An alternative could be to stratify by a vegetation index in which case an additional raster layer has to be provided via the <code class="r">stratImg</code> argument.
+</p>
+
+
+<h3>References</h3>
+
+<p>Riano et al. (2003) Assessment of different topographic correction in Landsat-TM data for mapping vegetation types. IEEE Transactions on Geoscience and Remote Sensing.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class="r">## Load example data
+metaData &lt;- system.file(&quot;external/landsat/LT52240631988227CUB02_MTL.txt&quot;, package=&quot;RStoolbox&quot;)
+metaData &lt;- readMeta(metaData)
+lsat     &lt;- stackMeta(metaData)
+data(srtm)
+
+## Minnaert correction, solar angles from metaData
+lsat_minnaert &lt;- topCor(lsat, dem = srtm, metaData = metaData, method = &quot;minnaert&quot;)
+
+## C correction, solar angles provided manually
+lsat_C &lt;- topCor(lsat, dem = srtm, solarAngles = c(1.081533, 0.7023922), method = &quot;C&quot;)
+</code></pre>
+
+
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.1.1.9000 <a href="index.html">Index</a>]</div>
 </body></html>
 
                 </div>
@@ -150,8 +183,10 @@ topCor(img, dem, metaData, solarAngles, method = "C", stratImg,
     </div>
     <!-- unit-inner -->
 </article>
-                    </div>
+                    </div>         
+                      
                 </div>
+                   
                 <!-- unit-inner -->
             </div>
             <!-- unit-body -->
@@ -162,7 +197,7 @@ topCor(img, dem, metaData, solarAngles, method = "C", stratImg,
                 <div class="unit-inner unit-foot-inner">
                     <div class="misc vcard">
                         <div>
-                            <p>Last update 2015-03-26 00:25:20 +0100</p>
+                            <p>Last update 2015-09-11 18:40:26 +0200</p>
                         </div>
                         <h4>about</h4>
                         <ul>

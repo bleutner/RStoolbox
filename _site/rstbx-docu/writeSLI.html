@@ -13,6 +13,7 @@
     <title> Write ENVI spectral libraries </title>
     <meta name="author" content="Benjamin Leutner">
     <link href='http://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,300italic' rel='stylesheet' type='text/css'>
     <link href='/assets/themes/the-minimum/css/style.css' rel="stylesheet" media="all">
     <link href="http://feeds.feedburner.com/" rel="alternate" title=" Write ENVI spectral libraries " type="application/atom+xml">
     <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
@@ -34,10 +35,12 @@
                             </li>
                             <li class="category"><a href="/about.html">About</a>
                             </li>
-
-                        </ul>
+                            <li class="category"><a href="https://github.com/bleutner/RStoolbox">Github</a>
+                            </li>
+                       </ul>
                     </nav>
-                </div>
+                 </div>
+                 
                 <!-- unit-inner -->
             </div>
             <!-- unit-head -->
@@ -45,39 +48,34 @@
         <div class="body" role="main">
             <div class="unit-body">
                 <div class="unit-inner unit-body-inner">
-                    <div class="entry-content">
-                        
+                     <div class="entry-content">                      
+                         
 <article class="unit-article layout-page">
     <div class="unit-inner unit-article-inner">
         <div class="content">
             <header>
-                <div class="unit-head">
-                    <a class="logobox" href="/"><img alt="RStoolbox-logo" src="/assets/img/rstbx.png"> </a>
-
-                    <div class="unit-inner unit-head-inner">
+                 <div class="unit-inner unit-head-inner">
                         <div class="h4 entry-title"> 
                             <table width="100%"><tr><td><strong>writeSLI<strong> { <a href="index.html">RStoolbox</a>}</td><td align="right">R Documentation</td></tr></table>
                             <h3> Write ENVI spectral libraries </h2>
                         </div>
                     </div>
                     <!-- unit-inner -->
-                </div>
                 <!-- unit-head -->
             </header>
 
             <div class="bd">
                 <div class="entry-content">
                     
- <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head><title>R: Write ENVI spectral libraries</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link rel="stylesheet" type="text/css" href="R.css">
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Write ENVI spectral libraries</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
 
-							<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
-							<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
-							<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
-							<script>hljs.initHighlightingOnLoad();</script>
-							</head><body>
+                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+                            <script>hljs.initHighlightingOnLoad();</script>
+                            </head><body>
 
 <h3>Description</h3>
 
@@ -95,25 +93,25 @@ writeSLI(x, path, wavl.units = "Micrometers", scaleF = 1, mode = "bin")
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><code>x</code></td>
+<tr valign="top"><td><code class="r">x</code></td>
 <td>
 <p>data.frame with first column containing wavelengths and all other columns containing spectra.</p>
 </td></tr>
-<tr valign="top"><td><code>path</code></td>
+<tr valign="top"><td><code class="r">path</code></td>
 <td>
 <p>path to spectral library file to be created.</p>
 </td></tr>
-<tr valign="top"><td><code>wavl.units</code></td>
+<tr valign="top"><td><code class="r">wavl.units</code></td>
 <td>
 <p>wavelength units. Defaults to Micrometers. Nanometers is another typical option.</p>
 </td></tr>
-<tr valign="top"><td><code>scaleF</code></td>
+<tr valign="top"><td><code class="r">scaleF</code></td>
 <td>
 <p>optional reflectance scaling factor. Defaults to 1.</p>
 </td></tr>
-<tr valign="top"><td><code>mode</code></td>
+<tr valign="top"><td><code class="r">mode</code></td>
 <td>
-<p>character string specifying output file type. Must be one of <code>"bin"</code> for binary .sli files or <code>"ASCII"</code> for &ndash;guess what&ndash; ASCII spectral library files (still in an ENVI compatible format).</p>
+<p>character string specifying output file type. Must be one of <code class="r">"bin"</code> for binary .sli files or <code class="r">"ASCII"</code> for &ndash;guess what&ndash; ASCII spectral library files (still in an ENVI compatible format).</p>
 </td></tr>
 </table>
 
@@ -124,15 +122,9 @@ writeSLI(x, path, wavl.units = "Micrometers", scaleF = 1, mode = "bin")
 </p>
 
 
-<h3>References</h3>
-
-<p><a href="http://geol.hu/data/online_help/ENVI_Header_Format.html">ENVI header format</a>
-</p>
-
-
 <h3>See Also</h3>
 
-<p><code><a href="readSLI.html">readSLI</a></code>
+<p><code class="r"><a href="readSLI.html">readSLI</a></code>
 </p>
 
 
@@ -140,7 +132,7 @@ writeSLI(x, path, wavl.units = "Micrometers", scaleF = 1, mode = "bin")
 
 <pre><code class="r">## Create fake spectra
 data &lt;- data.frame(wavelength=350:2500, spectrumA=cumsum(abs(rnorm(2151))),
-                     spectrumB=cumsum(abs(rnorm(2151))))
+                        spectrumB=cumsum(abs(rnorm(2151))))
 pathToFile &lt;- paste0(tempdir(),&quot;/specLib.sli&quot;)
 
 ## Write to binary spectral library
@@ -153,20 +145,11 @@ dataRe &lt;- readSLI(path = pathToFile)
 all.equal(data, dataRe)
 </code></pre>
 
-<pre><code>#&gt; [1] &quot;Names: 1 string mismatch&quot;
-</code></pre>
-
-<pre><code class="r">## oops? nope, only colnames mismatch. numbers are fine.
-cat(&quot;colnames:\noriginal: &quot;,colnames(data),&quot;\nre-read: &quot;,colnames(dataRe))
-</code></pre>
-
-<pre><code>#&gt; colnames:
-#&gt; original:  wavelength spectrumA spectrumB 
-#&gt; re-read:  wavelengths spectrumA spectrumB
+<pre><code class="r">#&gt; [1] TRUE
 </code></pre>
 
 
-<hr><div align="center">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.1.1.9000 <a href="index.html">Index</a>]</div>
 </body></html>
 
                 </div>
@@ -187,8 +170,10 @@ cat(&quot;colnames:\noriginal: &quot;,colnames(data),&quot;\nre-read: &quot;,col
     </div>
     <!-- unit-inner -->
 </article>
-                    </div>
+                    </div>         
+                      
                 </div>
+                   
                 <!-- unit-inner -->
             </div>
             <!-- unit-body -->
@@ -199,7 +184,7 @@ cat(&quot;colnames:\noriginal: &quot;,colnames(data),&quot;\nre-read: &quot;,col
                 <div class="unit-inner unit-foot-inner">
                     <div class="misc vcard">
                         <div>
-                            <p>Last update 2015-03-26 00:25:20 +0100</p>
+                            <p>Last update 2015-09-11 18:40:26 +0200</p>
                         </div>
                         <h4>about</h4>
                         <ul>

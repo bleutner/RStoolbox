@@ -345,7 +345,7 @@ pre {
 }
 
 .unit-article ul {
-    list-style: square;
+    list-style: none;
 }
 
 .unit-article ol {
@@ -620,6 +620,9 @@ pre {
 .the-footer .license p {
     margin-bottom: 0;
 }
+/* HEADER
+----------------------------------------------- */
+
 
 .the-header .unit-inner {
     width: 15em;
@@ -783,6 +786,7 @@ pre {
         word-spacing: -0.43em;
         list-style: none;
         padding-left: 0;
+        margin-right: 200px;
     }
     .the-header .nav-global .home:after {
         margin-left: 16px;
@@ -965,11 +969,13 @@ font-size: 9px;
 }
 
 .logobox {
-    height: 0px;
-    position: relative;
-    vertical-align: bottom;
-    margin-right: 20px;
-    overflow: visible;
+	height: auto;
+    width: 300px;
+    vertical-align: top;
+    overflow: hidden;
     float: right;
-    margin-top: -100px;
+    margin-right: 300px
 }
+
+
+

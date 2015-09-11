@@ -13,6 +13,7 @@
     <title> Fortify method for classes from the raster package. </title>
     <meta name="author" content="Benjamin Leutner">
     <link href='http://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,300italic' rel='stylesheet' type='text/css'>
     <link href='/assets/themes/the-minimum/css/style.css' rel="stylesheet" media="all">
     <link href="http://feeds.feedburner.com/" rel="alternate" title=" Fortify method for classes from the raster package. " type="application/atom+xml">
     <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
@@ -34,10 +35,12 @@
                             </li>
                             <li class="category"><a href="/about.html">About</a>
                             </li>
-
-                        </ul>
+                            <li class="category"><a href="https://github.com/bleutner/RStoolbox">Github</a>
+                            </li>
+                       </ul>
                     </nav>
-                </div>
+                 </div>
+                 
                 <!-- unit-inner -->
             </div>
             <!-- unit-head -->
@@ -45,39 +48,34 @@
         <div class="body" role="main">
             <div class="unit-body">
                 <div class="unit-inner unit-body-inner">
-                    <div class="entry-content">
-                        
+                     <div class="entry-content">                      
+                         
 <article class="unit-article layout-page">
     <div class="unit-inner unit-article-inner">
         <div class="content">
             <header>
-                <div class="unit-head">
-                    <a class="logobox" href="/"><img alt="RStoolbox-logo" src="/assets/img/rstbx.png"> </a>
-
-                    <div class="unit-inner unit-head-inner">
+                 <div class="unit-inner unit-head-inner">
                         <div class="h4 entry-title"> 
                             <table width="100%"><tr><td><strong>fortify.raster<strong> { <a href="index.html">RStoolbox</a>}</td><td align="right">R Documentation</td></tr></table>
                             <h3> Fortify method for classes from the raster package. </h2>
                         </div>
                     </div>
                     <!-- unit-inner -->
-                </div>
                 <!-- unit-head -->
             </header>
 
             <div class="bd">
                 <div class="entry-content">
                     
- <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head><title>R: Fortify method for classes from the raster package.</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link rel="stylesheet" type="text/css" href="R.css">
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Fortify method for classes from the raster package.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
 
-							<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
-							<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
-							<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
-							<script>hljs.initHighlightingOnLoad();</script>
-							</head><body>
+                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+                            <script>hljs.initHighlightingOnLoad();</script>
+                            </head><body>
 
 <h3>Description</h3>
 
@@ -102,15 +100,15 @@ fortify(...)
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><code>x</code></td>
+<tr valign="top"><td><code class="r">x</code></td>
 <td>
-<p><code>Raster*</code> object to convert into a dataframe.</p>
+<p><code class="r">Raster*</code> object to convert into a dataframe.</p>
 </td></tr>
-<tr valign="top"><td><code>maxpixels</code></td>
+<tr valign="top"><td><code class="r">maxpixels</code></td>
 <td>
-<p>maximal number of pixels to sample</p>
+<p>Integer. Maximum number of pixels to sample</p>
 </td></tr>
-<tr valign="top"><td><code>...</code></td>
+<tr valign="top"><td><code class="r">...</code></td>
 <td>
 <p>not used by this method</p>
 </td></tr>
@@ -131,7 +129,7 @@ r_df &lt;- fortify(rlogo)
 head(r_df)
 </code></pre>
 
-<pre><code>#&gt;     x    y red green blue
+<pre><code class="r">#&gt;     x    y red green blue
 #&gt; 1 0.5 76.5 255   255  255
 #&gt; 2 1.5 76.5 255   255  255
 #&gt; 3 2.5 76.5 255   255  255
@@ -141,7 +139,7 @@ head(r_df)
 </code></pre>
 
 
-<hr><div align="center">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.1.1.9000 <a href="index.html">Index</a>]</div>
 </body></html>
 
                 </div>
@@ -162,8 +160,10 @@ head(r_df)
     </div>
     <!-- unit-inner -->
 </article>
-                    </div>
+                    </div>         
+                      
                 </div>
+                   
                 <!-- unit-inner -->
             </div>
             <!-- unit-body -->
@@ -174,7 +174,7 @@ head(r_df)
                 <div class="unit-inner unit-foot-inner">
                     <div class="misc vcard">
                         <div>
-                            <p>Last update 2015-03-26 00:25:20 +0100</p>
+                            <p>Last update 2015-09-11 18:40:26 +0200</p>
                         </div>
                         <h4>about</h4>
                         <ul>

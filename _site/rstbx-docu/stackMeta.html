@@ -13,6 +13,7 @@
     <title> Import separate Landsat files into single stack </title>
     <meta name="author" content="Benjamin Leutner">
     <link href='http://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,300italic' rel='stylesheet' type='text/css'>
     <link href='/assets/themes/the-minimum/css/style.css' rel="stylesheet" media="all">
     <link href="http://feeds.feedburner.com/" rel="alternate" title=" Import separate Landsat files into single stack " type="application/atom+xml">
     <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
@@ -34,10 +35,12 @@
                             </li>
                             <li class="category"><a href="/about.html">About</a>
                             </li>
-
-                        </ul>
+                            <li class="category"><a href="https://github.com/bleutner/RStoolbox">Github</a>
+                            </li>
+                       </ul>
                     </nav>
-                </div>
+                 </div>
+                 
                 <!-- unit-inner -->
             </div>
             <!-- unit-head -->
@@ -45,85 +48,135 @@
         <div class="body" role="main">
             <div class="unit-body">
                 <div class="unit-inner unit-body-inner">
-                    <div class="entry-content">
-                        
+                     <div class="entry-content">                      
+                         
 <article class="unit-article layout-page">
     <div class="unit-inner unit-article-inner">
         <div class="content">
             <header>
-                <div class="unit-head">
-                    <a class="logobox" href="/"><img alt="RStoolbox-logo" src="/assets/img/rstbx.png"> </a>
-
-                    <div class="unit-inner unit-head-inner">
+                 <div class="unit-inner unit-head-inner">
                         <div class="h4 entry-title"> 
                             <table width="100%"><tr><td><strong>stackMeta<strong> { <a href="index.html">RStoolbox</a>}</td><td align="right">R Documentation</td></tr></table>
                             <h3> Import separate Landsat files into single stack </h2>
                         </div>
                     </div>
                     <!-- unit-inner -->
-                </div>
                 <!-- unit-head -->
             </header>
 
             <div class="bd">
                 <div class="entry-content">
                     
- <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head><title>R: Import separate Landsat files into single stack</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link rel="stylesheet" type="text/css" href="R.css">
-</head><body>
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Import separate Landsat files into single stack</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+
+                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+                            <script>hljs.initHighlightingOnLoad();</script>
+                            </head><body>
 
 <h3>Description</h3>
 
 <p>Reads Landsat MTL or XML metadata files and loads single Landsat Tiffs into a rasterStack.
-Be aware that by default stackLS() does NOT import panchromatic bands nor thermal bands with resolutions != 30m.
+Be aware that by default stackMeta() does NOT import panchromatic bands nor thermal bands with resolutions != 30m.
 </p>
 
 
 <h3>Usage</h3>
 
 <pre>
-stackMeta(file, allResolutions = FALSE, quantity = "all",
-  category = "image")
+stackMeta(file, quantity = "all", category = "image",
+  allResolutions = FALSE)
 </pre>
 
 
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><code>file</code></td>
+<tr valign="top"><td><code class="r">file</code></td>
 <td>
-<p>character. Path to Landsat MTL metadata file (not an XML file!).</p>
+<p>Character. Path to Landsat MTL metadata file (not an XML file!).</p>
 </td></tr>
-<tr valign="top"><td><code>allResolutions</code></td>
+<tr valign="top"><td><code class="r">quantity</code></td>
 <td>
-<p>logical. if <code>TRUE</code> a list will be returned with length = unique spatial resolutions.</p>
+<p>Character vector. Which quantity should be returned. Options: digital numbers ('dn'), top of atmosphere reflectance ('tre'), at surface reflectance ('sre'), brightness temperature ('bt'), spectral index ('index'), all quantities ('all').</p>
 </td></tr>
-<tr valign="top"><td><code>quantity</code></td>
+<tr valign="top"><td><code class="r">category</code></td>
 <td>
-<p>Character vector. Which quantity should be returned. Options: digital numbers ('dn'), top of atmosphere reflectance ('tre'), at surface reflectance ('sre'), brightness temperature ('bt'), spectral index ('idx').</p>
+<p>Character vector. Which category of data to return. Options 'image': image data, 'pan': panchromatic image, 'index': multiband indices, 'qa' quality flag bands, 'all': all categories.</p>
 </td></tr>
-<tr valign="top"><td><code>category</code></td>
+<tr valign="top"><td><code class="r">allResolutions</code></td>
 <td>
-<p>character vector. Which category of data to return. Options 'image': image data, 'pan': panchromatic image, 'index': multiband indices, 'qa' quality flag bands, 'all': all categories.</p>
+<p>Logical. if <code class="r">TRUE</code> a list will be returned with length = unique spatial resolutions.</p>
 </td></tr>
 </table>
 
 
 <h3>Value</h3>
 
-<p>Either a list of rasterStacks comprising all resolutions or only one rasterStack comprising only 30m resolution imagery
+<p>Returns one single RasterStack comprising all requested bands.
+If <code class="r">allResolutions = TRUE</code> *and* there are different resolution layers (e.g. a 15m panchromatic band along wit 30m imagery) a list of RasterStacks will be returned.
 </p>
 
 
 <h3>Note</h3>
 
-<p>Be aware that by default stackLS() does NOT import panchromatic bands nor thermal bands with resolutions != 30m. Use the allResolutions argument to import all layers.
+<p>Be aware that by default stackMeta() does NOT import panchromatic bands nor thermal bands with resolutions != 30m. Use the allResolutions argument to import all layers.
 Note that nowadays the USGS uses cubic convolution to resample the TIR bands to 30m resolution.
 </p>
 
-<hr><div align="center">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+
+<h3>Examples</h3>
+
+<pre><code class="r">## Example metadata file (MTL)
+mtlFile  &lt;- system.file(&quot;external/landsat/LT52240631988227CUB02_MTL.txt&quot;, package=&quot;RStoolbox&quot;)
+
+## Read metadata
+metaData &lt;- readMeta(mtlFile)
+summary(metaData)
+</code></pre>
+
+<pre><code class="r">#&gt; Scene:      LT52240631988227CUB02 
+#&gt; Satellite:  LANDSAT5 
+#&gt; Sensor:     TM 
+#&gt; Date:       1988-08-14 
+#&gt; Path/Row:   224/63 
+#&gt; Projection: +proj=utm +zone=22 +units=m +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0
+#&gt; 
+#&gt; Data:
+#&gt;                              FILES QUANTITY CATEGORY
+#&gt; B1_dn LT52240631988227CUB02_B1.TIF       dn    image
+#&gt; B2_dn LT52240631988227CUB02_B2.TIF       dn    image
+#&gt; B3_dn LT52240631988227CUB02_B3.TIF       dn    image
+#&gt; B4_dn LT52240631988227CUB02_B4.TIF       dn    image
+#&gt; B5_dn LT52240631988227CUB02_B5.TIF       dn    image
+#&gt; B6_dn LT52240631988227CUB02_B6.TIF       dn    image
+#&gt; B7_dn LT52240631988227CUB02_B7.TIF       dn    image
+#&gt; 
+#&gt; Available calibration parameters (gain and offset):
+#&gt;  dn -&gt; radiance (toa)
+#&gt;  dn -&gt; brightness temperature (toa)
+</code></pre>
+
+<pre><code class="r">## Load rasters based on metadata file
+lsat     &lt;- stackMeta(mtlFile)
+lsat
+</code></pre>
+
+<pre><code class="r">#&gt; class       : RasterStack 
+#&gt; dimensions  : 310, 287, 88970, 7  (nrow, ncol, ncell, nlayers)
+#&gt; resolution  : 30, 30  (x, y)
+#&gt; extent      : 619395, 628005, -419505, -410205  (xmin, xmax, ymin, ymax)
+#&gt; coord. ref. : +proj=utm +zone=22 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 
+#&gt; names       : B1_dn, B2_dn, B3_dn, B4_dn, B5_dn, B6_dn, B7_dn 
+#&gt; min values  :    54,    18,    11,     4,     2,   131,     1 
+#&gt; max values  :   185,    87,    92,   127,   148,   146,    79
+</code></pre>
+
+
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.1.1.9000 <a href="index.html">Index</a>]</div>
 </body></html>
 
                 </div>
@@ -144,8 +197,10 @@ Note that nowadays the USGS uses cubic convolution to resample the TIR bands to 
     </div>
     <!-- unit-inner -->
 </article>
-                    </div>
+                    </div>         
+                      
                 </div>
+                   
                 <!-- unit-inner -->
             </div>
             <!-- unit-body -->
@@ -156,7 +211,7 @@ Note that nowadays the USGS uses cubic convolution to resample the TIR bands to 
                 <div class="unit-inner unit-foot-inner">
                     <div class="misc vcard">
                         <div>
-                            <p>Last update 2015-03-26 00:25:20 +0100</p>
+                            <p>Last update 2015-09-11 18:40:26 +0200</p>
                         </div>
                         <h4>about</h4>
                         <ul>

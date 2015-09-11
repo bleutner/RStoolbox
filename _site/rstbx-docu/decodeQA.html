@@ -10,12 +10,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Blog</title>
+    <title> Decode QA flags to bit-words </title>
     <meta name="author" content="Benjamin Leutner">
     <link href='http://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,300italic' rel='stylesheet' type='text/css'>
     <link href='/assets/themes/the-minimum/css/style.css' rel="stylesheet" media="all">
-    <link href="http://feeds.feedburner.com/" rel="alternate" title="Blog" type="application/atom+xml">
+    <link href="http://feeds.feedburner.com/" rel="alternate" title=" Decode QA flags to bit-words " type="application/atom+xml">
     <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
 </head>
 
@@ -54,46 +54,72 @@
     <div class="unit-inner unit-article-inner">
         <div class="content">
             <header>
-                <div class="unit-head">
-                    <div class="unit-inner unit-head-inner">
-                        <h1 class="h2 entry-title">Blog </h1>
+                 <div class="unit-inner unit-head-inner">
+                        <div class="h4 entry-title"> 
+                            <table width="100%"><tr><td><strong>decodeQA<strong> { <a href="index.html">RStoolbox</a>}</td><td align="right">R Documentation</td></tr></table>
+                            <h3> Decode QA flags to bit-words </h2>
+                        </div>
                     </div>
                     <!-- unit-inner -->
-                </div>
                 <!-- unit-head -->
             </header>
 
             <div class="bd">
                 <div class="entry-content">
                     
-<ul class="posts">  
-  
-    <li><h1 class="entry-title">
-	  <a href="/2015/09/10/rstoolbox-made-it-to-cran">RStoolbox made it to CRAN</a>
-	  </h1>
-      <p class="blogdate">10 September 2015</p>
-	  <div class="entry-content"></div>
-      <div><p><img src="../../../../assets/img/rstbx.png" alt="RStoolbox" /> After well over a year of (on-and-off) development we dared to knock on the menacing gates of CRAN. Intensive testing and an intimate relationship with <code>R CMD check</code> payed out and with little further changes RStoolbox was accepted and can now be installed via <code>install.packages("RStoolbox")</code>. Hooray :-)</p> <p>But not so fast! You think checking locally, checking...
-     
-	
-    <li><h1 class="entry-title">
-	  <a href="/r/2015/03/07/yo-first-post">Use the Source, Luke!</a>
-	  </h1>
-      <p class="blogdate">07 March 2015</p>
-	  <div class="entry-content"></div>
-      <div>
-<p>To find the the source, follow the Octocat you must.</p>
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Decode QA flags to bit-words</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
 
-<p><a href="http://github.com/bleutner/RStoolbox"><img src="https://octodex.github.com/images/octobiwan.jpg" height="200px" /></a></p>
-</div>
-     </li>
-	  
+                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+                            <script>hljs.initHighlightingOnLoad();</script>
+                            </head><body>
+
+<h3>Description</h3>
+
+<p>Intended for use with the Landsat 8 OLI QA band. Decodes pixel quality flags from integer to bit-words.
+</p>
 
 
-</p></div></li></ul>
+<h3>Usage</h3>
+
+<pre>
+decodeQA(x)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code class="r">x</code></td>
+<td>
+<p>Integer (16bit)</p>
+</td></tr>
+</table>
+
+
+<h3>See Also</h3>
+
+<p><a href="encodeQA.html">encodeQA</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class="r">decodeQA(53248)
+</code></pre>
+
+<pre><code class="r">#&gt; [1] &quot;1101000000000000&quot;
+</code></pre>
+
+
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.1.1.9000 <a href="index.html">Index</a>]</div>
+</body></html>
 
                 </div>
-                              <!-- entry-content -->
+                <!-- entry-content -->
             </div>
             <!-- bd -->
 
@@ -110,7 +136,6 @@
     </div>
     <!-- unit-inner -->
 </article>
-
                     </div>         
                       
                 </div>
@@ -165,7 +190,7 @@
                 };
             load('//platform.twitter.com/widgets.js', 'tweetjs');
             // load('https://apis.googlecom/js/plusone.js', 'gplus1js'); // Checkout http://j.mp/ApDgMr for usage html for this is <div class="g-plusone" data-size="medium"></div>
-            // load('//connect.facebook.net/en_US/all.js#xfbml=1', 'fbjssdk'); // Checkout http://j.mp/wZw2xR for using open graph protorol html for this is <div class="fb-like" data-href="/blog.html" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="verdana"></div>
+            // load('//connect.facebook.net/en_US/all.js#xfbml=1', 'fbjssdk'); // Checkout http://j.mp/wZw2xR for using open graph protorol html for this is <div class="fb-like" data-href="/rstbx-docu/decodeQA.html" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="verdana"></div>
         }(document, 'script'));
     </script>
     <script>

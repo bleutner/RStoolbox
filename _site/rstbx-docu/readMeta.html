@@ -10,11 +10,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title> Read landsat MTL metadata files </title>
+    <title> Read Landsat MTL metadata files </title>
     <meta name="author" content="Benjamin Leutner">
     <link href='http://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,300italic' rel='stylesheet' type='text/css'>
     <link href='/assets/themes/the-minimum/css/style.css' rel="stylesheet" media="all">
-    <link href="http://feeds.feedburner.com/" rel="alternate" title=" Read landsat MTL metadata files " type="application/atom+xml">
+    <link href="http://feeds.feedburner.com/" rel="alternate" title=" Read Landsat MTL metadata files " type="application/atom+xml">
     <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
 </head>
 
@@ -34,10 +35,12 @@
                             </li>
                             <li class="category"><a href="/about.html">About</a>
                             </li>
-
-                        </ul>
+                            <li class="category"><a href="https://github.com/bleutner/RStoolbox">Github</a>
+                            </li>
+                       </ul>
                     </nav>
-                </div>
+                 </div>
+                 
                 <!-- unit-inner -->
             </div>
             <!-- unit-head -->
@@ -45,38 +48,38 @@
         <div class="body" role="main">
             <div class="unit-body">
                 <div class="unit-inner unit-body-inner">
-                    <div class="entry-content">
-                        
+                     <div class="entry-content">                      
+                         
 <article class="unit-article layout-page">
     <div class="unit-inner unit-article-inner">
         <div class="content">
             <header>
-                <div class="unit-head">
-                    <a class="logobox" href="/"><img alt="RStoolbox-logo" src="/assets/img/rstbx.png"> </a>
-
-                    <div class="unit-inner unit-head-inner">
+                 <div class="unit-inner unit-head-inner">
                         <div class="h4 entry-title"> 
                             <table width="100%"><tr><td><strong>readMeta<strong> { <a href="index.html">RStoolbox</a>}</td><td align="right">R Documentation</td></tr></table>
-                            <h3> Read landsat MTL metadata files </h2>
+                            <h3> Read Landsat MTL metadata files </h2>
                         </div>
                     </div>
                     <!-- unit-inner -->
-                </div>
                 <!-- unit-head -->
             </header>
 
             <div class="bd">
                 <div class="entry-content">
                     
- <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head><title>R: Read landsat MTL metadata files</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link rel="stylesheet" type="text/css" href="R.css">
-</head><body>
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Read Landsat MTL metadata files</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+
+                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+                            <script>hljs.initHighlightingOnLoad();</script>
+                            </head><body>
 
 <h3>Description</h3>
 
-<p>Besides reading metadata, readMeta deals with legacy versions of Landsat metadata files and where possible adds missing information (radiometric gain and offset, earth-sun distance).
+<p>Reads metadata and deals with legacy versions of Landsat metadata files and where possible adds missing information (radiometric gain and offset, earth-sun distance).
 </p>
 
 
@@ -90,13 +93,13 @@ readMeta(file, raw = FALSE)
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><code>file</code></td>
+<tr valign="top"><td><code class="r">file</code></td>
 <td>
 <p>path to Landsat MTL file (...MTL.txt)</p>
 </td></tr>
-<tr valign="top"><td><code>raw</code></td>
+<tr valign="top"><td><code class="r">raw</code></td>
 <td>
-<p>Logical. If <code>TRUE</code> the full raw metadate will be returned as a list. All important metadata are homogenized into a standard format (ImageMetaData) and some information is added.</p>
+<p>Logical. If <code class="r">TRUE</code> the full raw metadata will be returned as a list. if <code class="r">FALSE</code> (the default) all important metadata are homogenized into a standard format (ImageMetaData) and some information is added.</p>
 </td></tr>
 </table>
 
@@ -106,7 +109,43 @@ readMeta(file, raw = FALSE)
 <p>Object of class ImageMetaData
 </p>
 
-<hr><div align="center">[Package <em>RStoolbox</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+
+<h3>Examples</h3>
+
+<pre><code class="r">## Example metadata file (MTL)
+mtlFile  &lt;- system.file(&quot;external/landsat/LT52240631988227CUB02_MTL.txt&quot;, package=&quot;RStoolbox&quot;)
+
+## Read metadata
+metaData &lt;- readMeta(mtlFile)
+
+## Summary
+summary(metaData)
+</code></pre>
+
+<pre><code class="r">#&gt; Scene:      LT52240631988227CUB02 
+#&gt; Satellite:  LANDSAT5 
+#&gt; Sensor:     TM 
+#&gt; Date:       1988-08-14 
+#&gt; Path/Row:   224/63 
+#&gt; Projection: +proj=utm +zone=22 +units=m +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0
+#&gt; 
+#&gt; Data:
+#&gt;                              FILES QUANTITY CATEGORY
+#&gt; B1_dn LT52240631988227CUB02_B1.TIF       dn    image
+#&gt; B2_dn LT52240631988227CUB02_B2.TIF       dn    image
+#&gt; B3_dn LT52240631988227CUB02_B3.TIF       dn    image
+#&gt; B4_dn LT52240631988227CUB02_B4.TIF       dn    image
+#&gt; B5_dn LT52240631988227CUB02_B5.TIF       dn    image
+#&gt; B6_dn LT52240631988227CUB02_B6.TIF       dn    image
+#&gt; B7_dn LT52240631988227CUB02_B7.TIF       dn    image
+#&gt; 
+#&gt; Available calibration parameters (gain and offset):
+#&gt;  dn -&gt; radiance (toa)
+#&gt;  dn -&gt; brightness temperature (toa)
+</code></pre>
+
+
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.1.1.9000 <a href="index.html">Index</a>]</div>
 </body></html>
 
                 </div>
@@ -127,8 +166,10 @@ readMeta(file, raw = FALSE)
     </div>
     <!-- unit-inner -->
 </article>
-                    </div>
+                    </div>         
+                      
                 </div>
+                   
                 <!-- unit-inner -->
             </div>
             <!-- unit-body -->
@@ -139,7 +180,7 @@ readMeta(file, raw = FALSE)
                 <div class="unit-inner unit-foot-inner">
                     <div class="misc vcard">
                         <div>
-                            <p>Last update 2015-03-26 00:25:20 +0100</p>
+                            <p>Last update 2015-09-11 18:40:26 +0200</p>
                         </div>
                         <h4>about</h4>
                         <ul>

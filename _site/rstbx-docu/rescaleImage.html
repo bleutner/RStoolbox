@@ -10,12 +10,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Blog</title>
+    <title> Linear image rescaling </title>
     <meta name="author" content="Benjamin Leutner">
     <link href='http://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,300italic' rel='stylesheet' type='text/css'>
     <link href='/assets/themes/the-minimum/css/style.css' rel="stylesheet" media="all">
-    <link href="http://feeds.feedburner.com/" rel="alternate" title="Blog" type="application/atom+xml">
+    <link href="http://feeds.feedburner.com/" rel="alternate" title=" Linear image rescaling " type="application/atom+xml">
     <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
 </head>
 
@@ -54,46 +54,146 @@
     <div class="unit-inner unit-article-inner">
         <div class="content">
             <header>
-                <div class="unit-head">
-                    <div class="unit-inner unit-head-inner">
-                        <h1 class="h2 entry-title">Blog </h1>
+                 <div class="unit-inner unit-head-inner">
+                        <div class="h4 entry-title"> 
+                            <table width="100%"><tr><td><strong>rescaleImage<strong> { <a href="index.html">RStoolbox</a>}</td><td align="right">R Documentation</td></tr></table>
+                            <h3> Linear image rescaling </h2>
+                        </div>
                     </div>
                     <!-- unit-inner -->
-                </div>
                 <!-- unit-head -->
             </header>
 
             <div class="bd">
                 <div class="entry-content">
                     
-<ul class="posts">  
-  
-    <li><h1 class="entry-title">
-	  <a href="/2015/09/10/rstoolbox-made-it-to-cran">RStoolbox made it to CRAN</a>
-	  </h1>
-      <p class="blogdate">10 September 2015</p>
-	  <div class="entry-content"></div>
-      <div><p><img src="../../../../assets/img/rstbx.png" alt="RStoolbox" /> After well over a year of (on-and-off) development we dared to knock on the menacing gates of CRAN. Intensive testing and an intimate relationship with <code>R CMD check</code> payed out and with little further changes RStoolbox was accepted and can now be installed via <code>install.packages("RStoolbox")</code>. Hooray :-)</p> <p>But not so fast! You think checking locally, checking...
-     
-	
-    <li><h1 class="entry-title">
-	  <a href="/r/2015/03/07/yo-first-post">Use the Source, Luke!</a>
-	  </h1>
-      <p class="blogdate">07 March 2015</p>
-	  <div class="entry-content"></div>
-      <div>
-<p>To find the the source, follow the Octocat you must.</p>
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Linear image rescaling</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
 
-<p><a href="http://github.com/bleutner/RStoolbox"><img src="https://octodex.github.com/images/octobiwan.jpg" height="200px" /></a></p>
-</div>
-     </li>
-	  
+                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+                            <script>hljs.initHighlightingOnLoad();</script>
+                            </head><body>
+
+<h3>Description</h3>
+
+<p>performs linear shifts of value ranges either to match min and max of another image
+or to any other min and max value.
+</p>
 
 
-</p></div></li></ul>
+<h3>Usage</h3>
+
+<pre>
+rescaleImage(x, y, xmin, xmax, ymin, ymax, forceMinMax = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code class="r">x</code></td>
+<td>
+<p>Raster* object. Image to normalise.</p>
+</td></tr>
+<tr valign="top"><td><code class="r">y</code></td>
+<td>
+<p>Raster* object. Reference image.</p>
+</td></tr>
+<tr valign="top"><td><code class="r">xmin</code></td>
+<td>
+<p>Numeric. Min value of x.</p>
+</td></tr>
+<tr valign="top"><td><code class="r">xmax</code></td>
+<td>
+<p>Numeric. Max value of x.</p>
+</td></tr>
+<tr valign="top"><td><code class="r">ymin</code></td>
+<td>
+<p>Numeric. Min value of y.</p>
+</td></tr>
+<tr valign="top"><td><code class="r">ymax</code></td>
+<td>
+<p>Numeric. Max value of y.</p>
+</td></tr>
+<tr valign="top"><td><code class="r">forceMinMax</code></td>
+<td>
+<p>Logical. Forces update of min and max data slots in x or y.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Returns a Raster* object of the same dimensions as the input raster <code class="r">x</code> but shifted and stretched to the new limits.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="histMatch.html">histMatch</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class="r">## Create example data
+data(lsat)
+lsat2 &lt;- lsat - 1000
+lsat2
+</code></pre>
+
+<pre><code class="r">#&gt; class       : RasterBrick 
+#&gt; dimensions  : 310, 287, 88970, 7  (nrow, ncol, ncell, nlayers)
+#&gt; resolution  : 30, 30  (x, y)
+#&gt; extent      : 619395, 628005, -419505, -410205  (xmin, xmax, ymin, ymax)
+#&gt; coord. ref. : +proj=utm +zone=22 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 
+#&gt; data source : in memory
+#&gt; names       : B1_dn, B2_dn, B3_dn, B4_dn, B5_dn, B6_dn, B7_dn 
+#&gt; min values  :  -946,  -982,  -989,  -996,  -998,  -869,  -999 
+#&gt; max values  :  -815,  -913,  -908,  -873,  -852,  -854,  -921
+</code></pre>
+
+<pre><code class="r">## Rescale lsat2 to match original lsat value rang
+lsat2_rescaled &lt;- rescaleImage(lsat2, lsat)
+lsat2_rescaled
+</code></pre>
+
+<pre><code class="r">#&gt; class       : RasterBrick 
+#&gt; dimensions  : 310, 287, 88970, 7  (nrow, ncol, ncell, nlayers)
+#&gt; resolution  : 30, 30  (x, y)
+#&gt; extent      : 619395, 628005, -419505, -410205  (xmin, xmax, ymin, ymax)
+#&gt; coord. ref. : +proj=utm +zone=22 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 
+#&gt; data source : in memory
+#&gt; names       : B1_dn, B2_dn, B3_dn, B4_dn, B5_dn, B6_dn, B7_dn 
+#&gt; min values  :    54,    18,    11,     4,     2,   131,     1 
+#&gt; max values  :   185,    87,    92,   127,   148,   146,    79
+</code></pre>
+
+<pre><code class="r">## Rescale lsat to value range [0,1]
+lsat2_unity &lt;- rescaleImage(lsat2, ymin = 0, ymax = 1)
+lsat2_unity
+</code></pre>
+
+<pre><code class="r">#&gt; class       : RasterBrick 
+#&gt; dimensions  : 310, 287, 88970, 7  (nrow, ncol, ncell, nlayers)
+#&gt; resolution  : 30, 30  (x, y)
+#&gt; extent      : 619395, 628005, -419505, -410205  (xmin, xmax, ymin, ymax)
+#&gt; coord. ref. : +proj=utm +zone=22 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 
+#&gt; data source : in memory
+#&gt; names       : B1_dn, B2_dn, B3_dn, B4_dn, B5_dn, B6_dn, B7_dn 
+#&gt; min values  :     0,     0,     0,     0,     0,     0,     0 
+#&gt; max values  :     1,     1,     1,     1,     1,     1,     1
+</code></pre>
+
+
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.1.1.9000 <a href="index.html">Index</a>]</div>
+</body></html>
 
                 </div>
-                              <!-- entry-content -->
+                <!-- entry-content -->
             </div>
             <!-- bd -->
 
@@ -110,7 +210,6 @@
     </div>
     <!-- unit-inner -->
 </article>
-
                     </div>         
                       
                 </div>
@@ -165,7 +264,7 @@
                 };
             load('//platform.twitter.com/widgets.js', 'tweetjs');
             // load('https://apis.googlecom/js/plusone.js', 'gplus1js'); // Checkout http://j.mp/ApDgMr for usage html for this is <div class="g-plusone" data-size="medium"></div>
-            // load('//connect.facebook.net/en_US/all.js#xfbml=1', 'fbjssdk'); // Checkout http://j.mp/wZw2xR for using open graph protorol html for this is <div class="fb-like" data-href="/blog.html" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="verdana"></div>
+            // load('//connect.facebook.net/en_US/all.js#xfbml=1', 'fbjssdk'); // Checkout http://j.mp/wZw2xR for using open graph protorol html for this is <div class="fb-like" data-href="/rstbx-docu/rescaleImage.html" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="verdana"></div>
         }(document, 'script'));
     </script>
     <script>

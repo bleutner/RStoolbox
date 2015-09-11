@@ -5,14 +5,147 @@
         <description>RStoolbox - Benjamin Leutner</description>
         <link>http://bleutner.github.io/RStoolbox</link>
         <link>http://bleutner.github.io/RStoolbox</link>
-        <lastBuildDate>2015-03-26T00:25:20+01:00</lastBuildDate>
-        <pubDate>2015-03-26T00:25:20+01:00</pubDate>
+        <lastBuildDate>2015-09-11T18:40:26+02:00</lastBuildDate>
+        <pubDate>2015-09-11T18:40:26+02:00</pubDate>
         <ttl>1800</ttl>
 
 
         <item>
+                <title>RStoolbox made it to CRAN</title>
+                <description>
+&lt;p&gt;&lt;img src=&quot;../../../../assets/img/rstbx.png&quot; alt=&quot;RStoolbox&quot; /&gt; After well over a year of (on-and-off) development we dared to knock on the menacing gates of CRAN.
+Intensive testing and an intimate relationship with &lt;code&gt;R CMD check&lt;/code&gt; payed out and with little further changes RStoolbox was accepted and can now be installed via &lt;code&gt;install.packages(&quot;RStoolbox&quot;)&lt;/code&gt;. Hooray :-)&lt;/p&gt;
+
+&lt;p&gt;But not so fast! You think checking locally, checking with win-builder and checking with oldrel, release and devel on &lt;a href=&quot;https://travis-ci.org/bleutner/RStoolbox&quot;&gt;Travis CI&lt;/a&gt; would give you a CRAN proof jacket? Hahaha – no.&lt;br /&gt;
+Quickly after the release I was told that the tests of RStoolbox failed the CRAN clang-UBSAN check. Something I had never even heard of, since I’m pretty much new to writing compiled code (some parts of RStoolbox are written in C++ thanks to the wonderful Rcpp package). For the record: it checks for undefined behavior in C++ code, for example trying to convert &lt;code&gt;NaN&lt;/code&gt; to &lt;code&gt;int&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;The first step – to replicate the error – turned out to be surprisingly hard. I followed this well written &lt;a href=&quot;http://francoismichonneau.net/2014/03/how-to-do-ubsan-tests-r-package/&quot;&gt;blog post&lt;/a&gt; but could not reproduce the error. Therefore, I fixed the part I suspected to be the culprit and resubmitted v0.1.1 to CRAN. It went smoothly and got accepted. Yet, the post-submission tests still fail (with clang only).&lt;/p&gt;
+
+&lt;p&gt;Thus, I dug around some more and found Dirk Eddelbuettels &lt;a href=&quot;http://dirk.eddelbuettel.com/blog/2015/01/18/#ubsan-clang-container&quot;&gt;post&lt;/a&gt; in which he describes his &lt;a href=&quot;https://hub.docker.com/r/rocker/r-devel-ubsan-clang/&quot;&gt;docker container of r-devel with UBSAN support&lt;/a&gt;. After going through some additional trouble to install gdal/ogr into the container I finally managed to reproduce and even later fix the issue (not submitted to CRAN yet). At least it gave me a reason to play with docker, which I had on my todo-list for some time now.&lt;/p&gt;
+
+&lt;p&gt;Anyways, I’m proud to announce the initial release to CRAN. From now on function and argument names should remain mostly stable. 
+We are looking forward to your comments, &lt;a href=&quot;https://github.com/bleutner/RStoolbox/pulls&quot;&gt;suggestions&lt;/a&gt; and &lt;a href=&quot;https://github.com/bleutner/RStoolbox/issues&quot;&gt;bug reports&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;This initial release of RStoolbox ships with the following functions and data-sets:&lt;/p&gt;
+
+&lt;h3 id=&quot;data-import-and-export&quot;&gt;Data Import and Export&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;readMeta&lt;/code&gt;: import Landsat metadata from MTL or XML files&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;stackMeta&lt;/code&gt;: load Landsat bands based on metadata&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;readSLI &amp;amp; writeSLI&lt;/code&gt;: read and write ENVI spectral libraries&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;saveRSTBX &amp;amp; readRSTBX&lt;/code&gt;: save and re-import RStoolbox classification objects (model and map)&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;readEE&lt;/code&gt;: import and tidy EarthExplorer search results&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;data-pre-processing&quot;&gt;Data Pre-Processing&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;radCor&lt;/code&gt;: radiometric conversions and corrections. Primarily, yet not exclusively, intended for Landsat data processing. DN to radiance to reflectance conversion as well as DOS approaches&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;topCor&lt;/code&gt;: topographic illumination correction&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;cloudMask &amp;amp; cloudShadowMask&lt;/code&gt;: mask clouds and cloud shadows in Landsat or other imagery which comes with a thermal band&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;classifyQA&lt;/code&gt;: extract layers from Landsat 8 QA bands, e.g. cloud confidence&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;rescaleImage&lt;/code&gt;: rescale image to match min/max from another image or a specified min/max range&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;normImage&lt;/code&gt;: normalize imagery by centering and scaling&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;histMatch&lt;/code&gt;: matches the histograms of two scenes&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;coregisterImages&lt;/code&gt;: co-register images based on mutual information&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;panSharpen&lt;/code&gt;: sharpen a coarse resolution image with a high resolution image (typically panchromatic)&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;data-analysis&quot;&gt;Data Analysis&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;spectralIndices&lt;/code&gt;: calculate a set of predefined multispectral indices like NDVI&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;tasseledCap&lt;/code&gt;: tasseled cap transformation&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;sam&lt;/code&gt;: spectral angle mapper&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;rasterPCA&lt;/code&gt;: principal components transform for raster data&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;rasterCVA&lt;/code&gt;: change vector analysis&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;unsuperClass&lt;/code&gt;: unsupervised classification&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;superClass&lt;/code&gt;: supervised classification&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;fCover&lt;/code&gt;: fractional cover of coarse resolution imagery based on high resolution classificaton&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;data-display-with-ggplot2&quot;&gt;Data Display with ggplot2&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;fortify.raster&lt;/code&gt;: data.frame from raster (subsampled) for plotting&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;ggR&lt;/code&gt;: single raster layer plotting with ggplot2&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;ggRGB&lt;/code&gt;: efficient plotting of remote sensing imagery in RGB with ggplot2&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;example-data-sets&quot;&gt;Example Data Sets&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;rlogo&lt;/code&gt;: the r logo as raster brick&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;lsat&lt;/code&gt;: subset of a Landsat 5 TM scene&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;srtm&lt;/code&gt;: SRTM DEM for lsat scene&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+</description>
+                <link>http://bleutner.github.io/RStoolbox/2015/09/10/rstoolbox-made-it-to-cran</link>
+                <guid>http://bleutner.github.io/RStoolbox/2015/09/10/rstoolbox-made-it-to-cran</guid>
+                <pubDate>2015-09-10T00:00:00+02:00</pubDate>
+        </item>
+
+        <item>
                 <title>Use the Source, Luke!</title>
                 <description>
+&lt;p&gt;To find the the source, follow the Octocat you must.&lt;/p&gt;
+
 &lt;p&gt;&lt;a href=&quot;http://github.com/bleutner/RStoolbox&quot;&gt;&lt;img src=&quot;https://octodex.github.com/images/octobiwan.jpg&quot; height=&quot;200px&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
 </description>
                 <link>http://bleutner.github.io/RStoolbox/r/2015/03/07/yo-first-post</link>

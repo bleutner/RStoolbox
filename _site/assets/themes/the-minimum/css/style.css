@@ -22,8 +22,8 @@ No styleguide reference.
 */
 
 body {
-    font-family: Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, "MS PGothic", Osaka, Sans-Serif;
-    font-size: 1em;
+    font-family: 'Open Sans', sans-serif, "Frutiger Linotype", "Univers", "Calibri";
+    font-size: 0.9em;
     line-height: 1.625em;
 }
 /*
@@ -57,18 +57,18 @@ h6 {
 
 h1,
 .h1 {
-    font-size: 42px;
-    line-height: 52px;
-    margin-top: 52px;
-    margin-bottom: 26px;
+    font-size: 35px;
+    line-height: 35px;
+    margin-top: 35px;
+    margin-bottom: 20px;
     letter-spacing: -1px;
 }
 
 h2,
 .h2 {
-    font-size: 42px;
-    line-height: 52px;
-    margin-top: 52px;
+    font-size: 30px;
+    line-height: 30px;
+    margin-top: 30px;
     margin-bottom: 26px;
     letter-spacing: -1px;
 }
@@ -224,17 +224,14 @@ pre {
 }
 
 pre {
-    color: #f2f2f2;
-    background-color: #393939;
-    border: 1px solid #393939;
-    font-family: "Bitstream Vera Sans Mono", "Courier New", Courier, monospace;
-    margin-left: 0;
-    margin-right: 0;
-    padding: 1.625em;
+    color: rgb(45, 45, 45);
+    font-family: "Bitstream Vera Sans Mono","Courier New",Courier,monospace;
+    margin-left: 0px;
+    margin-right: 0px;
     overflow: auto;
-    -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.6);
-    -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.6);
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.6);
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3) inset, 0px 1px 0px rgba(255, 255, 255, 0.6);
+    padding-left: 10px;
+    background-color: rgb(186, 218, 85);
 }
 /* meta */
 /* HEADER
@@ -348,7 +345,7 @@ pre {
 }
 
 .unit-article ul {
-    list-style: square;
+    list-style: none;
 }
 
 .unit-article ol {
@@ -623,6 +620,9 @@ pre {
 .the-footer .license p {
     margin-bottom: 0;
 }
+/* HEADER
+----------------------------------------------- */
+
 
 .the-header .unit-inner {
     width: 15em;
@@ -687,6 +687,7 @@ pre {
     text-align: right;
     width: 26.25em;
     float: right;
+    font-size: 1.1em;
 }
 
 .ie .unit-article .unit-head-inner,
@@ -785,6 +786,7 @@ pre {
         word-spacing: -0.43em;
         list-style: none;
         padding-left: 0;
+        margin-right: 200px;
     }
     .the-header .nav-global .home:after {
         margin-left: 16px;
@@ -967,11 +969,13 @@ font-size: 9px;
 }
 
 .logobox {
-    height: 100px;
-    position: relative;
+	height: auto;
+    width: 300px;
     vertical-align: top;
-    margin-right: 20px;
-    overflow: visible;
+    overflow: hidden;
     float: right;
+    margin-right: 300px
 }
+
+
 

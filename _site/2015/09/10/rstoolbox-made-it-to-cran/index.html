@@ -10,12 +10,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Use the Source, Luke!</title>
+    <title>RStoolbox made it to CRAN</title>
     <meta name="author" content="Benjamin Leutner">
     <link href='http://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,300italic' rel='stylesheet' type='text/css'>
     <link href='/assets/themes/the-minimum/css/style.css' rel="stylesheet" media="all">
-    <link href="http://feeds.feedburner.com/" rel="alternate" title="Use the Source, Luke!" type="application/atom+xml">
+    <link href="http://feeds.feedburner.com/" rel="alternate" title="RStoolbox made it to CRAN" type="application/atom+xml">
     <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js"></script>
 </head>
 
@@ -56,7 +56,7 @@
 			<header>
 				<div class="unit-head">               
 				     <div class="unit-inner unit-head-inner">
-						<h1 class="h2 entry-title">Use the Source, Luke!</h1>
+						<h1 class="h2 entry-title">RStoolbox made it to CRAN</h1>
 						
 					</div><!-- unit-inner -->
 				</div><!-- unit-head -->
@@ -65,16 +65,135 @@
 			<div class="bd">
 				<div class="entry-content">
 					
-<p>To find the the source, follow the Octocat you must.</p>
+<p><img src="../../../../assets/img/rstbx.png" alt="RStoolbox" /> After well over a year of (on-and-off) development we dared to knock on the menacing gates of CRAN.
+Intensive testing and an intimate relationship with <code>R CMD check</code> payed out and with little further changes RStoolbox was accepted and can now be installed via <code>install.packages("RStoolbox")</code>. Hooray :-)</p>
 
-<p><a href="http://github.com/bleutner/RStoolbox"><img src="https://octodex.github.com/images/octobiwan.jpg" height="200px" /></a></p>
+<p>But not so fast! You think checking locally, checking with win-builder and checking with oldrel, release and devel on <a href="https://travis-ci.org/bleutner/RStoolbox">Travis CI</a> would give you a CRAN proof jacket? Hahaha – no.<br />
+Quickly after the release I was told that the tests of RStoolbox failed the CRAN clang-UBSAN check. Something I had never even heard of, since I’m pretty much new to writing compiled code (some parts of RStoolbox are written in C++ thanks to the wonderful Rcpp package). For the record: it checks for undefined behavior in C++ code, for example trying to convert <code>NaN</code> to <code>int</code>.</p>
+
+<p>The first step – to replicate the error – turned out to be surprisingly hard. I followed this well written <a href="http://francoismichonneau.net/2014/03/how-to-do-ubsan-tests-r-package/">blog post</a> but could not reproduce the error. Therefore, I fixed the part I suspected to be the culprit and resubmitted v0.1.1 to CRAN. It went smoothly and got accepted. Yet, the post-submission tests still fail (with clang only).</p>
+
+<p>Thus, I dug around some more and found Dirk Eddelbuettels <a href="http://dirk.eddelbuettel.com/blog/2015/01/18/#ubsan-clang-container">post</a> in which he describes his <a href="https://hub.docker.com/r/rocker/r-devel-ubsan-clang/">docker container of r-devel with UBSAN support</a>. After going through some additional trouble to install gdal/ogr into the container I finally managed to reproduce and even later fix the issue (not submitted to CRAN yet). At least it gave me a reason to play with docker, which I had on my todo-list for some time now.</p>
+
+<p>Anyways, I’m proud to announce the initial release to CRAN. From now on function and argument names should remain mostly stable. 
+We are looking forward to your comments, <a href="https://github.com/bleutner/RStoolbox/pulls">suggestions</a> and <a href="https://github.com/bleutner/RStoolbox/issues">bug reports</a>.</p>
+
+<p>This initial release of RStoolbox ships with the following functions and data-sets:</p>
+
+<h3 id="data-import-and-export">Data Import and Export</h3>
+
+<ul>
+  <li>
+    <p><code>readMeta</code>: import Landsat metadata from MTL or XML files</p>
+  </li>
+  <li>
+    <p><code>stackMeta</code>: load Landsat bands based on metadata</p>
+  </li>
+  <li>
+    <p><code>readSLI &amp; writeSLI</code>: read and write ENVI spectral libraries</p>
+  </li>
+  <li>
+    <p><code>saveRSTBX &amp; readRSTBX</code>: save and re-import RStoolbox classification objects (model and map)</p>
+  </li>
+  <li>
+    <p><code>readEE</code>: import and tidy EarthExplorer search results</p>
+  </li>
+</ul>
+
+<h3 id="data-pre-processing">Data Pre-Processing</h3>
+
+<ul>
+  <li>
+    <p><code>radCor</code>: radiometric conversions and corrections. Primarily, yet not exclusively, intended for Landsat data processing. DN to radiance to reflectance conversion as well as DOS approaches</p>
+  </li>
+  <li>
+    <p><code>topCor</code>: topographic illumination correction</p>
+  </li>
+  <li>
+    <p><code>cloudMask &amp; cloudShadowMask</code>: mask clouds and cloud shadows in Landsat or other imagery which comes with a thermal band</p>
+  </li>
+  <li>
+    <p><code>classifyQA</code>: extract layers from Landsat 8 QA bands, e.g. cloud confidence</p>
+  </li>
+  <li>
+    <p><code>rescaleImage</code>: rescale image to match min/max from another image or a specified min/max range</p>
+  </li>
+  <li>
+    <p><code>normImage</code>: normalize imagery by centering and scaling</p>
+  </li>
+  <li>
+    <p><code>histMatch</code>: matches the histograms of two scenes</p>
+  </li>
+  <li>
+    <p><code>coregisterImages</code>: co-register images based on mutual information</p>
+  </li>
+  <li>
+    <p><code>panSharpen</code>: sharpen a coarse resolution image with a high resolution image (typically panchromatic)</p>
+  </li>
+</ul>
+
+<h3 id="data-analysis">Data Analysis</h3>
+
+<ul>
+  <li>
+    <p><code>spectralIndices</code>: calculate a set of predefined multispectral indices like NDVI</p>
+  </li>
+  <li>
+    <p><code>tasseledCap</code>: tasseled cap transformation</p>
+  </li>
+  <li>
+    <p><code>sam</code>: spectral angle mapper</p>
+  </li>
+  <li>
+    <p><code>rasterPCA</code>: principal components transform for raster data</p>
+  </li>
+  <li>
+    <p><code>rasterCVA</code>: change vector analysis</p>
+  </li>
+  <li>
+    <p><code>unsuperClass</code>: unsupervised classification</p>
+  </li>
+  <li>
+    <p><code>superClass</code>: supervised classification</p>
+  </li>
+  <li>
+    <p><code>fCover</code>: fractional cover of coarse resolution imagery based on high resolution classificaton</p>
+  </li>
+</ul>
+
+<h3 id="data-display-with-ggplot2">Data Display with ggplot2</h3>
+<ul>
+  <li>
+    <p><code>fortify.raster</code>: data.frame from raster (subsampled) for plotting</p>
+  </li>
+  <li>
+    <p><code>ggR</code>: single raster layer plotting with ggplot2</p>
+  </li>
+  <li>
+    <p><code>ggRGB</code>: efficient plotting of remote sensing imagery in RGB with ggplot2</p>
+  </li>
+</ul>
+
+<h3 id="example-data-sets">Example Data Sets</h3>
+
+<ul>
+  <li>
+    <p><code>rlogo</code>: the r logo as raster brick</p>
+  </li>
+  <li>
+    <p><code>lsat</code>: subset of a Landsat 5 TM scene</p>
+  </li>
+  <li>
+    <p><code>srtm</code>: SRTM DEM for lsat scene</p>
+  </li>
+</ul>
 
 					<div class="meta">
 						<p class="date-publish">
 							Published: 
-							<date class="date-pub" title="2015-03-07T00:00:00+01:00" datetime="2015-03-07T00:00:00+01:00" pubdate>
-							<span class="month"><abbr>March</abbr></span>
-							<span class="day">07</span>
+							<date class="date-pub" title="2015-09-10T00:00:00+02:00" datetime="2015-09-10T00:00:00+02:00" pubdate>
+							<span class="month"><abbr>September</abbr></span>
+							<span class="day">10</span>
 							<span class="year">2015</span>
 							</date>
 						</p>
@@ -85,10 +204,6 @@
 
 
   
-     
-    	<li><a href="/categories.html#r-ref">
-    		r <span>1</span>
-    	</a></li>
     
   
 
@@ -101,6 +216,8 @@
 
 
   
+     
+    	<li><a href="/tags.html#r-ref">r <span>1</span></a></li>
      
     	<li><a href="/tags.html#RStoolbox-ref">RStoolbox <span>2</span></a></li>
     
@@ -150,9 +267,9 @@
 					<nav class="pagination">
 						<ul>
 							
+							<li class="prev"><a class="internal" rel="prev"  href="/r/2015/03/07/yo-first-post" title="View Use the Source, Luke!">&laquo; Use the Source, Luke!</a></li>
 							
 							
-							<li class="next"><a class="internal" rel="next"  href="/2015/09/10/rstoolbox-made-it-to-cran" title="View RStoolbox made it to CRAN">RStoolbox made it to CRAN &raquo;</a></li>
 							
 						</ul>
 					</nav>
@@ -221,7 +338,7 @@
                 };
             load('//platform.twitter.com/widgets.js', 'tweetjs');
             // load('https://apis.googlecom/js/plusone.js', 'gplus1js'); // Checkout http://j.mp/ApDgMr for usage html for this is <div class="g-plusone" data-size="medium"></div>
-            // load('//connect.facebook.net/en_US/all.js#xfbml=1', 'fbjssdk'); // Checkout http://j.mp/wZw2xR for using open graph protorol html for this is <div class="fb-like" data-href="/r/2015/03/07/yo-first-post" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="verdana"></div>
+            // load('//connect.facebook.net/en_US/all.js#xfbml=1', 'fbjssdk'); // Checkout http://j.mp/wZw2xR for using open graph protorol html for this is <div class="fb-like" data-href="/2015/09/10/rstoolbox-made-it-to-cran" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="verdana"></div>
         }(document, 'script'));
     </script>
     <script>
