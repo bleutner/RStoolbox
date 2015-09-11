@@ -7,7 +7,7 @@ tags: [r,RStoolbox]
 ---
 {% include JB/setup %}
 
-![RStoolbox](../../../../assets/img/rstbx.png) After well over a year of (on-and-off) development we dared to knock on the menacing gates of CRAN.
+![RStoolbox](/assets/img/rstbx.png) After well over a year of (on-and-off) development we dared to knock on the menacing gates of CRAN.
 Intensive testing and an intimate relationship with `R CMD check` payed out and with little further changes RStoolbox was accepted and can now be installed via `install.packages("RStoolbox")`. Hooray :-)
 
 But not so fast! You think checking locally, checking with win-builder and checking with oldrel, release and devel on [Travis CI](https://travis-ci.org/bleutner/RStoolbox) would give you a CRAN proof jacket? Hahaha -- no.  
