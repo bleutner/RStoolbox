@@ -149,7 +149,21 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
             ## Clip validation data to training data + 2 pixel buffer 
             #dissolve(gUnionCascaded(trainData, trainData[[responseCol]]))        
             inter <- gIntersection(valData, trainData, byid = TRUE) ## again both steps needed to deal with poor poly data potentially arising from manually digitizing training areas
-            inter <- gUnionCascaded(inter)
+            
+            if(inherits(inter, "SpatialCollections")) {
+               ## This happens when polygons share borders
+               ## Make lines or points polygons 
+               l2poly <- if(!is.null(inter@lineobj))  gBuffer(inter@lineobj, width = res(img)[1]*1e-5, byid = TRUE) 
+               p2poly <- if(!is.null(inter@pointobj)) gBuffer(inter@pointobj, width = res(img)[1]*1e-5, byid = TRUE) 
+               ## Merge all polygons into single list
+               plist <- list(l2poly, p2poly, inter@polyobj)
+               ## Remove non-matching classes
+               plist[vapply(plist, is.null, logical(1))] <- NULL
+               inter <- do.call("rbind", c(plist, makeUniqueIDs = TRUE))                         
+            } else {
+                inter <- gUnionCascaded(inter)
+            }
+            
             if(minDist != 0) inter <- gBuffer(inter, width = res(img)[1] * minDist)
             clip  <- gDifference(valData, inter, byid = TRUE)
             if(is.null(clip)) stop("After clipping valData to trainData+minDist*pix buffer no validation polygons remain. Please provide non-overlapping trainData and valData.")
