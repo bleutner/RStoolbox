@@ -164,10 +164,13 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
                 inter <- gUnionCascaded(inter)
             }
             
+            ## Buffer train polygons by mindist and clip valData with it
             if(minDist != 0) inter <- gBuffer(inter, width = res(img)[1] * minDist)
             clip  <- gDifference(valData, inter, byid = TRUE)
             if(is.null(clip)) stop("After clipping valData to trainData+minDist*pix buffer no validation polygons remain. Please provide non-overlapping trainData and valData.")
-            classVec <- data.frame(x = valData[[responseCol]][over(clip, valData)])
+           
+            ## Add class labels back to polygons
+            classVec <- data.frame(x = over(clip, valData)[[responseCol]])
             valData <- as(clip, "SpatialPolygonsDataFrame")
             valData@data <- classVec 
             colnames(valData@data) <- responseCol
