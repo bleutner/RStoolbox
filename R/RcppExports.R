@@ -21,6 +21,10 @@ predKmeansCpp <- function(x, centers) {
     .Call('RStoolbox_predKmeansCpp', PACKAGE = 'RStoolbox', x, centers)
 }
 
+predictMlcCpp <- function(newdata, model, nclasses) {
+    .Call('RStoolbox_predictMlcCpp', PACKAGE = 'RStoolbox', newdata, model, nclasses)
+}
+
 pwSimilarityCpp <- function(img, ref, method) {
     .Call('RStoolbox_pwSimilarityCpp', PACKAGE = 'RStoolbox', img, ref, method)
 }

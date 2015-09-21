@@ -180,7 +180,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
             inter <- colnames(inter)[which(inter, arr.ind = TRUE)[,2]]
             valData <- valData[!rownames(valData@data) %in% inter,]        
         }     
-        warning("TrainData and valData overlap. Excluded overlapping points or polygon areas.\n" , nrow(valData), " of ", nValOrig, " remain for validation.")
+        warning("TrainData and valData overlap. Excluded overlapping points or polygon areas.\n")
     }   
     
     ## Creade hold out indices on polygon level
@@ -245,7 +245,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
     if(mode == "classification"){   
         if(!is.factor(dataSet$response)) dataSet$response <- as.factor(dataSet$response)
         classes 	 <- unique(dataSet$response)
-        classMapping <- data.frame(classID = as.numeric(classes), class = as.character(classes))
+        classMapping <- data.frame(classID = as.numeric(classes), class = as.character(classes), stringsAsFactors = FALSE)
         classMapping <- classMapping[order(classMapping$classID),]
         rownames(classMapping) <- NULL
     }

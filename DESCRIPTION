@@ -30,6 +30,7 @@ Imports:
     doParallel,
     foreach,
     Rcpp,
+    RcppArmadillo,
     methods
 Suggests: 
     rgdal,
@@ -38,6 +39,6 @@ Suggests:
     e1071,
     gridExtra,
     testthat
-LinkingTo: Rcpp    
+LinkingTo: Rcpp, RcppArmadillo 
 License: GPL (>=3)
 LazyData: true

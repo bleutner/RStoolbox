@@ -93,17 +93,19 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0
     annotation <- !geom_raster
 	layer <- unlist(.numBand(img, layer))
     xfort <- sampleRegular(img[[layer]], maxpixels, asRaster = TRUE)
-    if(is.factor(img[[layer]])) {
-        rat <- levels(xfort)
-        xfort <- stack(xfort,xfort)  ## workaround raster bug #6043    FIXME: apparently solved now in raster    
-        names(xfort)[1] <- names(img)[layer]   
-    }
-    df 	  <- as.data.frame(xfort, xy = T)[,-4]
+#    if(is.factor(img[[layer]])) {
+#        rat <- levels(xfort)
+#        xfort <- stack(xfort,xfort)  ## workaround raster bug #6043    FIXME: apparently solved now in raster    
+#        names(xfort)[1] <- names(img)[layer]   
+#    }
+    df 	  <- as.data.frame(xfort, xy = TRUE)
     layer <- names(img)[layer]
     colnames(df) <- c("x", "y", layer) 
     if(forceCat & !is.factor(df[,layer])) df[,layer] <- as.factor(df[,layer])
-   
-    fac <- is.factor(df[,layer])
+    
+    if(is.character(df[,layer])) df[,layer] <- factor(df[,layer])
+    fac <- is.factor(df[,layer]) 
+    
     if(fac & (annotation | !ggObj)) {
         .vMessage("img values are factors but annotation is TRUE. Converting factors as.numeric.")
         levelLUT   <- levels(df[,layer])
@@ -117,6 +119,7 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0
         df$fill  	<- NA
         df[nona, "fill"] <- hsv(h = hue, s = sat, v = normVals[nona], alpha = alpha)
     }
+    
     x<-y<-NULL
     if(ggObj) {       
         ex    <- extent(xfort)
