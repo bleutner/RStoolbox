@@ -21,6 +21,7 @@ mlc <- function(x, y, ...){
 				list(m = colMeans(x[cl,]),  D = -log(det(cod)), I = solve(cod))
 			})
 	names(mod) <- as.character(levels(y))
+    mod[["levels"]] <- unique(y)
 	mod
 }
 
@@ -32,17 +33,27 @@ mlc <- function(x, y, ...){
 #' @noRd 
 #' @keywords internal
 predict.mlc <- function(modelFit, newdata, ...){	
-	modelFit <- modelFit$finalModel
+	if(inherits(modelFit, "train")) modelFit <- modelFit$finalModel
 	classes <- modelFit$obsLevels
-	lp <- lapply(1:nrow(newdata), function(s){
-				lik <- vapply(classes, function(i){
-							xm <- newdata[s,] - modelFit[[i]]$m
-							drop(modelFit[[i]]$D - xm %*% modelFit[[i]]$I %*% as.matrix(xm))
-						}, numeric(1))
-			})
-	
-	vp <- vapply(lp, which.max, numeric(1))
-	vp
+	pred <- predictMlcCpp(newdata, model = modelFit, nclasses = length(classes))
+    factor(classes[pred[,1]], classes)
+}
+
+#' Predict Maximum Likelihood Classification - Probabilities
+#' 
+#' @param modelFit model result from mlc
+#' @param newdata Matrix. New data.
+#' @param ... not used
+#' @noRd 
+#' @keywords internal
+predict.mlc.prob <- function(modelFit, newdata, ...){	
+    if(inherits(modelFit, "train")) modelFit <- modelFit$finalModel
+    classes <- modelFit$obsLevels
+    if(is.data.frame(newdata)) newdata <- as.matrix(newdata)
+    pred <- predictMlcCpp(newdata, model = modelFit, nclasses = length(classes))
+    pred <- pred[,-1]
+    colnames(pred) <- classes
+    pred
 }
 
 #' Define caret custom model for maximum likelihood classification
@@ -56,6 +67,7 @@ mlcCaret <- list(
 		grid = function (x, y, len = NULL) {data.frame(parameter = "none")},
 		fit = mlc,
 		predict = predict.mlc,
-		prob = NULL,
-		sort = function(x) x	
+		prob = predict.mlc.prob,
+		sort = function(x) x,
+        levels = function(x) levels(x$levels)
 )

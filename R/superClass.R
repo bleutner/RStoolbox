@@ -10,11 +10,12 @@
 #' @param areaWeightedSampling Logical. If \code{TRUE} scales sample size per polygon area. The bigger the polygon the more samples are taken.
 #' @param polygonBasedCV Logical. If \code{TRUE} model tuning during cross-validation is conducted on a per-polygon basis. Use this to deal with overfitting.
 #' @param trainPartition Numeric. Partition (polygon based) of \code{trainData} that goes into the training data set between zero and one. Ignored if \code{valData} is provided.
-#' @param model Character. Which model to use. See \link[caret]{train} for options. Defaults to randomForest ('rf')
+#' @param model Character. Which model to use. See \link[caret]{train} for options. Defaults to randomForest ('rf'). In addition to the standard caret models, a maximum likelihood classification is available via \code{model = 'mlc'}. 
 #' @param tuneLength Integer. Number of levels for each tuning paramete (see \link[caret]{train} for details).
 #' @param kfold Integer. Number of cross-validation resamples during model tuning.
 #' @param minDist Numeric. Minumum distance factor between training and validation data, e.g. minDist=1 will clip validation polygons to ensure a minimal distance of one pixel to the next training polygon. Applies onl if trainData and valData overlap.
 #' @param mode Character. Model type: 'regression' or 'classification'. 
+#' @param predType Character. Type of the final output raster. Either "raw" for class predictions or "prob" for class probabilities. Class probabilities are not available for all classification models (\link[caret]{predict.train}). 
 #' @param filename Path to output file (optional). If \code{NULL}, standard raster handling will apply, i.e. storage either in memory or in the raster temp directory. 
 #' @param verbose Logical. prints progress and statistics during execution
 #' @param overwrite logical. Overwrite spatial prediction raster if it already exists.
@@ -78,7 +79,7 @@
 superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 		nSamples = 1000, areaWeightedSampling = TRUE, polygonBasedCV = FALSE, trainPartition = NULL,
         model = "rf", tuneLength = 3,  kfold = 5,
-        minDist = 2,  mode = "classification",
+        minDist = 2,  mode = "classification", predType = "raw",
         filename = NULL, verbose,
          overwrite = TRUE, ...) {
     # TODO: check applicability of raster:::.intersectExtent 
@@ -262,6 +263,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
     .vMessage("Starting to fit model")   
     .registerDoParallel()
     indexIn <- if(polygonBasedCV) lapply(1:kfold, function(x) which(x != indexOut)) 
+    if(model == "mlc") model = mlcCaret
     caretModel 	<- train(response ~ ., data = dataSet, method = model, tuneLength = tuneLength, 
             trControl = trainControl(method = "cv", number = kfold, index = indexIn), ...)   
     
@@ -281,8 +283,14 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
     
     wrArgs          <- list(filename = filename, progress = progress, datatype = dataType, overwrite = overwrite)
     wrArgs$filename <- filename ## remove filename from args if is.null(filename) --> standard writeRaster handling applies
-    spatPred        <- .paraRasterFun(img, rasterFun=raster::predict, args = list(model=caretModel), wrArgs = wrArgs)
-    names(spatPred) <- responseCol
+    if(predType == "prob") {
+        ddd<- predict(caretModel, dataSet[1:2,-1,drop=FALSE], type="prob")
+        probInd <- 1:ncol(ddd)
+    } else {
+        probInd <- 1
+    } 
+    spatPred        <- .paraRasterFun(img, rasterFun=raster::predict, args = list(model=caretModel, type = predType, index = probInd), wrArgs = wrArgs)
+    if(predType != "prob") names(spatPred) <- responseCol
     
     ## VALIDATION ########################
     if(!is.null(valData)){
