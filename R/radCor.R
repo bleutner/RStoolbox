@@ -13,6 +13,7 @@
 #' @param hazeBands Bands corresponding to hazeValues.
 #' @param atmosphere Character. Atmospheric characteristics. Will be estimated if not expicilty provided. Must be one of \code{"veryClear", "clear", "moderate", "hazy"} or \code{"veryHazy"}.
 #' @param darkProp Numeric. Estimated proportion of dark pixels in the scene. Used only for automatic guessing of hazeValues (typically one would choose 1 or 2\%).
+#' @param clamp Logical. Enforce valid value range. By default reflectance will be forced to stay within [0,1] and radiance >= 0 by replacing invalid values with the correspinding boundary, e.g. -0.1 will become 0.
 #' @param verbose Logical. Print status information. 
 #' @note This was originally a fork of randcorr() function in the landsat package. This version works on Raster* objects and hence is suitable for large rasters.
 #' @return 
@@ -67,7 +68,7 @@
 #' hazeDN    <- estimateHaze(lsat, hazeBands = 1:4, darkProp = 0.01, plot = TRUE)
 #' lsat_sref <- radCor(lsat, metaData = metaData, method = "sdos", 
 #'                     hazeValues = hazeDN, hazeBands = 1:4)
-radCor <-	function(img, metaData, method = "apref", bandSet = "full", hazeValues, hazeBands, atmosphere, darkProp = 0.02, verbose){
+radCor <-	function(img, metaData, method = "apref", bandSet = "full", hazeValues, hazeBands, atmosphere, darkProp = 0.02, clamp = TRUE, verbose){
     # http://landsat.usgs.gov/Landsat8_Using_Product.php
     if(!missing("verbose")) .initVerbose(verbose)
     
@@ -224,9 +225,16 @@ radCor <-	function(img, metaData, method = "apref", bandSet = "full", hazeValues
         layernames <-   if(method == "apref") gsub("_dn", "_tre", bandSet) else gsub("_dn", "_sre", bandSet)               
     }  
     .vMessage("Processing radiance / reflectance")  
-    xref <- .paraRasterFun(img[[bandSet]], rasterFun = calc, args = list(fun = function(x) {gainOffsetRescale(x,GAIN,OFFSET)}, forcefun=TRUE))
-    names(xref) <- layernames   
+   
+    CLAMP <- c(FALSE,FALSE)
+    if(clamp & method == "rad") CLAMP <- c(TRUE,FALSE)
+    if(clamp & method != "rad") CLAMP <- c(TRUE,TRUE)
+
+    xref <- .paraRasterFun(img[[bandSet]], rasterFun = calc, args = list(fun = function(x) {gainOffsetRescale(x,GAIN,OFFSET,CLAMP)}, forcefun=TRUE))
     
+    
+    names(xref) <- layernames   
+
     ## Re-combine thermal, solar and excluded imagery
     out <- stack(xref, xtir, excl)
     

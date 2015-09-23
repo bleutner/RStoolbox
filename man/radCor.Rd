@@ -5,7 +5,7 @@
 \title{Radiometric Calibration and Correction}
 \usage{
 radCor(img, metaData, method = "apref", bandSet = "full", hazeValues,
-  hazeBands, atmosphere, darkProp = 0.02, verbose)
+  hazeBands, atmosphere, darkProp = 0.02, clamp = TRUE, verbose)
 }
 \arguments{
 \item{img}{raster object}
@@ -24,6 +24,8 @@ radCor(img, metaData, method = "apref", bandSet = "full", hazeValues,
 \item{atmosphere}{Character. Atmospheric characteristics. Will be estimated if not expicilty provided. Must be one of \code{"veryClear", "clear", "moderate", "hazy"} or \code{"veryHazy"}.}
 
 \item{darkProp}{Numeric. Estimated proportion of dark pixels in the scene. Used only for automatic guessing of hazeValues (typically one would choose 1 or 2\%).}
+
+\item{clamp}{Logical. Enforce valid value range. By default reflectance will be forced to stay within [0,1] and radiance >= 0 by replacing invalid values with the correspinding boundary, e.g. -0.1 will become 0.}
 
 \item{verbose}{Logical. Print status information.}
 }
