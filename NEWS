@@ -1,6 +1,10 @@
 RStoolbox 0.1.2
 =====================================
+New:
 New model for superClass: maximum likelihood classification (model = "mlc")
+
+Fixes:
+* Restrict calculation of EVI/EVI2 to reflectance data (#3)
 
 RStoolbox 0.1.1
 =====================================

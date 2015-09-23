@@ -20,6 +20,7 @@
 #' library(ggplot2)
 #' library(raster)
 #' data(lsat)
+#' 
 #' ## Calculate NDVI
 #' ndvi <- spectralIndices(lsat, red = "B3_dn", nir = "B4_dn", indices = "NDVI")
 #' ndvi
@@ -27,7 +28,11 @@
 #'         scale_fill_gradientn(colours = c("black", "white")) 
 #' 
 #' ## Calculate all possible indices, given the provided bands 
-#' SI <- spectralIndices(lsat, red = "B3_dn", nir = "B4_dn")
+#' ## Convert DNs to reflectance (only required to calculate EVI and EVI2)
+#' mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
+#' lsat_ref <- radCor(lsat, mtlFile, method = "apref")
+#' 
+#' SI <- spectralIndices(lsat_ref, red = "B3_tre", nir = "B4_tre")
 #' plot(SI)
 spectralIndices <- function(img,
         blue=NULL, green=NULL, red=NULL, nir=NULL, swir1 =NULL, swir2 = NULL, 
@@ -36,27 +41,24 @@ spectralIndices <- function(img,
     # TODO: add further indices
     # TODO: soil line estimator
     
-	## We will use the following wavlength range definitions (following Schowengerdt 2007)
-	# VIS   | Visible              |   400  -    700 nm
-	# RED   |
-	# GREEN |
-	# BLUE  |
-	# NIR   | Near infra-red       |   700  -   1100 nm
-	# swir1 | Short-wave infra-red |  1100  -   1351 nm
-	# swir2 | shortwave infra-red  |  1400  -   1800 nm
-	# swir3 | Shortwave infra-red  |  2000  -   2500 nm
-	# mir1  | midwave infra-red    |  3000  -   4000 nm 
-	# mir2  | midwave infra-red    |  4500  -   5000 nm 
-	# TIR1  | thermal infra-red    |  8000  -   9500 nm
-	# TIR2  | thermal infra-red    | 10000  - 140000 nm
-	##	
-	
-	
-	if(!is.null(index)) indices <- index  ## argument translation for convenience
-	
-	
+    ## We will use the following wavlength range definitions (following Schowengerdt 2007)
+    # VIS   | Visible              |   400  -    700 nm
+    # RED   |
+    # GREEN |
+    # BLUE  |
+    # NIR   | Near infra-red       |   700  -   1100 nm
+    # swir1 | Short-wave infra-red |  1100  -   1351 nm
+    # swir2 | shortwave infra-red  |  1400  -   1800 nm
+    # swir3 | Shortwave infra-red  |  2000  -   2500 nm
+    # mir1  | midwave infra-red    |  3000  -   4000 nm 
+    # mir2  | midwave infra-red    |  4500  -   5000 nm 
+    # TIR1  | thermal infra-red    |  8000  -   9500 nm
+    # TIR2  | thermal infra-red    | 10000  - 140000 nm
+    ##	
+     
+    if(!is.null(index)) indices <- index  ## argument translation for convenience
     
-    ## Coefficients
+     ## Coefficients
     defaultCoefs <- list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5, s = 1)     
     implem <- names(coefs) %in% names(defaultCoefs)
     if(any(!implem)) warning("Non-implemented coefficients are ignored: ", paste0(names(coefs)[!implem], collapse=", "),
@@ -68,6 +70,7 @@ spectralIndices <- function(img,
     if(!any(ind %in% names(BANDSdb))) stop("indices must either be NULL to calculate all indices",
                 "\nor element of c(", paste0(names(BANDSdb),collapse=","),") for specific indices.", call. = FALSE)
     
+    
     ## Gather function arguments (all provided bands) and create args
     potArgs  <- c("blue", "green", "red", "nir", "swir2", "swir1")
     actArgs  <- vapply(potArgs, function(x) !is.null(get(x)), logical(1))    
@@ -77,7 +80,19 @@ spectralIndices <- function(img,
     requested    <- BANDSdb[ind]
     
     canCalc  <- names(requested)[!vapply(requested, function(x) any(!x %in% bands), logical(1))]
+    if(any(c("EVI","EVI2") %in% canCalc)){
+        if(defaultCoefs$C1 == 6 & (maxValue(img[[red]]) > 1 | minValue(img[[red]]) < 0)){ 
+            warning("EVI/EVI2 parameters G, C1 and C2 are defined for reflectance [0,1] but img values are outside of this range.\n",
+                     "  If you are using scaled reflectance values please scale the coefficients accordingly.\n", 
+                     "  If img is in DN please convert it to reflectance.\n",
+                     "  Skipping EVI calculation.\n")
+          canCalc <- canCalc[!canCalc %in% c("EVI", "EVI2")]
+          indices <- indices[!indices %in% c("EVI", "EVI2")]
+         }
+    }
+   
     ind  <- ind[ind %in% canCalc]   
+
     if(!length(ind)) stop("No index could be calculated. At least for one index you must specify *all* required bands.",
                 "\n  See ?spectralIndices for information on required bands per index.")
     if(length(ind) < length(indices)){
@@ -88,7 +103,7 @@ spectralIndices <- function(img,
                 notbands,
                 "\n  The remaining fully specified indices will be calculated.")
     }
-    
+   
     ## Get required designated bands
     retrieve   <- lapply(bands, get, envir=environment())
     bandsCalc  <- vapply(retrieve, function(xi) {  if(is.character(xi)) match(xi, names(img)) else xi  }, numeric(1))
@@ -97,7 +112,7 @@ spectralIndices <- function(img,
     ## Adjust layer argument so that the first layer we use is now layer 1, etc.
     ## This way we don't have to sample the whole stack if we only need a few layers
     fullSet <- vapply(potArgs, function(n) match(n, names(bandsCalc)), integer(1))
-
+    
     # Perform calculations 
     indexMagic <- .paraRasterFun(img[[bandsCalc]], rasterFun = raster::calc,
             args = list(fun = function(m) {
@@ -122,8 +137,9 @@ spectralIndices <- function(img,
 
 
 BANDSdb <-  list(               
-        DVI  	= c("red", "nir"),
+        DVI  	=  c("red", "nir"),
         EVI		=  c("red", "nir", "blue"),
+        EVI2    =  c("red", "nir"),
         GEMI	=  c("red", "nir"),
         LSWI	=  c("red", "swir1"),
         MSAVI	=  c("red", "nir"),
@@ -131,7 +147,7 @@ BANDSdb <-  list(
         NDVI	=  c("red", "nir"),
         NDWI 	=  c("green", "nir"),
         SAVI    =  c("red", "nir"), 
-		SATVI   =  c("red", "swir1", "swir2"),
+        SATVI   =  c("red", "swir1", "swir2"),
         SLAVI	=  c("red", "nir", "swir2"),
         SR 		=  c("red", "nir"),     
         TVI 	=  c("red", "nir"),
@@ -139,20 +155,22 @@ BANDSdb <-  list(
 )
 
 
-## NOT USED FOR CALCULATIONS
+## NOT USED FOR CALCULATIONS ONLY FOR DOCUMENTATION
+## SEE /src/spectraIndices.cpp for calculationss
 #' Database of spectral indices
 #' @keywords internal
 #' @noRd 
-.IDXdb <-  list(               
+.IDXdb <-  list(    
         DVI 	= function(red, nir) {s*nir-red},
         CTVI    = function(red, nir) {(nir-red)/(nir+red) + 0.5},
-	    EVI  	= function(red, nir, blue) {G * ((nir - red) / (nir + C1 * red - C2 * blue + L_evi))},
+        EVI  	= function(red, nir, blue) {G * ((nir - red) / (nir + C1 * red - C2 * blue + L_evi))},
+        EVI2    = function(red, nir) {G * (nir-red)/(nir + 2.4*red +1)},
         GEMI	= function(red, nir) {(((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5) ) / (nir + red + 0.5)) * (1 - ((((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5) ) / (nir + red + 0.5)) * 0.25)) - ((red - 0.125) / (1 - red))},
         LSWI	= function(nir, swir1) {(nir-swir1)/(nir+swir1)},
-	   MNDWI    = function(green, swir1) {(green-swir1) / (green+swir1)},
+        MNDWI    = function(green, swir1) {(green-swir1) / (green+swir1)},
         MSAVI	= function(red, nir) {nir + 0.5 - (0.5 * sqrt((2 * nir + 1)^2 - 8 * (nir - (2 * red))))},
         MSAVI2	= function(red, nir) {(2 * (nir + 1) - sqrt((2 * nir + 1)^2 - 8 * (nir - red))) / 2},
-   #     MSI     = function(nir, swir2) {swir2/nir},
+        #     MSI     = function(nir, swir2) {swir2/nir},
         NBRI    = function(nir, swir2) { (nir - swir2) / (nir + swir2)},
         NDVI	= function(red, nir) {(nir-red)/(nir+red)}, 
         NDWI 	= function(green, nir) {(green - nir)/(green + nir)},
@@ -174,14 +192,14 @@ BANDSdb <-  list(
         DVI     = c("Richardson1977", "Difference Vegetation Index") ,
         CTVI    = c("Perry1984", "Corrected Transformed Vegetation Index"),
         EVI     = c("Huete1999", "Enhanced Vegetation Index"),
+        EVI2    = c("Jiang 2008", "Two-band Enhanced Vegetation Index"), # Development of a two-band enhanced vegetation index without a blue band
         GEMI    = c("Pinty1992","Global Environmental Monitoring Index"),
         LSWI    = c("Xiao2004", "Land Surface Water Index"),
         MSAVI	= c("Qi1994","Modified Soil Adjusted Vegetation Index"),
         MSAVI2	= c("Qi1994","Modified Soil Adjusted Vegetation Index 2"),
         MNDWI   = c("", "Modified Normalised Difference Water Index"),
-   #     MSI     = c()       
         NBRI    = c("", "Normalised Burn Ratio Index"),
-	NDVI	= c("Rouse1974", "Normalised Difference Vegetation Index"),
+        NDVI	= c("Rouse1974", "Normalised Difference Vegetation Index"),
         NDWI	= c("Gao1996", "Normalised Difference Water Index"),
         NRVI    = c("Baret1991","Normalised Ratio Vegetation Index"),
         RVI     = c("", "Ratio Vegetation Index"),

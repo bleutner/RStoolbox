@@ -30,15 +30,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // gainOffsetRescale
-NumericMatrix gainOffsetRescale(NumericMatrix x, NumericVector g, NumericVector o);
-RcppExport SEXP RStoolbox_gainOffsetRescale(SEXP xSEXP, SEXP gSEXP, SEXP oSEXP) {
+NumericMatrix gainOffsetRescale(NumericMatrix x, NumericVector g, NumericVector o, LogicalVector clamp);
+RcppExport SEXP RStoolbox_gainOffsetRescale(SEXP xSEXP, SEXP gSEXP, SEXP oSEXP, SEXP clampSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< NumericMatrix >::type x(xSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type g(gSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type o(oSEXP);
-    __result = Rcpp::wrap(gainOffsetRescale(x, g, o));
+    Rcpp::traits::input_parameter< LogicalVector >::type clamp(clampSEXP);
+    __result = Rcpp::wrap(gainOffsetRescale(x, g, o, clamp));
     return __result;
 END_RCPP
 }

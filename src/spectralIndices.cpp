@@ -49,6 +49,14 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 			out(_,j) = ifelse( is_na(out(_,j)), NA_REAL, out(_,j));
 
 		}
+		else if(indices[j] == "EVI2") {
+				// Two-band Enhanced vegetation index
+				// Jiang et al 2008
+				out(_,j) = G * ((nir - red) / (nir + 2.4 * red + 1));
+				out(_,j) = ifelse( is_na(out(_,j)), NA_REAL, out(_,j));
+
+			}
+
 		else if(indices[j] == "GEMI") {
 			out(_,j) = (((pow(nir, 2) - pow(red, 2)) * 2.0 + (nir * 1.5) + (red * 0.5) ) /
 					(nir + red + 0.5)) * (1 - ((((pow(nir,2) - pow(red,2)) * 2 + (nir * 1.5) + (red * 0.5) ) /
