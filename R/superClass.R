@@ -56,18 +56,18 @@
 #' library(randomForest)
 #' library(e1071)
 #' library(raster)
-#' input <- brick(system.file("external/rlogo.grd", package="raster"))
+#' data(rlogo)
 #' train <- readRDS(system.file("external/training.rds", package="RStoolbox"))
 #' 
 #' ## Plot training data
 #' olpar <- par(no.readonly = TRUE) # back-up par
 #' par(mfrow=c(1,2))
 #' colors <- c("yellow", "green", "deeppink")
-#' plotRGB(input)
+#' plotRGB(rlogo)
 #' plot(train, add = TRUE, col =  colors[train$class], pch = 19)
 #' 
 #' ## Fit classifier (splitting training into 70\% training data, 30\% validation data)
-#' SC 	  <- superClass(input, trainData = train, responseCol = "class", 
+#' SC 	  <- superClass(rlogo, trainData = train, responseCol = "class", 
 #' model = "rf", tuneLength = 1, trainPartition = 0.7)
 #' SC
 #' 
