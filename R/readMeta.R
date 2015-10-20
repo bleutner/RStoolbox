@@ -135,7 +135,7 @@ readMeta <- function(file, raw = FALSE){
     } else {
         ## PROCESS ESPA LEDAPS XML FILES
         meta <- xmlToList(xmlParse(file))
-        names(meta$bands) <- str_replace_all(unlist(sapply(meta$bands, "[", "long_name")), " ", "_")
+        names(meta$bands) <- gsub(" ", "_", unlist(sapply(meta$bands, "[", "long_name")))
         
         if(raw) return(meta)
         
@@ -143,7 +143,7 @@ readMeta <- function(file, raw = FALSE){
         atts 	<- sapply(meta$bands, "[", ".attrs") 
         sat		<- paste0("LANDSAT", .getNumeric(meta$global_metadata$satellite))
         sen 	<- meta$global_metadata$instrument
-        scene 	<- str_replace(meta$global_metadata$lpgs_metadata_file, "_MTL.txt", "")  ## could assemble name for legacy files: http://landsat.usgs.gov/naming_conventions_scene_identifiers.php
+        scene 	<- gsub("_MTL.txt", "", meta$global_metadata$lpgs_metadata_file)  ## could assemble name for legacy files: http://landsat.usgs.gov/naming_conventions_scene_identifiers.php
         date	<- as.POSIXct(paste(meta$global_metadata$acquisition_date,meta$global_metadata$scene_center_time), "%Y%m%d %H:%M:%S" )
         pdate	<- as.POSIXct(meta$bands[[1]]$production_date)
         path	<- as.numeric(meta$global_metadata$wrs["path"])

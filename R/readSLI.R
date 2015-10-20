@@ -14,19 +14,17 @@ readSLI <- function(path) {
     
     ## Figure out file naming convention of hdr file for either combination of 
     ## (filename.sli + filename.sli.hdr) OR (filename.sli + filename.hdr)
-    if(file.exists(str_c(path, ".hdr"))){
-        hdr_path <- str_c(path, ".hdr")
-    } else {
-        if (file.exists(paste0(str_split(path,"[.]")[[1]][1], ".hdr"))){
-            hdr_path <- paste0(str_split(path,"[.]")[[1]][1], ".hdr")
-        } else {
+    hdr_path <- paste0(path, ".hdr")
+    if(!file.exists(hdr_path)){
+        hdr_path <- paste0(strsplit(path,"[.]")[[1]][1], ".hdr")
+        if (!file.exists(hdr_path)){
             stop(paste0("Can't find header file of", path), call.= FALSE)
         }
     }
     
     ## Get header info
-    hdr <- readLines(hdr_path, n=-1L)
-    bands <-.getNumeric(hdr[grep("samples", hdr)])
+    hdr   <- readLines(hdr_path, n=-1L)
+    bands <- .getNumeric(hdr[grep("samples", hdr)])
     lines <- .getNumeric(hdr[grep("lines", hdr)])
     data_type <- .getNumeric(hdr[grep("data type", hdr)])
     
@@ -34,19 +32,19 @@ readSLI <- function(path) {
     id <- .bracketRange(hdr, "spectra names")
     if(id[1]==id[2]) {
         labels <- hdr[(id[1])]
-        labels <- str_split(labels, "[{]")[[1]][2]
+        labels <- strsplit(labels, "[{]")[[1]][2]
     } else {
         labels <- hdr[(id[1]+1):(id[2])]
     }
     
-    labels <- str_replace_all(paste(labels,collapse=","), "[ }]","")
-    labels <- unlist( str_split( str_replace_all( labels, ",,", ","), ","))
+    labels <- gsub( "\\}| ", "", paste(labels, collapse = ","))
+    labels <- unlist(strsplit(gsub(",,",",", labels), ","))
     
     ## Extract wavelengths
     id <- .bracketRange(hdr, "wavelength = ")
     wavelengths <- hdr[(id[1]+1):(id[2])]
-    wavelengths <- str_replace_all( paste( wavelengths, collapse=","), "[ }]", "")
-    wavelengths <- as.numeric( unlist( str_split( str_replace_all( wavelengths, ",,", ","), ",")))
+    wavelengths <- gsub( "\\}| ", "", paste( wavelengths, collapse=","))
+    wavelengths <- as.numeric( unlist( strsplit( gsub(",,",",", wavelengths), ",")))
     
     ## Read binary sli file
     if (data_type == 4) bytes <- 4
@@ -55,7 +53,7 @@ readSLI <- function(path) {
     x[] <- readBin(path, "numeric", n = 1000000, size = bytes)
     colnames(x) <- labels
     x <- cbind(wavelengths,x)
-	colnames(x)[1] <- "wavelength"
+    colnames(x)[1] <- "wavelength"
     return(x)
     
 } ## EOF readSLI
@@ -79,8 +77,8 @@ writeSLI <- function(x, path, wavl.units="Micrometers", scaleF=1, mode="bin") {
     ## Begin write binary mode
     if (mode== "bin") {
         ## Write header file
-        sink(str_c(path,".hdr"))
-        writeLines(str_c("ENVI\ndescription = {\n   ENVI SpecLib created using RStoolbox for R [", date(), "]}",
+        sink(paste0(path,".hdr"))
+        writeLines(paste0("ENVI\ndescription = {\n   ENVI SpecLib created using RStoolbox for R [", date(), "]}",
                         "\nsamples = ", nrow(x),
                         "\nlines   = ", ncol(x) - 1,
                         "\nbands   = ", 1,
@@ -112,13 +110,13 @@ writeSLI <- function(x, path, wavl.units="Micrometers", scaleF=1, mode="bin") {
         ## Create column descriptions
         collector <- character()
         for(i in 2:ncol(x)){
-            collector <- append(collector, str_c("\nColumn ", i, ": ", colnames(x)[i], "~~",i))
+            collector <- append(collector, paste0("\nColumn ", i, ": ", colnames(x)[i], "~~",i))
         }
         sink(path)
         ## Write txt file header
-        writeLines(str_c("ENVI ASCII Plot File [", date(),"]\n",
+        writeLines(paste0("ENVI ASCII Plot File [", date(),"]\n",
                         "Column 1: wavelength [!7l!3m]!N", 
-                        str_join(collector, collapse="")))
+                        paste0(collector, collapse="")))
         sink()
         ## Append data
         write.table(data.frame(x=rep("",nrow(x)),x), path, sep="  ", append= TRUE , row.names= FALSE, col.names= FALSE, quote= FALSE)
@@ -130,7 +128,7 @@ writeSLI <- function(x, path, wavl.units="Micrometers", scaleF=1, mode="bin") {
 ## Helper functions
 ## Find matching bracket to a matched pattern
 .bracketRange <- function(x, pattern) {
-    begin <- which(grepl(pattern, x))
+    begin   <- which(grepl(pattern, x))
     closers <- which(grepl("}", x))
     if(begin %in% closers){
         # Openeing and closing brackets on the same line

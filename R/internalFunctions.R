@@ -133,7 +133,7 @@
     
     if(basename(x) == x | grepl("^[.][.]/", x))    x   <- file.path(getwd(),x)
     if(grepl("[.][.]", x)){
-        xs  <- str_split(x, "/")[[1]]
+        xs  <- strsplit(x, "/")[[1]]
         ups <- grep("[.][.]", xs)  
         rem <- c(ups, ups-length(ups))
         rem <- rem[rem > 1]

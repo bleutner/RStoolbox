@@ -18,7 +18,6 @@ Imports:
 	raster (>= 2.3-40),
 	caret (>= 6.0-52),
     sp,
-    stringr,
     XML,
     geosphere,
     ggplot2,
