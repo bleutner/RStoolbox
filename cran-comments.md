@@ -1,13 +1,6 @@
 
-## Resubmission
-
-#### UBSAN Error
-I believe to have fixed the issue responsible for the clang-UBSAN errors in RStoolbox 0.1.0.
-However, as of now I did not manage to reproduce the UBSAN checks.
-
-#### \donttest{} example
-I added the kernlab package to Suggests in the DESCRIPTION.
-The package was required by a *donttest* example but not declared and therefore caused an ERROR when CRAN was running R CMD check --run-donttest
+## CRAN checks
+This submission fixes the clang-UBSAN errors found in RStoolbox 0.1.1.
 
 ## Test environments
 * ubuntu 15.04 64bit, (R 3.2.2, devel)
@@ -18,4 +11,12 @@ The package was required by a *donttest* example but not declared and therefore 
 There were no ERRORs, WARNINGs or NOTEs. 
 
 ## Downstream dependencies
-none 
+none
+
+## Changelog RStoolbox 0.1.2
+New model for superClass: maximum likelihood classification (model = "mlc")
+Fixes:
+* Restrict calculation of EVI/EVI2 to reflectance data (#3)
+* Enforce valid value ranges in radCor: radiance: [0,+Inf], reflectance: [0,1]. Includes a new argument `clamp` to turn this on or off (on by default).
+
+ 

@@ -185,7 +185,7 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
 }
 
 
-## Perform histogram, log and 98% linear stretching
+## Perform histogram, sqrt log and 98% linear stretching
 .stretch <- function (x, method = "lin", quantiles = c(0.02,0.98)) {
 	if(!method %in% c("lin", "hist", "log", "sqrt")) stop("Stretch method must be 'lin', 'hist', 'sqrt' or 'log'", call. = FALSE)
 	if(method == "lin"){
