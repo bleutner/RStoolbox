@@ -29,8 +29,8 @@ group: navigation
 superClass(img, trainData, valData = NULL, responseCol = NULL,
   nSamples = 1000, areaWeightedSampling = TRUE, polygonBasedCV = FALSE,
   trainPartition = NULL, model = "rf", tuneLength = 3, kfold = 5,
-  minDist = 2, mode = "classification", filename = NULL, verbose,
-  overwrite = TRUE, ...)
+  minDist = 2, mode = "classification", predType = "raw",
+  filename = NULL, verbose, overwrite = TRUE, ...)
 </pre>
 
 
@@ -71,7 +71,7 @@ superClass(img, trainData, valData = NULL, responseCol = NULL,
 </td></tr>
 <tr valign="top"><td><code class="r">model</code></td>
 <td>
-<p>Character. Which model to use. See <a href="http://www.inside-r.org/packages/cran/caret/docs/train">train</a> for options. Defaults to randomForest ('rf')</p>
+<p>Character. Which model to use. See <a href="http://www.inside-r.org/packages/cran/caret/docs/train">train</a> for options. Defaults to randomForest ('rf'). In addition to the standard caret models, a maximum likelihood classification is available via <code class="r">model = 'mlc'</code>.</p>
 </td></tr>
 <tr valign="top"><td><code class="r">tuneLength</code></td>
 <td>
@@ -88,6 +88,10 @@ superClass(img, trainData, valData = NULL, responseCol = NULL,
 <tr valign="top"><td><code class="r">mode</code></td>
 <td>
 <p>Character. Model type: 'regression' or 'classification'.</p>
+</td></tr>
+<tr valign="top"><td><code class="r">predType</code></td>
+<td>
+<p>Character. Type of the final output raster. Either &quot;raw&quot; for class predictions or &quot;prob&quot; for class probabilities. Class probabilities are not available for all classification models (<a href="http://www.inside-r.org/packages/cran/caret/docs/predict.train">predict.train</a>).</p>
 </td></tr>
 <tr valign="top"><td><code class="r">filename</code></td>
 <td>
@@ -163,19 +167,29 @@ otherwise it will be performed on a per-pixel basis.
 <pre><code class="r">library(caret)
 library(randomForest)
 library(e1071)
-library(raster)
-input &lt;- brick(system.file(&quot;external/rlogo.grd&quot;, package=&quot;raster&quot;))
+</code></pre>
+
+<pre><code class="r">#&gt; 
+#&gt; Attaching package: &#39;e1071&#39;
+#&gt; 
+#&gt; The following object is masked from &#39;package:raster&#39;:
+#&gt; 
+#&gt;     interpolate
+</code></pre>
+
+<pre><code class="r">library(raster)
+data(rlogo)
 train &lt;- readRDS(system.file(&quot;external/training.rds&quot;, package=&quot;RStoolbox&quot;))
 
 ## Plot training data
 olpar &lt;- par(no.readonly = TRUE) # back-up par
 par(mfrow=c(1,2))
 colors &lt;- c(&quot;yellow&quot;, &quot;green&quot;, &quot;deeppink&quot;)
-plotRGB(input)
+plotRGB(rlogo)
 plot(train, add = TRUE, col =  colors[train$class], pch = 19)
 
 ## Fit classifier (splitting training into 70% training data, 30% validation data)
-SC    &lt;- superClass(input, trainData = train, responseCol = &quot;class&quot;,
+SC    &lt;- superClass(rlogo, trainData = train, responseCol = &quot;class&quot;,
 model = &quot;rf&quot;, tuneLength = 1, trainPartition = 0.7)
 SC
 </code></pre>

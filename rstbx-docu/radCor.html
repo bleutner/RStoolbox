@@ -29,7 +29,7 @@ With proper parametrization apref and sdos should work for other sensors as well
 
 <pre>
 radCor(img, metaData, method = "apref", bandSet = "full", hazeValues,
-  hazeBands, atmosphere, darkProp = 0.02, verbose)
+  hazeBands, atmosphere, darkProp = 0.02, clamp = TRUE, verbose)
 </pre>
 
 
@@ -68,6 +68,10 @@ radCor(img, metaData, method = "apref", bandSet = "full", hazeValues,
 <tr valign="top"><td><code class="r">darkProp</code></td>
 <td>
 <p>Numeric. Estimated proportion of dark pixels in the scene. Used only for automatic guessing of hazeValues (typically one would choose 1 or 2%).</p>
+</td></tr>
+<tr valign="top"><td><code class="r">clamp</code></td>
+<td>
+<p>Logical. Enforce valid value range. By default reflectance will be forced to stay within [0,1] and radiance &gt;= 0 by replacing invalid values with the correspinding boundary, e.g. -0.1 will become 0.</p>
 </td></tr>
 <tr valign="top"><td><code class="r">verbose</code></td>
 <td>
