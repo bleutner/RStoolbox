@@ -43,13 +43,14 @@
 }
 
 #' Run functions of ?apply family in parallel if possible
-#' @param X
+#' @param X object
 #' @param XFUN ?apply function. Currently c(sapply,lapply, apply)
 #' @param MARGIN integer. Margin for apply.
 #' @param FUN function to be ?applied
 #' @param envir Environment in which to look for objects to export. Usually this should be environment()
 #' @param ... further arguments passed to fun
 #' @keywords internal
+#' @noRd
 #' @examples
 #' \dontrun{
 #'  xList <- lapply(rep(1000,10000), rnorm)
@@ -61,7 +62,6 @@
 #'     endCluster()
 #'  }
 #' }
-#' @noRd 
 .parXapply <- function(X, XFUN, MARGIN, FUN, envir, ...){   
     
     call <- quote(f(cl = cl, X = X, FUN = FUN, MARGIN = MARGIN, ...))

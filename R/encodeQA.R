@@ -17,7 +17,7 @@
 #' @references 
 #' \url{http://landsat.usgs.gov/L8QualityAssessmentBand.php} 
 #' @export 
-#'  @return
+#' @return
 #' Returns the Integer value for the QA values
 #' @examples 
 #' encodeQA(snow = "low", cirrus = c("med", "high"), cloud = "high")

@@ -39,6 +39,10 @@
 #' all.equal(re_rpc, rpc)
 #' file.remove(file)
 #' }
+#' @name saveRSTBX
+NULL
+
+#' @describeIn saveRSTBX Save RStoolbox object to file 
 saveRSTBX <- function(x, filename, format ="raster", ...){
     
     stopifnot(inherits(x, "RStoolbox"))
@@ -60,7 +64,7 @@ saveRSTBX <- function(x, filename, format ="raster", ...){
     saveRDS(x, rdsFile)
 }
 
-#' @describeIn saveRSTBX
+#' @describeIn saveRSTBX Read files saved with saveRSTBX
 #' @export 
 readRSTBX <- function(filename){
     rdsFile <- rastFile <- .fullPath(filename)
