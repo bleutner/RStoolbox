@@ -12,14 +12,19 @@ mlc <- function(x, y, ...){
 				## Check&Fix for singularity due to fully correlated variables
 				## TODO: exclude correlated variables on a per class basis?
 				dups <- duplicated(cod)
+                warn <- FALSE
 				while(any(dups)) {
+                    warn <- TRUE
 					d <- which(dups)[1]
-				    warning(paste0("Covariance matrix of class ", ci, " is singular, i.e. holds perfectly correlated variables."))
 					cod[d, d] <- cod[d, d] + 1e-10
 					dups <- duplicated(cod)				
 				}
-				list(m = colMeans(x[cl,]),  D = -log(det(cod)), I = solve(cod))
-			})
+				list(m = colMeans(x[cl,]),  D = -log(det(cod)), I = solve(cod), warn = warn)
+			})		
+    
+    warn <- classes[ vapply(mod, "[[", logical(1),"warn")]
+    if(length(warn)) warning(paste0("Covariance matrix of class/classes ", warn, " is singular, i.e. holds perfectly correlated variables."))
+    for(i in seq_along(mod)) mod[[i]][["warn"]] <- NULL
 	names(mod) <- as.character(levels(y))
     mod[["levels"]] <- unique(y)
 	mod
@@ -64,7 +69,7 @@ mlcCaret <- list(
 		library = NULL,
 		type = "Classification",
 		parameters = data.frame(parameter = "parameter", class = "class", label = "label"),
-		grid = function (x, y, len = NULL) {data.frame(parameter = "none")},
+		grid = function (x, y, len = NULL, ...) {data.frame(parameter = "none")},
 		fit = mlc,
 		predict = predict.mlc,
 		prob = predict.mlc.prob,
