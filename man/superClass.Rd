@@ -7,8 +7,8 @@
 superClass(img, trainData, valData = NULL, responseCol = NULL,
   nSamples = 1000, areaWeightedSampling = TRUE, polygonBasedCV = FALSE,
   trainPartition = NULL, model = "rf", tuneLength = 3, kfold = 5,
-  minDist = 2, mode = "classification", predType = "raw",
-  filename = NULL, verbose, overwrite = TRUE, ...)
+  minDist = 2, mode = "classification", predict = TRUE,
+  predType = "raw", filename = NULL, verbose, overwrite = TRUE, ...)
 }
 \arguments{
 \item{img}{Raster* object. Typically remote sensing imagery, which is to be classified.}
@@ -23,7 +23,7 @@ superClass(img, trainData, valData = NULL, responseCol = NULL,
 
 \item{areaWeightedSampling}{Logical. If \code{TRUE} scales sample size per polygon area. The bigger the polygon the more samples are taken.}
 
-\item{polygonBasedCV}{Logical. If \code{TRUE} model tuning during cross-validation is conducted on a per-polygon basis. Use this to deal with overfitting.}
+\item{polygonBasedCV}{Logical. If \code{TRUE} model tuning during cross-validation is conducted on a per-polygon basis. Use this to deal with overfitting issues. Does not affect training data supplied as SpatialPointsDataFrames.}
 
 \item{trainPartition}{Numeric. Partition (polygon based) of \code{trainData} that goes into the training data set between zero and one. Ignored if \code{valData} is provided.}
 
@@ -36,6 +36,8 @@ superClass(img, trainData, valData = NULL, responseCol = NULL,
 \item{minDist}{Numeric. Minumum distance factor between training and validation data, e.g. minDist=1 will clip validation polygons to ensure a minimal distance of one pixel to the next training polygon. Applies onl if trainData and valData overlap.}
 
 \item{mode}{Character. Model type: 'regression' or 'classification'.}
+
+\item{predict}{Logical. Produce a map (TRUE, default) or only fit and validate the model (FALSE).}
 
 \item{predType}{Character. Type of the final output raster. Either "raw" for class predictions or "prob" for class probabilities. Class probabilities are not available for all classification models (\link[caret]{predict.train}).}
 

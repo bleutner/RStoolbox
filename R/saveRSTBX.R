@@ -51,16 +51,17 @@ saveRSTBX <- function(x, filename, format ="raster", ...){
     extension(rdsFile)  <- ".rds"
     extension(rastFile) <- .rasterExtension(format)          
     f <- raster::filename(x$map)
-    
-    if(inMemory(x$map)){
-        ## In memory
-        x$map <- writeRaster(x$map, filename = rastFile, format=format, ...)
-    } else {
-        if(f!=rastFile){
-            ## File onDisk but not in requested path and/or format
-            x$map <- writeRaster(x$map, filename = rastFile, format=format, ...)                           
-        }
-    }  
+    if(inherits(x$map, "Raster")){
+        if(inMemory(x$map)){
+            ## In memory
+            x$map <- writeRaster(x$map, filename = rastFile, format=format, ...)
+        } else {
+            if(f!=rastFile){
+                ## File onDisk but not in requested path and/or format
+                x$map <- writeRaster(x$map, filename = rastFile, format=format, ...)                           
+            }
+        }  
+    }
     saveRDS(x, rdsFile)
 }
 
@@ -72,14 +73,16 @@ readRSTBX <- function(filename){
     x 	    <- readRDS(rdsFile)
     if(!inherits(x, "RStoolbox")) stop(filename, "is not a RStoolbox object.", call. = FALSE)
     namesBU <- names(x$map) ## backup names (might get lost between file formats)
-    extension(rastFile) <-  extension(filename(x$map))  
-    if(!file.exists(rastFile)) {
-        warning("Corresponding raster file ", rastFile, " cannot be found.  \nThe *.rds and the raster file must be located in the same directory.")
-        x$map <- "Raster map not found"
-    } else {
-        x$map <- if(inherits(x$map, "RasterLayer")) raster(rastFile) else brick(rastFile) 
-    }          
-    names(x$map) <- namesBU
+    if(inherits(x$map, "Raster")){
+        extension(rastFile) <-  extension(filename(x$map))  
+        if(!file.exists(rastFile)) {
+            warning("Corresponding raster file ", rastFile, " cannot be found.  \nThe *.rds and the raster file must be located in the same directory.")
+            x$map <- "Raster map not found"
+        } else {
+            x$map <- if(inherits(x$map, "RasterLayer")) raster(rastFile) else brick(rastFile) 
+        }          
+        names(x$map) <- namesBU
+    }
     x
 }
 

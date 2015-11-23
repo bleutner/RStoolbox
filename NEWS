@@ -1,7 +1,8 @@
 RStoolbox 0.1.2.9000
 =====================================
 
-
+* new logical argument `predict` for superClass. Disables prediction of full raster (validation is still conducted).
+* new generic predict() function for superClass objects. Useful to separate model training and prediction. 
 
 RStoolbox 0.1.2
 =====================================
