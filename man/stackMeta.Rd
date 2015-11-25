@@ -8,7 +8,7 @@ stackMeta(file, quantity = "all", category = "image",
   allResolutions = FALSE)
 }
 \arguments{
-\item{file}{Character. Path to Landsat MTL metadata file (not an XML file!).}
+\item{file}{Character. Path to Landsat MTL metadata (*_MTL.txt) file or an Landsat CDR xml metadata file (*.xml).}
 
 \item{quantity}{Character vector. Which quantity should be returned. Options: digital numbers ('dn'), top of atmosphere reflectance ('tre'), at surface reflectance ('sre'), brightness temperature ('bt'), spectral index ('index'), all quantities ('all').}
 
