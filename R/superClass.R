@@ -311,9 +311,10 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
             pred <- predict(caretModel, val[,-1])
             valiSet <- data.frame(reference = val[,1], prediction = pred)
         }
+		
         if(mode == "classification"){
-            if(!is.factor(valiSet$reference)) valiSet$reference <- factor(valiSet$reference, levels = levels(classes))
-            valiSet$prediction <- classes[valiSet$prediction]
+            if(!is.factor(valiSet$reference))  valiSet$reference <- factor(valiSet$reference, levels = levels(classes))
+            if(is.numeric(valiSet$prediction)) valiSet$prediction <- factor(levels(classes)[valiSet$prediction], levels = levels(classes))
             validation <- confusionMatrix(data = valiSet$prediction, reference = valiSet$reference)              
         } else {
             valiSet$residuals <- valiSet$reference - valiSet$predicted
