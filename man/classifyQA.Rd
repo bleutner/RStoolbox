@@ -12,7 +12,7 @@ classifyQA(img, type = c("background", "cloud", "cirrus", "snow", "water"),
 
 \item{type}{Character. Classes which should be returned. One or more of c("background", "cloud", "cirrus","snow", "water").}
 
-\item{confLayers}{Logical. Return one layer per class classified by condidence levels, i.e. cloud:low, cloud:med, cloud:high.}
+\item{confLayers}{Logical. Return one layer per class classified by confidence levels, i.e. cloud:low, cloud:med, cloud:high.}
 
 \item{...}{further arguments passed to \link[raster]{writeRaster}}
 }
