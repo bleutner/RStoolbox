@@ -1,6 +1,6 @@
 
 ## CRAN checks
-This submission should now finally fix the clang-UBSAN errors found in RStoolbox 0.1.1.
+This submission contains a series of bug fixes
 
 ## Test environments
 * ubuntu 15.04 64bit, (R 3.2.2, devel)
@@ -13,10 +13,11 @@ There were no ERRORs, WARNINGs or NOTEs.
 ## Downstream dependencies
 none
 
-## Changelog RStoolbox 0.1.2
-New custom model for superClass: maximum likelihood classification (model = "mlc")
+## Changelog RStoolbox 0.1.3
+* new logical argument `predict` for superClass. Disables prediction of full raster (validation is still conducted).
+* new generic predict() function for superClass objects. Useful to separate model training and prediction. 
+
 Fixes:
-* Restrict calculation of EVI/EVI2 to reflectance data (#3)
-* Enforce valid value ranges in radCor: radiance: [0,+Inf], reflectance: [0,1]. Includes a new argument clamp to turn this on or off (on by default).
+* fix histMatch for single layers (affected also 'ihs' pan-sharpening)
 
  
