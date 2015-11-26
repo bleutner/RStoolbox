@@ -1,7 +1,7 @@
 context("superClass")
 
 data(rlogo)
-train <- readRDS(system.file("external/training.rds", package="RStoolbox"))
+train <- readRDS(system.file("external/trainingPoints.rds", package="RStoolbox"))
 
 ## No prediction
 set.seed(1)

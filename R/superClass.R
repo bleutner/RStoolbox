@@ -58,7 +58,7 @@
 #' library(e1071)
 #' library(raster)
 #' data(rlogo)
-#' train <- readRDS(system.file("external/training.rds", package="RStoolbox"))
+#' train <- readRDS(system.file("external/trainingPoints.rds", package="RStoolbox"))
 #' 
 #' ## Plot training data
 #' olpar <- par(no.readonly = TRUE) # back-up par
@@ -356,7 +356,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 #' @examples 
 #' ## Load training data
 #' data(rlogo)
-#' train <- readRDS(system.file("external/training.rds", package="RStoolbox"))
+#' train <- readRDS(system.file("external/trainingPoints.rds", package="RStoolbox"))
 #' 
 #' ## Fit classifier 
 #' SC 	  <- superClass(rlogo, trainData = train, responseCol = "class", 

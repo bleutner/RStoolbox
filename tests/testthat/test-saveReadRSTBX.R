@@ -3,7 +3,7 @@ library(raster)
 data(rlogo)
 
 ## Create RSTBX object
-train <- readRDS(system.file("external/training.rds", package="RStoolbox"))
+train <- readRDS(system.file("external/trainingPoints.rds", package="RStoolbox"))
 sc <- superClass(rlogo, train, tuneLength = 1, resp="class")
 
 ## Save and re-import
