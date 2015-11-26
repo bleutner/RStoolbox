@@ -29,7 +29,7 @@ file.copy(mtl, paste0("inst/external/landsat/", basename(mtl)), overwrite = TRUE
 files <- list.files("inst/external/landsat/", "tif", full = TRUE)
 file.rename(files, gsub("tif", "TIF", files))
 
-## Create inMemory lsat data set
+## Create inMemory lsat data set #########################################################
 lsat  <- stackMeta(list.files("inst/external/landsat", "MTL", full = TRUE))
 lsatf <- writeRaster(lsat, "/tmp/test.grd", datatype = "INT1U", overwrite = TRUE)
 lsat  <- readAll(lsatf)
@@ -44,3 +44,9 @@ dems  <- projectRaster(dem, lsat)
 dh    <- writeRaster(dems, "/tmp/test.grd", datatype = "INT1U", overwrite=T)
 srtm  <- readAll(dh)
 save(srtm, file = "data/srtm.rda", compress = "bzip2")
+
+## Lsat Training Polygons
+library(rgdal)
+train <- readOGR("data-raw", "trainPolygons")
+saveRDS(train, "inst/external/trainingPolygons.rds")
+
