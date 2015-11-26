@@ -4,7 +4,7 @@
 #' 
 #' @param img RasterLayer. Landsat 8 OLI QA band. 
 #' @param type Character. Classes which should be returned. One or more of c("background", "cloud", "cirrus","snow", "water").
-#' @param confLayers Logical. Return one layer per class classified by condidence levels, i.e. cloud:low, cloud:med, cloud:high.
+#' @param confLayers Logical. Return one layer per class classified by confidence levels, i.e. cloud:low, cloud:med, cloud:high.
 #' @param ... further arguments passed to \link[raster]{writeRaster}
 #' @seealso \link{encodeQA} \link{decodeQA}
 #' @details 

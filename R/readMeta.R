@@ -178,7 +178,7 @@ readMeta <- function(file, raw = FALSE){
     radRes	<- if(sat == "LANDSAT8") 16 else 8
     
     
-    obj <-  ImageMetaData(file = file, format = format, sat = sat, sen = sen, scene = scene, date = date, pdate = pdate, path = path, radRes=radRes, spatRes = spatRes, row = row, az = az,
+    ImageMetaData(file = file, format = format, sat = sat, sen = sen, scene = scene, date = date, pdate = pdate, path = path, radRes=radRes, spatRes = spatRes, row = row, az = az,
             selv = selv, esd = esd, files = files, bands = bands, quant = quant, cat = cat, na = na, vsat = vsat, scal = scal, dtyp = dtyp, 
             calrad=calrad, calref=calref, calbt=calbt, proj = proj)
     
