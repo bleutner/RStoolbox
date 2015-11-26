@@ -54,7 +54,7 @@
 #' par(opar)
 histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e5, intersectOnly = TRUE, paired = TRUE, 
         forceInteger = FALSE, returnFunctions = FALSE, ...){
-    if(nSamples > ncell(ref)) nSamples <- ncell(ref)
+    nSamples <- min(ncell(ref), nSamples, ncell(ref))
     
     ## Define intersecting extent if required. Returns NULL if FALSE
     ext <- if(paired | intersectOnly) intersect(extent(x), extent(ref)) 
@@ -76,7 +76,7 @@ histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e5, inte
     ## Sample histogram data  
     .vMessage("Extract samples")
 
-    ref.sample  <- sampleRandom(ref, size = nSamples, na.rm = TRUE, ext = ext, xy = paired)
+    ref.sample  <- as.matrix(sampleRandom(ref, size = nSamples, na.rm = TRUE, ext = ext, xy = paired))
  
     if(paired) {
         x.sample   <- extract(x, ref.sample[,c("x","y")])
@@ -85,7 +85,7 @@ histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e5, inte
         ref.sample <- ref.sample[valid, -c(1:2), drop = FALSE] 
         x.sample      <- x.sample[valid, , drop = FALSE]
     } else {
-        x.sample 	<- sampleRandom(x, size = nSamples, na.rm = T, ext = ext)
+        x.sample 	<- as.matrix(sampleRandom(x, size = nSamples, na.rm = T, ext = ext))
     }
     
     .vMessage("Calculate empirical cumulative histograms")
@@ -110,6 +110,7 @@ histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e5, inte
             })
     
     totalFun <- function(xvals, f = layerFun) {
+		if(is.vector(xvals)) xvals <- as.matrix(xvals)
         app <- lapply(1:ncol(xvals), function(i) {
             f[[i]](xvals[,i])       
         })
@@ -123,6 +124,7 @@ histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e5, inte
     }
     ## Apply histMatch to raster 
     .vMessage("Apply histogram match functions")
+	
     out <- raster::calc(x, fun = totalFun, forcefun = TRUE, ...)
     
     if(!is.null(xmask)) out <- merge(xfull, out, ..., overwrite = TRUE)

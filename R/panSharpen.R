@@ -43,6 +43,8 @@
 panSharpen <- function(img, pan, r, g, b, pc = 1, method = "brovey", norm = TRUE) {
     ## TODO: add weighting
 	stopifnot(inherits(img, "Raster") & inherits(pan, "Raster"))
+	if(res(img)[1] <= res(pan)[1]) stop("Pan image must be of higher spatial resolution than img.")
+		
     if(method == "pca") {
         layernames <- names(img) 
     } else {
@@ -76,7 +78,7 @@ panSharpen <- function(img, pan, r, g, b, pc = 1, method = "brovey", norm = TRUE
         
         Ivv    <- .paraRasterFun(img[[c(r,g,b)]], rasterFun = calc, args = list(fun = function(x) x %*% Mfwd))
         Ivvr   <- raster::resample(Ivv[[2:3]], pan, method = "bilinear")
-        panMa  <- histMatch(pan, Ivv[[1]])
+        panMa  <- histMatch(x = pan, ref = Ivv[[1]], paired = FALSE, intersectOnly = FALSE)
         panimg <- .paraRasterFun(stack(panMa, Ivvr) , rasterFun = calc, args = list(fun = function(x) x %*% Mbwd))
     }
     if(method == "brovey"){
