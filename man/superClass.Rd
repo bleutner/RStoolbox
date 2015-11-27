@@ -29,7 +29,7 @@ superClass(img, trainData, valData = NULL, responseCol = NULL,
 
 \item{model}{Character. Which model to use. See \link[caret]{train} for options. Defaults to randomForest ('rf'). In addition to the standard caret models, a maximum likelihood classification is available via \code{model = 'mlc'}.}
 
-\item{tuneLength}{Integer. Number of levels for each tuning paramete (see \link[caret]{train} for details).}
+\item{tuneLength}{Integer. Number of levels for each tuning parameter (see \link[caret]{train} for details).}
 
 \item{kfold}{Integer. Number of cross-validation resamples during model tuning.}
 
