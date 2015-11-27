@@ -1,7 +1,7 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-// Predict kmeans based on assignment to the nearest cluster center
+// @title Predict kmeans based on assignment to the nearest cluster center
 // @param x Matrix
 // @keywords internal
 // [[Rcpp::export]]

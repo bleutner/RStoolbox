@@ -139,6 +139,22 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
     ## Split into training and validation data (polygon basis)
     if(is.null(valData) & !is.null(trainPartition)){
         training  <- createDataPartition(trainData[[responseCol]], p = trainPartition)[[1]] ## this works for polygons as well because every polygon has only one entry in the attribnute table @data
+        if(length(training) == nrow(trainData)) stop(paste0("There are not enough polygons to split into training and validation partitions. \n  You could either ",
+                            "\n   * provide more (often smaller) polygons instead of few large ones (recommended)",
+                            "\n   * provide pre-defined validation polygons via the valData argument",
+                            "\n   * decrease trainPartition",
+                            "\n   * run without independent validation."))
+        if(mode == "classification"){
+            valVal <- trainData[[responseCol]][-training]
+            valDiff <- setdiff(trainData[[responseCol]], valVal)
+            if(length(valDiff)) stop(paste0("The independent validation partition does not encompass all classes.",
+                                "\n   Missing classes: ", paste(valDiff, collapse = ", "), 
+                                "\n   You could either ",
+                                "\n    * provide more (often smaller) polygons for the concerned classes instead of few large ones (recommended)",
+                                "\n    * provide pre-defined validation polygons via the valData argument",
+                                "\n    * decrease trainPartition",
+                                "\n    * run without independent validation."))
+        }
         valData   <- trainData[-training,]
         trainData <- trainData[training,]
     }
@@ -286,7 +302,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
         progress <- "none"
         .vMessage("Starting spatial predict")
         if(verbose)  progress <- "text"
-
+        
         wrArgs          <- list(filename = filename, progress = progress, datatype = dataType, overwrite = overwrite)
         wrArgs$filename <- filename ## remove filename from args if is.null(filename) --> standard writeRaster handling applies
         if(predType == "prob") {
@@ -295,7 +311,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
         } else {
             probInd <- 1
         } 
-
+        
         spatPred        <- .paraRasterFun(img, rasterFun=raster::predict, args = list(model=caretModel, type = predType, index = probInd), wrArgs = wrArgs)
         if(predType != "prob") names(spatPred) <- responseCol
     } else {
@@ -312,7 +328,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
             pred <- predict(caretModel, val[,-1])
             valiSet <- data.frame(reference = val[,1], prediction = pred)
         }
-		
+        
         if(mode == "classification"){
             if(!is.factor(valiSet$reference))  valiSet$reference <- factor(valiSet$reference, levels = levels(classes))
             if(is.numeric(valiSet$prediction)) valiSet$prediction <- factor(levels(classes)[valiSet$prediction], levels = levels(classes))
@@ -369,7 +385,7 @@ predict.superClass <- function(object, img, predType = "raw", filename = NULL, d
     model <- object$model
     wrArgs          <- c(list(...), list(filename = filename, datatype = datatype))
     wrArgs$filename <- filename ## remove filename from args if is.null(filename) --> standard writeRaster handling applies
-  
+    
     if(predType == "prob") {
         ddd <- predict(model, img[1:2,], type="prob")
         probInd <- 1:ncol(ddd)
