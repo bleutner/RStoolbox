@@ -128,7 +128,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
     if(!gIntersects(as(extent(img),"SpatialPolygons"), as(extent(trainData),"SpatialPolygons"))) 
         stop("img and trainData do not overlap")
     
-    ## What's happening? Class or Reg
+    ## Make sure classification is run with factors
     if(mode == "classification" && is.numeric(trainData[[responseCol]])) {
         trainData[[responseCol]] <- as.factor(trainData[[responseCol]])       
     } 
@@ -164,46 +164,52 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
     if(trainDataType == "points" & minDist != 0) dummy <- gBuffer(trainData, width = res(img)[1]*minDist, byid = TRUE)  
     
     ## We need this cumbersome any(gDisjoint(byid=T)) action to circumvent TopologyExceptions
-    if(!is.null(valData) && any(!gDisjoint(trainData, valData, byid =T)) || exists("dummy") &&  any(gIntersects(valData, dummy, byid=T))){
-        if(identical(trainData, valData)) stop("trainData is the same as valData")
-        nValOrig <- nrow(valData)
-        if(trainDataType == "polygons"){
-            ## Clip validation data to training data + 2 pixel buffer 
-            #dissolve(gUnionCascaded(trainData, trainData[[responseCol]]))        
-            inter <- gIntersection(valData, trainData, byid = TRUE) ## again both steps needed to deal with poor poly data potentially arising from manually digitizing training areas
-            
-            if(inherits(inter, "SpatialCollections")) {
-                ## This happens when polygons share borders
-                ## Make lines or points polygons 
-                l2poly <- if(!is.null(inter@lineobj))  gBuffer(inter@lineobj, width = res(img)[1]*1e-5, byid = TRUE) 
-                p2poly <- if(!is.null(inter@pointobj)) gBuffer(inter@pointobj, width = res(img)[1]*1e-5, byid = TRUE) 
-                ## Merge all polygons into single list
-                plist <- list(l2poly, p2poly, inter@polyobj)
-                ## Remove non-matching classes
-                plist[vapply(plist, is.null, logical(1))] <- NULL
-                inter <- do.call("rbind", c(plist, makeUniqueIDs = TRUE))                         
-            } else {
-                inter <- gUnionCascaded(inter)
-            }
-            
-            ## Buffer train polygons by mindist and clip valData with it
-            if(minDist != 0) inter <- gBuffer(inter, width = res(img)[1] * minDist)
-            clip  <- gDifference(valData, inter, byid = TRUE)
-            if(is.null(clip)) stop("After clipping valData to trainData+minDist*pix buffer no validation polygons remain. Please provide non-overlapping trainData and valData.")
-            
-            ## Add class labels back to polygons
-            classVec <- data.frame(x = over(clip, valData)[[responseCol]])
-            valData <- as(clip, "SpatialPolygonsDataFrame")
-            valData@data <- classVec 
-            colnames(valData@data) <- responseCol
-        } else { 
-            if(!exists("dummy")) dummy <- trainData 
-            inter <- gIntersects(valData, dummy, byid = T)
+    #if(!is.null(valData) && any(!gDisjoint(trainData, valData, byid =T)) || exists("dummy") &&  any(gIntersects(valData, dummy, byid=T))){
+    if(identical(trainData, valData)) stop("trainData is the same as valData")
+    if(trainDataType == "polygons"){
+        ## Clip validation data to training data + 2 pixel buffer 
+        #dissolve(gUnionCascaded(trainData, trainData[[responseCol]]))        
+        #inter <- gIntersection(valData, trainData, byid = TRUE) ## again both steps needed to deal with poor poly data potentially arising from manually digitizing training areas
+        
+        trainBuff <- if(minDist > 0) gBuffer(trainData, width = res(img)[1]*minDist) else gUnionCascaded(trainData)
+        clip  <- gDifference(valData, trainBuff, byid = TRUE)
+        if(is.null(clip)) stop("After clipping valData to trainData+minDist*pix buffer no validation polygons remain. Please provide non-overlapping trainData and valData.")
+        
+        
+#            if(inherits(inter, "SpatialCollections")) {
+#                ## This happens when polygons share borders
+#                ## Make lines or points polygons 
+#                l2poly <- if(!is.null(inter@lineobj))  gBuffer(inter@lineobj, width = res(img)[1]*1e-5, byid = TRUE) else NULL
+#                p2poly <- if(!is.null(inter@pointobj)) gBuffer(inter@pointobj, width = res(img)[1]*1e-5, byid = TRUE) else NULL
+#                ## Merge all polygons into single list
+#                plist <- list(l2poly, p2poly, inter@polyobj)
+#                ## Remove non-matching classes
+#                plist[vapply(plist, is.null, logical(1))] <- NULL
+#                inter <- do.call("rbind", c(plist, makeUniqueIDs = TRUE))      
+#                
+#            } 
+        
+#            inter <- gUnionCascaded(inter)
+#            
+#            ## Buffer train polygons by mindist and clip valData with it
+#            if(minDist != 0) inter <- gBuffer(inter, width = res(img)[1] * minDist)
+#            clip  <- gDifference(valData, inter, byid = TRUE)
+#            if(is.null(clip)) stop("After clipping valData to trainData+minDist*pix buffer no validation polygons remain. Please provide non-overlapping trainData and valData.")
+#            
+        ## Add class labels back to polygons
+        classVec <- data.frame(x = over(clip, valData)[[responseCol]])
+        valData <- as(clip, "SpatialPolygonsDataFrame")
+        valData@data <- classVec 
+        colnames(valData@data) <- responseCol
+        
+    } else { 
+        if(!exists("dummy")) dummy <- trainData 
+        inter <- gIntersects(valData, dummy, byid = T)
+        if(any(inter)){            
             inter <- colnames(inter)[which(inter, arr.ind = TRUE)[,2]]
-            valData <- valData[!rownames(valData@data) %in% inter,]        
-        }     
-        warning("TrainData and valData overlap. Excluded overlapping points or polygon areas.\n")
-    }   
+            valData <- valData[!rownames(valData@data) %in% inter,]
+        }
+    }     
     
     ## Creade hold out indices on polygon level
     if(polygonBasedCV){
@@ -218,7 +224,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
     
     ## Calculate area weighted number of samples per polygon
     ## we'll end up with n > nSamples, but make sure to sample each polygon at least once
-    .samplePixels <- function(SHAPE, RASTER, foldCol = NULL){
+    .samplePixels <- function(SHAPE, RASTER, foldCol = NULL, trainCells = NULL){
         if(trainDataType == "polygons"){
             if (areaWeightedSampling){
                 if(is.projected(SHAPE)){
@@ -236,29 +242,35 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
             SHAPE@data <- weights[order(weights$order),]
             
             ## Get random coordinates within polygons
-            xy  <- lapply(seq_along(SHAPE), function(i_poly){	
-                        pts <- spsample(SHAPE[i_poly, ], type = "random", n = SHAPE@data[i_poly,"nSamplesClass"], iter = 20) 
+            # xy  <- .parXapply(X = seq_along(SHAPE), XFUN ="lapply", FUN=function(i_poly, shap = SHAPE){
+            #            sps <- spsample(shap[i_poly, ], type = "random", n = shap@data[i_poly,"nSamplesClass"], iter = 20)
+            #           return(sps)
+            #      } , envir = environment())
+            xy  <- lapply(seq_along(SHAPE), FUN=function(i_poly, shap = SHAPE){
+                        spsample(shap[i_poly, ], type = "random", n = shap@data[i_poly,"nSamplesClass"], iter = 20)
                     })
-            xy <- do.call("rbind", xy)
+            xy  <- do.call("rbind", xy)
         } else {
             xy <- SHAPE
         }
         
         ## Extract response and predictors and combine in final training set
-        .vMessage("Begin sampling training data")
         dataSet <- data.frame(
                 if(trainDataType == "polygons") over(x = xy, y = SHAPE)[c(responseCol,foldCol)] else SHAPE[[responseCol]],
                 extract(RASTER, xy, cellnumbers = TRUE))
         
         ## Discard duplicate cells
-        dubs 	<- duplicated(dataSet[,"cells"])
-        dataSet <- dataSet[!dubs,]
-        dataSet$cells <- NULL
+        dubs 	<- !duplicated(dataSet[,"cells"]) & complete.cases(dataSet) & !dataSet[,"cells"] %in% trainCells
+        dataSet <- dataSet[dubs,]
+        #dataSet <- dataSet[complete.cases(dataSet),]
+        # dataSet$cells <- NULL
         colnames(dataSet)[1] <- "response"
-        dataSet
+        list(dataSet[,setdiff(colnames(dataSet), "cells")], cells = dataSet$cells)
     }
     
-    dataSet  <- .samplePixels(SHAPE = trainData, RASTER=img, foldCol=foldCol)
+    .vMessage("Begin sampling training data")
+    dataList  <- .samplePixels(SHAPE = trainData, RASTER=img, foldCol=foldCol)
+    dataSet   <- dataList[[1]]
     if(polygonBasedCV) {
         indexOut <- dataSet[[foldCol]]
         dataSet[[foldCol]] <- NULL
@@ -321,10 +333,10 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
     ## VALIDATION ########################
     if(!is.null(valData)){
         if(predict){
-            valiSet  <- .samplePixels(valData, spatPred)
+            valiSet  <- .samplePixels(valData, spatPred, trainCells = dataList[[2]])[[1]]
             colnames(valiSet) <- c("reference", "prediction")
         } else {
-            val <- .samplePixels(valData, img)
+            val <- .samplePixels(valData, img, trainCells = dataList[[2]])[[1]]
             pred <- predict(caretModel, val[,-1])
             valiSet <- data.frame(reference = val[,1], prediction = pred)
         }
@@ -334,7 +346,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
             if(is.numeric(valiSet$prediction)) valiSet$prediction <- factor(levels(classes)[valiSet$prediction], levels = levels(classes))
             validation <- confusionMatrix(data = valiSet$prediction, reference = valiSet$reference)              
         } else {
-            valiSet$residuals <- valiSet$reference - valiSet$predicted
+            valiSet$residuals <- valiSet$reference - valiSet$prediction
             validation <-  data.frame(rmse = RMSE(valiSet$prediction, valiSet$reference), rsquared = R2(valiSet$prediction, valiSet$reference))   
         }
         validation <- list(performance = validation, validationSet = valiSet)
