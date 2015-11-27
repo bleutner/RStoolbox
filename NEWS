@@ -1,11 +1,15 @@
-RStoolbox 0.1.2.9000
+RStoolbox 0.1.3
 =====================================
-
+New:
 * new logical argument `predict` for superClass. Disables prediction of full raster (validation is still conducted).
 * new generic predict() function for superClass objects. Useful to separate model training and prediction. 
+* new example data set (landcover training polygons) for lsat example data under /extdata/trainingPolygons.rds 
 
 Fixes:
 * fix histMatch for single layers (affected also 'ihs' pan-sharpening)
+* fix superClass validation sampling for factors (character based factors could lead to wrong factor conversions and wrong validation results)
+* improved handling of of training polygons with overlaps and shared borders in superClass
+* improved checks and error messages for insufficient training polygons
 
 RStoolbox 0.1.2
 =====================================
