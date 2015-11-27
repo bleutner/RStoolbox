@@ -33,7 +33,7 @@ git commit -a -m "Automatic commit: Update example data (landsat, rlogo, srtm, l
 
 ## Back to master
 git checkout master
-git checkout example-data data/rlogo.rda data/srtm.rda  data/lsat.rda inst/external/landsat
+git checkout example-data data/rlogo.rda data/srtm.rda  data/lsat.rda inst/external/landsat inst/external/trainingPolygons.rds
 Rscript -e "library(devtools); library(methods); document()"
 git commit -a -m "Automatic commit: Pull example data from branch example-data"
 

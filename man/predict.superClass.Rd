@@ -26,7 +26,7 @@ useful to separate model fitting from spatial prediction, which can take some ti
 \examples{
 ## Load training data
 data(rlogo)
-train <- readRDS(system.file("external/training.rds", package="RStoolbox"))
+train <- readRDS(system.file("external/trainingPoints.rds", package="RStoolbox"))
 
 ## Fit classifier 
 SC 	  <- superClass(rlogo, trainData = train, responseCol = "class", 

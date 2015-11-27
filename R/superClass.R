@@ -295,6 +295,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
         } else {
             probInd <- 1
         } 
+
         spatPred        <- .paraRasterFun(img, rasterFun=raster::predict, args = list(model=caretModel, type = predType, index = probInd), wrArgs = wrArgs)
         if(predType != "prob") names(spatPred) <- responseCol
     } else {
