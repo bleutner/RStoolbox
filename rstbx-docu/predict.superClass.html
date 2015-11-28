@@ -1,0 +1,80 @@
+---
+layout: docu
+title: ' Predict a raster map based on a superClass model fit. '
+fun:  predict.superClass 
+package:  RStoolbox 
+header: Pages
+group: navigation
+---
+{% include JB/setup %}
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Predict a raster map based on a superClass model fit.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+
+                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+                            <script>hljs.initHighlightingOnLoad();</script>
+                            </head><body>
+
+<h3>Description</h3>
+
+<p>useful to separate model fitting from spatial prediction, which can take some time.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'superClass'
+predict(object, img, predType = "raw", filename = NULL,
+  datatype = "INT2U", ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code class="r">object</code></td>
+<td>
+<p>superClass object</p>
+</td></tr>
+<tr valign="top"><td><code class="r">img</code></td>
+<td>
+<p>Raster object. Layernames must correspond to layernames used to train the superClass model, i.e. layernames in the original raster image.</p>
+</td></tr>
+<tr valign="top"><td><code class="r">predType</code></td>
+<td>
+<p>Character. Type of the final output raster. Either &quot;raw&quot; for class predictions or &quot;prob&quot; for class probabilities. Class probabilities are not available for all classification models (<a href="http://www.inside-r.org/packages/cran/caret/docs/predict.train">predict.train</a>).</p>
+</td></tr>
+<tr valign="top"><td><code class="r">filename</code></td>
+<td>
+<p>Character or NULL. Filename for output raster file.</p>
+</td></tr>
+<tr valign="top"><td><code class="r">datatype</code></td>
+<td>
+<p>Datatype of output raster file.</p>
+</td></tr>
+<tr valign="top"><td><code class="r">...</code></td>
+<td>
+<p>Further arguments passed to writeRaster.</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre><code class="r">## Load training data
+data(rlogo)
+train &lt;- readRDS(system.file(&quot;external/trainingPoints.rds&quot;, package=&quot;RStoolbox&quot;))
+
+## Fit classifier 
+SC    &lt;- superClass(rlogo, trainData = train, responseCol = &quot;class&quot;, 
+              model = &quot;rf&quot;, tuneLength = 1, predict = FALSE)
+
+map &lt;- predict(SC, rlogo)
+</code></pre>
+
+
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.1.3 <a href="index.html">Index</a>]</div>
+</body></html>
