@@ -19,7 +19,7 @@ group: navigation
 
 <h3>Description</h3>
 
-<p>Developed for use with Landsat data <code class="r">cloudMask</code> relies on the distinctive difference between the blue (or any other short-wave band)
+<p>Developed for use with Landsat data <code class="r">cloudMask</code> relies on the distinctive difference between the blue (or any other short-wave band) 
 and thermal band for semi-automated creation of a cloud mask. Since it relies on thermal information it doesn't work well for sensors without
 thermal bands.
 </p>
@@ -79,7 +79,7 @@ cloudMask(x, threshold = 0.8, blue = "B1_sre", tir = "B6_sre",
 Before calculating the spectral cloud index (let's call it Normalized Difference Thermal Cloud Index (NDTCI)) the thermal band will be matched to the same value range as the blue band. Therefore, it doesn't matter whether you
 provide DN, radiance or brightness temperature.
 </p>
-<p>This approach to cloud masking is very simplistic. And aims only at rough removal of potentially clouded areas. Nevertheless, it is able to provide satisfactory results.
+<p>This approach to cloud masking is very simplistic. And aims only at rough removal of potentially clouded areas. Nevertheless, it is able to provide satisfactory results. 
 More sophisticated approaches, including cloud cast shadow detection can be found elsewhere, e.g. <a href="http://code.google.com/p/fmask">fmask</a>.
 </p>
 <p>It can make sense to find a suitable threshold on a cropped version of the scene. Also make sure you make use of the <code class="r">returnDiffLayer</code> argument to save yourself one processing step.
@@ -99,7 +99,7 @@ Once your mask detects obvious cloud pixels properly re-enable buffering for fin
 <pre><code class="r">library(raster)
 library(ggplot2)
 ## Import Landsat example subset
-data(lsat)
+data(lsat) 
 ## We have two tiny clouds in the east
 ## No test: 
 ggRGB(lsat, stretch = &quot;lin&quot;)
@@ -122,9 +122,9 @@ ggR(cldmsk, 2, geom_raster = TRUE)
 ## Define threshold (re-use the previously calculated index)
 ## Everything above the threshold is masked
 ## In addition we apply a region-growing around the core cloud pixels
-cldmsk_final &lt;- cloudMask(cldmsk, threshold = 0.1, buffer = 5)
+cldmsk_final &lt;- cloudMask(cldmsk, threshold = 0.1, buffer = 5) 
 
-## Plot cloudmask
+## Plot cloudmask 
 ## No test: 
 ggRGB(lsat, stretch = &quot;lin&quot;) +
    ggR(cldmsk_final[[1]], ggLayer = TRUE, forceCat = TRUE, geom_raster = TRUE) +
@@ -148,7 +148,7 @@ shadow &lt;- cloudShadowMask(lsat, cldmsk_final, shiftEstimate = c(-16,-6))
 csmask &lt;- raster::merge(cldmsk_final[[1]], shadow)
 ggRGB(lsat, stretch = &quot;lin&quot;) +
         ggR(csmask, ggLayer = TRUE, forceCat = TRUE, geom_raster = TRUE) +
-        scale_fill_manual(values = c(&quot;blue&quot;, &quot;yellow&quot;),
+        scale_fill_manual(values = c(&quot;blue&quot;, &quot;yellow&quot;), 
         labels = c(&quot;shadow&quot;, &quot;cloud&quot;), na.value = NA)
 </code></pre>
 
@@ -158,5 +158,5 @@ ggRGB(lsat, stretch = &quot;lin&quot;) +
 </code></pre>
 
 
-<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.1.2 <a href="index.html">Index</a>]</div>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.1.3 <a href="index.html">Index</a>]</div>
 </body></html>

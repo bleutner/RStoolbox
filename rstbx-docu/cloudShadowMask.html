@@ -19,8 +19,8 @@ group: navigation
 
 <h3>Description</h3>
 
-<p>Intended for interactive use, <code class="r">cloudShadowMask</code> will ask the user to select a few
-corresponding cloud/cloudShadow pixels which will be used to estimate coordinates
+<p>Intended for interactive use, <code class="r">cloudShadowMask</code> will ask the user to select a few 
+corresponding cloud/cloudShadow pixels which will be used to estimate coordinates 
 for a linear cloudmask shift.
 </p>
 
@@ -92,7 +92,7 @@ it does perform surprisingly well.
 <pre><code class="r">library(raster)
 library(ggplot2)
 ## Import Landsat example subset
-data(lsat)
+data(lsat) 
 ## We have two tiny clouds in the east
 ## No test: 
 ggRGB(lsat, stretch = &quot;lin&quot;)
@@ -115,9 +115,9 @@ ggR(cldmsk, 2, geom_raster = TRUE)
 ## Define threshold (re-use the previously calculated index)
 ## Everything above the threshold is masked
 ## In addition we apply a region-growing around the core cloud pixels
-cldmsk_final &lt;- cloudMask(cldmsk, threshold = 0.1, buffer = 5)
+cldmsk_final &lt;- cloudMask(cldmsk, threshold = 0.1, buffer = 5) 
 
-## Plot cloudmask
+## Plot cloudmask 
 ## No test: 
 ggRGB(lsat, stretch = &quot;lin&quot;) +
    ggR(cldmsk_final[[1]], ggLayer = TRUE, forceCat = TRUE, geom_raster = TRUE) +
@@ -141,7 +141,7 @@ shadow &lt;- cloudShadowMask(lsat, cldmsk_final, shiftEstimate = c(-16,-6))
 csmask &lt;- raster::merge(cldmsk_final[[1]], shadow)
 ggRGB(lsat, stretch = &quot;lin&quot;) +
         ggR(csmask, ggLayer = TRUE, forceCat = TRUE, geom_raster = TRUE) +
-        scale_fill_manual(values = c(&quot;blue&quot;, &quot;yellow&quot;),
+        scale_fill_manual(values = c(&quot;blue&quot;, &quot;yellow&quot;), 
         labels = c(&quot;shadow&quot;, &quot;cloud&quot;), na.value = NA)
 </code></pre>
 
@@ -151,5 +151,5 @@ ggRGB(lsat, stretch = &quot;lin&quot;) +
 </code></pre>
 
 
-<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.1.2 <a href="index.html">Index</a>]</div>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.1.3 <a href="index.html">Index</a>]</div>
 </body></html>

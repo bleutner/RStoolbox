@@ -68,9 +68,9 @@ If <code class="r">angles = FALSE</code> a single Layer will be returned in whic
 <pre><code class="r">library(raster)
 library(ggplot2)
 ## Load example data-set
-data(lsat)
+data(lsat) 
 
-## Sample endmember spectra
+## Sample endmember spectra 
 ## First location is water, second is open agricultural vegetation
 pts &lt;- data.frame(x = c(624720, 627480), y = c(-414690, -411090))
 endmembers &lt;- extract(lsat, pts)
@@ -87,7 +87,7 @@ plot(lsat_sam)
 lsat_sam &lt;- sam(lsat, endmembers, angles = FALSE)
 
 ## No test: 
-ggR(lsat_sam, forceCat = TRUE, geom_raster=TRUE) +
+ggR(lsat_sam, forceCat = TRUE, geom_raster=TRUE) + 
         scale_fill_manual(values = c(&quot;blue&quot;, &quot;green&quot;), labels = c(&quot;water&quot;, &quot;vegetation&quot;))
 </code></pre>
 
@@ -97,5 +97,5 @@ ggR(lsat_sam, forceCat = TRUE, geom_raster=TRUE) +
 </code></pre>
 
 
-<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.1.2 <a href="index.html">Index</a>]</div>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.1.3 <a href="index.html">Index</a>]</div>
 </body></html>

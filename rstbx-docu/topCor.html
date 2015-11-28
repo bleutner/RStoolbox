@@ -40,7 +40,7 @@ topCor(img, dem, metaData, solarAngles = c(), method = "C",
 </td></tr>
 <tr valign="top"><td><code class="r">dem</code></td>
 <td>
-<p>Raster*. Either a digital elevation model as a RasterLayer or a RasterStack/Brick with pre-calculated slope and aspect (see <a href="http://www.inside-r.org/packages/cran/raster/docs/terrain">terrain</a>) in which case the layers must be named 'slope' and 'aspect'.
+<p>Raster*. Either a digital elevation model as a RasterLayer or a RasterStack/Brick with pre-calculated slope and aspect (see <a href="http://www.inside-r.org/packages/cran/raster/docs/terrain">terrain</a>) in which case the layers must be named 'slope' and 'aspect'. 
 Must have the same dimensions as <code class="r">img</code>.</p>
 </td></tr>
 <tr valign="top"><td><code class="r">metaData</code></td>
@@ -74,7 +74,7 @@ Must have the same dimensions as <code class="r">img</code>.</p>
 
 <p>For detailed discussion of the various approaches please see Riano et al. (2003).
 </p>
-<p>The minnaert correction can be stratified for different landcover characteristics. If <code class="r">stratImg = 'slope'</code> the analysis is stratified by the slope,
+<p>The minnaert correction can be stratified for different landcover characteristics. If <code class="r">stratImg = 'slope'</code> the analysis is stratified by the slope, 
 i.e. the slope values are divided into <code class="r">nStrat</code> classes and the correction coefficient k is calculated and applied separately for each slope class.
 An alternative could be to stratify by a vegetation index in which case an additional raster layer has to be provided via the <code class="r">stratImg</code> argument.
 </p>
@@ -91,7 +91,7 @@ An alternative could be to stratify by a vegetation index in which case an addit
 <pre><code class="r">## Load example data
 metaData &lt;- system.file(&quot;external/landsat/LT52240631988227CUB02_MTL.txt&quot;, package=&quot;RStoolbox&quot;)
 metaData &lt;- readMeta(metaData)
-lsat     &lt;- stackMeta(metaData)
+lsat     &lt;- stackMeta(metaData) 
 data(srtm)
 
 ## Minnaert correction, solar angles from metaData
@@ -102,5 +102,5 @@ lsat_C &lt;- topCor(lsat, dem = srtm, solarAngles = c(1.081533, 0.7023922), meth
 </code></pre>
 
 
-<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.1.2 <a href="index.html">Index</a>]</div>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.1.3 <a href="index.html">Index</a>]</div>
 </body></html>
