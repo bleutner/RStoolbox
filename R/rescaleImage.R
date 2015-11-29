@@ -49,3 +49,6 @@ rescaleImage <- function(x, y, xmin, xmax, ymin, ymax, forceMinMax = FALSE) {
     
     return(x)
 }
+
+
+

@@ -10,3 +10,5 @@
 rsOpts <- function(verbose){
     options(RStoolbox.verbose=verbose)
 }
+
+
