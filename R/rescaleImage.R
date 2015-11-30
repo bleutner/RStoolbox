@@ -28,8 +28,9 @@
 #' lsat2_unity <- rescaleImage(lsat2, ymin = 0, ymax = 1)
 #' lsat2_unity
 rescaleImage <- function(x, y, xmin, xmax, ymin, ymax, forceMinMax = FALSE) {
+    
     if(inherits(x, "Raster")){
-		if(!missing("y") && nlayers(x) != nlayers(y)) stop("x and y must have the same number of layers")
+        if(!missing("y") && nlayers(x) != nlayers(y)) stop("x and y must have the same number of layers")
         if(forceMinMax)  x <- setMinMax(x)
         if(!missing("y") && forceMinMax)  y <- setMinMax(y)
         if(missing("ymin")) ymin <- minValue(y)
@@ -40,15 +41,24 @@ rescaleImage <- function(x, y, xmin, xmax, ymin, ymax, forceMinMax = FALSE) {
         if(missing("xmin"))	xmin <- min(x, na.rm = T)
         if(missing("xmax")) xmax <- max(x, na.rm = T)
     }
-    scal <- (ymax - ymin)/(xmax-xmin) 
-    if(inherits(x, "Raster")){   
-        x <- .paraRasterFun(x, rasterFun = calc,  args = list(fun = function(x) {(x - xmin) * scal + ymin}))
-    } else {
-        x <- (x - xmin) * scal + ymin
-    }
     
+    norange <- xmax == xmin    
+    norange[is.na(norange)] <- TRUE 
+    if(any(norange)) {
+        warning("x has no value range (xmin = xmax) or NAs only. Rescaling is not possible.\n  Will return unchanged values. Affected bands: ", paste0(names(x)[norange], collapse = ", "))       
+    } else {
+        scal <- (ymax - ymin)/(xmax-xmin) 
+        if(inherits(x, "Raster")){   
+            x <- .paraRasterFun(x, rasterFun = calc,  args = list(fun = function(x) {(x - xmin) * scal + ymin}, forcefun = TRUE))
+        } else {
+            x <- (x - xmin) * scal + ymin
+        }
+    }
+        
     return(x)
 }
+
+
 
 
 
