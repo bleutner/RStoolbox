@@ -91,11 +91,11 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0
         coord_equal = TRUE, ggLayer=FALSE, ggObj = TRUE, geom_raster = FALSE, forceCat = FALSE) {
     
     annotation <- !geom_raster
-	layer <- unlist(.numBand(img, layer))
+    layer <- unlist(.numBand(img, layer))
     xfort <- sampleRegular(img[[layer]], maxpixels, asRaster = TRUE)
 #    if(is.factor(img[[layer]])) {
 #        rat <- levels(xfort)
-#        xfort <- stack(xfort,xfort)  ## workaround raster bug #6043    FIXME: apparently solved now in raster    
+#        xfort <- stack(xfort,xfort)  ## workaround raster bug #6043    >> apparently solved now in raster    
 #        names(xfort)[1] <- names(img)[layer]   
 #    }
     df 	  <- as.data.frame(xfort, xy = TRUE)
@@ -114,13 +114,17 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0
     if(!fac & stretch != "none")  df[,layer] <- .stretch(df[,layer], method = stretch, quantiles = quantiles)    
     
     if(!(ggObj & !annotation)  ){
-        normVals 	<- rescaleImage(df[,layer], ymin = 0, ymax = 1)    
+        ## Annotation processing
+        ## Avoid rescaling layers with single values
+        normVals    <- suppressWarnings(rescaleImage(df[,layer], ymin = 0, ymax = 1))  ## suppress warnings due to single value bands. rescaleImage returns NA, which is fine.
+        uval        <- unique(df[,layer])
+        if(sum(is.finite(uval)) == 1)   normVals[is.finite(df[,layer])] <- 1
         nona 		<- !is.na(normVals)
         df$fill  	<- NA
         df[nona, "fill"] <- hsv(h = hue, s = sat, v = normVals[nona], alpha = alpha)
     }
     
-    x<-y<-NULL
+    x <- y <- NULL  
     if(ggObj) {       
         ex    <- extent(xfort)
         if(annotation)  {        
