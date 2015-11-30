@@ -94,6 +94,20 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// rescaleImageCpp
+NumericMatrix rescaleImageCpp(NumericMatrix x, NumericVector scal, NumericVector xmin, NumericVector ymin);
+RcppExport SEXP RStoolbox_rescaleImageCpp(SEXP xSEXP, SEXP scalSEXP, SEXP xminSEXP, SEXP yminSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericMatrix >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type scal(scalSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xmin(xminSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type ymin(yminSEXP);
+    __result = Rcpp::wrap(rescaleImageCpp(x, scal, xmin, ymin));
+    return __result;
+END_RCPP
+}
 // specSimC
 NumericMatrix specSimC(NumericMatrix& x, NumericMatrix& em);
 RcppExport SEXP RStoolbox_specSimC(SEXP xSEXP, SEXP emSEXP) {

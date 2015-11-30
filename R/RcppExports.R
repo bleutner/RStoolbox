@@ -29,6 +29,10 @@ pwSimilarityCpp <- function(img, ref, method) {
     .Call('RStoolbox_pwSimilarityCpp', PACKAGE = 'RStoolbox', img, ref, method)
 }
 
+rescaleImageCpp <- function(x, scal, xmin, ymin) {
+    .Call('RStoolbox_rescaleImageCpp', PACKAGE = 'RStoolbox', x, scal, xmin, ymin)
+}
+
 specSimC <- function(x, em) {
     .Call('RStoolbox_specSimC', PACKAGE = 'RStoolbox', x, em)
 }
