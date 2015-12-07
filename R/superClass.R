@@ -299,7 +299,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
     if(model == "mlc") model = mlcCaret
     
     caretModel 	<- train(response ~ ., data = dataSet, method = model, tuneLength = tuneLength, 
-            trControl = trainControl(method = "cv", number = kfold, index = indexIn), ...)   
+            trControl = trainControl(method = "cv", number = kfold, index = indexIn, savePredictions = "final"), ...)   
     modelFit <- getTrainPerf(caretModel)
     dataType <- NULL
     
@@ -347,7 +347,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
             validation <- confusionMatrix(data = valiSet$prediction, reference = valiSet$reference)              
         } else {
             valiSet$residuals <- valiSet$reference - valiSet$prediction
-            validation <-  data.frame(rmse = RMSE(valiSet$prediction, valiSet$reference), rsquared = R2(valiSet$prediction, valiSet$reference))   
+            validation <-  data.frame(RMSE = RMSE(valiSet$prediction, valiSet$reference), Rsquared = R2(valiSet$prediction, valiSet$reference))   
         }
         validation <- list(performance = validation, validationSet = valiSet)
     } else {
