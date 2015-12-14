@@ -1,7 +1,6 @@
 context("superClass")
 library(raster)
 data(lsat)
-trainFiles <- c("external/trainingPolygons.rds")
 
 train <- readRDS(system.file("external/trainingPolygons.rds", package="RStoolbox"))
 train$res <- as.numeric(train$class)
