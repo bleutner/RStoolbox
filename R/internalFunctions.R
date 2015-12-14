@@ -169,7 +169,7 @@
 .df2tab <- function(x, align){
     c(paste0("\\tabular{", align, "}{"),
             paste(paste("\\strong{", colnames(x), "}", collapse = " \\tab "), "\\cr" ),
-            paste(apply(x, 1, paste, collapse = " \\tab "), c(rep("\\cr", nrow(x)), "}")))
+            paste(apply(x, 1, paste, collapse = " \\tab "), c(rep("\\cr", nrow(x)-1), "}")))
 }
 
 #' Convert character to numric band

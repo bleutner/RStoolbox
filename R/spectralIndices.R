@@ -36,12 +36,12 @@
 #' plot(SI)
 spectralIndices <- function(img,
         blue=NULL, green=NULL, red=NULL, nir=NULL, swir1 =NULL, swir2 = NULL, 
-        indices=NULL, index = NULL, coefs = list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5, s = 1),
+        indices=NULL, index = NULL, coefs = list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5, s = 1, swir2ccc = NULL, swir2coc = NULL),
         ... ) {
     # TODO: add further indices
     # TODO: soil line estimator
     
-    ## We will use the following wavlength range definitions (following Schowengerdt 2007)
+    ## We will use the following wavlength range definitions (following Schowengerdt 2007, p 10)
     # VIS   | Visible              |   400  -    700 nm
     # RED   |
     # GREEN |
@@ -55,21 +55,28 @@ spectralIndices <- function(img,
     # TIR1  | thermal infra-red    |  8000  -   9500 nm
     # TIR2  | thermal infra-red    | 10000  - 140000 nm
     ##	
-     
+    
     if(!is.null(index)) indices <- index  ## argument translation for convenience
     
-     ## Coefficients
-    defaultCoefs <- list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5, s = 1)     
+    ## Coefficients
+    defaultCoefs <- list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5, s = 1, swir2ccc = NULL, swir2coc = NULL)     
     implem <- names(coefs) %in% names(defaultCoefs)
     if(any(!implem)) warning("Non-implemented coefficients are ignored: ", paste0(names(coefs)[!implem], collapse=", "),
                 "\nimplemented coefficients are: ", paste0(names(defaultCoefs), collapse = ", "))
-    list2env(c(coefs, defaultCoefs[!names(defaultCoefs) %in% names(coefs)]), envir = environment())
+    coefs <- c(coefs, defaultCoefs[setdiff(names(defaultCoefs), names(coefs))])
     
     ## Check indices
     ind <- if(is.null(indices)) names(BANDSdb) else toupper(indices)  
+    if((is.null(coefs$swir2ccc) | is.null(coefs$swir2coc))) {
+        if(!is.null(indices) & ("NDVIC" %in% ind)) warning("NDVIc can only be calculated if swir2ccc and swir2coc coefficients are provided.")  
+        coefs$swir2ccc <- 0  ## dummy, cant pass NULL to spectralIndicesCpp
+        coefs$swir2coc <- 1  ## dummy, cant pass NULL to spectralIndicesCpp
+        ind <- setdiff(ind, "NDVIC")
+    }
     if(!any(ind %in% names(BANDSdb))) stop("indices must either be NULL to calculate all indices",
                 "\nor element of c(", paste0(names(BANDSdb),collapse=","),") for specific indices.", call. = FALSE)
-    
+    coefs$swir2cdiff <- coefs$swir2coc - coefs$swir2ccc 
+    if(coefs$swir2cdiff <= 0) stop("NDVIc coefficient swir2ccc (completeley closed canopy) must be smaller than swir2coc (completely open canopy)")
     
     ## Gather function arguments (all provided bands) and create args
     potArgs  <- c("blue", "green", "red", "nir", "swir2", "swir1")
@@ -83,16 +90,16 @@ spectralIndices <- function(img,
     if(any(c("EVI","EVI2") %in% canCalc)){
         if(defaultCoefs$C1 == 6 & (maxValue(img[[red]]) > 1 | minValue(img[[red]]) < 0)){ 
             warning("EVI/EVI2 parameters G, C1 and C2 are defined for reflectance [0,1] but img values are outside of this range.\n",
-                     "  If you are using scaled reflectance values please scale the coefficients accordingly.\n", 
-                     "  If img is in DN please convert it to reflectance.\n",
-                     "  Skipping EVI calculation.\n")
-          canCalc <- canCalc[!canCalc %in% c("EVI", "EVI2")]
-          indices <- indices[!indices %in% c("EVI", "EVI2")]
-         }
+                    "  If you are using scaled reflectance values please scale the coefficients accordingly.\n", 
+                    "  If img is in DN please convert it to reflectance.\n",
+                    "  Skipping EVI calculation.\n")
+            canCalc <- canCalc[!canCalc %in% c("EVI", "EVI2")]
+            indices <- indices[!indices %in% c("EVI", "EVI2")]
+        }
     }
-   
+    
     ind  <- ind[ind %in% canCalc]   
-
+    
     if(!length(ind)) stop("No index could be calculated. At least for one index you must specify *all* required bands.",
                 "\n  See ?spectralIndices for information on required bands per index.")
     if(length(ind) < length(indices)){
@@ -103,7 +110,7 @@ spectralIndices <- function(img,
                 notbands,
                 "\n  The remaining fully specified indices will be calculated.")
     }
-   
+    
     ## Get required designated bands
     retrieve   <- lapply(bands, get, envir=environment())
     bandsCalc  <- vapply(retrieve, function(xi) {  if(is.character(xi)) match(xi, names(img)) else xi  }, numeric(1))
@@ -126,7 +133,8 @@ spectralIndices <- function(img,
                                 swir1Band   = fullSet[["swir1"]], 
                                 swir2Band  = fullSet[["swir2"]],
                                 L = coefs[["L"]],  G = coefs[["G"]], Levi = coefs[["L_evi"]], 
-                                C1 = coefs[["C1"]], C2 = coefs[["C2"]], s = coefs[["s"]]
+                                C1 = coefs[["C1"]], C2 = coefs[["C2"]], s = coefs[["s"]],
+                                swir2ccc = coefs[["swir2ccc"]], swir2cdiff = coefs[["swir2cdiff"]]
                         )},
                     forcefun =TRUE), wrArgs = list(...))
     
@@ -145,6 +153,7 @@ BANDSdb <-  list(
         MSAVI	=  c("red", "nir"),
         MSAVI2	=  c("red", "nir"),
         NDVI	=  c("red", "nir"),
+        NDVIC   =  c("red", "nir", "swir2"),
         NDWI 	=  c("green", "nir"),
         SAVI    =  c("red", "nir"), 
         SATVI   =  c("red", "swir1", "swir2"),
@@ -173,6 +182,7 @@ BANDSdb <-  list(
         #     MSI     = function(nir, swir2) {swir2/nir},
         NBRI    = function(nir, swir2) { (nir - swir2) / (nir + swir2)},
         NDVI	= function(red, nir) {(nir-red)/(nir+red)}, 
+        NDVIC   = function(red, nir, swir2) {(nir-red)/(nir+red)*(1-((swir2 - swir2ccc)/(swir2coc-swir2ccc)))},
         NDWI 	= function(green, nir) {(green - nir)/(green + nir)},
         NRVI    = function(red, nir) {(red/nir - 1)/(red/nir + 1)},
         RVI     = function(red, nir) {red/nir},
@@ -197,9 +207,10 @@ BANDSdb <-  list(
         LSWI    = c("Xiao2004", "Land Surface Water Index"),
         MSAVI	= c("Qi1994","Modified Soil Adjusted Vegetation Index"),
         MSAVI2	= c("Qi1994","Modified Soil Adjusted Vegetation Index 2"),
-        MNDWI   = c("", "Modified Normalised Difference Water Index"),
+        MNDWI   = c("", "Modified Normalised Difference Water Index"),       
         NBRI    = c("", "Normalised Burn Ratio Index"),
         NDVI	= c("Rouse1974", "Normalised Difference Vegetation Index"),
+        NDVIC   = c("Nemani1993", "Corrected Normalised Difference Vegetation Index"),
         NDWI	= c("Gao1996", "Normalised Difference Water Index"),
         NRVI    = c("Baret1991","Normalised Ratio Vegetation Index"),
         RVI     = c("", "Ratio Vegetation Index"),
@@ -214,6 +225,9 @@ BANDSdb <-  list(
 
 
 
+.wavlDB <- data.frame( Band = c("vis", "nir", "swir1", "swir2", "swir3", "mir1", "mir2", "tir1", "tir2"), 
+          Description = c("visible", "near infra-red", "short-wave infra-red", "short-wave infra-red", "short-wave infra-red", "mid-wave infra-red", "mid-wave infra-red", "thermal infra-red", "thermal infra-red"),
+           Wavl_min = c(400,700,1100,1400,2000,3000,45000,8000,10000), Wavl_max = c(700,1100,1351, 1800,2500,4000,5000,9500,140000)) 
 
 
 

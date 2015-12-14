@@ -1,8 +1,14 @@
 RStoolbox 0.1.4
 =====================================
 New:
-* new function getValidation to extract specific validation results of superClass objects
+* new function getValidation to extract specific validation results of superClass objects (proposed by James Duffy)
+* new spectral index NDVIc (proposed by Jeff Evans)
 
+Changes:
+* superClass based on polygons now considers only pixels which have their center coordinate within a polygon  
+
+Fixes: 
+* superClass failed when neither valData or trainPartition was specified. regression introduced in 0.1.3 (reported by Anna Stephani)
 
 RStoolbox 0.1.3
 =====================================

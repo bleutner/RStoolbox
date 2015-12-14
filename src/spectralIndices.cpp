@@ -5,7 +5,7 @@ using namespace Rcpp;
 NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 		 const int redBand,  const int blueBand, const int greenBand, const int nirBand,
 		 const int swir2Band, const int swir1Band,
-		 double L,  double s,  double G,  double C1,  double C2,  double Levi) {
+		 double L,  double s,  double G,  double C1,  double C2,  double Levi, double swir2ccc, double swir2cdiff) {
 
 	int nind = indices.size();
 	int nsamp = x.nrow();
@@ -26,7 +26,6 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 	if(nirBand != NA_INTEGER)      nir = x(_,nirBand - 1);
 	if(swir1Band != NA_INTEGER)  swir1 = x(_,swir1Band - 1);
 	if(swir2Band != NA_INTEGER)  swir2 = x(_,swir2Band - 1);
-
 
 	for(int j = 0; j < nind; ++j) {
 
@@ -91,6 +90,11 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 
 	}
 ***/	
+	   else if(indices[j] == "NDVIC") {
+					//Normalized difference vegetation index
+					out(_,j) = (nir - red) / (nir + red) * (1 - (swir2 - swir2ccc)/swir2cdiff);
+					out(_,j) = ifelse(is_na(out(_,j)) | (out(_,j) > 1.0) | (out(_,j) < -1.0), NA_REAL, out(_,j));
+				}
 		else if(indices[j] == "NBRI"){
                         // Normalised Burn Ratio Index
 			out(_,j) = (nir - swir2) / (nir + swir2);
