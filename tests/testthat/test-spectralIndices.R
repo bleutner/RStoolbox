@@ -1,6 +1,8 @@
 context("spectralIndices")
 
 library(raster)
+suppressPackageStartupMessages(library(pls))
+
 ## Create test data-sets
 vals <- c(-1, 0, 0.5, 1, 2, NA)
 vals <- expand.grid(vals,vals)
