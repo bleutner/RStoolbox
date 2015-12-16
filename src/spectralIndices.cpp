@@ -5,7 +5,7 @@ using namespace Rcpp;
 NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 		 const int redBand,  const int blueBand, const int greenBand, const int nirBand,
 		 const int swir2Band, const int swir1Band,
-		 double L,  double s,  double G,  double C1,  double C2,  double Levi, double swir2ccc, double swir2cdiff) {
+		 const double L,  const double s, const double G, const double C1, const double C2, double Levi, const double swir2ccc, const double swir2cdiff, const double sf) {
 
 	int nind = indices.size();
 	int nsamp = x.nrow();
@@ -20,13 +20,15 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 	NumericMatrix out(nsamp, nind);
 	NumericVector blue, green, red, nir, swir1, swir2;
 
-	if(blueBand != NA_INTEGER)    blue = x(_,blueBand - 1);
-	if(greenBand != NA_INTEGER)  green = x(_,greenBand - 1);
-	if(redBand != NA_INTEGER)    red = x(_,redBand - 1);
-	if(nirBand != NA_INTEGER)      nir = x(_,nirBand - 1);
-	if(swir1Band != NA_INTEGER)  swir1 = x(_,swir1Band - 1);
-	if(swir2Band != NA_INTEGER)  swir2 = x(_,swir2Band - 1);
-
+	if(blueBand  != NA_INTEGER)     blue = x(_,blueBand - 1);
+	if(greenBand != NA_INTEGER)    green = x(_,greenBand - 1);
+	if(redBand   != NA_INTEGER)      red = x(_,redBand - 1);
+	if(nirBand   != NA_INTEGER)      nir = x(_,nirBand - 1);
+	if(swir1Band != NA_INTEGER)    swir1 = x(_,swir1Band - 1);
+	if(swir2Band != NA_INTEGER)    swir2 = x(_,swir2Band - 1);
+    if(sf != 1) {
+    	Levi = Levi * sf;
+    }
 	for(int j = 0; j < nind; ++j) {
 
 		if(indices[j] == "DVI") {
@@ -45,15 +47,13 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 			// Enhanced vegetation index
 			// Huete et al 1990
 			out(_,j) = G * ((nir - red) / (nir + C1 * red - C2 * blue + Levi));
-			out(_,j) = ifelse( is_na(out(_,j)), NA_REAL, out(_,j));
-
+			out(_,j) = ifelse(is_na(out(_,j)) | (out(_,j) > 1.0) | (out(_,j) < -1.0) , NA_REAL, out(_,j));
 		}
 		else if(indices[j] == "EVI2") {
 				// Two-band Enhanced vegetation index
 				// Jiang et al 2008
-				out(_,j) = G * ((nir - red) / (nir + 2.4 * red + 1));
-				out(_,j) = ifelse( is_na(out(_,j)), NA_REAL, out(_,j));
-
+				out(_,j) = G * ((nir - red) / (nir + 2.4 * red + sf));
+				out(_,j) = ifelse(is_na(out(_,j)) | (out(_,j) > 1.0) | (out(_,j) < -1.0) , NA_REAL, out(_,j));
 			}
 
 		else if(indices[j] == "GEMI") {

@@ -5,9 +5,9 @@
 \title{Spectral Indices}
 \usage{
 spectralIndices(img, blue = NULL, green = NULL, red = NULL, nir = NULL,
-  swir1 = NULL, swir2 = NULL, indices = NULL, index = NULL,
-  coefs = list(L = 0.5, G = 2.5, L_evi = 1, C1 = 6, C2 = 7.5, s = 1, swir2ccc
-  = NULL, swir2coc = NULL), ...)
+  swir1 = NULL, swir2 = NULL, scaleFactor = 1, indices = NULL,
+  index = NULL, coefs = list(L = 0.5, G = 2.5, L_evi = 1, C1 = 6, C2 = 7.5,
+  s = 1, swir2ccc = NULL, swir2coc = NULL), ...)
 }
 \arguments{
 \item{img}{Raster* object. Typically remote sensing imagery, which is to be classified.}
@@ -23,6 +23,8 @@ spectralIndices(img, blue = NULL, green = NULL, red = NULL, nir = NULL,
 \item{swir1}{Character or integer. Short-wave-infrared band (1100 1351nm).}
 
 \item{swir2}{Character or integer. Short-wave-infrared band (1400-1800nm).}
+
+\item{scaleFactor}{Numeric. Scale factor for the conversion of scaled reflectances to [0,1] value range (applied as reflectance/scaleFactor) Neccesary for claculating EVI/EVI2 with scaled reflectance values.}
 
 \item{indices}{Character. One or more spectral indices to calculate (see Details). By default (NULL) all implemented indices given the spectral bands which are provided will be calculated.}
 
@@ -79,7 +81,7 @@ ggR(ndvi, geom_raster = TRUE) +
         scale_fill_gradientn(colours = c("black", "white")) 
 
 ## Calculate all possible indices, given the provided bands 
-## Convert DNs to reflectance (only required to calculate EVI and EVI2)
+## Convert DNs to reflectance (required to calculate EVI and EVI2)
 mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
 lsat_ref <- radCor(lsat, mtlFile, method = "apref")
 

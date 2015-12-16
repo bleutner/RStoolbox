@@ -11,6 +11,7 @@
 #' @param swir2 Character or integer. Short-wave-infrared band (1400-1800nm). 
 #' @param indices Character. One or more spectral indices to calculate (see Details). By default (NULL) all implemented indices given the spectral bands which are provided will be calculated.
 #' @param index Character. Alias for \code{indices}.
+#' @param scaleFactor Numeric. Scale factor for the conversion of scaled reflectances to [0,1] value range (applied as reflectance/scaleFactor) Neccesary for claculating EVI/EVI2 with scaled reflectance values. 
 #' @param coefs List of coefficients (see Details).  
 #' @param ... further arguments such as filename etc. passed to \link[raster]{writeRaster}
 #' @return  RasterBrick or a RasterLayer if length(indices) == 1
@@ -28,14 +29,14 @@
 #'         scale_fill_gradientn(colours = c("black", "white")) 
 #' 
 #' ## Calculate all possible indices, given the provided bands 
-#' ## Convert DNs to reflectance (only required to calculate EVI and EVI2)
+#' ## Convert DNs to reflectance (required to calculate EVI and EVI2)
 #' mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
 #' lsat_ref <- radCor(lsat, mtlFile, method = "apref")
 #' 
 #' SI <- spectralIndices(lsat_ref, red = "B3_tre", nir = "B4_tre")
 #' plot(SI)
 spectralIndices <- function(img,
-        blue=NULL, green=NULL, red=NULL, nir=NULL, swir1 =NULL, swir2 = NULL, 
+        blue=NULL, green=NULL, red=NULL, nir=NULL, swir1 =NULL, swir2 = NULL, scaleFactor = 1,
         indices=NULL, index = NULL, coefs = list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5, s = 1, swir2ccc = NULL, swir2coc = NULL),
         ... ) {
     # TODO: add further indices
@@ -88,10 +89,11 @@ spectralIndices <- function(img,
     
     canCalc  <- names(requested)[!vapply(requested, function(x) any(!x %in% bands), logical(1))]
     if(any(c("EVI","EVI2") %in% canCalc)){
-        if(defaultCoefs$C1 == 6 & (maxValue(img[[red]]) > 1 | minValue(img[[red]]) < 0)){ 
-            warning("EVI/EVI2 parameters G, C1 and C2 are defined for reflectance [0,1] but img values are outside of this range.\n",
-                    "  If you are using scaled reflectance values please scale the coefficients accordingly.\n", 
-                    "  If img is in DN please convert it to reflectance.\n",
+        if((maxValue(img[[red]])/scaleFactor > 1.5 | minValue(img[[red]])/scaleFactor < -.5)){
+            ## checking for range [0,1] +/- .5 to allow for artifacts in reflectance.
+            warning("EVI/EVI2 parameters L_evi, G, C1 and C2 are defined for reflectance [0,1] but img values are outside of this range.\n",
+                    "  If you are using scaled reflectance values please provide the scaleFactor argument.\n", 
+                    "  If img is in DN or radiance it must be converted to reflectance.\n",
                     "  Skipping EVI calculation.\n")
             canCalc <- canCalc[!canCalc %in% c("EVI", "EVI2")]
             indices <- indices[!indices %in% c("EVI", "EVI2")]
@@ -134,7 +136,7 @@ spectralIndices <- function(img,
                                 swir2Band  = fullSet[["swir2"]],
                                 L = coefs[["L"]],  G = coefs[["G"]], Levi = coefs[["L_evi"]], 
                                 C1 = coefs[["C1"]], C2 = coefs[["C2"]], s = coefs[["s"]],
-                                swir2ccc = coefs[["swir2ccc"]], swir2cdiff = coefs[["swir2cdiff"]]
+                                swir2ccc = coefs[["swir2ccc"]], swir2cdiff = coefs[["swir2cdiff"]], sf = scaleFactor
                         )},
                     forcefun =TRUE), wrArgs = list(...))
     

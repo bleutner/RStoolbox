@@ -121,8 +121,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // spectralIndicesCpp
-NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices, const int redBand, const int blueBand, const int greenBand, const int nirBand, const int swir2Band, const int swir1Band, double L, double s, double G, double C1, double C2, double Levi, double swir2ccc, double swir2cdiff);
-RcppExport SEXP RStoolbox_spectralIndicesCpp(SEXP xSEXP, SEXP indicesSEXP, SEXP redBandSEXP, SEXP blueBandSEXP, SEXP greenBandSEXP, SEXP nirBandSEXP, SEXP swir2BandSEXP, SEXP swir1BandSEXP, SEXP LSEXP, SEXP sSEXP, SEXP GSEXP, SEXP C1SEXP, SEXP C2SEXP, SEXP LeviSEXP, SEXP swir2cccSEXP, SEXP swir2cdiffSEXP) {
+NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices, const int redBand, const int blueBand, const int greenBand, const int nirBand, const int swir2Band, const int swir1Band, const double L, const double s, const double G, const double C1, const double C2, double Levi, const double swir2ccc, const double swir2cdiff, const double sf);
+RcppExport SEXP RStoolbox_spectralIndicesCpp(SEXP xSEXP, SEXP indicesSEXP, SEXP redBandSEXP, SEXP blueBandSEXP, SEXP greenBandSEXP, SEXP nirBandSEXP, SEXP swir2BandSEXP, SEXP swir1BandSEXP, SEXP LSEXP, SEXP sSEXP, SEXP GSEXP, SEXP C1SEXP, SEXP C2SEXP, SEXP LeviSEXP, SEXP swir2cccSEXP, SEXP swir2cdiffSEXP, SEXP sfSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -134,15 +134,16 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const int >::type nirBand(nirBandSEXP);
     Rcpp::traits::input_parameter< const int >::type swir2Band(swir2BandSEXP);
     Rcpp::traits::input_parameter< const int >::type swir1Band(swir1BandSEXP);
-    Rcpp::traits::input_parameter< double >::type L(LSEXP);
-    Rcpp::traits::input_parameter< double >::type s(sSEXP);
-    Rcpp::traits::input_parameter< double >::type G(GSEXP);
-    Rcpp::traits::input_parameter< double >::type C1(C1SEXP);
-    Rcpp::traits::input_parameter< double >::type C2(C2SEXP);
+    Rcpp::traits::input_parameter< const double >::type L(LSEXP);
+    Rcpp::traits::input_parameter< const double >::type s(sSEXP);
+    Rcpp::traits::input_parameter< const double >::type G(GSEXP);
+    Rcpp::traits::input_parameter< const double >::type C1(C1SEXP);
+    Rcpp::traits::input_parameter< const double >::type C2(C2SEXP);
     Rcpp::traits::input_parameter< double >::type Levi(LeviSEXP);
-    Rcpp::traits::input_parameter< double >::type swir2ccc(swir2cccSEXP);
-    Rcpp::traits::input_parameter< double >::type swir2cdiff(swir2cdiffSEXP);
-    __result = Rcpp::wrap(spectralIndicesCpp(x, indices, redBand, blueBand, greenBand, nirBand, swir2Band, swir1Band, L, s, G, C1, C2, Levi, swir2ccc, swir2cdiff));
+    Rcpp::traits::input_parameter< const double >::type swir2ccc(swir2cccSEXP);
+    Rcpp::traits::input_parameter< const double >::type swir2cdiff(swir2cdiffSEXP);
+    Rcpp::traits::input_parameter< const double >::type sf(sfSEXP);
+    __result = Rcpp::wrap(spectralIndicesCpp(x, indices, redBand, blueBand, greenBand, nirBand, swir2Band, swir1Band, L, s, G, C1, C2, Levi, swir2ccc, swir2cdiff, sf));
     return __result;
 END_RCPP
 }
