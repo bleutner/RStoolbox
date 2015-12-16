@@ -22,7 +22,6 @@ before_script:
   - sudo aptitude install -y libproj-dev
   - ./pkg-build.sh install_devtools 
   - ./pkg-build.sh install_r_version car 2.0-25 
-  - ./
   - ./pkg-build.sh install_deps
 # Run twice, just to be sure because sometimes cran mirror fails randomly 
   - ./pkg-build.sh install_deps
