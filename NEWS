@@ -3,12 +3,15 @@ RStoolbox 0.1.4
 New:
 * new function getValidation to extract specific validation results of superClass objects (proposed by James Duffy)
 * new spectral index NDVIc (proposed by Jeff Evans)
+* new argument scaleFactor for `spectralIndices()` for calculation of EVI/EVI2 based on scaled reflectance values. 
 
 Changes:
 * superClass based on polygons now considers only pixels which have their center coordinate within a polygon  
 
 Fixes: 
 * superClass failed when neither valData or trainPartition was specified. regression introduced in 0.1.3 (reported by Anna Stephani)
+* spectralIndices valid value range of EVI/EVI2 now [-1,1]
+* radCor returned smallest integer instead of NA for some NA pixels
 
 RStoolbox 0.1.3
 =====================================
