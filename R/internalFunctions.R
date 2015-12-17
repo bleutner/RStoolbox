@@ -205,6 +205,16 @@
     extent(c(max(em[,1]), min(em[,2]), max(em[,3]), min(em[,4])))    
 }
 
+#' Get center coordinates of Extent object or any object from which an extent can be derived
+#' @param x Spatial object from which an extent can be derived
+#' @return Vector of length two with center coordinate
+#' @noRd 
+.extentCenter <- function(x){
+    c(xmax(x) + xmin(x), ymax(x) + ymin(x))/2 
+}
+
+
+
 #' Check haveminmax slot
 #' @param x Raster*
 #' @noRd 

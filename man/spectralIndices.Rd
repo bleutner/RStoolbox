@@ -41,10 +41,13 @@ RasterBrick or a RasterLayer if length(indices) == 1
 Calculate a suite of multispectral indices such as NDVI, SAVI etc. in an efficient way.
 }
 \details{
-\code{spectralIndices} calculates all indices in one go, i.e. one call to overlay, which is far more efficient, than calculating each index separately (for large rasters).
+\code{spectralIndices} calculates all indices in one go in C++, i.e. one call to raster::calc, which is far more efficient, than calculating each index separately (for large rasters).
 By default all indices which can be calculated given the specified indices will be calcultated. If you don't want all indices, use the \code{indices} argument to specify exactly which indices are to be calculated.
 See the table bellow for index names and required bands.
    
+Index values outside the valid value ranges (if such a range exists) will be set to NA. For example a pixel with NDVI > 1 will be set to NA.
+
+ 
 
 
 
