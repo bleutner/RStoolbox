@@ -8,8 +8,8 @@ branches:
     - gh-pages
 
 before_install:
-  - curl -OL https://raw.githubusercontent.com/bleutner/r-builder/install_version/pkg-build.sh
-  #- curl -OL https://raw.githubusercontent.com/metacran/r-builder/master/pkg-build.sh
+  #- curl -OL https://raw.githubusercontent.com/bleutner/r-builder/install_version/pkg-build.sh
+  - curl -OL https://raw.githubusercontent.com/metacran/r-builder/master/pkg-build.sh
   - chmod 755 pkg-build.sh
   - ./pkg-build.sh bootstrap
 
