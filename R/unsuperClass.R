@@ -67,7 +67,8 @@ unsuperClass <- function(img, nSamples = 10000, nClasses = 5, nStarts = 25, nIte
         if (model$ifault==4) { warning("The Harian-Wong algorithm doesn't converge properly. Consider setting algorithm to 'Lloyd' or 'MacQueen'") }
         .vMessage("Starting spatial prediction")
 		out 	  <- .paraRasterFun(img, rasterFun=raster::calc, args = list(fun=function(x, kmeans=force(model)){
-							predKmeansCpp(x, centers=kmeans$centers)}, forcefun=TRUE), wrArgs = wrArgs)
+							if(!is.matrix(x)) x <- as.matrix(x)
+                            predKmeansCpp(x, centers=kmeans$centers)}, forcefun=TRUE), wrArgs = wrArgs)
 	}
 	structure(list(call = match.call(), model = model, map = out), class = c("unsuperClass", "RStoolbox"))
 }
