@@ -7,7 +7,6 @@
 #' @param valData  SpatialPolygonsDataFrame or SpatialPointsDataFrame containing the validation locations (optional).
 #' @param responseCol Character or integer giving the column in \code{trainData}, which contains the response variable. Can be omitted, when \code{trainData} has only one column.
 #' @param nSamples Integer. Number of samples per land cover class.
-#' @param areaWeightedSampling Logical. If \code{TRUE} scales sample size per polygon area. The bigger the polygon the more samples are taken.
 #' @param polygonBasedCV Logical. If \code{TRUE} model tuning during cross-validation is conducted on a per-polygon basis. Use this to deal with overfitting issues. Does not affect training data supplied as SpatialPointsDataFrames.
 #' @param trainPartition Numeric. Partition (polygon based) of \code{trainData} that goes into the training data set between zero and one. Ignored if \code{valData} is provided.
 #' @param model Character. Which model to use. See \link[caret]{train} for options. Defaults to randomForest ('rf'). In addition to the standard caret models, a maximum likelihood classification is available via \code{model = 'mlc'}. 
@@ -30,7 +29,6 @@
 #' 
 #' \item Sample training coordinates. If \code{trainData} (and \code{valData} if present) are SpatialPolygonsDataFrames \code{superClass} will calculate the area per polygon and sample
 #' \code{nSamples} locations per class within these polygons. The number of samples per individual polygon scales with the polygon area, i.e. the bigger the polygon, the more samples.
-#' Setting \code{areaWeightedSampling = FALSE} will sample each polygon equally independent of its size.
 #' 
 #' \item Split training/validation	  
 #' If \code{valData} was provided (reccomended) the samples from these polygons will be held-out and not used for model fitting but only for validation. 
@@ -78,7 +76,7 @@
 #' horiz = TRUE,  bty = "n")
 #' par(olpar) # reset par
 superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
-        nSamples = 1000, areaWeightedSampling = TRUE, polygonBasedCV = FALSE, trainPartition = NULL,
+        nSamples = 1000, polygonBasedCV = FALSE, trainPartition = NULL,
         model = "rf", tuneLength = 3,  kfold = 5,
         minDist = 2,  mode = "classification", predict = TRUE, predType = "raw",
         filename = NULL, verbose,
@@ -132,9 +130,17 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
     if(mode == "classification" && is.numeric(trainData[[responseCol]])) {
         trainData[[responseCol]] <- as.factor(trainData[[responseCol]])       
     } 
+   
     ## Sanitize arguments (polygonBasedCV is only relevant for polygons)
     if(inherits(trainData, "SpatialPointsDataFrame") & polygonBasedCV) polygonBasedCV <- FALSE
-    
+   
+    ## Spit ellipsis into caret::trainControl and raster::writeRaster
+#    frmls_train <- names(formals(raster::writeRaster))
+#    args  <- c(list(...), method = method)
+#    args_trainControl  <- args[names(args) %in% frmls_train]
+#    args_writeRaster   <- args[!names(args) %in% frmls_train]
+#    args_writeRaster$filename <- if(length(classes) == 1) filename else NULL ## write raster here already during predict if only one layer is output
+#    
     
     ## Split into training and validation data (polygon basis)
     if(is.null(valData) & !is.null(trainPartition)){
@@ -185,7 +191,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
             }
         }     
     }
-    ## Creade hold out indices on polygon level
+    ## Create hold out indices on polygon level
     if(polygonBasedCV){
         folds        <- createFolds(trainData@data[[responseCol]], k = kfold)
         names(folds) <- NULL
@@ -205,6 +211,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
         indexOut <- dataSet[[foldCol]]
         dataSet[[foldCol]] <- NULL
     }
+    
     ## Unique classes
     if(mode == "classification"){   
         if(!is.factor(dataSet$response)) dataSet$response <- as.factor(dataSet$response)
@@ -231,8 +238,8 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
     caretModel 	<- train(response ~ ., data = dataSet, method = model, tuneLength = tuneLength, 
             trControl = trainControl(method = "cv", number = kfold, index = indexIn, savePredictions = "final", seeds = seeds[1:(kfold+1)]), ...)   
     modelFit <- getTrainPerf(caretModel)
-    dataType <- NULL
     
+    dataType <- NULL  
     if(mode == "classification") {
         ## Don't know whether we need this, who would be crazy enough to do more than 255 classes...
         dataType <- if(length(classes) < 255) "INT1U" else "INT2U"
@@ -248,7 +255,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
         wrArgs          <- list(filename = filename, progress = progress, datatype = dataType, overwrite = overwrite)
         wrArgs$filename <- filename ## remove filename from args if is.null(filename) --> standard writeRaster handling applies
         if(predType == "prob") {
-            ddd<- predict(caretModel, dataSet[1:2,-1,drop=FALSE], type="prob")
+            ddd     <- predict(caretModel, dataSet[1:2,-1,drop=FALSE], type="prob")
             probInd <- 1:ncol(ddd)
         } else {
             probInd <- 1
@@ -264,11 +271,11 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
     if(!is.null(valData)){
         if(predict & (predType == "raw")){
 			set.seed(seeds[[kfold+2]])
-            valiSet  <- .samplePixels(valData, spatPred, responseCol = responseCol, nSamples = nSamples,  trainCells = dataList[[2]])[[1]]
+            valiSet  <- .samplePixels(valData, spatPred, responseCol = responseCol, nSamples = max(nSamples,500),  trainCells = dataList[[2]])[[1]]
             colnames(valiSet) <- c("reference", "prediction")
         } else {
 			set.seed(seeds[[kfold+2]])
-            val <- .samplePixels(valData, img, responseCol = responseCol, nSamples = nSamples, trainCells = dataList[[2]])[[1]]
+            val <- .samplePixels(valData, img, responseCol = responseCol, nSamples = max(nSamples,500), trainCells = dataList[[2]])[[1]]
             pred <- predict(caretModel, val[,-1])
             valiSet <- data.frame(reference = val[,1], prediction = pred)
         }
@@ -321,7 +328,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
         totalarea <- vapply(uresp, function(xi) sum(unlist(area[resp == xi])), numeric(1))			
         if(maxnpix) nSamples  <- min(totalarea)
         dataSet   <- lapply( seq_along(cells), function(xi) {
-                    ns <- min(ceiling(3*nSamples * area[[xi]] / totalarea[which(uresp == resp[[xi]])]), area[[xi]] )
+                    ns <- min(ceiling(nSamples * area[[xi]] / totalarea[which(uresp == resp[[xi]])]), area[[xi]] )
                     data.frame(response = resp[[xi]], cells = sample(cells[[xi]], ns))
                 })	
         dataSet <- do.call("rbind", dataSet)
