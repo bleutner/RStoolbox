@@ -234,9 +234,9 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
     .registerDoParallel()
     indexIn <- if(polygonBasedCV) lapply(1:kfold, function(x) which(x != indexOut)) 
     if(model == "mlc") model = mlcCaret
-    
+    set.seed(seeds[[1]])
     caretModel 	<- train(response ~ ., data = dataSet, method = model, tuneLength = tuneLength, 
-            trControl = trainControl(method = "cv", number = kfold, index = indexIn, savePredictions = "final", seeds = seeds[1:(kfold+1)]), ...)   
+            trControl = trainControl(method = "cv", number = kfold, index = indexIn, savePredictions = "final"), ...)   
     modelFit <- getTrainPerf(caretModel)
     
     dataType <- NULL  
