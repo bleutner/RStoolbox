@@ -17,11 +17,12 @@
 #' ## Cross-validation based 
 #' getValidation(SC, from = "cv")
 getValidation <- function(x, from = "testset", metrics = "overall"){
-    stopifnot(inherits(x, c("superClass", "confusionMatrix")) ,
+    
+    stopifnot(inherits(x, c("superClass", "mapValidation", "confusionMatrix")) ,
             metrics %in% c("overall", "classwise", "confmat",  "caret"),
             from %in% c("testset", "cv")
     )   
-    
+    if(inherits(x, "mapValidation")) x <- x$performance
     if(inherits(x, "superClass") && from == "testset" && inherits(x$validation, "character")) stop("No independent validation was performed during model fitting. Use from='cv' to extract cross-validation performance.")
     
     if(inherits(x,"confusionMatrix") || x$model$modelType == "Classification"){

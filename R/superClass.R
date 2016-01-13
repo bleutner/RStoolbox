@@ -404,7 +404,11 @@ validateMap <- function(map, valData, responseCol, nSamples = 500,  mode = "clas
     } else {
         performance = postResample(pred = valiSet[[1]][,"prediction"], obs = valiSet[[1]][,"reference"])    
     }
-    list(performance = performance, validationSet = do.call("cbind",valiSet))
+    valiSet <- do.call("cbind",valiSet)
+    colnames(valiSet) <- c("reference", "prediction", "cell")
+    out <- list(performance = performance, validationSet = valiSet)
+    structure(out, class = c("mapValidation", "RStoolbox"))
+    
 }
 
 
@@ -463,3 +467,22 @@ print.superClass <- function(x,...){
     show(x$map)
 }
 
+
+#' @method print mapValidation
+#' @export 
+print.mapValidation <- function(x,...){
+    cat("$performance\n")
+    print(x$performance)
+    cat("\n$validationSet\n")
+    if(nrow(x$validationSet) < 6){
+         print(x$validationSet)
+    } else {       
+        cat("Total number of validation samples: ", nrow(x$validationSet), "\n")
+        cat("Validation samples per class:")
+        print(table(x$validationSet$reference))
+        cat("\n")
+        print(x$validationSet[c(1:3),])
+        cat("...\n")
+        write.table(format(tail(x$validationSet,3), justify="right"), col.names=F, quote=F)      
+    }
+}
