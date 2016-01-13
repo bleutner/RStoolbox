@@ -7,7 +7,7 @@
 getValidation(x, from = "testset", metrics = "overall")
 }
 \arguments{
-\item{x}{superClass object}
+\item{x}{superClass object or caret::confusionMatrix}
 
 \item{from}{Character. 'testset' extracts the results from independent validation with testset. 'cv' extracts cross-validation results.}
 

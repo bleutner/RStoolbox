@@ -1,6 +1,6 @@
 #' Extract validation results from superClass objects
 #' 
-#' @param x superClass object
+#' @param x superClass object or caret::confusionMatrix
 #' @param from Character. 'testset' extracts the results from independent validation with testset. 'cv' extracts cross-validation results.  
 #' @param metrics Character. Only relevant in classification mode (ignored for regression models). Select 'overall' for overall accuracy metrics, 'classwise' for classwise metrics, 
 #' 'confmat' for the confusion matrix itself and 'caret' to return the whole caret::confusionMatrix object.
@@ -17,42 +17,51 @@
 #' ## Cross-validation based 
 #' getValidation(SC, from = "cv")
 getValidation <- function(x, from = "testset", metrics = "overall"){
-	stopifnot(inherits(x, "superClass"),
-			metrics %in% c("overall", "classwise", "confmat",  "caret"),
-			from %in% c("testset", "cv")
-	)   
-	
-	modtype <- x$model$modelType
-	
-	if(from == "testset" && inherits(x$validation, "character")) stop("No independent validation was performed during model fitting. Use from='cv' to extract cross-validation performance.")
-	
-	if(modtype == "Classification"){
-		
-		confMat <- if(from == "cv") confusionMatrix(x$model$pred$pred, x$model$pred$obs) else x$validation$performance
-		
-		if(metrics == "overall") {
-			perf <- as.data.frame(t(confMat$overall))
-		} else if (metrics == "classwise"){
-			perf <- confMat$byClass
-			perf <- data.frame(class = gsub("Class:", "", rownames(perf)), perf)
-			rownames(perf) <- NULL
-		} else if (metrics == "confmat"){
-			return(confMat$table)
-		} else if (metrics == "caret"){
-			return(confMat)
-		}
-	} else {
-		## Regression
-		if(from=="testset"){
-			perf <- x$validation$performance
-		} else {
-			bestPerf <- x$model$bestTune
-			colnames(bestPerf) <- gsub("^\\.", "", colnames(bestPerf))
-			perf <- merge(x$model$results, bestPerf)[,-c(1:length(bestPerf))]      
-		}
-	}
-	perf <- data.frame(model = x$model$method, validation = from, perf)
-	
-	return(perf)
+    stopifnot(inherits(x, c("superClass", "confusionMatrix")) ,
+            metrics %in% c("overall", "classwise", "confmat",  "caret"),
+            from %in% c("testset", "cv")
+    )   
+    
+    if(inherits(x, "superClass") && from == "testset" && inherits(x$validation, "character")) stop("No independent validation was performed during model fitting. Use from='cv' to extract cross-validation performance.")
+    
+    if(inherits(x,"confusionMatrix") || x$model$modelType == "Classification"){
+        
+        if(inherits(x,"confusionMatrix")) {
+            confMat <- x
+        } else if(from == "cv") {
+            confMat <- confusionMatrix(x$model$pred$pred, x$model$pred$obs) 
+        } else {
+            confMat <- x$validation$performance
+        }
+        
+        if(metrics == "overall") {
+            perf <- as.data.frame(t(confMat$overall))
+        } else if (metrics == "classwise"){
+            perf <- confMat$byClass
+            perf <- data.frame(class = gsub("Class:", "", rownames(perf)), perf)
+            rownames(perf) <- NULL
+        } else if (metrics == "confmat"){
+            return(confMat$table)
+        } else if (metrics == "caret"){
+            return(confMat)
+        }
+    } else {
+        ## Regression
+        if(from=="testset"){
+            perf <- x$validation$performance
+        } else {
+            bestPerf <- x$model$bestTune
+            colnames(bestPerf) <- gsub("^\\.", "", colnames(bestPerf))
+            perf <- merge(x$model$results, bestPerf)[,-c(1:length(bestPerf))]      
+        }
+    }
+    if(inherits(x, "confusionMatrix")) {
+        model <- from <- NA
+    } else {
+        model <- x$model$method
+    }
+    perf <- data.frame(model = model, validation = from, perf)
+    
+    return(perf)
 }
 

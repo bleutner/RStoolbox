@@ -5,10 +5,10 @@
 \title{Supervised Classification}
 \usage{
 superClass(img, trainData, valData = NULL, responseCol = NULL,
-  nSamples = 1000, areaWeightedSampling = TRUE, polygonBasedCV = FALSE,
-  trainPartition = NULL, model = "rf", tuneLength = 3, kfold = 5,
-  minDist = 2, mode = "classification", predict = TRUE,
-  predType = "raw", filename = NULL, verbose, overwrite = TRUE, ...)
+  nSamples = 1000, polygonBasedCV = FALSE, trainPartition = NULL,
+  model = "rf", tuneLength = 3, kfold = 5, minDist = 2,
+  mode = "classification", predict = TRUE, predType = "raw",
+  filename = NULL, verbose, overwrite = TRUE, ...)
 }
 \arguments{
 \item{img}{Raster* object. Typically remote sensing imagery, which is to be classified.}
@@ -20,8 +20,6 @@ superClass(img, trainData, valData = NULL, responseCol = NULL,
 \item{responseCol}{Character or integer giving the column in \code{trainData}, which contains the response variable. Can be omitted, when \code{trainData} has only one column.}
 
 \item{nSamples}{Integer. Number of samples per land cover class.}
-
-\item{areaWeightedSampling}{Logical. If \code{TRUE} scales sample size per polygon area. The bigger the polygon the more samples are taken.}
 
 \item{polygonBasedCV}{Logical. If \code{TRUE} model tuning during cross-validation is conducted on a per-polygon basis. Use this to deal with overfitting issues. Does not affect training data supplied as SpatialPointsDataFrames.}
 
@@ -64,7 +62,6 @@ SuperClass performs the following steps:
 
 \item Sample training coordinates. If \code{trainData} (and \code{valData} if present) are SpatialPolygonsDataFrames \code{superClass} will calculate the area per polygon and sample
 \code{nSamples} locations per class within these polygons. The number of samples per individual polygon scales with the polygon area, i.e. the bigger the polygon, the more samples.
-Setting \code{areaWeightedSampling = FALSE} will sample each polygon equally independent of its size.
 
 \item Split training/validation	  
 If \code{valData} was provided (reccomended) the samples from these polygons will be held-out and not used for model fitting but only for validation. 
