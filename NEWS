@@ -1,7 +1,8 @@
 RStoolbox 0.1.4
 =====================================
 New:
-* new function getValidation to extract specific validation results of superClass objects (proposed by James Duffy)
+* new function `validateMap()` for assessing map accuracy separately from model fitting, e.g. after MMU filtering
+* new function `getValidation()` to extract specific validation results of superClass objects (proposed by James Duffy)
 * new spectral index NDVIc (proposed by Jeff Evans)
 * new argument scaleFactor for `spectralIndices()` for calculation of EVI/EVI2 based on scaled reflectance values. 
 
