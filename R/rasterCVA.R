@@ -1,6 +1,6 @@
 #' Change Vector Analysis
 #' 
-#' Calculateds angle and magnitude of change vectors. 
+#' Calculates angle and magnitude of change vectors. 
 #' Dimensionality is limited to two bands per image. 
 #' 
 #' @param x RasterBrick or RasterStack with two layers. Both rasters (y and y) need to correspond to each other, i.e. same resolution, extent and origin.
