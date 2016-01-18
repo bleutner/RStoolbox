@@ -4,12 +4,14 @@
 \alias{rasterCVA}
 \title{Change Vector Analysis}
 \usage{
-rasterCVA(x, y, ...)
+rasterCVA(x, y, tmf = 2, ...)
 }
 \arguments{
-\item{x}{RasterBrick or RasterStack with two layers. Both rasters (y and y) need to correspond to each other, i.e. same resolution, extent and origin.}
+\item{x}{RasterBrick or RasterStack with two layers. This will be the reference/origin for the change calculations. Both rasters (y and y) need to correspond to each other, i.e. same resolution, extent and origin.}
 
 \item{y}{RasterBrick or RasterStack with two layers. Both rasters (y and y) need to correspond to each other, i.e. same resolution, extent and origin.}
+
+\item{tmf}{Numeric. Threshold median factor. Used to calculate a threshold magnitude for which pixels are considered stable, i.e. no change. Defaults to 2 times the median non-zero magnitude. Calculated as \code{tmf * median(magnitude[magnitude > 0])}}
 
 \item{...}{further arguments passed to writeRaster}
 }
@@ -17,13 +19,16 @@ rasterCVA(x, y, ...)
 Returns a RasterBrick with two layers: change vector angle and change vector magnitude
 }
 \description{
-Calculateds angle and magnitude of change vectors. 
+Calculates angle and magnitude of change vectors. 
 Dimensionality is limited to two bands per image.
 }
 \details{
 Change Vector Analysis (CVA) is used to identify spectral changes between two identical scenes which were acquired at different times. 
-CVA is limited to two bands per image. For each pixel it calculates the change in the two-dimensional spectral space. 
+CVA is limited to two bands per image. For each pixel it calculates the change vector in the two-dimensional spectral space. 
 For example for a given pixel in image A and B for the red and nir band the change vector is caclulated for the coordinate pairs: (red_A | nir_A) and (red_B | nir_B).
+
+ The coordinate system is defined as follows: the first band defines the x-axis and the second band the y-axis, respectively.
+ Angles are returned *in degree* beginning with 0 degrees pointing 'north', i.e. the y-axis, i.e. the second band.
 }
 \examples{
 library(raster)
