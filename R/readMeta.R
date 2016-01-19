@@ -42,8 +42,12 @@ readMeta <- function(file, raw = FALSE){
                 })   
         names(meta) <- unique(l[,2])
         
-        num <- grep("IMAGE_AT|MIN_MAX|RESCAL|THERMAL", names(meta))
-        meta[num] <- lapply(meta[num], function(x) {x[,1] <- as.numeric(x[,1]);x})
+        ## Numeric slots
+        num <- grep("MIN_MAX|RESCAL|THERMAL", names(meta))      
+        meta[num] <- lapply(meta[num], function(x) {
+                    x[,1] <- as.numeric(x[,1])
+                    x
+                })
         
         if(raw) return(meta)
         
@@ -252,7 +256,7 @@ ImageMetaData <- function(file = NA, format = NA, sat = NA, sen = NA, scene = NA
     obj$DATA <- obj$DATA[with(obj$DATA, order(factor(CATEGORY, levels = c("image", "pan", "index", "qa")),
                             .getNumeric(BANDS),
                             factor(QUANTITY, levels = c("dn", "tra", "tre", "sre", "bt", "idx"))
-                            )),]
+                    )),]
     
     structure(obj, class = c("ImageMetaData", "RStoolbox"))    
 }
