@@ -56,8 +56,8 @@ estimateHaze <- function(x, hazeBands, darkProp = 0.01, maxSlope = TRUE, plot = 
             } else {
                 stop("Please specify the band from which you want to estimate the haze dn")
             }	
-            if(is.numeric(hazeBands)) hazeBands <- names(x)[hazeBands]
         }
+        if(is.numeric(hazeBands)) hazeBands <- names(x)[hazeBands]
         
     } else {
         
@@ -95,9 +95,10 @@ estimateHaze <- function(x, hazeBands, darkProp = 0.01, maxSlope = TRUE, plot = 
                 ## Get darkProp quantile
                 kusu <- cumsum(tf[,2]) 
                 idx  <- tail(which(kusu < darkProp), 1)
-                            
+                if(length(idx) == 0) idx <- 1           
+                
                 ## Select SHV
-                if(maxSlope){                   
+                if(maxSlope & idx > 1){                   
                     ## Moving average smoother 
                     n = 2*floor((idx/10)/2) + 1  # next odd integer                  
                     tsmo  <- filter(tf[1:idx, 2], rep(1/n, n), sides=2)
@@ -106,10 +107,10 @@ estimateHaze <- function(x, hazeBands, darkProp = 0.01, maxSlope = TRUE, plot = 
                     SHV <- tf[idx,1]               
                 }
                 
-               # if(is.na(SHV)) warning(paste("darkProp for band", bi, "was chosen too high. It exceeds the value range."), call. = FALSE)
+                # if(is.na(SHV)) warning(paste("darkProp for band", bi, "was chosen too high. It exceeds the value range."), call. = FALSE)
                 
                 if(plot){
-                    plot(tf, xlab = "DN", ylab = "Frequency", type = "l", main = names(x)[[bi]])
+                    plot(tf, xlab = "DN", ylab = "Frequency", type = "l", main = bi)
                     abline(v = tf[tf[,1]==SHV,1], col="red")
                     if(maxSlope)  abline(v = darkProp, col = "grey20", lty = 2)                                      
                     text(SHV, max(tf[,2]), pos = 4, label = paste0("\nSHV_DN = ", SHV), col = "red")            

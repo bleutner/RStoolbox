@@ -5,7 +5,7 @@
 \title{Radiometric Calibration and Correction}
 \usage{
 radCor(img, metaData, method = "apref", bandSet = "full", hazeValues,
-  hazeBands, atmosphere, darkProp = 0.02, clamp = TRUE, verbose)
+  hazeBands, atmosphere, darkProp = 0.01, clamp = TRUE, verbose)
 }
 \arguments{
 \item{img}{raster object}
@@ -64,6 +64,9 @@ hazy      \tab \eqn{\lambda^{-0.7}} \cr
 veryHazy  \tab \eqn{\lambda^{-0.5}} 
 }
 
+For Landsat 8, no values for extra-terrestrial irradiation (esun) are provided by NASA. These are, however, neccessary for DOS-based approaches. 
+Therefore, these values were derived from a standard reference spectrum published by Thuillier et al. (2003) using the Landsat 8 OLI spectral response functions.  
+
 The implemented sun-earth distances neglect the earth's eccentricity. Instead we use a 100 year daily average (1979-2070).
 }
 \note{
@@ -92,5 +95,6 @@ lsat_sref <- radCor(lsat, metaData = metaData, method = "sdos",
 }
 \references{
 S. Goslee (2011): Analyzing Remote Sensing Data in R: The landsat Package. Journal of Statistical Software 43(4).
+G. Thuillier et al. (2003)  THE SOLAR SPECTRAL IRRADIANCE FROM 200 TO 2400 nm AS MEASURED BY THE SOLSPEC SPECTROMETER FROM THE ATLAS AND EURECA MISSIONS. Solar Physics 214(1): 1-22 (
 }
 

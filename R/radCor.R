@@ -45,8 +45,13 @@
 #' veryHazy  \tab \eqn{\lambda^{-0.5}} 
 #' }
 #' 
+#' For Landsat 8, no values for extra-terrestrial irradiation (esun) are provided by NASA. These are, however, neccessary for DOS-based approaches. 
+#' Therefore, these values were derived from a standard reference spectrum published by Thuillier et al. (2003) using the Landsat 8 OLI spectral response functions.  
+#' 
 #' The implemented sun-earth distances neglect the earth's eccentricity. Instead we use a 100 year daily average (1979-2070).
-#' @references S. Goslee (2011): Analyzing Remote Sensing Data in R: The landsat Package. Journal of Statistical Software 43(4).
+#' @references 
+#' S. Goslee (2011): Analyzing Remote Sensing Data in R: The landsat Package. Journal of Statistical Software 43(4).
+#' G. Thuillier et al. (2003)  THE SOLAR SPECTRAL IRRADIANCE FROM 200 TO 2400 nm AS MEASURED BY THE SOLSPEC SPECTROMETER FROM THE ATLAS AND EURECA MISSIONS. Solar Physics 214(1): 1-22 (
 #' @export
 #' @examples 
 #' library(raster)
@@ -68,7 +73,7 @@
 #' hazeDN    <- estimateHaze(lsat, hazeBands = 1:4, darkProp = 0.01, plot = TRUE)
 #' lsat_sref <- radCor(lsat, metaData = metaData, method = "sdos", 
 #'                     hazeValues = hazeDN, hazeBands = 1:4)
-radCor <-	function(img, metaData, method = "apref", bandSet = "full", hazeValues, hazeBands, atmosphere, darkProp = 0.02, clamp = TRUE, verbose){
+radCor <-	function(img, metaData, method = "apref", bandSet = "full", hazeValues, hazeBands, atmosphere, darkProp = 0.01, clamp = TRUE, verbose){
     # http://landsat.usgs.gov/Landsat8_Using_Product.php
     if(!missing("verbose")) .initVerbose(verbose)
     
@@ -133,7 +138,16 @@ radCor <-	function(img, metaData, method = "apref", bandSet = "full", hazeValues
         K2   	<- metaData$CALBT[tirBands, "K2"]
         GAIN    <- metaData$CALRAD[tirBands,"gain"]
         OFFSET  <- metaData$CALRAD[tirBands,"offset"]           
-        xtir <- .paraRasterFun(raster = img[[tirBands]], rasterFun = calc, args = list(fun = function(x) K2 / log(K1 / (GAIN * x + OFFSET) +1)))
+        xtir <- .paraRasterFun(raster = img[[tirBands]], rasterFun = calc, args = list(fun = function(x) {
+                            if(length(GAIN) > 1) {
+                                for(i in seq_along(GAIN)){
+                                    suppressWarnings(x[,i] <- K2[i] / log(K1[i] / (GAIN[i] * x[,i] + OFFSET[i]) +1))
+                                }
+                                return(x)
+                            } else {
+                                return(suppressWarnings(K2 / log(K1 / (GAIN * x + OFFSET) + 1)))
+                            }
+                        }, forcefun = TRUE))
         names(xtir) <- gsub("dn", "bt", tirBands)
     } else {
         xtir <- NULL
@@ -157,11 +171,8 @@ radCor <-	function(img, metaData, method = "apref", bandSet = "full", hazeValues
             }
             .vMessage("hazeValues was not provided -> Estimating hazeValues automatically")
             ## We suppress warnings because we search for a possible value autimatically in case we missed the first time
-            hazeValues <- suppressWarnings(estimateHaze(img, hazeBands = hazeBands, darkProp = darkProp , plot = FALSE, returnTables = TRUE))
-            while(is.na(hazeValues[[1]])){ 
-                darkProp	<- darkProp * 0.95
-                hazeValues <- suppressWarnings(estimateHaze(hazeValues, hazeBands = hazeBands, darkProp = darkProp, plot = FALSE, returnTables = TRUE))
-            }
+            hazeValues <- estimateHaze(img, hazeBands = hazeBands, darkProp = darkProp , plot = FALSE, returnTables = FALSE)
+            
             .vMessage(paste0("hazeValues estimated as: ", hazeValues[[1]]))
             hazeValues <- hazeValues[[1]]
         }
@@ -196,7 +207,10 @@ radCor <-	function(img, metaData, method = "apref", bandSet = "full", hazeValues
                 .vMessage("Selecting atmosphere: '", atmosphere, "'")
             }	
             if(is.numeric(hazeBands)) hazeBands <- names(img)[hazeBands]
-            Lhaze	  <- Lhaze  * sDB[bandSet, paste0(hazeBands,"_", atmosphere)] 
+            cols <- paste0(hazeBands,"_", atmosphere) 
+            cols <- cols[cols %in% colnames(sDB)]
+            if(length(cols) != length(hazeBands)) stop(paste0("Method '", method, "' not yet supported for sensor ", sat))
+            Lhaze	  <- Lhaze  * sDB[bandSet, cols] 
             ## Calculate corrected RAD_haze
             NORM  <- GAIN / GAIN_h
             Lhaze <- Lhaze * NORM + OFFSET
@@ -213,7 +227,7 @@ radCor <-	function(img, metaData, method = "apref", bandSet = "full", hazeValues
         layernames <- gsub("_dn", "_tra", bandSet)
     } else {
         ## Reflectance
-        if(sat == "LANDSAT8"){
+        if(sat == "LANDSAT8" & method == "apref"){
             GAIN 	<- metaData$CALREF[bandSet,"gain"] / suntheta
             OFFSET 	<- metaData$CALREF[bandSet,"offset"] / suntheta          
         } else  {            
@@ -225,16 +239,16 @@ radCor <-	function(img, metaData, method = "apref", bandSet = "full", hazeValues
         layernames <-   if(method == "apref") gsub("_dn", "_tre", bandSet) else gsub("_dn", "_sre", bandSet)               
     }  
     .vMessage("Processing radiance / reflectance")  
-   
+    
     CLAMP <- c(FALSE,FALSE)
     if(clamp & method == "rad") CLAMP <- c(TRUE,FALSE)
     if(clamp & method != "rad") CLAMP <- c(TRUE,TRUE)
-
+    
     xref <- .paraRasterFun(img[[bandSet]], rasterFun = calc, args = list(fun = function(x) {gainOffsetRescale(x,GAIN,OFFSET,CLAMP)}, forcefun=TRUE))
     
     
     names(xref) <- layernames   
-
+    
     ## Re-combine thermal, solar and excluded imagery
     out <- stack(xref, xtir, excl)
     

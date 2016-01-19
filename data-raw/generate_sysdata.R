@@ -49,7 +49,8 @@ FLT8S -1.7e+308 1.7e+308", sep=" ", head=TRUE, row.names="datatype")
                         spatRes1 = c(rep(30, 7), 15, rep(30,4)),
                         spatRes2 = c(rep(30, 7), 15, rep(30,4)),  ## ETM+ Band 6 is acquired at 60-meter resolution. Products processed after February 25, 2010 are resampled to 30-meter pixels.
                         centerWavl = c(0.44,0.48,0.56,0.655,0.865,1.61,2.2,0.59,1.37,10.6,11.5, NA), 
-                        esun = c(NA, 2067, 1893, 1603, 972.6, 245, 79.72, NA, 399.7, NA, NA, NA ), ## http://www.gisagmaps.com/landsat-8-atco/ ##http://landsat.usgs.gov/Landsat8_Using_Product.php
+                        esun = c(1895.57139, 2005.40760, 1820.55317 , 1549.31890,  951.28307, 
+                                247.93538, 85.87907 ,  367.00629, NA, NA, 1718.38626, NA ),
                         stringsAsFactors = FALSE
                 )
         )
