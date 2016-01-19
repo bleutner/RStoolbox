@@ -4,7 +4,7 @@
 \alias{estimateHaze}
 \title{Estimate Image Haze for Dark Object Subtraction (DOS)}
 \usage{
-estimateHaze(x, hazeBands, darkProp = 0.02, plot = FALSE,
+estimateHaze(x, hazeBands, darkProp = 0.01, maxSlope = TRUE, plot = FALSE,
   returnTables = FALSE)
 }
 \arguments{
@@ -12,7 +12,9 @@ estimateHaze(x, hazeBands, darkProp = 0.02, plot = FALSE,
 
 \item{hazeBands}{Integer or Character. Band number or bandname from which to estimate atmospheric haze (optional if x contains only one layer)}
 
-\item{darkProp}{Numeric. Proportion of pixels estimated to be dark}
+\item{darkProp}{Numeric. Proportion of pixels estimated to be dark.}
+
+\item{maxSlope}{Logical. Use \code{darkProp} only as an upper boundary and search for the DN of maximum slope in the histogram below this value.}
 
 \item{plot}{Logical. Option to display histograms and haze values}
 
@@ -35,8 +37,7 @@ Hence, the haze values are estimates of path radiance, which can be subtracted i
 Atmospheric haze affects almost exclusively the visible wavelength range. Therefore, typically, you'd only want to estimate haze in blue, green and red bands, occasionally also in the nir band.
 }
 \examples{
-mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
-lsat <- stackMeta(mtlFile)
+data(lsat)
 
 ## Estimate haze for blue, green and red band
 haze <- estimateHaze(lsat, hazeBands = 1:3, plot = TRUE)

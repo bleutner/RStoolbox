@@ -4,7 +4,8 @@
 #' 
 #' @param x Raster* object or a previous result from \code{estimateHaze(x , returnTables = TRUE} from which to estimate haze
 #' @param hazeBands Integer or Character. Band number or bandname from which to estimate atmospheric haze (optional if x contains only one layer)
-#' @param darkProp Numeric. Proportion of pixels estimated to be dark
+#' @param darkProp Numeric. Proportion of pixels estimated to be dark.
+#' @param maxSlope Logical. Use \code{darkProp} only as an upper boundary and search for the DN of maximum slope in the histogram below this value.
 #' @param plot Logical. Option to display histograms and haze values
 #' @param returnTables Logical. Option to return the frequency table per layer. Only takes effect if x is a Raster* object. If x is a result of estimateHaze tables will always be returned.
 #' @details 
@@ -21,8 +22,7 @@
 #' the raster again.
 #' @export 
 #' @examples
-#' mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
-#' lsat <- stackMeta(mtlFile)
+#' data(lsat)
 #' 
 #' ## Estimate haze for blue, green and red band
 #' haze <- estimateHaze(lsat, hazeBands = 1:3, plot = TRUE)
@@ -35,7 +35,7 @@
 #' ## Use frequency table instead of lsat and fiddle with 
 #' haze <- estimateHaze(haze, hazeBands = 1:3, darkProp = .1, plot = TRUE)
 #' haze$SHV
-estimateHaze <- function(x, hazeBands, darkProp = 0.02, plot = FALSE, returnTables = FALSE) {
+estimateHaze <- function(x, hazeBands, darkProp = 0.01, maxSlope = TRUE, plot = FALSE, returnTables = FALSE) {
     
     ## Initial or repeated run?
     if(inherits(x, "Raster")) {
@@ -80,27 +80,40 @@ estimateHaze <- function(x, hazeBands, darkProp = 0.02, plot = FALSE, returnTabl
         }
     }
     
+    
     ## Run estimation for each band separately
     out   <- lapply(hazeBands, function(bi) {
                 if(!preCalc) {
-                    ## TODO: move freq out of loop
-                    tf <- freq(x[[bi]], useNA = "no") 
+                    tf <- freq(x[[bi]], useNA = "no")             
                 } else {
                     tf <- x$table[[bi]]
                 }
-                tf <- tf[tf[,1] > 0,]
-                tf[,2] <- tf[,2]/sum(tf[,2])
-                dtf <- c(diff(tf[,2]),0) / c(diff(tf[,1]),0)
                 
-                SHV <- tf[which(dtf > darkProp)[1], 1] 
-                if(is.na(SHV)) warning(paste("darkProp for band", bi, "was chosen too high. It exceeds the value range."), call. = FALSE)
+                tf <- tf[tf[,1] > 0,]            
+                tf[,2] <- tf[,2]/sum(tf[,2])
+                
+                ## Get darkProp quantile
+                kusu <- cumsum(tf[,2]) 
+                idx  <- tail(which(kusu < darkProp), 1)
+                            
+                ## Select SHV
+                if(maxSlope){                   
+                    ## Moving average smoother 
+                    n = 2*floor((idx/10)/2) + 1  # next odd integer                  
+                    tsmo  <- filter(tf[1:idx, 2], rep(1/n, n), sides=2)
+                    SHV   <- tf[min(which.max(diff(tsmo, 2))+1,idx),1]
+                } else {
+                    SHV <- tf[idx,1]               
+                }
+                
+               # if(is.na(SHV)) warning(paste("darkProp for band", bi, "was chosen too high. It exceeds the value range."), call. = FALSE)
                 
                 if(plot){
-                    plot(tf, xlab = "DN", ylab = "Frequency", type = "l", main = bi)
+                    plot(tf, xlab = "DN", ylab = "Frequency", type = "l", main = names(x)[[bi]])
                     abline(v = tf[tf[,1]==SHV,1], col="red")
-                    abline(h = darkProp, col = "grey20", lty = 2)                   
-                    text(SHV, max(tf[,2]), pos = 4, label = paste0("SHV_DN = ", SHV), col = "red")            
-                    text(max(tf[,1]), darkProp+0.001, label = "darkProp", adj=1, col = "grey20")
+                    if(maxSlope)  abline(v = darkProp, col = "grey20", lty = 2)                                      
+                    text(SHV, max(tf[,2]), pos = 4, label = paste0("\nSHV_DN = ", SHV), col = "red")            
+                    #  text(max(tf[,1]), darkProp+0.001, label = "darkProp", adj=1, col = "grey20")
                 }
                 
                 return(list(table = tf, SHV = SHV))
