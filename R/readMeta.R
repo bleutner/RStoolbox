@@ -96,7 +96,7 @@ readMeta <- function(file, raw = FALSE){
         dtyp 	<- NA
         
        ## Calculate ESUN the GRASS Way: https://grass.osgeo.org/grass64/manuals/i.landsat.toar.html
-       esun <- pi * esd * r[grepl("MAXIMUM", rownames(r)),,drop = F][1:9,]/  reflMax[grepl("MAXIMUM", rownames(reflMax)),,drop = F]
+      # esun <- pi * esd * r[grepl("MAXIMUM", rownames(r)),,drop = F][1:9,]/  reflMax[grepl("MAXIMUM", rownames(reflMax)),,drop = F]
        
         
         ## RADIOMETRIC CORRECTION/RESCALING PARAMETERS     
