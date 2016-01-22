@@ -16,6 +16,7 @@ Fixes:
 * spectralIndices valid value range of EVI/EVI2 now [-1,1]
 * radCor returned smallest integer instead of NA for some NA pixels
 * allow dark object subtraction radCor(..,method='sdos') for Landsat 8 data (@BayAludra, #4)
+* enable 'sdos' for non-contiguous bands in radCor (@BayAludra, #4)
 
 
 RStoolbox 0.1.3

@@ -17,9 +17,11 @@ radCor(img, metaData, method = "apref", bandSet = "full", hazeValues,
 
 \item{bandSet}{Numeric or character. original Landsat band numbers or names in the form of ("B1", "B2" etc). If set to 'full' all bands in the solar (optical) region will be processed.}
 
-\item{hazeValues}{Starting haze value, can be estimated using \link{estimateHaze}. if not provided and method is "dos" or "costz" hazeValues will be estimated in an automated fashion. Not needed for apparent reflectance.}
+\item{hazeValues}{Numeric. Either a vector with dark DNs per \code{hazeBand} (method = 'sdos'); possibly estimated using \link{estimateHaze}. 
+Or the 'starting haze value' (DN) for the relative scattering models in \code{method = 'dos' or 'costz'}. If not provided, hazeValues will be estimated in an automated fashion for all \code{hazeBands}. 
+Argument only applies to methods 'sdos', 'dos' and 'costz'.}
 
-\item{hazeBands}{Bands corresponding to hazeValues.}
+\item{hazeBands}{Character or integer. Bands corresponding to \code{hazeValues} (method = 'sdos') or band to select starting haze value from ('dos' or 'costz').}
 
 \item{atmosphere}{Character. Atmospheric characteristics. Will be estimated if not expicilty provided. Must be one of \code{"veryClear", "clear", "moderate", "hazy"} or \code{"veryHazy"}.}
 
@@ -95,6 +97,7 @@ lsat_sref <- radCor(lsat, metaData = metaData, method = "sdos",
 }
 \references{
 S. Goslee (2011): Analyzing Remote Sensing Data in R: The landsat Package. Journal of Statistical Software 43(4).
+
 G. Thuillier et al. (2003)  THE SOLAR SPECTRAL IRRADIANCE FROM 200 TO 2400 nm AS MEASURED BY THE SOLSPEC SPECTROMETER FROM THE ATLAS AND EURECA MISSIONS. Solar Physics 214(1): 1-22 (
 }
 

@@ -1,5 +1,6 @@
 context("superClass")
-library(raster)
+
+suppressPackageStartupMessages(library(raster))
 suppressPackageStartupMessages(library(pls))
 suppressPackageStartupMessages(library(randomForest))
 suppressPackageStartupMessages(library(caret))
