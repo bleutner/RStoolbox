@@ -23,4 +23,7 @@ validateMap(map, valData, responseCol, nSamples = 500,
 \description{
 validate a map from a classification or regression model. This can be useful to update the accuracy assesment after filtering, e.g. for a minimum mapping unit.
 }
+\note{
+Polygons, which are smaller than the map resolution will only be considered if they overlap with a pixel center coordinate, else they will be ignored
+}
 

@@ -319,7 +319,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
         buff <- max(res(RASTER))
         polyCells <- .parXapply(X = 1:nrow(SHAPE), XFUN="lapply", FUN= function(i) { 
                     rc <- crop(r, extent(SHAPE[i,]) + buff)
-                    rc <- rasterize(SHAPE[i,], rc, silent=TRUE)
+                    rc <- rasterize(SHAPE[i,], rc, fun = "first", silent=TRUE)
                     xy <- rasterToPoints(rc)[,-3,drop=FALSE]			
                     cellFromXY(RASTER, xy)
                 }, envir = environment()) 
@@ -332,7 +332,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
         dataSet   <- lapply(seq_along(polyCells), function(xi) {
                     class <- resp[[xi]]
                     ns <- min(ceiling(nSamples * area[[xi]] / totalarea[which(uresp == resp[[xi]])]), area[[xi]] )
-                    data.frame(response = class, cells = sample(polyCells[[xi]], ns))
+                    if(ns > 0) data.frame(response = class, cells = sample(polyCells[[xi]], ns)) else NULL
                 })	
         dataSet <- do.call("rbind", dataSet)
         dataSet <- cbind(dataSet, RASTER[dataSet[,"cells"]])        
@@ -389,6 +389,9 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 #' @param responseCol Character. Column containing the validation data in attribute table of \code{valData}.
 #' @param mode Character. Either 'classification' or 'regression'.
 #' @param classMapping optional data.frame with columns \code{'class'} and \code{'classID'} defining the mapping from raster integers to class names. 
+#' @note 
+#' Polygons, which are smaller than the map resolution will only be considered if they overlap with a pixel center coordinate, else they will be ignored
+#' 
 #' @export 
 validateMap <- function(map, valData, responseCol, nSamples = 500,  mode = "classification", classMapping = NULL){
     
