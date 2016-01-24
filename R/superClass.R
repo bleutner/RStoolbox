@@ -379,42 +379,6 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 }
 
 
-#' Map accuracy assessment
-#'
-#' validate a map from a classification or regression model. This can be useful to update the accuracy assesment after filtering, e.g. for a minimum mapping unit.
-#'  
-#' @param map RasterLayer. The classified map.
-#' @param valData SpatialPolygonsDataFrame or SpatialPointsDataFrame with validation data.
-#' @param nSamples Integer. Number of pixels to sample for validation (only applies to polygons).
-#' @param responseCol Character. Column containing the validation data in attribute table of \code{valData}.
-#' @param mode Character. Either 'classification' or 'regression'.
-#' @param classMapping optional data.frame with columns \code{'class'} and \code{'classID'} defining the mapping from raster integers to class names. 
-#' @note 
-#' Polygons, which are smaller than the map resolution will only be considered if they overlap with a pixel center coordinate, else they will be ignored
-#' 
-#' @export 
-validateMap <- function(map, valData, responseCol, nSamples = 500,  mode = "classification", classMapping = NULL){
-    
-    stopifnot(responseCol %in% names(valData), mode %in% c("classification", "regression"))
-    
-    valiSet  <- .samplePixels(SHAPE = valData, RASTER = map, responseCol = responseCol, nSamples = nSamples,  trainCells = NULL)
-    colnames(valiSet[[1]]) <- c("reference", "prediction") 
-    if(mode=="classification") {  
-        if(!is.null(classMapping)) {
-            valiSet[[1]][,"prediction"] <- classMapping[match(valiSet[[1]][,"prediction"], classMapping$classID),"class"]
-        } 
-        performance = confusionMatrix(valiSet[[1]][,"prediction"], reference = valiSet[[1]][,"reference"])
-    } else {
-        performance = postResample(pred = valiSet[[1]][,"prediction"], obs = valiSet[[1]][,"reference"])    
-    }
-    valiSet <- do.call("cbind",valiSet)
-    colnames(valiSet) <- c("reference", "prediction", "cell")
-    out <- list(performance = performance, validationSet = valiSet)
-    structure(out, class = c("mapValidation", "RStoolbox"))
-    
-}
-
-
 
 
 
@@ -468,24 +432,4 @@ print.superClass <- function(x,...){
     cat("\n*************** Map ******************\n")
     cat("$map\n")
     show(x$map)
-}
-
-
-#' @method print mapValidation
-#' @export 
-print.mapValidation <- function(x,...){
-    cat("$performance\n")
-    print(x$performance)
-    cat("\n$validationSet\n")
-    if(nrow(x$validationSet) < 6){
-         print(x$validationSet)
-    } else {       
-        cat("Total number of validation samples: ", nrow(x$validationSet), "\n")
-        cat("Validation samples per class:")
-        print(table(x$validationSet$reference))
-        cat("\n")
-        print(x$validationSet[c(1:3),])
-        cat("...\n")
-        write.table(format(tail(x$validationSet,3), justify="right"), col.names=F, quote=F)      
-    }
 }

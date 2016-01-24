@@ -1,5 +1,5 @@
 context("gainOffsetRescaleCpp")
-library(raster)
+suppressPackageStartupMessages(library(raster))
 r <- raster(vals = 1, ncol = 2, nrow = 2)
 r <- stack(r,r*2)
 r[[1]][1:4] <- c(NA, -100, 100, 0)
