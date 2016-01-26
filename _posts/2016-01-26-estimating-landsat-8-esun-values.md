@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Landsat 8 Esun values"
+title: "Landsat 8 Esun Values"
 description: ""
 category: 
 tags: [r,RStoolbox]
@@ -8,7 +8,7 @@ tags: [r,RStoolbox]
 {% include JB/setup %}
 
 
-Extraterrestrial irradiation (Esun) has been a frequently required variable in several classic remote sensing image correction approaches. 
+Extra-terrestrial solar irradiation (Esun) has been a frequently required variable in several classic remote sensing image correction approaches. 
 It is often needed to convert/normalize radiance to reflectance and also by several simple atmospheric correction approaches like dark object subtraction (DOS).
 
 Nowadays, much more sophisiticated atmospherically corrected products, e.g. [Landsat CDR LEDAPS](http://landsat.usgs.gov/CDR_LSR.php) data
@@ -20,7 +20,7 @@ In the case of Landsat 8 OLI, however, USGS and NASA decided [not to publish Esu
 
 In the following, I will show how the Esun values of Landsat8  OLI bands 
 were derived for usage in [`RStoolbox::radCor()`](http://bleutner.github.io/RStoolbox/rstbx-docu/radCor.html).
-I used the the extraterrestrial irradiance spectrum published by Thuillier et al. (2011) and calculated the band-specific Esun 
+I used the the extra-terrestrial irradiance spectrum published by Thuillier et al. (2011) and calculated the band-specific Esun 
 values based on the [Landsat 8 OLI spectral response curves](http://landsat.gsfc.nasa.gov/?p=5779).
 There are several irradiance spectra which could be used. 
 I opted for the Thuillier spectrum which is recommended by the Committee on Earth Observation Satellites (CEOS) 
@@ -32,15 +32,14 @@ First we get the solar reference spectrum:
  
 {% highlight r %} 
 
-library(xlsx)
+ library(xlsx)
  library(ggplot2)
  library(reshape2)
  
- # Download data
- download.file("http://media.libsyn.com/media/npl1/Solar_irradiance_Thuillier_2002.xls",
-   destfile = "thuillierSolarSpectrum.xls")
+ ## Download data
+ download.file("http://media.libsyn.com/media/npl1/Solar_irradiance_Thuillier_2002.xls", destfile = "thuillierSolarSpectrum.xls")
  
- # Import solar spectrum
+ ## Import solar spectrum
  sol <- read.xlsx("thuillierSolarSpectrum.xls", 3)
  
  ## Plot
@@ -57,11 +56,10 @@ Next we need the relative spectral response of each Landsat 8 OLI band from NASA
 
 {% highlight r %} 
 
-# Download OLI band response curves
-download.file("http://landsat.gsfc.nasa.gov/wp-content/uploads/2013/06/Ball_BA_RSR.v1.1-1.xlsx", 
-  destfile = "landsat8oli.xlsx")
+## Download OLI band response curves
+download.file("http://landsat.gsfc.nasa.gov/wp-content/uploads/2013/06/Ball_BA_RSR.v1.1-1.xlsx", destfile = "landsat8oli.xlsx")
 
-# Import OLI band response
+## Import OLI band response
 bands <- c("CoastalAerosol", "Blue", "Green", "Red", "NIR", "Cirrus", "SWIR1", "SWIR2","Pan")
 resp <- lapply(bands, function(x){
             data.frame(read.xlsx("landsat8oli.xlsx", sheetName = x)[,1:2])
@@ -100,10 +98,8 @@ Then, the responses are normalized so that each band integrates to one and used 
 Esun <- sapply(resp, function(x){
             ## Resample band response to solar spectrum
             resamp  <- approx(x = x[,1], y = x[,2], xout = sol[,1])[["y"]]
-            
             ## Convert to relative weights  
             weights <- resamp / sum(resamp, na.rm = TRUE)
-            
             ## Calculated weighted sum
             sum(sol[,2] * weights, na.rm = TRUE)            
         })
@@ -111,13 +107,12 @@ Esun <- sapply(resp, function(x){
 ## Let's see what we've got:
 round(Esun,2) 
 {% endhighlight %}
-
-```
+{% highlight r %} 
 ## CoastalAerosol           Blue          Green            Red            NIR 
 ##        1895.33        2004.57        1820.75        1549.49         951.76 
 ##         Cirrus          SWIR1          SWIR2            Pan 
 ##         366.97         247.55          85.46        1723.88
-```
+{% endhighlight %}
 Having calculated these values, we can now again run dark object subtraction on Landsat 8 data (see [`RStoolbox::radCor()`](http://bleutner.github.io/RStoolbox/rstbx-docu/radCor.html)). 
 For the other members of the Landsat family we will stick to the published Esun values. 
 Of course, using this approach Esun could also be calculated for any other sensor.
