@@ -37,7 +37,9 @@ First we get the solar reference spectrum:
  library(reshape2)
  
  ## Download data
- download.file("http://media.libsyn.com/media/npl1/Solar_irradiance_Thuillier_2002.xls", destfile = "thuillierSolarSpectrum.xls")
+ download.file(
+   "http://media.libsyn.com/media/npl1/Solar_irradiance_Thuillier_2002.xls",
+    destfile = "thuillierSolarSpectrum.xls")
  
  ## Import solar spectrum
  sol <- read.xlsx("thuillierSolarSpectrum.xls", 3)
