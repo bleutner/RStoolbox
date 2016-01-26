@@ -8,8 +8,8 @@ branches:
     - gh-pages
 
 before_install:
-  #- curl -OL https://raw.githubusercontent.com/bleutner/r-builder/install_version/pkg-build.sh
-  - curl -OL https://raw.githubusercontent.com/metacran/r-builder/master/pkg-build.sh
+  - curl -OL https://raw.githubusercontent.com/bleutner/r-builder/install_version/pkg-build.sh
+  #- curl -OL https://raw.githubusercontent.com/metacran/r-builder/master/pkg-build.sh
   - chmod 755 pkg-build.sh
   - ./pkg-build.sh bootstrap
 
@@ -21,7 +21,7 @@ before_script:
   - sudo aptitude install -y libgdal1-dev
   - sudo aptitude install -y libproj-dev
   - wget https://github.com/bleutner/withr/blob/master/withr_1.0.0.9000.tar.gz?raw=true
-  - Rscript -e 'install.packages("withr_1.0.0.9000.tar.gz", repos=NULL)'
+  - ./pkg-build.sh install_r_local "withr_1.0.0.9000.tar.gz"
   - rm withr_1.0.0.9000.tar.gz 
   - ./pkg-build.sh install_devtools 
   - ./pkg-build.sh install_r_version car 2.0-25 
