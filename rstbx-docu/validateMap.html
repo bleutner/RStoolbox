@@ -1,0 +1,102 @@
+---
+layout: docu
+title: ' Map accuracy assessment '
+fun:  validateMap 
+package:  RStoolbox 
+header: Pages
+group: navigation
+---
+{% include JB/setup %}
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Map accuracy assessment</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+
+                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+                            <script>hljs.initHighlightingOnLoad();</script>
+                            </head><body>
+
+<h3>Description</h3>
+
+<p>validate a map from a classification or regression model. This can be useful to update the accuracy assessment after filtering, e.g. for a minimum mapping unit.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+validateMap(map, valData, responseCol, nSamples = 500,
+  mode = "classification", classMapping = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code class="r">map</code></td>
+<td>
+<p>RasterLayer. The classified map.</p>
+</td></tr>
+<tr valign="top"><td><code class="r">valData</code></td>
+<td>
+<p>SpatialPolygonsDataFrame or SpatialPointsDataFrame with validation data.</p>
+</td></tr>
+<tr valign="top"><td><code class="r">responseCol</code></td>
+<td>
+<p>Character. Column containing the validation data in attribute table of <code class="r">valData</code>.</p>
+</td></tr>
+<tr valign="top"><td><code class="r">nSamples</code></td>
+<td>
+<p>Integer. Number of pixels to sample for validation (only applies to polygons).</p>
+</td></tr>
+<tr valign="top"><td><code class="r">mode</code></td>
+<td>
+<p>Character. Either 'classification' or 'regression'.</p>
+</td></tr>
+<tr valign="top"><td><code class="r">classMapping</code></td>
+<td>
+<p>optional data.frame with columns <code class="r">'class'</code> and <code class="r">'classID'</code> defining the mapping from raster integers to class names.</p>
+</td></tr>
+</table>
+
+
+<h3>Note</h3>
+
+<p>Polygons, which are smaller than the map resolution will only be considered if they overlap with a pixel center coordinate, otherwise they will be ignored.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class="r">## Not run: 
+## library(caret)
+## library(raster)
+## 
+## ## Training data
+## data(lsat)
+## poly     &lt;- readRDS(system.file(&quot;external/trainingPolygons.rds&quot;, package=&quot;RStoolbox&quot;))
+## 
+## ## Split training data in training and validation set (50%-50%)
+## splitIn   &lt;- createDataPartition(poly$class, p = .5)[[1]]
+## train &lt;- poly[splitIn,]
+## val   &lt;- poly[-splitIn,]
+## 
+## ## Classify (deliberately poorly)
+## sc &lt;- superClass(lsat, trainData = train, responseCol = &quot;class&quot;, nSamples = 50, model = &quot;mlc&quot;)
+## 
+## ## Polish map with majority filter
+## 
+## polishMap &lt;- focal(sc$map, matrix(1,3,3), fun = modal) 
+## 
+## ## Validation
+## ## Before filtering
+## val0 &lt;- validateMap(sc$map, valData = val, responseCol = &quot;class&quot;, classMapping = sc$classMapping)
+## ## After filtering
+## val1 &lt;- validateMap(polishMap, valData = val, responseCol = &quot;class&quot;, classMapping = sc$classMapping)
+## End(Not run)
+</code></pre>
+
+
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.1.4 <a href="index.html">Index</a>]</div>
+</body></html>

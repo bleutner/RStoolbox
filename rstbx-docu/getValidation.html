@@ -1,0 +1,120 @@
+---
+layout: docu
+title: ' Extract validation results from superClass objects '
+fun:  getValidation 
+package:  RStoolbox 
+header: Pages
+group: navigation
+---
+{% include JB/setup %}
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Extract validation results from superClass objects</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+
+                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+                            <script>hljs.initHighlightingOnLoad();</script>
+                            </head><body>
+
+<h3>Description</h3>
+
+<p>Extract validation results from superClass objects
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+getValidation(x, from = "testset", metrics = "overall")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code class="r">x</code></td>
+<td>
+<p>superClass object or caret::confusionMatrix</p>
+</td></tr>
+<tr valign="top"><td><code class="r">from</code></td>
+<td>
+<p>Character. 'testset' extracts the results from independent validation with testset. 'cv' extracts cross-validation results.</p>
+</td></tr>
+<tr valign="top"><td><code class="r">metrics</code></td>
+<td>
+<p>Character. Only relevant in classification mode (ignored for regression models). 
+Select 'overall' for overall accuracy metrics, 'classwise' for classwise metrics, 
+'confmat' for the confusion matrix itself and 'caret' to return the whole caret::confusionMatrix object.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Returns a data.frame with validation results. 
+If metrics = 'confmat' or 'caret' wil return a table or the full caret::confusionMatrix object, respectively.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class="r">library(pls)
+</code></pre>
+
+<pre><code class="r">#&gt; 
+#&gt; Attaching package: &#39;pls&#39;
+#&gt; 
+#&gt; The following object is masked from &#39;package:caret&#39;:
+#&gt; 
+#&gt;     R2
+#&gt; 
+#&gt; The following object is masked from &#39;package:stats&#39;:
+#&gt; 
+#&gt;     loadings
+</code></pre>
+
+<pre><code class="r">## Fit classifier (splitting training into 70% training data, 30% validation data)
+train &lt;- readRDS(system.file(&quot;external/trainingPoints.rds&quot;, package=&quot;RStoolbox&quot;))
+SC   &lt;- superClass(rlogo, trainData = train, responseCol = &quot;class&quot;, 
+                    model=&quot;pls&quot;, trainPartition = 0.7)
+## Independent testset-validation
+getValidation(SC)
+</code></pre>
+
+<pre><code class="r">#&gt;   model validation Accuracy Kappa AccuracyLower AccuracyUpper AccuracyNull
+#&gt; 1   pls    testset        1     1     0.6637329             1    0.3333333
+#&gt;   AccuracyPValue McnemarPValue
+#&gt; 1   5.080526e-05           NaN
+</code></pre>
+
+<pre><code class="r">getValidation(SC, metrics = &quot;classwise&quot;)
+</code></pre>
+
+<pre><code class="r">#&gt;   model validation class Sensitivity Specificity Pos.Pred.Value
+#&gt; 1   pls    testset     A           1           1              1
+#&gt; 2   pls    testset     B           1           1              1
+#&gt; 3   pls    testset     C           1           1              1
+#&gt;   Neg.Pred.Value Prevalence Detection.Rate Detection.Prevalence
+#&gt; 1              1  0.3333333      0.3333333            0.3333333
+#&gt; 2              1  0.3333333      0.3333333            0.3333333
+#&gt; 3              1  0.3333333      0.3333333            0.3333333
+#&gt;   Balanced.Accuracy
+#&gt; 1                 1
+#&gt; 2                 1
+#&gt; 3                 1
+</code></pre>
+
+<pre><code class="r">## Cross-validation based 
+getValidation(SC, from = &quot;cv&quot;)
+</code></pre>
+
+<pre><code class="r">#&gt;   model validation  Accuracy     Kappa AccuracyLower AccuracyUpper
+#&gt; 1   pls         cv 0.8095238 0.7142857      0.580934     0.9455364
+#&gt;   AccuracyNull AccuracyPValue McnemarPValue
+#&gt; 1    0.3333333   1.025615e-05           NaN
+</code></pre>
+
+
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.1.4 <a href="index.html">Index</a>]</div>
+</body></html>
