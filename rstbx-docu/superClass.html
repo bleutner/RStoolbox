@@ -166,17 +166,7 @@ otherwise it will be performed on a per-pixel basis.
 <pre><code class="r">library(caret)
 library(randomForest)
 library(e1071)
-</code></pre>
-
-<pre><code class="r">#&gt; 
-#&gt; Attaching package: &#39;e1071&#39;
-#&gt; 
-#&gt; The following object is masked from &#39;package:raster&#39;:
-#&gt; 
-#&gt;     interpolate
-</code></pre>
-
-<pre><code class="r">library(raster)
+library(raster)
 data(rlogo)
 train &lt;- readRDS(system.file(&quot;external/trainingPoints.rds&quot;, package=&quot;RStoolbox&quot;))
 
