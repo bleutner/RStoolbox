@@ -11,20 +11,23 @@ getValidation(x, from = "testset", metrics = "overall")
 
 \item{from}{Character. 'testset' extracts the results from independent validation with testset. 'cv' extracts cross-validation results.}
 
-\item{metrics}{Character. Only relevant in classification mode (ignored for regression models). Select 'overall' for overall accuracy metrics, 'classwise' for classwise metrics, 
+\item{metrics}{Character. Only relevant in classification mode (ignored for regression models). 
+Select 'overall' for overall accuracy metrics, 'classwise' for classwise metrics, 
 'confmat' for the confusion matrix itself and 'caret' to return the whole caret::confusionMatrix object.}
 }
 \value{
-Returns a data.frame with validation results. If metrics = 'confmat' or 'caret' wil return a table or the full caret::confusionMatrix object, respectively.
+Returns a data.frame with validation results. 
+If metrics = 'confmat' or 'caret' wil return a table or the full caret::confusionMatrix object, respectively.
 }
 \description{
 Extract validation results from superClass objects
 }
 \examples{
+library(pls)
 ## Fit classifier (splitting training into 70\\\% training data, 30\\\% validation data)
 train <- readRDS(system.file("external/trainingPoints.rds", package="RStoolbox"))
 SC   <- superClass(rlogo, trainData = train, responseCol = "class", 
-                    tuneLength = 1, trainPartition = 0.7)
+                    model="pls", trainPartition = 0.7)
 ## Independent testset-validation
 getValidation(SC)
 getValidation(SC, metrics = "classwise")

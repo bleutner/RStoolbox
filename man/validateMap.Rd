@@ -21,12 +21,13 @@ validateMap(map, valData, responseCol, nSamples = 500,
 \item{classMapping}{optional data.frame with columns \code{'class'} and \code{'classID'} defining the mapping from raster integers to class names.}
 }
 \description{
-validate a map from a classification or regression model. This can be useful to update the accuracy assesment after filtering, e.g. for a minimum mapping unit.
+validate a map from a classification or regression model. This can be useful to update the accuracy assessment after filtering, e.g. for a minimum mapping unit.
 }
 \note{
-Polygons, which are smaller than the map resolution will only be considered if they overlap with a pixel center coordinate, else they will be ignored
+Polygons, which are smaller than the map resolution will only be considered if they overlap with a pixel center coordinate, otherwise they will be ignored.
 }
 \examples{
+\dontrun{
 library(caret)
 library(raster)
 
@@ -43,13 +44,14 @@ val   <- poly[-splitIn,]
 sc <- superClass(lsat, trainData = train, responseCol = "class", nSamples = 50, model = "mlc")
 
 ## Polish map with majority filter
-\dontrun{
-polishMap <- focal(sc$map, matrix(1,3,3), fun = modal) }
-\dontshow{polishMap <- sc$map}
+
+polishMap <- focal(sc$map, matrix(1,3,3), fun = modal) 
+
 ## Validation
 ## Before filtering
 val0 <- validateMap(sc$map, valData = val, responseCol = "class", classMapping = sc$classMapping)
 ## After filtering
 val1 <- validateMap(polishMap, valData = val, responseCol = "class", classMapping = sc$classMapping)
+}
 }
 
