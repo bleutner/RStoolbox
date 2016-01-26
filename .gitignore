@@ -4,3 +4,5 @@
 .Rhistory
 .settings
 .project
+*.xlsx
+*xls
