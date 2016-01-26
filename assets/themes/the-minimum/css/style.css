@@ -228,7 +228,7 @@ pre {
     margin-left: 0px;
     margin-right: 0px;
     border-style:none none none none solid;
-    border-left: thick double #BADA55;
+    border-left: 10px double #BADA55;
     overflow: auto;
     padding-left: 10px;
     background-color: #f8f8f818621885;
