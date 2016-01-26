@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Estimating Landsat 8 Esun values"
+title: "Landsat 8 Esun values"
 description: ""
 category: 
 tags: [r,RStoolbox]
