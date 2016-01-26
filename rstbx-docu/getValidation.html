@@ -60,21 +60,7 @@ If metrics = 'confmat' or 'caret' wil return a table or the full caret::confusio
 <h3>Examples</h3>
 
 <pre><code class="r">library(pls)
-</code></pre>
-
-<pre><code class="r">#&gt; 
-#&gt; Attaching package: &#39;pls&#39;
-#&gt; 
-#&gt; The following object is masked from &#39;package:caret&#39;:
-#&gt; 
-#&gt;     R2
-#&gt; 
-#&gt; The following object is masked from &#39;package:stats&#39;:
-#&gt; 
-#&gt;     loadings
-</code></pre>
-
-<pre><code class="r">## Fit classifier (splitting training into 70% training data, 30% validation data)
+## Fit classifier (splitting training into 70% training data, 30% validation data)
 train &lt;- readRDS(system.file(&quot;external/trainingPoints.rds&quot;, package=&quot;RStoolbox&quot;))
 SC   &lt;- superClass(rlogo, trainData = train, responseCol = &quot;class&quot;, 
                     model=&quot;pls&quot;, trainPartition = 0.7)
@@ -82,27 +68,27 @@ SC   &lt;- superClass(rlogo, trainData = train, responseCol = &quot;class&quot;,
 getValidation(SC)
 </code></pre>
 
-<pre><code class="r">#&gt;   model validation Accuracy Kappa AccuracyLower AccuracyUpper AccuracyNull
-#&gt; 1   pls    testset        1     1     0.6637329             1    0.3333333
-#&gt;   AccuracyPValue McnemarPValue
-#&gt; 1   5.080526e-05           NaN
+<pre><code class="r">#&gt;   model validation  Accuracy     Kappa AccuracyLower AccuracyUpper
+#&gt; 1   pls    testset 0.7777778 0.6666667     0.3999064      0.971855
+#&gt;   AccuracyNull AccuracyPValue McnemarPValue
+#&gt; 1    0.3333333    0.008281258           NaN
 </code></pre>
 
 <pre><code class="r">getValidation(SC, metrics = &quot;classwise&quot;)
 </code></pre>
 
 <pre><code class="r">#&gt;   model validation class Sensitivity Specificity Pos.Pred.Value
-#&gt; 1   pls    testset     A           1           1              1
-#&gt; 2   pls    testset     B           1           1              1
-#&gt; 3   pls    testset     C           1           1              1
+#&gt; 1   pls    testset     A   1.0000000   0.6666667            0.6
+#&gt; 2   pls    testset     B   0.3333333   1.0000000            1.0
+#&gt; 3   pls    testset     C   1.0000000   1.0000000            1.0
 #&gt;   Neg.Pred.Value Prevalence Detection.Rate Detection.Prevalence
-#&gt; 1              1  0.3333333      0.3333333            0.3333333
-#&gt; 2              1  0.3333333      0.3333333            0.3333333
-#&gt; 3              1  0.3333333      0.3333333            0.3333333
+#&gt; 1           1.00  0.3333333      0.3333333            0.5555556
+#&gt; 2           0.75  0.3333333      0.1111111            0.1111111
+#&gt; 3           1.00  0.3333333      0.3333333            0.3333333
 #&gt;   Balanced.Accuracy
-#&gt; 1                 1
-#&gt; 2                 1
-#&gt; 3                 1
+#&gt; 1         0.8333333
+#&gt; 2         0.6666667
+#&gt; 3         1.0000000
 </code></pre>
 
 <pre><code class="r">## Cross-validation based 
@@ -110,9 +96,9 @@ getValidation(SC, from = &quot;cv&quot;)
 </code></pre>
 
 <pre><code class="r">#&gt;   model validation  Accuracy     Kappa AccuracyLower AccuracyUpper
-#&gt; 1   pls         cv 0.8095238 0.7142857      0.580934     0.9455364
+#&gt; 1   pls         cv 0.9047619 0.8571429     0.6962256     0.9882507
 #&gt;   AccuracyNull AccuracyPValue McnemarPValue
-#&gt; 1    0.3333333   1.025615e-05           NaN
+#&gt; 1    0.3333333   8.441398e-08           NaN
 </code></pre>
 
 

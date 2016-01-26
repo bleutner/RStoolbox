@@ -1,9 +1,9 @@
-library(methods)
-library(devtools)
-library(stringr)
-library(knitr)
-library(raster)
-library(RStoolbox)
+for(x in c("methods", "devtools", "stringr", "knitr",
+        "raster", "rgdal", "randomForest", "pls","grid","gridExtra", 
+        "kernlab", "ggplot2", "RStoolbox")){
+    suppressMessages(library(x, character.only = TRUE))
+} 
+
 
 knit_rd2 <- function(pkg, path = ".", links =  tools::findHTMLlinks(pkg), frame = FALSE, cdr = FALSE, copycss=FALSE) {
     opts_chunk$set(comment="#>")
