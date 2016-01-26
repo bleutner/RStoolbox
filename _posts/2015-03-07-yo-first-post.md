@@ -2,7 +2,7 @@
 layout: post
 title: "Use the Source, Luke!"
 description: ""
-category: R 
+category:  
 tags: [RStoolbox]
 ---
 {% include JB/setup %}

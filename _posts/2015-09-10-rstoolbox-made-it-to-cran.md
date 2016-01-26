@@ -2,8 +2,8 @@
 layout: post
 title: "RStoolbox made it to CRAN"
 description: ""
-category: 
-tags: [r,RStoolbox]
+category: R
+tags: [R,RStoolbox]
 ---
 {% include JB/setup %}
 

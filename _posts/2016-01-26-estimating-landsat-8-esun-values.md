@@ -2,8 +2,8 @@
 layout: post
 title: "Landsat 8 Esun Values"
 description: ""
-category: 
-tags: [r,RStoolbox]
+category: R 
+tags: [R,RStoolbox]
 ---
 {% include JB/setup %}
 
