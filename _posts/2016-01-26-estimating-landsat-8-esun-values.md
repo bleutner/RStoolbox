@@ -7,7 +7,6 @@ tags: [r,RStoolbox]
 ---
 {% include JB/setup %}
 
-## Estimating Landsat 8 OLI Esun Values 
 
 Extraterrestrial irradiation (Esun) has been a frequently required variable in several classic remote sensing image correction approaches. 
 It is often needed to convert/normalize radiance to reflectance and also by several simple atmospheric correction approaches like dark object subtraction (DOS).
@@ -31,8 +30,9 @@ as a [reference standard](https://eocalibration.wordpress.com/2006/12/15/ceos-re
 First we get the solar reference spectrum:
 
  
- ```r
- library(xlsx)
+{% highlight r %} 
+
+library(xlsx)
  library(ggplot2)
  library(reshape2)
  
@@ -47,15 +47,17 @@ First we get the solar reference spectrum:
  ggplot(sol, aes(x = nm, y = mW.m2.nm)) + geom_line() +
     ggtitle("Thuillier (2003) Solar Irradiance Spectrum") +
     xlab("Wavelength (nm)") 
- ```
+
+{% endhighlight %}
  
  ![plot of chunk esun1]({{BASE_PATH}}/assets/knitFigs/esun1-1.png) 
 
 Next we need the relative spectral response of each Landsat 8 OLI band from NASA:
 
 
-```r
-## Download OLI band response curves
+{% highlight r %} 
+
+# Download OLI band response curves
 download.file("http://landsat.gsfc.nasa.gov/wp-content/uploads/2013/06/Ball_BA_RSR.v1.1-1.xlsx", 
   destfile = "landsat8oli.xlsx")
 
@@ -72,7 +74,7 @@ ggplot(respDf, aes( x = Wavelength, y = BA.RSR..watts., colour = L1)) +
     geom_line() + ggtitle("Landsat 8 OLI spectral response")+
     xlab("Wavelength (nm)")+
     ylab("Relative Spectral Response")
-```
+{% endhighlight %}
 
 ![plot of chunk esun2]({{BASE_PATH}}/assets/knitFigs/esun2-1.png) 
 
@@ -80,19 +82,21 @@ ggplot(respDf, aes( x = Wavelength, y = BA.RSR..watts., colour = L1)) +
 To do the Esun calculations in a precise manner we will linearly interpolate the solar irradiance spectrum to 0.01 nm increments: 
 
 
-```r
+{% highlight r %} 
+
 ## Linearly interpolate solar irradiance spectrum even finer
 sora <- range(sol[,1])
 xnew <- seq(sora[1],sora[2], 0.01)
 ynew <- resamp  <- approx(x = sol[,1], y = sol[,2], xout = xnew)[["y"]]
 sol  <- cbind(xnew,ynew)
-```
+{% endhighlight %}
 
 In the last step, we resample the spectral response curves to the resolution of the solar spectrum.
 Then, the responses are normalized so that each band integrates to one and used to calculate the weighted sum across the spectrum:  
 
 
-```r
+{% highlight r %} 
+
 Esun <- sapply(resp, function(x){
             ## Resample band response to solar spectrum
             resamp  <- approx(x = x[,1], y = x[,2], xout = sol[,1])[["y"]]
@@ -106,7 +110,7 @@ Esun <- sapply(resp, function(x){
 
 ## Let's see what we've got:
 round(Esun,2) 
-```
+{% endhighlight %}
 
 ```
 ## CoastalAerosol           Blue          Green            Red            NIR 
