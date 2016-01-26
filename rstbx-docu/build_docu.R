@@ -1,4 +1,4 @@
-for(x in c("methods", "devtools", "stringr", "knitr",
+for(x in c("methods", "devtools", "stringr", "knitr", "caret",
         "raster", "rgdal", "randomForest", "pls","grid","gridExtra", 
         "kernlab", "ggplot2", "RStoolbox")){
     suppressMessages(library(x, character.only = TRUE))
