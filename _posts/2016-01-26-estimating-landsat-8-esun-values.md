@@ -62,7 +62,7 @@ Next we need the relative spectral response of each Landsat 8 OLI band from NASA
 download.file("http://landsat.gsfc.nasa.gov/wp-content/uploads/2013/06/Ball_BA_RSR.v1.1-1.xlsx", destfile = "landsat8oli.xlsx")
 
 ## Import OLI band response
-bands <- c("CoastalAerosol", "Blue", "Green", "Red", "NIR", "Cirrus", "SWIR1", "SWIR2","Pan")
+bands <- c("CoastalAerosol","Blue","Green","Red","NIR","Cirrus","SWIR1","SWIR2","Pan")
 resp <- lapply(bands, function(x){
             data.frame(read.xlsx("landsat8oli.xlsx", sheetName = x)[,1:2])
         })
