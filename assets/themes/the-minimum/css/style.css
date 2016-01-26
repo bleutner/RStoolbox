@@ -228,8 +228,10 @@ pre {
     font-family: "Bitstream Vera Sans Mono","Courier New",Courier,monospace;
     margin-left: 0px;
     margin-right: 0px;
+    border-style:solid;
+    border-left: thick double #BADA55;
     overflow: auto;
-    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3) inset, 0px 1px 0px rgba(255, 255, 255, 0.6);
+  /*  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3) inset, 0px 1px 0px rgba(255, 255, 255, 0.6);*/
     padding-left: 10px;
     background-color: #f8f8f818621885;
 }
