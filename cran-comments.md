@@ -6,7 +6,14 @@
 * Win-builder (release, devel)
 
 ## R CMD check results
-There were no ERRORs, WARNINGs or NOTEs. 
+There were no ERRORs or WARNINGs. 
+
+There was 1 NOTE:
+Possibly mis-spelled words in DESCRIPTION:
+  indices (11:26)
+
+This is a false alarm; 'indices' is spelled correctly.  
+
 
 ## Downstream dependencies
 none
