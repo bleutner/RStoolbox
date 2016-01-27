@@ -68,7 +68,7 @@ veryHazy  \tab \eqn{\lambda^{-0.5}}
 
 For Landsat 8, no values for extra-terrestrial irradiation (esun) are provided by NASA. These are, however, neccessary for DOS-based approaches. 
 Therefore, these values were derived from a standard reference spectrum published by Thuillier et al. (2003) using the Landsat 8 OLI spectral response functions
-(for details, see \url{http://bleutner.github.io/RStoolbox/2016/01/26/estimating-landsat-8-esun-values}).  
+(for details, see \url{bleutner.github.io/RStoolbox/r/2016/01/26/estimating-landsat-8-esun-values}).  
 
 The implemented sun-earth distances neglect the earth's eccentricity. Instead we use a 100 year daily average (1979-2070).
 }
