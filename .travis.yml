@@ -25,6 +25,7 @@ before_script:
   - ./pkg-build.sh install_r_local withr_1.0.0.9000.tar.gz
   - rm withr_1.0.0.9000.tar.gz 
   - ./pkg-build.sh install_devtools 
+  - ./pkg-build.sh install_r_version pbkrtest 0.4-5  
   - ./pkg-build.sh install_r_version car 2.0-25 
   - ./pkg-build.sh install_deps
 # Run twice, just to be sure because sometimes cran mirror fails randomly 
