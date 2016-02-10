@@ -127,8 +127,25 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
         stop("img and trainData do not overlap")
     
     ## Make sure classification is run with factors
-    if(mode == "classification" && is.numeric(trainData[[responseCol]])) {
-        trainData[[responseCol]] <- as.factor(trainData[[responseCol]])       
+    if(mode == "classification") {  
+        
+        if(!is.null(valData) && (class(trainData[[responseCol]]) != class(valData[[responseCol]]))) {
+            stop("response columns in trainData and valData must be of the same type, i.e. both integer, character or factor")
+        } 
+        
+        if(!is.factor(trainData[[responseCol]])) {
+            trainData[[responseCol]] <- as.factor(trainData[[responseCol]])       
+            if(!is.null(valData)) { 
+                valData[[responseCol]] <- factor(valData[[responseCol]], levels = levels(trainData[[responseCol]]))
+            }
+        }  
+        
+        ## Unique classes
+        classes 	 <- sort(unique(trainData[[responseCol]]))
+        classMapping <- data.frame(classID = as.numeric(classes), class = as.character(classes), stringsAsFactors = FALSE)
+        classMapping <- classMapping[order(classMapping$classID),]
+        rownames(classMapping) <- NULL
+      
     } 
     
     ## Sanitize arguments (polygonBasedCV is only relevant for polygons)
@@ -212,14 +229,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
         dataSet[[foldCol]] <- NULL
     }
     
-    ## Unique classes
-    if(mode == "classification"){   
-        if(!is.factor(dataSet$response)) dataSet$response <- as.factor(dataSet$response)
-        classes 	 <- unique(dataSet$response)
-        classMapping <- data.frame(classID = as.numeric(classes), class = as.character(classes), stringsAsFactors = FALSE)
-        classMapping <- classMapping[order(classMapping$classID),]
-        rownames(classMapping) <- NULL
-    }
+
     
     ## Meaningless predictors
     uniqueVals  <- apply(dataSet, 2, function(x){length(unique(x))}) == 1
