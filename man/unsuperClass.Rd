@@ -11,7 +11,7 @@ unsuperClass(img, nSamples = 10000, nClasses = 5, nStarts = 25,
 \arguments{
 \item{img}{Raster* object.}
 
-\item{nSamples}{Integer. Number of random samples to draw to fit cluster map. Only relevant if clusterMap = FALSE.}
+\item{nSamples}{Integer. Number of random samples to draw to fit cluster map. Only relevant if clusterMap = TRUE.}
 
 \item{nClasses}{Integer. Number of classes.}
 

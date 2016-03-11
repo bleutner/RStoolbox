@@ -3,7 +3,7 @@
 #' Unsupervised clustering of Raster* data using kmeans clustering
 #' 
 #' @param img Raster* object. 
-#' @param nSamples Integer. Number of random samples to draw to fit cluster map. Only relevant if clusterMap = FALSE.
+#' @param nSamples Integer. Number of random samples to draw to fit cluster map. Only relevant if clusterMap = TRUE.
 #' @param nClasses Integer. Number of classes.
 #' @param nStarts  Integer. Number of random starts for kmeans algorithm.
 #' @param nIter Integer. Maximal number of iterations allowed.
