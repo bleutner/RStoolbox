@@ -119,6 +119,10 @@ radCor <-	function(img, metaData, method = "apref", bandSet = "full", hazeValues
     corBands 	<- sDB[!sDB$bandtype %in% c("TIR", "PAN"), "band"]
     bandSet 	<- bandSet[bandSet %in% corBands]
     
+	
+	if(length(bandSet)==1) stop("Must process at least two bands for now. Will be fixed soon, sorry.")
+	
+	
     tirBands	<- list(LANDSAT5 = "B6_dn", LANDSAT7 = c("B6_dn", "B6_VCID_1_dn", "B6_VCID_2_dn"), LANDSAT8 = c("B10_dn", "B11_dn") )[[sat]]	
     tirBands 	<- origBands[origBands %in% tirBands]  
     if(length(tirBands) == 0) tirBands <- NULL
