@@ -19,10 +19,22 @@ polyll   <- spTransform(poly, ll)
 ptsll    <- spTransform(pts, ll)  
 lsatll   <- projectRaster(lsat, crs = ll)
 valInd   <- createDataPartition(poly$class)[[1]]
+lsNA 	 <- lsat
+lsNA[1:100,] <- NA
 
 trainList <- list(projected = list(polygons = poly, points = pts, img = lsat), 
         geographical = list(polygons = polyll, points = ptsll, img = lsatll))
 
+
+
+
+## Tiny raster bug caused superClass to fail when predictions were written to .grd file 
+test_that("NA in raster remains NA",{
+			expect_is(sc <- superClass(lsNA, trainData = pts, responseCol = "class", model = "rf", filename = rasterTmpFile(), trainPartition = 0.7, predict = TRUE), "superClass")
+			## Activate once raster is fixed:
+			#expect_equal(sum(is.na(sc$map[1:100,])), 100*ncol(lsNA)) 
+			expect_false(anyNA(sc$map[101:nrow(lsNA),]))			
+		}) 
 
 
 
@@ -95,8 +107,8 @@ for(proj in c("projected", "geographical")){
                     expect_is(sc2 <- superClass(img, trainData = train, trainPartition=.7, nSamples = 50, responseCol = "res", model = "pls", 
                                     mode = "regression", predict = FALSE), "superClass", info = info)
                 })
-        
-        
+		
+		
         
     }
     
