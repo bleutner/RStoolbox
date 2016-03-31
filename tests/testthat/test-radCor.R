@@ -22,7 +22,16 @@ test_that("reflectance conversion", {
             expect_equivalent(colSums(is.na(rcm)) < ncell(rc), rep(TRUE, nlayers(rc)), info = "one or more layers are filled with NA")
             expect_false(any(rra < 0))
             expect_false(any(rra[,c(1:5,7)] > 1))
-            expect_false(any(rra[,6] > 300))           
+            expect_false(any(rra[,6] > 300))  
+			
+			## Process only subsets of layers
+			expect_is(rc <- radCor(lsat, metaData = mtlFile, bandSet = c("B1_dn"), method = "apref"), "RasterLayer")
+			expect_equal(nlayers(rc), 1L)
+			expect_is(rc <- radCor(lsat, metaData = mtlFile, bandSet = c("B1_dn","B2_dn"), method = "apref"), "RasterStack")
+			expect_equal(nlayers(rc), 2L)		
+			expect_is(rc <- radCor(lsat, metaData = mtlFile, bandSet = c("B1_dn","B2_dn","B6_dn"), method = "apref"), "RasterStack")
+			expect_equal(nlayers(rc), 3L)
+			
         })
 
 
