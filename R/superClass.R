@@ -251,8 +251,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 	
 	dataType <- NULL  
 	if(mode == "classification") {
-		## Don't know whether we need this, who would be crazy enough to do more than 255 classes...
-		dataType <- if(length(classes) < 255) "INT1U" else "INT2U"
+		dataType <- "INT2S"
 		modelFit <- list(modelFit, confusionMatrix(caretModel, norm = "average"))     
 	} 
 	
@@ -265,7 +264,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 		wrArgs          <- list(filename = filename, progress = progress, datatype = dataType, overwrite = overwrite)
 		wrArgs$filename <- filename ## remove filename from args if is.null(filename) --> standard writeRaster handling applies
 		if(predType == "prob") {
-			ddd     <- predict(caretModel, dataSet[1:2,-1,drop=FALSE], type="prob")
+			ddd     <- predict(caretModel, dataSet[1:2,-1, drop = FALSE], type="prob")
 			probInd <- 1:ncol(ddd)
 		} else {
 			probInd <- 1
@@ -280,15 +279,15 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 	## VALIDATION ########################
 	if(!is.null(valData)){
 		nSamplesV <- unlist(Map("max", nSamples, 500))
-		
+		.vMessage("Begin validation")
 		if(predict & (predType == "raw")){
 			set.seed(seeds[[kfold+2]])
 			valiSet  <- .samplePixels(valData, spatPred, responseCol = responseCol, nSamples = nSamplesV,  trainCells = dataList[[2]])[[1]]
 			colnames(valiSet) <- c("reference", "prediction")
 		} else {
 			set.seed(seeds[[kfold+2]])
-			val <- .samplePixels(valData, img, responseCol = responseCol, nSamples = nSamplesV, trainCells = dataList[[2]])[[1]]
-			pred <- predict(caretModel, val[,-1])
+			val     <- .samplePixels(valData, img, responseCol = responseCol, nSamples = nSamplesV, trainCells = dataList[[2]])[[1]]
+			pred    <- predict(caretModel, val[,-1,drop=FALSE])
 			valiSet <- data.frame(reference = val[,1], prediction = pred)
 		}
 		
@@ -304,7 +303,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 			validation <- confusionMatrix(data = valiSet$prediction, reference = valiSet$reference)              
 		} else {
 			valiSet$residuals <- valiSet$reference - valiSet$prediction
-			validation <-  data.frame(RMSE = RMSE(valiSet$prediction, valiSet$reference), Rsquared = R2(valiSet$prediction, valiSet$reference))   
+			validation <-  data.frame(RMSE = RMSE(valiSet$prediction, valiSet$reference), Rsquared = cor(valiSet$prediction, valiSet$reference, use = "complete.obs")^2)   
 		}
 		validation <- list(performance = validation, validationSet = valiSet)
 	} else {
@@ -359,6 +358,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 	## Discard duplicate cells
 	dubs 	<- !duplicated(dataSet[,"cells"]) & complete.cases(dataSet) & !dataSet[,"cells"] %in% trainCells
 	dataSet <- dataSet[dubs,]
+	colnames(dataSet)[-c(1:2)] <- names(RASTER)
 	list(dataSet[,setdiff(colnames(dataSet), "cells")], cells = dataSet$cells)
 }
 

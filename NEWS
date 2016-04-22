@@ -2,10 +2,11 @@ RStoolbox 0.1.5
 =====================================
 Changes:
 * If the bandSet argument in `radCor()` is used to process only a subset of bands it will no longer return unprocessed bands along with processed bands. Instead only processed bands are returned.
+* By default `superClass()` will now use dataType = 'INT2S' for classification maps to avoid issues with raster NA handling in INT1U
 
 Fixes:
 * radCor caused R to crash if bandSet was a single band 
-
+* fix single RasterLayer capability for superClass
 
 RStoolbox 0.1.4
 =====================================

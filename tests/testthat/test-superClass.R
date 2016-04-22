@@ -108,6 +108,16 @@ for(proj in c("projected", "geographical")){
                                     mode = "regression", predict = FALSE), "superClass", info = info)
                 })
 		
+		test_that("superClass works with a single RasterLayer", {
+					expect_is(sc2 <- superClass(img[[1]], trainData = train, trainPartition=.7, nSamples = 50, tuneLength = 1, responseCol = "res", model = "rf", 
+									mode = "classification", predict = FALSE), "superClass", info = info)
+					expect_is(sc2 <- superClass(img[[1]], trainData = train, trainPartition=.7, nSamples = 50, tuneLength = 1, responseCol = "res", model = "rf", 
+									mode = "classification", predict = TRUE), "superClass", info = info)
+					expect_is(sc2 <- superClass(img[[1]], trainData = train, trainPartition=.7, nSamples = 50, tuneGrid = data.frame(ncomp = 1), responseCol = "res", model = "pls", 
+									mode = "regression", predict = TRUE), "superClass", info = info)
+					expect_is(sc2 <- superClass(img[[1]], trainData = train, trainPartition=.7, nSamples = 50, tuneGrid = data.frame(ncomp = 1), responseCol = "res", model = "pls", 
+									mode = "regression", predict = FALSE), "superClass", info = info)
+				})
 		
         
     }
