@@ -56,10 +56,10 @@
 #' @importFrom geosphere areaPolygon
 #' @importFrom parallel parLapply parSapply parApply clusterExport
 #' @importFrom XML xmlParse xmlToList
-#' @importFrom stats coefficients lm ecdf median approxfun knots kmeans na.omit complete.cases loadings princomp cov filter
+#' @importFrom stats coefficients lm ecdf median approxfun knots kmeans na.omit complete.cases loadings princomp cov filter cor
 #' @importFrom graphics par abline
 #' @importFrom methods as
-#' @importFrom utils read.csv read.delim str write.table data
+#' @importFrom utils read.csv read.delim str write.table data capture.output
 #' @importFrom grDevices hsv
 #' @useDynLib RStoolbox
 #' @importFrom Rcpp sourceCpp
