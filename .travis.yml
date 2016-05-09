@@ -23,7 +23,7 @@ before_script:
 #  - wget https://github.com/bleutner/withr/blob/master/withr_1.0.0.9000.tar.gz?raw=true
 #  - mv withr_1.0.0.9000.tar.gz\?raw\=true withr_1.0.0.9000.tar.gz
 #  - ./pkg-build.sh install_r_local withr_1.0.0.9000.tar.gz
-  - rm withr_1.0.0.9000.tar.gz 
+# - rm withr_1.0.0.9000.tar.gz 
   - ./pkg-build.sh install_devtools   
   - ./pkg-build.sh install_r lme4
   - wget http://stat.ethz.ch/CRAN/src/contrib/Archive/pbkrtest/pbkrtest_0.4-5.tar.gz
