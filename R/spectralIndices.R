@@ -89,7 +89,9 @@ spectralIndices <- function(img,
     
     canCalc  <- names(requested)[!vapply(requested, function(x) any(!x %in% bands), logical(1))]
     if(any(c("EVI","EVI2") %in% canCalc)){
-        if((maxValue(img[[red]])/scaleFactor > 1.5 | minValue(img[[red]])/scaleFactor < -.5)){
+        ## TODO: clarify setMinMax reqiurements throughout RStoolbox
+		if(!.hasMinMax(img[[red]])) img[[red]] <- setMinMax(img[[red]])
+		if((maxValue(img[[red]])/scaleFactor > 1.5 | minValue(img[[red]])/scaleFactor < -.5)){
             ## checking for range [0,1] +/- .5 to allow for artifacts in reflectance.
             warning("EVI/EVI2 parameters L_evi, G, C1 and C2 are defined for reflectance [0,1] but img values are outside of this range.\n",
                     "  If you are using scaled reflectance values please provide the scaleFactor argument.\n", 
@@ -146,34 +148,15 @@ spectralIndices <- function(img,
 }
 
 
-BANDSdb <-  list(               
-        DVI  	=  c("red", "nir"),
-        EVI		=  c("red", "nir", "blue"),
-        EVI2    =  c("red", "nir"),
-        GEMI	=  c("red", "nir"),
-        LSWI	=  c("red", "swir1"),
-        MSAVI	=  c("red", "nir"),
-        MSAVI2	=  c("red", "nir"),
-        NDVI	=  c("red", "nir"),
-        NDVIC   =  c("red", "nir", "swir2"),
-        NDWI 	=  c("green", "nir"),
-        SAVI    =  c("red", "nir"), 
-        SATVI   =  c("red", "swir1", "swir2"),
-        SLAVI	=  c("red", "nir", "swir2"),
-        SR 		=  c("red", "nir"),     
-        TVI 	=  c("red", "nir"),
-        WDVI    =  c("red", "nir")
-)
-
 
 ## NOT USED FOR CALCULATIONS ONLY FOR DOCUMENTATION
-## SEE /src/spectraIndices.cpp for calculationss
+## SEE /src/spectraIndices.cpp for calculations
 #' Database of spectral indices
 #' @keywords internal
 #' @noRd 
-.IDXdb <-  list(    
+.IDXdb <-  list(     
+		CTVI    = function(red, nir) {(NDVI+.5)/sqrt(abs(NDVI+.5))},
         DVI 	= function(red, nir) {s*nir-red},
-        CTVI    = function(red, nir) {(nir-red)/(nir+red) + 0.5},
         EVI  	= function(red, nir, blue) {G * ((nir - red) / (nir + C1 * red - C2 * blue + L_evi))},
         EVI2    = function(red, nir) {G * (nir-red)/(nir + 2.4*red +1)},
         GEMI	= function(red, nir) {(((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5) ) / (nir + red + 0.5)) * (1 - ((((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5) ) / (nir + red + 0.5)) * 0.25)) - ((red - 0.125) / (1 - red))},
@@ -196,6 +179,9 @@ BANDSdb <-  list(
         TTVI    = function(red, nir) {sqrt(abs((nir-red)/(nir+red) + 0.5))},
         WDVI    = function(red, nir) {nir - s * red}
 )
+
+
+BANDSdb <- lapply(.IDXdb, function(x) names(formals(x))) 
 
 #' References and names to .IDXdb
 #' @keywords internal

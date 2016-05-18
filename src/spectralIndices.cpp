@@ -5,7 +5,8 @@ using namespace Rcpp;
 NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 		 const int redBand,  const int blueBand, const int greenBand, const int nirBand,
 		 const int swir2Band, const int swir1Band,
-		 const double L,  const double s, const double G, const double C1, const double C2, double Levi, const double swir2ccc, const double swir2cdiff, const double sf) {
+		 const double L,  const double s, const double G, const double C1,
+		 const double C2, double Levi, const double swir2ccc, const double swir2cdiff, const double sf) {
 
 	int nind = indices.size();
 	int nsamp = x.nrow();
