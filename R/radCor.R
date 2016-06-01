@@ -253,7 +253,7 @@ radCor <-	function(img, metaData, method = "apref", bandSet = "full", hazeValues
 		layernames <- gsub("_dn", "_tra", bandSet)
 	} else {
 		## Reflectance
-		if(sat == "LANDSAT8" & method == "apref"){
+		if(inherits(metaData$CALREF, "data.frame") & method == "apref"){
 			GAIN 	<- metaData$CALREF[bandSet,"gain"] / suntheta
 			OFFSET 	<- metaData$CALREF[bandSet,"offset"] / suntheta          
 		} else  {            
