@@ -175,7 +175,8 @@ radCor <-	function(img, metaData, method = "apref", bandSet = "full", hazeValues
 				hazeBands <- names(img)[hazeBands] 
 			}
 			.vMessage("hazeValues was not provided -> Estimating hazeValues automatically")
-			hazeValues <- estimateHaze(img, hazeBands = hazeBands, darkProp = darkProp , plot = FALSE, returnTables = FALSE)            
+			shvBands <- if(method != "costz") hazeBands else 1
+			hazeValues <- estimateHaze(img, hazeBands = shvBands, darkProp = darkProp , plot = FALSE, returnTables = FALSE)            
 			.vMessage(paste0("hazeValues estimated as: ", hazeValues))
 		} else {
 			if(missing(hazeBands)){
