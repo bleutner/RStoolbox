@@ -24,7 +24,7 @@
 ## spatRes resampling: http://landsat.usgs.gov/band_designations_landsat_satellites.php
 .LANDSATdb <- list(
 		LANDSAT1 = list (
-				MSS =  data.frame(band = paste0("B", 1:4, "_dn"),
+				MSS =  data.frame(band = paste0("B", 4:7, "_dn"),
 						bandtype   = rep("REF", 4),
 						centerWavl = c(0.548, 0.652, 0.747, 0.900),
 						spatRes1   = rep(60, 4), ## resampled
@@ -37,7 +37,7 @@
 		),
 		
 		LANDSAT2 = list (
-				MSS =  data.frame(band = paste0("B", 1:4, "_dn"),
+				MSS =  data.frame(band = paste0("B", 4:7, "_dn"),
 						bandtype = rep("REF", 4),
 						centerWavl = c(0.548, 0.659, 0.750, 0.899),
 						spatRes1 = rep(60, 4), ##resampled
@@ -50,7 +50,7 @@
 		),
 		
 		LANDSAT3 = list (
-				MSS =  data.frame(band = paste0("B", 1:4, "_dn"),
+				MSS =  data.frame(band = paste0("B", 4:7, "_dn"),
 						bandtype = rep("REF", 4),
 						centerWavl = c(0.545, 0.656, 0.743,	0.896),
 						spatRes1 = rep(60, 4), ##resampled
@@ -133,7 +133,8 @@ for(s in names(.LANDSATdb)){
 		colnames(TAB1)	<- c("veryClear", "clear", "moderate", "hazy", "veryHazy")
 		
 		## Calc Chavez Tab 2, but only until SHVB = B4, larger wavelengths don't make sense to estimate haze
-		TAB2 <- lapply(paste0("B", 1:4, "_dn"), function(SHVB){ sweep(TAB1, 2, TAB1[SHVB,], "/")})
+		hazeBands <- if(s %in% paste0("LANDSAT",1:3)) paste0("B", 4:7, "_dn") else  paste0("B", 1:4, "_dn")
+		TAB2 <- lapply(hazeBands, function(SHVB){ sweep(TAB1, 2, TAB1[SHVB,], "/")})
 		TAB2 <- do.call("cbind", TAB2)
 		colnames(TAB2) <- paste0(rep(paste0("B", 1:4, "_dn"), each = 5),"_", colnames(TAB2))
 		
