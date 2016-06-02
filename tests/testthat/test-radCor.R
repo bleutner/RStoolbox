@@ -56,7 +56,7 @@ test_that("DOS approaches", {
             
             hb <- list(1, 2)
             for (method in c("dos", "costz")){
-                expect_warning(rc <- radCor(lsat, metaData = mtlFile,  method = method,  hazeBands = c(1,2)), "Truncating hazeValues")
+                if(method=="dos") expect_warning(rc <- radCor(lsat, metaData = mtlFile,  method = method,  hazeBands = c(1,2)), "Truncating hazeValues")
                 for(i in seq_along(hb)){
                     expect_is(rc <- radCor(lsat, metaData = mtlFile,  method = method,  hazeBands = hb[[i]]), "RasterStack", info = paste0("hazeBands=", hb[[i]], collapse = ","))
                     expect_equal(names(rc), paste0(gsub("dn", "", names(lsat)), c(rep("sre",5),"bt","sre")))
