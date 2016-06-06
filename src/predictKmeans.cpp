@@ -26,4 +26,3 @@ IntegerVector predKmeansCpp(NumericMatrix x, NumericMatrix centers){
 	return out;
 }
 
-

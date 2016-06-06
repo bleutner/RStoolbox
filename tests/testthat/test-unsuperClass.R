@@ -30,3 +30,7 @@ test_that("kmeans predictions",{
 			expect_equal(predKmeansCpp(mat, cents), c(NA,1,2,2,2))
 		})
 
+
+
+
+
