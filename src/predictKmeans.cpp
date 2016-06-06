@@ -8,11 +8,13 @@ using namespace Rcpp;
 IntegerVector predKmeansCpp(NumericMatrix x, NumericMatrix centers){
 	int ncent = centers.nrow();
 	int nr = x.nrow();
-	IntegerVector out(nr, IntegerVector::get_na());
+	IntegerVector out(nr);
 	NumericVector dist(ncent);
 
 	for(int i = 0; i < nr; i++) {
-		if(any(!is_na(x(i,_)))){
+		if(any(Rcpp::is_na(x(i,_)))){
+			out[i] = NA_INTEGER;
+		} else {
 			for(int c = 0; c < ncent; c++){
 				NumericVector d = centers(c,_) - x(i,_);
 				dist[c] = sqrt(sum(d * d));

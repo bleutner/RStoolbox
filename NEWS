@@ -9,6 +9,7 @@ Fixes:
 * radCor caused R to crash if bandSet was a single band 
 * fix single RasterLayer capability for superClass
 * spectralIndices now calculates *all* documented indices if specified to do so (@mej1d1, #6)
+* unsuperClass predicted map now handles NAs properly
 
 RStoolbox 0.1.4
 =====================================
