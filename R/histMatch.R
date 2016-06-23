@@ -71,13 +71,14 @@ histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e5, inte
      }
     if(!is.null(refmask)){
      .vMessage("Apply refmask")
-        ref <- mask(ref, refmask)
+        ref <- stack(ref, refmask)
     }
     ## Sample histogram data  
     .vMessage("Extract samples")
 
     ref.sample  <- as.matrix(sampleRandom(ref, size = nSamples, na.rm = TRUE, ext = ext, xy = paired))
- 
+    if(!is.null(refmask)) ref.sample <- ref.sample[,-ncol(ref.sample), drop = FALSE]
+	
     if(paired) {
         x.sample   <- extract(x, ref.sample[,c("x","y")])
         if(is.vector(x.sample)) x.sample <- as.matrix(x.sample)
