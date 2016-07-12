@@ -15,7 +15,7 @@
 #' Only currently populated bits are available as arguments, i.e. vegetation confidence, cloud shadow and bit nr. 3. are currently useless and hence not available.
 #' 
 #' @references 
-#' \url{http://landsat.usgs.gov/L8QualityAssessmentBand.php} 
+#' \url{http://landsat.usgs.gov/qualityband.php} 
 #' @export 
 #' @return
 #' Returns the Integer value for the QA values

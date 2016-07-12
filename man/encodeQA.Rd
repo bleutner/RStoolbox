@@ -36,6 +36,6 @@ Only currently populated bits are available as arguments, i.e. vegetation confid
 encodeQA(snow = "low", cirrus = c("med", "high"), cloud = "high")
 }
 \references{
-\url{http://landsat.usgs.gov/L8QualityAssessmentBand.php}
+\url{http://landsat.usgs.gov/qualityband.php}
 }
 
