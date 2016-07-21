@@ -12,7 +12,9 @@
 #' @param model Character. Which model to use. See \link[caret]{train} for options. Defaults to randomForest ('rf'). In addition to the standard caret models, a maximum likelihood classification is available via \code{model = 'mlc'}. 
 #' @param tuneLength Integer. Number of levels for each tuning parameter (see \link[caret]{train} for details).
 #' @param kfold Integer. Number of cross-validation resamples during model tuning.
-#' @param minDist Numeric. Minumum distance factor between training and validation data, e.g. minDist=1 will clip validation polygons to ensure a minimal distance of one pixel to the next training polygon. Applies onl if trainData and valData overlap.
+#' @param minDist Numeric. Minumum distance between training and validation data,
+#'  e.g. \code{minDist=1} clips validation polygons to ensure a minimal distance of one pixel (pixel size according to \code{img}) to the next training polygon. 
+#' Requires all data to carry valid projection information.
 #' @param mode Character. Model type: 'regression' or 'classification'. 
 #' @param predict Logical. Produce a map (TRUE, default) or only fit and validate the model (FALSE).
 #' @param predType Character. Type of the final output raster. Either "raw" for class predictions or "prob" for class probabilities. Class probabilities are not available for all classification models (\link[caret]{predict.train}). 
@@ -119,8 +121,8 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 		stop("unknown mode. must be 'regression' or 'classification'")
 	
 	## Check projections
-	if(!compareCRS(img, trainData)) 
-		stop("Projection of trainData does not match img")
+	if(!compareCRS(img, trainData) | (!is.null(valData) && !compareCRS(trainData, valData)) ) 
+		stop("img, trainData and valData (if provided) must have the same projection")
 	
 	## Check overlap of vector and raster data	
 	if(!gIntersects(as(extent(img),"SpatialPolygons"), as(extent(trainData),"SpatialPolygons"))) 
@@ -183,9 +185,14 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 	}
 	
 	
-	if(identical(trainData, valData)) stop("trainData is the same as valData")
+	if(identical(trainData, valData)) stop("trainData is the same as valData")	
+	
+	
 	if(!is.null(valData)){
-		
+		if(is.na(projection(trainData)) & minDist > 0) {
+			warning("trainData is missing projection information and thus cannot be buffered. minDist will be set to zero.", call. = FALSE) 
+			minDist <- 0	
+		}
 		if(trainDataType == "polygons" ){
 			## Clip validation data to training data + 2 pixel buffer 
 			trainBuff <- if(minDist > 0) .omniBuffer(trainData, minDist = minDist, img = img) else gUnionCascaded(trainData)
@@ -378,7 +385,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 		crx  <- projection(x)
 		## Project to azimuthal equidistant centered on training data center
 		exc  <- .extentCenter(extent(x))
-		aeqd <- paste0("+proj=aeqd +lat_0=", exc[2]," +lon_0=",exc[1], " +x_0=0 +y_0=0 +ellps=WGS84")
+		aeqd <- paste0("+proj=aeqd +lat_0=", exc[2], " +lon_0=", exc[1], " +x_0=0 +y_0=0 +ellps=WGS84")
 		x    <- spTransform(x, CRS(aeqd))
 		
 		## Get raster resolution in projected coordinates

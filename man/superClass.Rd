@@ -31,7 +31,9 @@ superClass(img, trainData, valData = NULL, responseCol = NULL,
 
 \item{kfold}{Integer. Number of cross-validation resamples during model tuning.}
 
-\item{minDist}{Numeric. Minumum distance factor between training and validation data, e.g. minDist=1 will clip validation polygons to ensure a minimal distance of one pixel to the next training polygon. Applies onl if trainData and valData overlap.}
+\item{minDist}{Numeric. Minumum distance between training and validation data,
+ e.g. \code{minDist=1} clips validation polygons to ensure a minimal distance of one pixel (pixel size according to \code{img}) to the next training polygon. 
+Requires all data to carry valid projection information.}
 
 \item{mode}{Character. Model type: 'regression' or 'classification'.}
 

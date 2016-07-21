@@ -23,7 +23,7 @@ lsNA 	 <- lsat
 lsNA[1:100,] <- NA
 
 trainList <- list(projected = list(polygons = poly, points = pts, img = lsat), 
-        geographical = list(polygons = polyll, points = ptsll, img = lsatll))
+		geographical = list(polygons = polyll, points = ptsll, img = lsatll))
 
 
 
@@ -40,73 +40,73 @@ test_that("NA in raster remains NA",{
 
 ## Maximum likelihood custom model
 test_that("maximum likelihood model",
-        expect_is(superClass(lsat, trainData = poly, responseCol = "class", model = "mlc", trainPartition = 0.7, predict = FALSE), "superClass")
+		expect_is(superClass(lsat, trainData = poly, responseCol = "class", model = "mlc", trainPartition = 0.7, predict = FALSE), "superClass")
 ) 
 
 
 ## Projection checks
 test_that("projection mismatch errors", 
-        expect_error(superClass(trainList[[1]]$img, trainData = trainList[[2]]$polygons, responseCol = "class"), "Projection of trainData does not match img")
+		expect_error(superClass(trainList[[1]]$img, trainData = trainList[[2]]$polygons, responseCol = "class"), "must have the same projection")
 )
 
 
 for(proj in c("projected", "geographical")){
-    for(type in c("polygons", "points")){
-        
-        info <- paste(c("train type = ", type, " | coordinates = ", proj), collapse = "")       
-        train <- trainList[[proj]][[type]]
-        img   <- trainList[[proj]][["img"]]
-        
-        ## No prediction	
-        set.seed(1)
-        sc <- superClass(img, trainData = train, nSamples = 50, responseCol = "class", model = "pls", 
-                tuneGrid = data.frame(ncomp = 3), tuneLength = 1, trainPartition = 0.7, predict = FALSE)
-        
-        ## with prediction
-        set.seed(1)	
-        sc2 <- superClass(img, trainData = train, nSamples = 50, responseCol = "class", model = "pls", 
-                tuneGrid = data.frame(ncomp = 3), tuneLength = 1, trainPartition = 0.7, predict = TRUE)	
-        
-        ## Based on numeric classes
-        set.seed(1)
-        sc3 <- superClass(img, trainData = train,  nSamples = 50,responseCol = "res", model = "pls", 
-                tuneGrid = data.frame(ncomp = 3), tuneLength = 1, trainPartition = 0.7, predict = TRUE)
-        
-        test_that("validation raster vs pixel based, numeric vs. factor predictors",{
-                    expect_is(sc$map, "character", info = info)
-                    expect_equal(sc$validation, sc2$validation, info = info)								
-                }) 
-        
-        test_that("numeric vs. factor predictors", {						
-                    expect_equal(cellStats(sc2$map - sc3$map, sum), 0, info = info)
-                })
-        
-        
-        test_that("predict.superClass map is identical to superClass$map",{
-                    expect_true(compareRaster(sc2$map, predict(sc2, img), values = TRUE), info = info)                      
-                })
-        
-        test_that("prediction of probability layers", {   
-                    expect_is(sc4  <- superClass(img, trainData = train, nSamples = 50, ntree = 200, responseCol = "class", model = "rf",
-                                    predType = "prob", tuneLength = 1, predict = T),  "superClass", info = info)
-                    expect_is(scp <- predict(sc4, img, predType = "prob"), "RasterBrick")
-                    expect_identical(nlayers(sc4$map), 4L, info=info)
-                    expect_true(compareRaster(sc4$map, scp, values = T), info = info) 
-                    expect_equal(unique(round(sum(sc4$map))) , 1, info = info)			
-                })
-        
-        test_that("external valData instead of trainPartition",{
-                    expect_is(sc <- superClass(img, trainData = train[valInd,], valData = train[-valInd,], nSamples = 50, responseCol = "class", model = "pls", 
-                                    mode = "classification", predict = FALSE), "superClass", info = info)	
-                    expect_is(sc$validation$performance, "confusionMatrix")
-                    
-                }) 
-        
-        
-        test_that("regression mode works", {
-                    expect_is(sc2 <- superClass(img, trainData = train, trainPartition=.7, nSamples = 50, responseCol = "res", model = "pls", 
-                                    mode = "regression", predict = FALSE), "superClass", info = info)
-                })
+	for(type in c("polygons", "points")){
+		
+		info <- paste(c("train type = ", type, " | coordinates = ", proj), collapse = "")       
+		train <- trainList[[proj]][[type]]
+		img   <- trainList[[proj]][["img"]]
+		
+		## No prediction	
+		set.seed(1)
+		sc <- superClass(img, trainData = train, nSamples = 50, responseCol = "class", model = "pls", 
+				tuneGrid = data.frame(ncomp = 3), tuneLength = 1, trainPartition = 0.7, predict = FALSE)
+		
+		## with prediction
+		set.seed(1)	
+		sc2 <- superClass(img, trainData = train, nSamples = 50, responseCol = "class", model = "pls", 
+				tuneGrid = data.frame(ncomp = 3), tuneLength = 1, trainPartition = 0.7, predict = TRUE)	
+		
+		## Based on numeric classes
+		set.seed(1)
+		sc3 <- superClass(img, trainData = train,  nSamples = 50,responseCol = "res", model = "pls", 
+				tuneGrid = data.frame(ncomp = 3), tuneLength = 1, trainPartition = 0.7, predict = TRUE)
+		
+		test_that("validation raster vs pixel based, numeric vs. factor predictors",{
+					expect_is(sc$map, "character", info = info)
+					expect_equal(sc$validation, sc2$validation, info = info)								
+				}) 
+		
+		test_that("numeric vs. factor predictors", {						
+					expect_equal(cellStats(sc2$map - sc3$map, sum), 0, info = info)
+				})
+		
+		
+		test_that("predict.superClass map is identical to superClass$map",{
+					expect_true(compareRaster(sc2$map, predict(sc2, img), values = TRUE), info = info)                      
+				})
+		
+		test_that("prediction of probability layers", {   
+					expect_is(sc4  <- superClass(img, trainData = train, nSamples = 50, ntree = 200, responseCol = "class", model = "rf",
+									predType = "prob", tuneLength = 1, predict = T),  "superClass", info = info)
+					expect_is(scp <- predict(sc4, img, predType = "prob"), "RasterBrick")
+					expect_identical(nlayers(sc4$map), 4L, info=info)
+					expect_true(compareRaster(sc4$map, scp, values = T), info = info) 
+					expect_equal(unique(round(sum(sc4$map))) , 1, info = info)			
+				})
+		
+		test_that("external valData instead of trainPartition",{
+					expect_is(sc <- superClass(img, trainData = train[valInd,], valData = train[-valInd,], nSamples = 50, responseCol = "class", model = "pls", 
+									mode = "classification", predict = FALSE), "superClass", info = info)	
+					expect_is(sc$validation$performance, "confusionMatrix")
+					
+				}) 
+		
+		
+		test_that("regression mode works", {
+					expect_is(sc2 <- superClass(img, trainData = train, trainPartition=.7, nSamples = 50, responseCol = "res", model = "pls", 
+									mode = "regression", predict = FALSE), "superClass", info = info)
+				})
 		
 		test_that("superClass works with a single RasterLayer", {
 					expect_is(sc2 <- superClass(img[[1]], trainData = train, trainPartition=.7, nSamples = 50, tuneLength = 1, responseCol = "res", model = "rf", 
@@ -118,10 +118,18 @@ for(proj in c("projected", "geographical")){
 					expect_is(sc2 <- superClass(img[[1]], trainData = train, trainPartition=.7, nSamples = 50, tuneGrid = data.frame(ncomp = 1), responseCol = "res", model = "pls", 
 									mode = "regression", predict = FALSE), "superClass", info = info)
 				})
-		
-        
-    }
-    
+		if(proj == "projected"){
+			projection(img)   <- NA
+			projection(train) <- NA
+			test_that("missing projection info", {
+						expect_warning(superClass(img, trainData = train, minDist = 1, nSamples = 50, responseCol = "class", model = "pls", 
+										tuneGrid = data.frame(ncomp = 3), tuneLength = 1, trainPartition = 0.7, predict = FALSE), "missing projection")
+					})
+		}
+	}
+	
 }
+
+
 
 
