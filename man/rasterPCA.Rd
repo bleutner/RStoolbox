@@ -39,9 +39,6 @@ by setting maskCheck=FALSE which speeds up the computation.
 
 Standardised PCA (SPCA) can be usefull if imagery or bands of different dynamic ranges are combined. SPC uses the correlation matrix instead of the covariance matrix, which
 has the same effect as using normalised bands of unit variance.
-
-
-The norm argument should in most cases be set to TRUE  (unless your input img is already normalized). It subtracts the mean and divides by the standard deviation.
 }
 \examples{
 library(ggplot2)

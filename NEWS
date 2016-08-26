@@ -6,6 +6,7 @@ Changes:
 * Allow reading and importing from Landsat MSS MTL files with `readMeta()` and `stackMeta()` (@aszeitz, #7)
 
 Fixes:
+* fix readMeta time-stamp conversion now correctly set to GMT time (@mraraju, #12)
 * radCor caused R to crash if bandSet was a single band 
 * fix single RasterLayer capability for superClass
 * spectralIndices now calculates *all* documented indices if specified to do so (@mej1d1, #6)

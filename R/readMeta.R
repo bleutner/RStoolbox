@@ -58,13 +58,15 @@ readMeta <- function(file, raw = FALSE){
 		sat		<- paste0("LANDSAT", .getNumeric(meta$PRODUCT_METADATA["SPACECRAFT_ID",]))
 		sen		<- meta$PRODUCT_METADATA["SENSOR_ID",]				
 		scene	<- meta$METADATA_FILE_INFO["LANDSAT_SCENE_ID",]  ## could assemble name for legacy files: http://landsat.usgs.gov/naming_conventions_scene_identifiers.php
-		date	<- as.POSIXct(if(!legacy) meta$PRODUCT_METADATA["DATE_ACQUIRED",] else meta$PRODUCT_METADATA["ACQUISITION_DATE",])
-		date    <- strptime(paste0(date, meta$PRODUCT_METADATA["SCENE_CENTER_TIME",]), "%Y-%m-%d %H:%M:%S")
-		pdate	<- as.POSIXct(if(!legacy) meta$METADATA_FILE_INFO["FILE_DATE",] else meta$METADATA_FILE_INFO["PRODUCT_CREATION_TIME",])
+		
+		date	<- as.POSIXct(if(!legacy) meta$PRODUCT_METADATA["DATE_ACQUIRED",] else meta$PRODUCT_METADATA["ACQUISITION_DATE",], tz="GMT")
+		date    <- strptime(paste0(date, meta$PRODUCT_METADATA["SCENE_CENTER_TIME",]), "%Y-%m-%d %H:%M:%S", tz = "GMT")
+	
+		pdate	<- as.POSIXct(if(!legacy) meta$METADATA_FILE_INFO["FILE_DATE",] else meta$METADATA_FILE_INFO["PRODUCT_CREATION_TIME",], tz="GMT")
 		path	<- as.numeric(meta$PRODUCT_METADATA["WRS_PATH",])
 		row		<- if(!legacy) as.numeric(meta$PRODUCT_METADATA["WRS_ROW",]) else as.numeric(meta$PRODUCT_METADATA["STARTING_ROW",])
 		
-		pars <- meta$PROJECTION_PARAMETERS[c("MAP_PROJECTION","UTM_ZONE","DATUM"),]
+		pars 	<- meta$PROJECTION_PARAMETERS[c("MAP_PROJECTION","UTM_ZONE","DATUM"),]
 		pars[1] <- tolower(pars[1])
 		proj 	<- CRS(paste0(c("+proj=", "+zone=", "+units=m +datum="), pars, collapse=" "))
 		files	<- row.names(meta[["PRODUCT_METADATA"]])[grep("^.*BAND", row.names(meta$PRODUCT_METADATA))]
@@ -160,8 +162,8 @@ readMeta <- function(file, raw = FALSE){
 		sat		<- paste0("LANDSAT", .getNumeric(meta$global_metadata$satellite))
 		sen 	<- meta$global_metadata$instrument
 		scene 	<- gsub("_MTL.txt", "", meta$global_metadata$lpgs_metadata_file)  ## could assemble name for legacy files: http://landsat.usgs.gov/naming_conventions_scene_identifiers.php
-		date	<- as.POSIXct(paste(meta$global_metadata$acquisition_date,meta$global_metadata$scene_center_time), "%Y%m%d %H:%M:%S" )
-		pdate	<- as.POSIXct(meta$bands[[1]]$production_date)
+		date	<- strptime(paste(meta$global_metadata$acquisition_date,meta$global_metadata$scene_center_time), format = "%Y-%m-%d %H:%M:%OS", tz = "GMT")
+		pdate	<- as.POSIXct(meta$bands[[1]]$production_date, tz = "GMT")
 		path	<- as.numeric(meta$global_metadata$wrs["path"])
 		row		<- as.numeric(meta$global_metadata$wrs["row"])
 		az		<- as.numeric(meta$global_metadata$solar_angles["azimuth"])
