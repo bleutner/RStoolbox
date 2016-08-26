@@ -11,6 +11,9 @@ Fixes:
 * spectralIndices now calculates *all* documented indices if specified to do so (@mej1d1, #6)
 * unsuperClass predicted map now handles NAs properly
 
+Deprecated:
+* argument `norm` was dropped from rasterPCA, because it was effectively a duplicate of the standardized pca (spca) argument in the same function.
+
 RStoolbox 0.1.4
 =====================================
 New:

@@ -7,7 +7,7 @@
 #' first and will then be used to calculate princomp and predict the full raster. The latter is more precise, since it considers all pixels,
 #' however, it may be slower than calculating the PCA only on a subset of pixels. 
 #' 
-#' Pixels with missing values in one or more bands will be set to NA. The built in check for such pixels can lead to a slow-down of rasterPCA.
+#' Pixels with missing values in one or more bands will be set to NA. The built-in check for such pixels can lead to a slow-down of rasterPCA.
 #' However, if you make sure or know beforehand that all pixels have either only valid values or only NAs throughout all layers you can disable this check
 #' by setting maskCheck=FALSE which speeds up the computation.
 #' 
@@ -17,14 +17,11 @@
 #' @param img RasterBrick or RasterStack.
 #' @param nSamples Integer or NULL. Number of pixels to sample for PCA fitting. If NULL, all pixels will be used.
 #' @param nComp Integer. Number of PCA components to return.
-#' @param norm Logical. Center and normalize image befor calculating PCA. It is usually benefitial to do this. 
-#' @param spca Logical. If \code{TRUE}, perform standardized PCA.
-#' @param maskCheck Logical. Masks all pixels which have at least one NA (default TRUE is reccomended but introduces a slowdown, see Details when it is wise to disable maskCheck). 
+#' @param spca Logical. If \code{TRUE}, perform standardized PCA. Corresponds to centered and scaled input image. This is usually benefitial for equal weighting of all layers. (\code{TRUE} by default)
+#' @param maskCheck Logical. Masks all pixels which have at least one NA (default TRUE is reccomended but introduces a slow-down, see Details when it is wise to disable maskCheck). 
 #' Takes effect only if nSamples is NULL.
 #' @param ... further arguments to be passed to \link[raster]{writeRaster}, e.g. filename.
 #' @return RasterBrick
-#' @details
-#' The norm argument should in most cases be set to TRUE  (unless your input img is already normalized). It subtracts the mean and divides by the standard deviation.
 #' @export 
 #' @examples 
 #' library(ggplot2)
@@ -44,33 +41,41 @@
 #' grid.arrange(plots[[1]],plots[[2]], plots[[3]], ncol=2)
 #' }
 
-rasterPCA <- function(img, nSamples = NULL, nComp = nlayers(img), spca = FALSE, norm = TRUE, maskCheck = TRUE, ...){      
-    
-    if(nlayers(img) <= 1) stop("Need at least two layers to calculate PCA.")    
-    if(nComp > nlayers(img)) nComp <- nlayers(img)
-    
-    if(norm) img <- normImage(img)
-     
-    if(!is.null(nSamples)){    
-        trainData <- sampleRandom(img, size = nSamples, na.rm = TRUE)
-        if(nrow(trainData) < nlayers(img)) stop("nSamples too small or img contains a layer with NAs only")
-        model <- princomp(trainData, scores = FALSE, cor = spca)
-    } else {
-        if(maskCheck) {
-            totalMask <- !sum(calc(img, is.na))
-            if(cellStats(totalMask, sum) == 0) stop("img contains either a layer with NAs only or no single pixel with valid values across all layers")
-            img <- mask(img, totalMask , maskvalue = 0) ## NA areas must be masked from all layers, otherwise the covariance matrix is not non-negative definite   
-        }
-        st <- if(spca) "pearson" else "cov"
-        covMat <- layerStats(img, stat = st, na.rm = TRUE)
-        model  <- princomp(covmat = covMat[[1]], cor=spca)
-        model$center <- covMat$mean
-    }
-    ## Predict
-    out   <- .paraRasterFun(img, rasterFun=raster::predict, args = list(model = model, na.rm = TRUE, index = 1:nComp), wrArgs = list(...))  
-    names(out) <- paste0("PC", 1:nComp)
-    structure(list(call = match.call(), model = model, map = out), class = c("rasterPCA", "RStoolbox"))  
-    
+rasterPCA <- function(img, nSamples = NULL, nComp = nlayers(img), spca = FALSE,  maskCheck = TRUE, ...){      
+	
+	if(nlayers(img) <= 1) stop("Need at least two layers to calculate PCA.")   
+	ellip <- list(...)
+	
+	## Deprecate norm, as it has the same effect as spca
+	if("norm" %in% names(ellip)) {
+		warning("Argument 'norm' has been deprecated. Use argument 'spca' instead.\nFormer 'norm=TRUE' corresponds to 'spca=TRUE'.", call. = FALSE)
+		ellip[["norm"]] <- NULL
+	}
+	
+	if(nComp > nlayers(img)) nComp <- nlayers(img)
+	
+	if(!is.null(nSamples)){    
+		trainData <- sampleRandom(img, size = nSamples, na.rm = TRUE)
+		if(nrow(trainData) < nlayers(img)) stop("nSamples too small or img contains a layer with NAs only")
+		model <- princomp(trainData, scores = FALSE, cor = spca)
+	} else {
+		if(maskCheck) {
+			totalMask <- !sum(calc(img, is.na))
+			if(cellStats(totalMask, sum) == 0) stop("img contains either a layer with NAs only or no single pixel with valid values across all layers")
+			img <- mask(img, totalMask , maskvalue = 0) ## NA areas must be masked from all layers, otherwise the covariance matrix is not non-negative definite   
+		}
+		covMat <- layerStats(img, stat = "cov", na.rm = TRUE)
+		model  <- princomp(covmat = covMat[[1]], cor=spca)
+		model$center <- covMat$mean
+		model$n.obs  <- ncell(img)
+		if(spca) model$scale  <- cellStats(img, "sd", asSample = FALSE) 
+		
+	}
+	## Predict
+	out   <- .paraRasterFun(img, rasterFun=raster::predict, args = list(model = model, na.rm = TRUE, index = 1:nComp), wrArgs = )  
+	names(out) <- paste0("PC", 1:nComp)
+	structure(list(call = match.call(), model = model, map = out), class = c("rasterPCA", "RStoolbox"))  
+	
 }
 
 

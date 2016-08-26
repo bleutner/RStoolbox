@@ -5,7 +5,7 @@
 \title{Principal Component Analysis for Rasters}
 \usage{
 rasterPCA(img, nSamples = NULL, nComp = nlayers(img), spca = FALSE,
-  norm = TRUE, maskCheck = TRUE, ...)
+  maskCheck = TRUE, ...)
 }
 \arguments{
 \item{img}{RasterBrick or RasterStack.}
@@ -14,11 +14,9 @@ rasterPCA(img, nSamples = NULL, nComp = nlayers(img), spca = FALSE,
 
 \item{nComp}{Integer. Number of PCA components to return.}
 
-\item{spca}{Logical. If \code{TRUE}, perform standardized PCA.}
+\item{spca}{Logical. If \code{TRUE}, perform standardized PCA. Corresponds to centered and scaled input image. This is usually benefitial for equal weighting of all layers. (\code{TRUE} by default)}
 
-\item{norm}{Logical. Center and normalize image befor calculating PCA. It is usually benefitial to do this.}
-
-\item{maskCheck}{Logical. Masks all pixels which have at least one NA (default TRUE is reccomended but introduces a slowdown, see Details when it is wise to disable maskCheck). 
+\item{maskCheck}{Logical. Masks all pixels which have at least one NA (default TRUE is reccomended but introduces a slow-down, see Details when it is wise to disable maskCheck). 
 Takes effect only if nSamples is NULL.}
 
 \item{...}{further arguments to be passed to \link[raster]{writeRaster}, e.g. filename.}
@@ -35,7 +33,7 @@ based on a random sample of pixels and then predicted for the full raster. If nS
 first and will then be used to calculate princomp and predict the full raster. The latter is more precise, since it considers all pixels,
 however, it may be slower than calculating the PCA only on a subset of pixels.
 
-Pixels with missing values in one or more bands will be set to NA. The built in check for such pixels can lead to a slow-down of rasterPCA.
+Pixels with missing values in one or more bands will be set to NA. The built-in check for such pixels can lead to a slow-down of rasterPCA.
 However, if you make sure or know beforehand that all pixels have either only valid values or only NAs throughout all layers you can disable this check
 by setting maskCheck=FALSE which speeds up the computation.
 
