@@ -68,8 +68,11 @@ rasterPCA <- function(img, nSamples = NULL, nComp = nlayers(img), spca = FALSE, 
 		model  <- princomp(covmat = covMat[[1]], cor=spca)
 		model$center <- covMat$mean
 		model$n.obs  <- ncell(img)
-		if(spca) model$scale  <- cellStats(img, "sd", asSample = FALSE) 
-		
+		if(spca) {
+			model$scale <- sqrt(diag(covMat$covariance))
+			## Calculate population sd as in princomp
+			model$scale <- sqrt(model$scale^2 * (model$n.obs-1)/model$n.obs)
+		}
 	}
 	## Predict
 	out   <- .paraRasterFun(img, rasterFun=raster::predict, args = list(model = model, na.rm = TRUE, index = 1:nComp), wrArgs = )  
