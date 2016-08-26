@@ -68,10 +68,10 @@ rasterPCA <- function(img, nSamples = NULL, nComp = nlayers(img), spca = FALSE, 
 		model  <- princomp(covmat = covMat[[1]], cor=spca)
 		model$center <- covMat$mean
 		model$n.obs  <- ncell(img)
-		if(spca) {
-			model$scale <- sqrt(diag(covMat$covariance))
-			## Calculate population sd as in princomp
-			model$scale <- sqrt(model$scale^2 * (model$n.obs-1)/model$n.obs)
+		if(spca) {	
+			## Calculate scale as population sd like in in princomp
+			S <- diag(covMat$covariance)
+			model$scale <- sqrt(S * (model$n.obs-1)/model$n.obs)
 		}
 	}
 	## Predict
