@@ -4,7 +4,7 @@
 \alias{pifMatch}
 \title{Pseudo-Invariant Features based Image Matching}
 \usage{
-pifMatch(img, ref, method = "cor", quantile = 0.95, returnPifMap = FALSE,
+pifMatch(img, ref, method = "cor", quantile = 0.95, returnPifMap = TRUE,
   returnSimMap = TRUE, returnModels = FALSE)
 }
 \arguments{
@@ -23,13 +23,12 @@ pifMatch(img, ref, method = "cor", quantile = 0.95, returnPifMap = FALSE,
 \item{returnModels}{Logical. Return the linear models along with the adjusted image.}
 }
 \value{
-Returns a RasterStack with the adjusted image (\code{img}) by default. 
-
-If further return arguments are specified the following intermediate products will be returned in a list along with the adujsted image:
-\itemize{
-   \item \code{returnModels = TRUE}: returns the linear models; one for each layer. 
-   \item \code{returnPifMap = TRUE}: returns binary map of pixels which were selected as pseudo-invariant features. 
-   \item \code{returnSimMap = TRUE}: returns the pixel-wise similarity.
+Returns a List with the adjusted image and intermediate products (if requested). 
+#' \itemize{
+   \item \code{img}: the adjusted image
+   \item \code{simMap}: pixel-wise similarity map (\code{returnSimMap = TRUE})
+   \item \code{pifMap}: binary map of pixels selected as pseudo-invariant features (\code{returnPifMap = TRUE}). 
+   \item \code{models}: list of linear models; one per layer (if \code{returnModels = TRUE}).                           
 }
 }
 \description{
@@ -49,20 +48,27 @@ Model fitting is performed with simple linear models (\code{\link[stats]{lm}}); 
 }
 \examples{
 library(gridExtra)
+library(raster)
+
 ## Import Landsat example data
 data(lsat)
 
 ## Create fake example data
 ## In practice this would be an image from another acquisition date
-lsat_b <- log(lsat)
-## Run pifMatch
-lsat_b_adjusted <- pifMatch(lsat_b, lsat)
+lsat_b <- log(lsat)  
+## Run pifMatch and return similarity layer, invariant features mask and models
+lsat_b_adj <- pifMatch(lsat_b, lsat, returnPifMap = TRUE, returnSimMap = TRUE, returnModels = TRUE)
+grid.arrange(
+ggR(lsat_b_adj$simMap, geom_raster = TRUE) ,
+ggR(lsat_b_adj$pifMap),
+ncol=2)
 
-## Run pifMatch and return similarity layer and pifMap
-lsat_b_adjusted <- pifMatch(lsat_b, lsat, returnPifMap = TRUE, returnSimMap = TRUE)
-\donttest{grid.arrange(
-ggR(lsat_b_adjusted$simMap, geom_raster = TRUE) ,
-ggR(lsat_b_adjusted$pifMap),
-ncol=2)}
+par(mfrow=c(1,3))
+hist(lsat_b[[1]], main = "lsat_b")
+hist(lsat[[1]], main = "reference")
+hist(lsat_b_adj$img[[1]], main = "lsat_b adjusted")
+
+## Model summary for first band 
+summary(lsat_b_adj$models[[1]])
 }
 
