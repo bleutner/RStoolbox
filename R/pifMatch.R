@@ -30,7 +30,6 @@
 #' }
 #' @export 
 #' @examples 
-#' library(gridExtra)
 #' library(raster)
 #' 
 #' ## Import Landsat example data
@@ -41,17 +40,20 @@
 #' lsat_b <- log(lsat)  
 #' ## Run pifMatch and return similarity layer, invariant features mask and models
 #' lsat_b_adj <- pifMatch(lsat_b, lsat, returnPifMap = TRUE, returnSimMap = TRUE, returnModels = TRUE)
-#' grid.arrange(
-#' ggR(lsat_b_adj$simMap, geom_raster = TRUE) ,
-#' ggR(lsat_b_adj$pifMap),
-#' ncol=2)
 #' 
+#' ## Pixelwise similarity
+#' ggR(lsat_b_adj$simMap, geom_raster = TRUE)
+#' 
+#' ## Pesudo invariant feature mask 
+#' ggR(lsat_b_adj$pifMap)
+#' 
+#' ## Histograms of changes
 #' par(mfrow=c(1,3))
 #' hist(lsat_b[[1]], main = "lsat_b")
 #' hist(lsat[[1]], main = "reference")
 #' hist(lsat_b_adj$img[[1]], main = "lsat_b adjusted")
 #' 
-#' ## Model summary for first band 
+#' ## Model summary for first band
 #' summary(lsat_b_adj$models[[1]])
 pifMatch <- function(img, ref, method = "cor", quantile = 0.95, returnPifMap = TRUE, returnSimMap = TRUE, returnModels = FALSE){
 	if(nlayers(img)!=nlayers(ref) | nlayers(img) <= 1) stop("Both images need at least two corresponding bands and must have the same number of bands.", call.=FALSE)
