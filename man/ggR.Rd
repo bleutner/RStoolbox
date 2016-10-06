@@ -58,7 +58,7 @@ The geom_raster argument switches from the default use of annotation_raster to g
 a meaningful mapping from pixel values to fill colour, while annotation_raster is simply adding a picture to your plot. In practice this means that whenever you 
 need a legend for your raster you should use \code{geom_raster = TRUE}. This also allows you to specify and modify the fill scale manually. 
 The advantage of using annotation_raster (\code{geom_raster = TRUE}) is that you can still use the scale_fill* for another variable. For example you could add polygons and 
-map a value to their fill colour. For more details on the theory behind aestetic mapping have a look at the \href{https://cran.r-project.org/web/packages/ggplot2/ggplot2.pdf}{ggplot2} manuals.
+map a value to their fill colour. For more details on the theory behind aestetic mapping have a look at the \href{https://CRAN.R-project.org/package=ggplot2/ggplot2.pdf}{ggplot2} manuals.
 }
 \examples{
 library(ggplot2)
