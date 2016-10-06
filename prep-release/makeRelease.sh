@@ -40,7 +40,7 @@ git commit -a -m "Automatic commit: Pull example data from branch example-data"
 echo "\n**********************************************************"
 echo "R CMD check **********************************************"
 echo "**********************************************************"
-Rscript -e "library(devtools); library(methods);  check(); build_win()"
+Rscript -e "library(devtools); library(methods);  check(); build_win(version = c('R-release', 'R-devel'))"
 
 ## Website
 echo "\n**********************************************************"
