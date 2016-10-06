@@ -1,7 +1,7 @@
 ## CRAN checks
 ## Test environments
-* Ubuntu 15.04 64bit (release)
-* Docker/Debian 8.1 (R 3.2.1 with clang, UBSAN) 
+* Ubuntu 16.04 64bit (release)
+* Docker/Debian 8.1 (R 3.3.1 with clang and UBSAN) 
 * Ubuntu 12.04 (on travis-ci), (oldrel, release, devel)
 * Win-builder (release, devel)
 
@@ -20,24 +20,21 @@ none
 
 
 
-## Changelog RStoolbox 0.1.4
-New:
-* new function `validateMap()` for assessing map accuracy separately from model fitting, e.g. after majority or MMU filtering
-* new function `getValidation()` to extract specific validation results of superClass objects (proposed by James Duffy)
-* new spectral index NDVIc (proposed by Jeff Evans)
-* new argument scaleFactor for `spectralIndices()` for calculation of EVI/EVI2 based on scaled reflectance values. 
-* implemented dark object subtraction radCor(..,method='sdos') for Landsat 8 data (@BayAludra, #4)
-
+## Changelog RStoolbox 0.1.5
 Changes:
-* superClass based on polygons now considers only pixels which have their center coordinate within a polygon  
-* rasterCVA now returns angles from 0 to 360° instead of 0:45 by quadrant (reported by Martin Wegmann)
-* improved dark object DN estimation based on maximum slope of the histogram in `estimateHaze` (@BayAludra, #4)
+* If the bandSet argument in `radCor()` is used to process only a subset of bands it will no longer return unprocessed bands along with processed bands. Instead only processed bands are returned.
+* By default `superClass()` will now use `dataType = 'INT2S'` for classification maps to avoid issues with raster NA handling in INT1U
+* Allow reading and importing from Landsat MSS MTL files with `readMeta()` and `stackMeta()` (@aszeitz, #7)
 
 Fixes:
-* superClass failed when neither valData or trainPartition was specified. regression introduced in 0.1.3 (reported by Anna Stephani)
-* spectralIndices valid value range of EVI/EVI2 now [-1,1]
-* radCor returned smallest integer instead of NA for some NA pixels
-* fix 'sdos' for non-contiguous bands in radCor (@BayAludra, #4)
+* `readMeta()` time-stamp conversion now correctly set to GMT time (@mraraju, #12)
+* `radCor()` caused R to crash if bandSet was a single band 
+* fix single RasterLayer capability for `superClass()`
+* `spectralIndices()` now calculates *all* documented indices if specified to do so (@mej1d1, #6)
+* `unsuperClass()` predicted map now handles NAs properly
+* `pifMatch()` did not return adjusted image (@tmb3006, #13)
 
+Deprecated:
+* argument `norm` was dropped from `rasterPCA()`, because it was effectively a duplicate of the standardized pca (spca) argument in the same function.
 
  
