@@ -250,7 +250,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 	.vMessage("Starting to fit model")   
 	.registerDoParallel()
 	indexIn <- if(polygonBasedCV) lapply(1:kfold, function(x) which(x != indexOut)) 
-	if(model == "mlc") model = mlcCaret
+	if(model == "mlc") model <- mlcCaret
 	set.seed(seeds[[1]])
 	caretModel 	<- train(response ~ ., data = dataSet, method = model, tuneLength = tuneLength, 
 			trControl = trainControl(method = "cv", number = kfold, index = indexIn, savePredictions = "final"), ...)   

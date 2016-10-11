@@ -94,7 +94,7 @@ topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg
         ## Eq 5 in Riano2003
         ## Lambertian assumption if k == 1
         ## Non-lambertian if 0 <= k < 1   
-        stratMethod <- if(is.null(stratImg)) {stratImg = "slope"; "noStrat"} else "stratEqualBins"
+        stratMethod <- if(is.null(stratImg)) {stratImg <- "slope"; "noStrat"} else "stratEqualBins"
         ks <- .kestimate(img, illu, slope, method = stratMethod, stratImg = stratImg, n = nStrat, sz=sz)
         
         ks$k <- lapply(ks$k, function(x){

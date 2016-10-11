@@ -234,10 +234,10 @@
 #' @keywords internal
 .subdividePolys <- function(polygons, res = 1) {
     pl <- lapply(seq_along(polygons), function(i){
-                ex       <- raster(polygons[i,])
-                res(ex)  <- res
-                pgrid <- rasterToPolygons(ex)
-                pgrid$layer = 1
+                ex      <- raster(polygons[i,])
+                res(ex) <- res
+                pgrid   <- rasterToPolygons(ex)
+                pgrid$layer <- 1
                 pp    <- gIntersection(pgrid, polygons[i,], byid=TRUE, drop_lower_td = TRUE)
                 pp    <- as(pp, "SpatialPolygonsDataFrame")
                 pp$dummy <- polygons$layer[i]

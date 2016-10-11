@@ -110,8 +110,8 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
 	if(missing('scale')){ scale <- rangeRGB[2] }
 	
 	if(rangeRGB[1] < 0){
-		RGB 	<- RGB - rangeRGB[1]
-		scale 	<- scale - rangeRGB[1] 
+		RGB 	 <- RGB - rangeRGB[1]
+		scale    <- scale - rangeRGB[1] 
 		rangeRGB <- rangeRGB - rangeRGB[1]
 	}   
 	
@@ -124,7 +124,7 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
 	
 	## Perform data stretch
 	if (stretch != "none") {
-		stretch = tolower(stretch)
+		stretch <- tolower(stretch)
 		for(i in seq_along(rgb)){
 			RGB[,i] <- .stretch(RGB[,i], method = stretch, quantiles=quantiles)
 		}

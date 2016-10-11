@@ -4,14 +4,14 @@ library(raster)
 
 data(lsat)
 lsat <- crop(lsat,extent(lsat)*.2)
-ld  <- as.data.frame(lsat)
+ld   <- as.data.frame(lsat)
 
 for(spc in c(FALSE, TRUE)) {
 	test_that(paste("princomp(covMat(raster)) == princomp(sample) with spca=",spc), {
 				expect_s3_class(r   <- rasterPCA(lsat, nSamples = NULL, spca = spc), c("RStoolbox","rasterPCA"))
 				expect_s3_class(rs  <- rasterPCA(lsat, nSamples = ncell(lsat), spca = spc), c("RStoolbox","rasterPCA"))
 				expect_equal(abs(unclass(rs$model$loadings)), abs(unclass(r$model$loadings)))
-				 expect_equivalent(abs(r$map[]), abs(rs$map[])) 
+				expect_equivalent(abs(r$map[]), abs(rs$map[])) 
 			})
 	
 }
