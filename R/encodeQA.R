@@ -25,26 +25,26 @@ encodeQA <- function(fill = "no", droppedFrame = "no", terrainOcclusion = "no",
         water = "all", snow = "all", cirrus = "all", cloud = "all"){
      
     ## Input checks
-    s <- list(fill=fill, droppedFrame=droppedFrame, terrainOcclusion=terrainOcclusion)
+    s <- list(fill = fill, droppedFrame = droppedFrame, terrainOcclusion = terrainOcclusion)
     lapply(names(s), function(i) if(any(!s[[i]] %in% c("yes", "no", "all"))) stop(i, " is a single bit parameter. Can digest only values c('yes', 'no', 'all')", call.=FALSE))
-    s <- list(water=water, snow=snow, cirrus=cirrus, cloud=cloud)
+    s <- list(water = water, snow = snow, cirrus = cirrus, cloud = cloud)
     lapply(names(s), function(i) if(any(!s[[i]] %in% c("na", "low", "med", "high", "all"))) stop(i, " is a double bit parameter. Can digest only values c('na', 'low', 'med', 'high', 'all')", call.=FALSE))
     
     ## Convert to bit representation
-    sing = list(no="0", yes="1", all=c("0", "1"))
-    doub = c(na="00", low="01", med="10", high="11")
-    doub = c(as.list(doub), list(all=doub))
+    sing <- list(no = "0", yes = "1", all = c("0", "1"))
+    doub <- c(na = "00", low = "01", med = "10", high = "11")
+    doub <- c(as.list(doub), list(all = doub))
     
-    xfill = sing[fill]
-    xdroppedFrame = sing[droppedFrame]
-    xterrainOcclusion = sing[terrainOcclusion]
-    xreserved = "0"
-    xwater = doub[water]
-    xcloudShadow = "00"
-    xvegetation = "00"
-    xsnow = doub[snow]
-    xcirrus = doub[cirrus]
-    xcloud = doub[cloud]
+    xfill <- sing[fill]
+    xdroppedFrame <- sing[droppedFrame]
+    xterrainOcclusion <- sing[terrainOcclusion]
+    xreserved <- "0"
+    xwater <- doub[water]
+    xcloudShadow <- "00"
+    xvegetation  <- "00"
+    xsnow   <- doub[snow]
+    xcirrus <- doub[cirrus]
+    xcloud  <- doub[cloud]
     
     ## Possible combinations
     li  <- list(xcloud, xcirrus, xsnow, xvegetation, xcloudShadow, xwater, xreserved, xterrainOcclusion, xdroppedFrame, xfill)
