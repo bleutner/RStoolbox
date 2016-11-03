@@ -47,7 +47,8 @@
 #' \item \code{\link{ggRGB}}: efficient plotting of remote sensing imagery in RGB with ggplot2
 #' }
 #' 
-#' @import raster sp plyr caret ggplot2 
+#' @import raster sp plyr ggplot2 
+#' @importFrom caret confusionMatrix train trainControl postResample  createDataPartition createFolds getTrainPerf
 #' @importFrom rgeos gArea gBuffer gDifference gDisjoint gIntersection gIntersects gUnionCascaded intersect row.names 
 #' @importFrom reshape2 melt
 #' @importFrom foreach getDoParRegistered 
