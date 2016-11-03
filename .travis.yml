@@ -33,6 +33,7 @@ before_script:
   - ./pkg-build.sh install_deps
 # Run twice, just to be sure because sometimes cran mirror fails randomly 
   - ./pkg-build.sh install_deps
+  - ./pkg-build.sh install_r covr
 
 script: 
   - ./pkg-build.sh run_build
@@ -50,10 +51,10 @@ env:
   matrix:
     - RVERSION=oldrel
     - RVERSION=release
-    - RVERSION=devel
+    - RVERSION=devel COVERAGE=true
     
 r_github_packages:
   - jimhester/covr
 
 after_success:
-  - Rscript -e 'covr::codecov()'
+  - if [[ ! -z "$COVERAGE" ]];then ./pkg-build.sh run_script -e 'covr::codecov()'; fi
