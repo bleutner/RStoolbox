@@ -310,7 +310,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 			validation <- confusionMatrix(data = valiSet$prediction, reference = valiSet$reference)              
 		} else {
 			valiSet$residuals <- valiSet$reference - valiSet$prediction
-			validation <-  data.frame(RMSE = RMSE(valiSet$prediction, valiSet$reference), Rsquared = cor(valiSet$prediction, valiSet$reference, use = "complete.obs")^2)   
+			validation <-  data.frame(RMSE = .rmse(valiSet$prediction, valiSet$reference), Rsquared = cor(valiSet$prediction, valiSet$reference, use = "complete.obs")^2)   
 		}
 		validation <- list(performance = validation, validationSet = valiSet)
 	} else {

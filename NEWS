@@ -1,8 +1,7 @@
 RStoolbox 0.1.6
 =====================================
-
-
-
+Fixes:
+* fix CRAN errors: deprecated functions from caret 
 
 
 RStoolbox 0.1.5
