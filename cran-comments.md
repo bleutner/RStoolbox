@@ -1,7 +1,9 @@
+This is a patch release, which fixes current CRAN errors on multiple platforms due to updated caret package.
+
 ### CRAN checks
 ### Test environments
 * Ubuntu 16.10 64bit (release)
-* Docker/Debian 8.1 (R 3.3.1 with clang and UBSAN) 
+* Debian 8.1 (devel, clang/UBSAN and VALGRIND) 
 * Ubuntu 12.04 (on travis-ci), (oldrel, release, devel)
 * Win-builder (release, devel)
 
@@ -19,3 +21,5 @@ none
 
 
 ### Changelog RStoolbox 0.1.6
+Fixes:
+* fixes current CRAN errors on multiple platforms due to updated caret package
