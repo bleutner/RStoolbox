@@ -1,7 +1,7 @@
 RStoolbox 0.1.6
 =====================================
 Fixes:
-* fix import issue: deprecated functions from caret 
+* fix import issue: replace deprecated export from caret 
 
 RStoolbox 0.1.5
 =====================================
