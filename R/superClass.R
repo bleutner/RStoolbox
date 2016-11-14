@@ -86,7 +86,6 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 	# TODO: check applicability of raster:::.intersectExtent 
 	# TODO: check for empty factor levels
 	# TODO: consider splitting large polygons if there are few polygons in total
-	seeds <- as.list(sample.int(kfold*tuneLength+2))
 	if(!missing("verbose")) .initVerbose(verbose)
 	verbose <- getOption("RStoolbox.verbose")
 	## Object types
@@ -251,7 +250,6 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 	.registerDoParallel()
 	indexIn <- if(polygonBasedCV) lapply(1:kfold, function(x) which(x != indexOut)) 
 	if(model == "mlc") model <- mlcCaret
-	set.seed(seeds[[1]])
 	caretModel 	<- train(response ~ ., data = dataSet, method = model, tuneLength = tuneLength, 
 			trControl = trainControl(method = "cv", number = kfold, index = indexIn, savePredictions = "final"), ...)   
 	modelFit <- getTrainPerf(caretModel)
@@ -288,11 +286,9 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 		nSamplesV <- unlist(Map("max", nSamples, 500))
 		.vMessage("Begin validation")
 		if(predict & (predType == "raw")){
-			set.seed(seeds[[kfold+2]])
 			valiSet  <- .samplePixels(valData, spatPred, responseCol = responseCol, nSamples = nSamplesV,  trainCells = dataList[[2]])[[1]]
 			colnames(valiSet) <- c("reference", "prediction")
 		} else {
-			set.seed(seeds[[kfold+2]])
 			val     <- .samplePixels(valData, img, responseCol = responseCol, nSamples = nSamplesV, trainCells = dataList[[2]])[[1]]
 			pred    <- predict(caretModel, val[,-1,drop=FALSE])
 			valiSet <- data.frame(reference = val[,1], prediction = pred)
