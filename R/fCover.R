@@ -104,11 +104,11 @@ fCover <- function(classImage, predImage, nSamples = 1000, classes = 1, model = 
 	r2 		<- res(classImage)[1]
 	if(r2 >= max(r1)) stop("Resolution of classImage must be smaller than the resolution of predImage")
 	
-    if(nSamples > ncell(predImage)) {
-        nSamples <- ncell(predImage)
-        warning("nSamples > ncell(predImage). Resetting nSamples to ncell(predImage)")
-    }
-    
+	if(nSamples > ncell(predImage)) {
+		nSamples <- ncell(predImage)
+		warning("nSamples > ncell(predImage). Resetting nSamples to ncell(predImage)")
+	}
+	
 	## Spit ellipsis into caret::trainControl and raster::writeRaster
 	frmls_train <- names(formals(caret::trainControl))
 	args  <- c(list(...), method = method)
@@ -120,7 +120,7 @@ fCover <- function(classImage, predImage, nSamples = 1000, classes = 1, model = 
 	.vMessage("Collecting random samples")
 	dummy   <- raster(predImage) 
 	dummyEx <- extent(crop(dummy, classImage, snap = "in")) ## crop properly to avoid sampling in marginal pixels (otherwise sampleRandom uses sanp='near', potentially resulting in incomple pixels)
-    ranSam  <- sampleRandom(predImage, size = nSamples, ext = dummyEx*0.8, xy = TRUE, na.rm = TRUE)
+	ranSam  <- sampleRandom(predImage, size = nSamples, ext = dummyEx*0.8, xy = TRUE, na.rm = TRUE)
 	
 	## Extract classified (high res) values
 	.vMessage("Extracting classified pixels")
@@ -133,7 +133,16 @@ fCover <- function(classImage, predImage, nSamples = 1000, classes = 1, model = 
 	## Calculate fractional cover
 	.vMessage("Calculating fractional cover")
 	
-	tabl <- lapply(vals, function(x) table(x, useNA = "always") / length(x))
+	tabl <- lapply(vals, function(x) table(x, useNA = "always") / length(x))	
+	
+	sampledClasses <- unique(unlist(lapply(tabl, names)))
+	missingClasses <- setdiff(as.character(classes), sampledClasses)
+	if(length(missingClasses)) {
+		stop(sprintf("One or more classes are not represented in the sampled pixels. Missing class/classes: %s\nEither this class does not occur in classImage or nSample was too small for a representative sample.", 
+						paste(missingClasses,collapse=", ")), call.=FALSE)
+	}
+	
+	
 	fCov <- do.call("rbind", lapply(tabl, "[", as.character(classes)))
 	fCov[is.na(fCov)] <- 0
 	colnames(fCov)    <- classes
@@ -148,7 +157,7 @@ fCover <- function(classImage, predImage, nSamples = 1000, classes = 1, model = 
 	## Maybe we should ditch the maxNA argument alltogether
 	fCovNA  <- lapply(tabl, tail, 1)
 	include <- unlist(fCovNA <= maxNA)
-    # Normalize by 1-NAfrequency
+	# Normalize by 1-NAfrequency
 	fCov    <- fCov/vapply(fCovNA, function(x) 1-x, numeric(1))
 	if(!any(include)) stop("No non-NA samples!")
 	
