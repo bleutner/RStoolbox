@@ -34,7 +34,7 @@ before_script:
 # Run twice, just to be sure because sometimes cran mirror fails randomly 
   - ./pkg-build.sh install_deps
   - ./pkg-build.sh install_r covr
-  - Rscript -e "devtools::session_info()"
+  - ./pkg-build.sh dump_sysinfo
 
 script: 
   - ./pkg-build.sh run_build
