@@ -56,7 +56,7 @@ for(proj in c("projected", "geographical")){
 		info <- paste(c("train type = ", type, " | coordinates = ", proj), collapse = "")       
 		train <- trainList[[proj]][[type]]
 		img   <- trainList[[proj]][["img"]]
-		
+		geometry <- if(type=="polygons") "SpatialPolygons" else "SpatialPoints"
 		## No prediction	
 		set.seed(1)
 		sc <- superClass(img, trainData = train, nSamples = 50, responseCol = "class", model = "pls", 
@@ -81,6 +81,20 @@ for(proj in c("projected", "geographical")){
 					expect_equal(cellStats(sc2$map - sc3$map, sum), 0, info = info)
 				})
 		
+        
+        test_that("validation sample coords and geometries are returned", {						
+                    expect_is(sc$validation$validationGeometry, geometry, info = info) 
+                    expect_is(sc2$validation$validationGeometry, geometry, info = info) 
+                    expect_is(sc3$validation$validationGeometry, geometry, info = info) 
+                    expect_is(sc$validation$validationSamples, "data.frame", info = info) 
+                    expect_is(sc2$validation$validationSamples, "data.frame", info = info) 
+                    expect_is(sc3$validation$validationSamples, "data.frame", info = info) 
+                    expect_equal(colnames(sc$validation$validationSamples), c("reference", "prediction", "cell", "x", "y"), info = info) 
+                    expect_equal(colnames(sc2$validation$validationSamples), c("reference", "prediction", "cell", "x", "y"), info = info) 
+                    expect_equal(colnames(sc3$validation$validationSamples), c("reference", "prediction", "cell", "x", "y"), info = info) 
+                   
+                })
+        
 		
 		test_that("predict.superClass map is identical to superClass$map",{
 					expect_true(compareRaster(sc2$map, predict(sc2, img), values = TRUE), info = info)                      

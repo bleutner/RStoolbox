@@ -180,8 +180,10 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 								"\n    * run without independent validation."))
 		}
 		valData   <- trainData[-training,]
-		trainData <- trainData[training,]
-	}
+		trainData <- trainData[ training,]
+	} else {
+        training <- 1:NROW(trainData)
+    }
 	
 	
 	if(identical(trainData, valData)) stop("trainData is the same as valData")	
@@ -235,8 +237,6 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 		dataSet[[foldCol]] <- NULL
 	}
 	
-	
-	
 	## Meaningless predictors
 	uniqueVals  <- apply(dataSet, 2, function(x){length(unique(x))}) == 1
 	if(uniqueVals[1]) stop("Response (responseCol in trainData) contains only one value. Classification doesn't make sense in this case.")
@@ -286,12 +286,13 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 		nSamplesV <- unlist(Map("max", nSamples, 500))
 		.vMessage("Begin validation")
 		if(predict & (predType == "raw")){
-			valiSet  <- .samplePixels(valData, spatPred, responseCol = responseCol, nSamples = nSamplesV,  trainCells = dataList[[2]])[[1]]
-			colnames(valiSet) <- c("reference", "prediction")
+			valiSet  <- .samplePixels(valData, spatPred, responseCol = responseCol, nSamples = nSamplesV,  trainCells = dataList[[2]][,"cell"], withXY = TRUE)	
+            colnames(valiSet[[1]]) <- c("reference", "prediction")
+            valiSet 	<- data.frame(valiSet[[1]], valiSet[[2]])
 		} else {
-			val     <- .samplePixels(valData, img, responseCol = responseCol, nSamples = nSamplesV, trainCells = dataList[[2]])[[1]]
-			pred    <- predict(caretModel, val[,-1,drop=FALSE])
-			valiSet <- data.frame(reference = val[,1], prediction = pred)
+			val     <- .samplePixels(valData, img, responseCol = responseCol, nSamples = nSamplesV, trainCells = dataList[[2]][,"cell"], withXY = TRUE)
+			pred    <- predict(caretModel, val[[1]][,-1,drop=FALSE])
+			valiSet <- data.frame(reference = val[[1]][,1], prediction = pred, val[[2]])
 		}
 		
 		if(mode == "classification"){
@@ -308,7 +309,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 			valiSet$residuals <- valiSet$reference - valiSet$prediction
 			validation <-  data.frame(RMSE = .rmse(valiSet$prediction, valiSet$reference), Rsquared = cor(valiSet$prediction, valiSet$reference, use = "complete.obs")^2)   
 		}
-		validation <- list(performance = validation, validationSet = valiSet)
+		validation <- list(performance = validation, validationSamples = valiSet, validationGeometry = valData )
 	} else {
 		validation <- "No independent validation was performed!"
 	}
@@ -320,16 +321,17 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 		print(modelFit)
 		message(paste0(paste0(rep("*",20), collapse = "")," Validation summary " , paste0(rep("*",20), collapse = "")))
 		print(validation[[1]])
-	}
-	
-	out <- list(model = caretModel, modelFit = modelFit, validation = validation, map = spatPred)
-	if(exists("training")) out <- c(out, trainingPartitionIndices = training)
+	} 
+    
+    
+	out <- list(model = caretModel, modelFit = modelFit, training = list(trainingDataPartition=training), validation = validation, map = spatPred)
+
 	if(mode == "classification") out$classMapping <- classMapping 
 	structure(out, class = c("superClass", "RStoolbox"))
 }
 
 
-.samplePixels <- function(SHAPE, RASTER, responseCol, trainCells = NULL, nSamples, maxnpix = FALSE){
+.samplePixels <- function(SHAPE, RASTER, responseCol, trainCells = NULL, nSamples, maxnpix = FALSE, withXY = FALSE){
 	
 	if(inherits(SHAPE, "SpatialPolygons")){					
 		#cells <- cellFromPolygon(RASTER, SHAPE),
@@ -339,30 +341,44 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 					rc <- crop(r, extent(SHAPE[i,]) + buff)
 					rc <- rasterize(SHAPE[i,], rc, fun = "first", silent=TRUE)
 					xy <- rasterToPoints(rc)[,-3,drop=FALSE]			
-					cellFromXY(RASTER, xy)
+					if(withXY) {
+                        data.frame(cell = cellFromXY(RASTER, xy), xy)
+                    } else {
+                        data.frame(cell = cellFromXY(RASTER, xy))
+                    }
 				}, envir = environment()) 
 		
-		area  <- lapply(polyCells, length) 
+		area  <- lapply(polyCells, NROW) 
 		resp  <- SHAPE[[responseCol]]
 		uresp <- unique(resp)
 		totalarea <- vapply(uresp, function(xi) sum(unlist(area[resp == xi])), numeric(1))			
 		if(maxnpix) nSamples  <- min(totalarea)
-		dataSet   <- lapply(seq_along(polyCells), function(xi) {
+		dataSet   <- lapply(1:NROW(polyCells), function(xi) {
 					class <- resp[[xi]]
 					ns <- min(ceiling(nSamples * area[[xi]] / totalarea[which(uresp == resp[[xi]])]), area[[xi]] )
-					if(ns > 0) data.frame(response = class, cells = sample(polyCells[[xi]], ns)) else NULL
+					if(ns > 0) data.frame(response = class,  polyCells[[xi]][sample(1:NROW(polyCells[[xi]]), ns), , drop = FALSE]) else NULL
 				})	
 		dataSet <- do.call("rbind", dataSet)
-		dataSet <- cbind(dataSet, RASTER[dataSet[,"cells"]])        
+		dataSet <- cbind(dataSet, RASTER[dataSet[,"cell"]])        
 	} else {
-		dataSet <- data.frame(response = SHAPE[[responseCol]], extract(RASTER, SHAPE, cell=TRUE))
+        vals <- extract(RASTER, SHAPE, cell=TRUE)
+        colnames(vals) <- gsub("cells", "cell", colnames(vals))
+        if(withXY){		            
+            crds <- data.frame(coordinates(SHAPE))
+            colnames(crds) <- c("x","y")
+            dataSet <- data.frame(response = SHAPE[[responseCol]], vals, crds)            
+        } else {
+     		dataSet <- data.frame(response = SHAPE[[responseCol]], vals)
+        }		
+
 	}
 	
-	## Discard duplicate cells
-	dubs 	<- !duplicated(dataSet[,"cells"]) & complete.cases(dataSet) & !dataSet[,"cells"] %in% trainCells
-	dataSet <- dataSet[dubs,]
-	colnames(dataSet)[-c(1:2)] <- names(RASTER)
-	list(dataSet[,setdiff(colnames(dataSet), "cells")], cells = dataSet$cells)
+	## Discard duplicate cells, cells which have been in training data and incomplete samples
+	dubs 	<- !duplicated(dataSet[,"cell"]) & complete.cases(dataSet) & !dataSet[,"cell"] %in% trainCells
+	dataSet <- dataSet[dubs,]   
+    s <- colnames(dataSet) %in% c( "cell","x","y")
+	colnames(dataSet)[!s] <- c("response", names(RASTER))
+	list(dataSet[,!s],cells = dataSet[, s, drop=FALSE])
 }
 
 
