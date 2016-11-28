@@ -138,7 +138,7 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0
         
         if(annotation) {   
             dummy <- data.frame(x=ex[1:2],y=ex[3:4])       
-            p <- ggplot(dummy, aes(x,y))  + ggl
+            p <- ggplot()  + ggl + geom_blank(data = dummy, aes(x,y))
             if(coord_equal) p <- p + coord_equal()
             return(p)
         } else {
