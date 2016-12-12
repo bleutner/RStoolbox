@@ -17,6 +17,7 @@ test_that("gives proper errors and warnings", {
             expect_error(spectralIndices(r, red = 1), "you must specify \\*all\\* required bands")
             expect_warning(spectralIndices(r, red = 1, nir = 2, indices = c("NDVI", "EVI")), "not specified: blue")
             expect_warning(spectralIndices(r, red = 1, nir = 2, blue = 1, index = c("NDVI", "EVI")), "Skipping EVI")
+            expect_is(spectralIndices(r, red = 1, nir = 2, blue = 1, index = c( "EVI"), skipRefCheck = TRUE), "RasterLayer")
         })
 
 

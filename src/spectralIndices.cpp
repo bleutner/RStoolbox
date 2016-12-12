@@ -92,12 +92,12 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 	}
 ***/	
 	   else if(indices[j] == "NDVIC") {
-					//Normalized difference vegetation index
-					out(_,j) = (nir - red) / (nir + red) * (1 - (swir2 - swir2ccc)/swir2cdiff);
-					out(_,j) = ifelse(is_na(out(_,j)) | (out(_,j) > 1.0) | (out(_,j) < -1.0), NA_REAL, out(_,j));
-				}
+			//Normalized difference vegetation index
+			out(_,j) = (nir - red) / (nir + red) * (1 - (swir2 - swir2ccc)/swir2cdiff);
+			out(_,j) = ifelse(is_na(out(_,j)) | (out(_,j) > 1.0) | (out(_,j) < -1.0), NA_REAL, out(_,j));
+		}
 		else if(indices[j] == "NBRI"){
-                        // Normalised Burn Ratio Index
+            // Normalised Burn Ratio Index
 			out(_,j) = (nir - swir2) / (nir + swir2);
 			out(_,j) = ifelse(is_na(out(_,j)) | (out(_,j) > 1.0) | (out(_,j) < -1.0), NA_REAL, out(_,j));
 		}
@@ -108,10 +108,17 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 		}
 		else if(indices[j] == "NDWI") {
 			// Normalized difference water index
+			// McFeeters 1996
 			out(_,j) = (green - nir)/(green + nir);
 			out(_,j) = ifelse(is_na(out(_,j)) | (out(_,j) > 1.0) | (out(_,j) < -1.0) , NA_REAL, out(_,j));
 		}
-	        else if(indices[j] == "NRVI") {
+		else if(indices[j] == "NDWI2") {
+			// Normalized difference water index
+			// Gao 1996
+			out(_,j) = (nir - swir1)/(nir + swir1);
+			out(_,j) = ifelse(is_na(out(_,j)) | (out(_,j) > 1.0) | (out(_,j) < -1.0) , NA_REAL, out(_,j));
+		}
+	    else if(indices[j] == "NRVI") {
 			// Normalized Ratio Vegetation Index
 			// Baret and Guyot 1991
 			NumericVector rvi = red / nir;

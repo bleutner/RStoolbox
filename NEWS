@@ -1,3 +1,13 @@
+RStoolbox 0.1.7
+=====================================
+New:
+* `spectralIndices()` has a new argument skipRefCheck, which skips the heuristic check for reflectance-like values [0,1] which is run if EVI/EVI2 are requested.
+   This can be usefull if clouds with reflectance > 1.5 are part of the image.
+
+Fixes:
+* fix `ggR()` and `ggRGB()` in  annotation mode (default). No image was drawn and excessive memory allocation requested (= RStudio crash) (reported by Christian Walther)
+* fix `spectralIndices()` documentation for NDWI. Formula was based on McFeeters1996 but attributed to Gao1996. Now there is NDWI (McFeeters) and NDWI2 (Gao) (reported by Christian Bauer)
+
 RStoolbox 0.1.6
 =====================================
 Fixes:

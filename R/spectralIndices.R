@@ -11,7 +11,9 @@
 #' @param swir2 Character or integer. Short-wave-infrared band (1400-1800nm). 
 #' @param indices Character. One or more spectral indices to calculate (see Details). By default (NULL) all implemented indices given the spectral bands which are provided will be calculated.
 #' @param index Character. Alias for \code{indices}.
-#' @param scaleFactor Numeric. Scale factor for the conversion of scaled reflectances to [0,1] value range (applied as reflectance/scaleFactor) Neccesary for claculating EVI/EVI2 with scaled reflectance values. 
+#' @param scaleFactor Numeric. Scale factor for the conversion of scaled reflectances to [0,1] value range (applied as reflectance/scaleFactor) Neccesary for calculating EVI/EVI2 with scaled reflectance values.
+#' @param skipRefCheck Logical. When EVI/EVI2 is to be calculated there is a rough heuristic check, whether the data are inside [0,1]+/-0.5 (after applying a potential \code{scaleFactor}).
+#'  If there are invalid reflectances, e.g. clouds with reflectance > 1 this check will result in a false positive and skip EVI calculation. Use this argument to skip this check in such cases *iff* you are sure the data and scaleFactor are valid. 
 #' @param coefs List of coefficients (see Details).  
 #' @param ... further arguments such as filename etc. passed to \link[raster]{writeRaster}
 #' @return  RasterBrick or a RasterLayer if length(indices) == 1
@@ -36,7 +38,7 @@
 #' SI <- spectralIndices(lsat_ref, red = "B3_tre", nir = "B4_tre")
 #' plot(SI)
 spectralIndices <- function(img,
-        blue=NULL, green=NULL, red=NULL, nir=NULL, swir1 =NULL, swir2 = NULL, scaleFactor = 1,
+        blue=NULL, green=NULL, red=NULL, nir=NULL, swir1 =NULL, swir2 = NULL, scaleFactor = 1, skipRefCheck = FALSE,
         indices=NULL, index = NULL, coefs = list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5, s = 1, swir2ccc = NULL, swir2coc = NULL),
         ... ) {
     # TODO: add further indices
@@ -88,7 +90,7 @@ spectralIndices <- function(img,
     requested    <- BANDSdb[ind]
     
     canCalc  <- names(requested)[!vapply(requested, function(x) any(!x %in% bands), logical(1))]
-    if(any(c("EVI","EVI2") %in% canCalc)){
+    if(!skipRefCheck && any(c("EVI","EVI2") %in% canCalc)){
         ## TODO: clarify setMinMax reqiurements throughout RStoolbox
 		if(!.hasMinMax(img[[red]])) img[[red]] <- setMinMax(img[[red]])
 		if((maxValue(img[[red]])/scaleFactor > 1.5 | minValue(img[[red]])/scaleFactor < -.5)){
@@ -169,6 +171,7 @@ spectralIndices <- function(img,
         NDVI	= function(red, nir) {(nir-red)/(nir+red)}, 
         NDVIC   = function(red, nir, swir2) {(nir-red)/(nir+red)*(1-((swir2 - swir2ccc)/(swir2coc-swir2ccc)))},
         NDWI 	= function(green, nir) {(green - nir)/(green + nir)},
+        NDWI2	= function(nir, swir1) {(nir - swir1)/(nir + swir1)},       
         NRVI    = function(red, nir) {(red/nir - 1)/(red/nir + 1)},
         RVI     = function(red, nir) {red/nir},
         SATVI   = function(red, swir1, swir2) {(swir1 - red) / (swir1 + red + L) * (1 + L) - (swir2 / 2)},
@@ -199,7 +202,8 @@ BANDSdb <- lapply(.IDXdb, function(x) names(formals(x)))
         NBRI    = c("", "Normalised Burn Ratio Index"),
         NDVI	= c("Rouse1974", "Normalised Difference Vegetation Index"),
         NDVIC   = c("Nemani1993", "Corrected Normalised Difference Vegetation Index"),
-        NDWI	= c("Gao1996", "Normalised Difference Water Index"),
+        NDWI	= c("McFeeters1996", "Normalised Difference Water Index"), # The use of the Normalized Difference Water Index (NDWI) in the delineation of open water features
+        NDWI2	= c("Gao1996", "Normalised Difference Water Index"),
         NRVI    = c("Baret1991","Normalised Ratio Vegetation Index"),
         RVI     = c("", "Ratio Vegetation Index"),
         SATVI   = c("", "Soil Adjusted Total Vegetation Index"),
