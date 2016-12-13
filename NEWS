@@ -3,6 +3,8 @@ RStoolbox 0.1.7
 New:
 * `spectralIndices()` has a new argument skipRefCheck, which skips the heuristic check for reflectance-like values [0,1] which is run if EVI/EVI2 are requested.
    This can be usefull if clouds with reflectance > 1.5 are part of the image.
+* `superClass()` now returns the geometries which were used for validation, e.g. polygons (under $validation$geometry)
+   and also the exact samples taken for validation including cell number and coordinates ($validation$validationSamples)
 
 Fixes:
 * fix `ggR()` and `ggRGB()` in  annotation mode (default). No image was drawn and excessive memory allocation requested (= RStudio crash) (reported by Christian Walther)
