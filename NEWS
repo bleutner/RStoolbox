@@ -9,7 +9,8 @@ New:
 Fixes:
 * fix `ggR()` and `ggRGB()` in  annotation mode (default). No image was drawn and excessive memory allocation requested (= RStudio crash) (reported by Christian Walther)
 * fix `spectralIndices()` documentation for NDWI. Formula was based on McFeeters1996 but attributed to Gao1996. Now there is NDWI (McFeeters) and NDWI2 (Gao) (reported by Christian Bauer)
-* estimateHaze()` now ensures correct histogram order, which could be off when raster had to read from disk (reported by Xavier Bailleau).   
+* `estimateHaze()` now ensures correct histogram order, which could be off when raster had to read from disk (reported by Xavier Bailleau).   
+* `readMeta()` now makes concise bandnames also for Landsat Collection MTL files.
 
 RStoolbox 0.1.6
 =====================================
