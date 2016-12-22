@@ -84,7 +84,8 @@ estimateHaze <- function(x, hazeBands, darkProp = 0.01, maxSlope = TRUE, plot = 
     ## Run estimation for each band separately
     out   <- lapply(hazeBands, function(bi) {
                 if(!preCalc) {
-                    tf <- freq(x[[bi]], useNA = "no")             
+                    tf <- freq(x[[bi]], useNA = "no") 
+                    tf <- tf[order(tf[,1]),]
                 } else {
                     tf <- x$table[[bi]]
                 }
