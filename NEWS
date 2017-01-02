@@ -6,6 +6,9 @@ New:
 * `superClass()` now returns the geometries which were used for validation, e.g. polygons (under $validation$geometry)
    and also the exact samples taken for validation including cell number and coordinates ($validation$validationSamples)
 
+Changes:
+*  ESUN lookup tables for `radCor()` are adjusted to match current USGS reccomendations from: https://landsat.usgs.gov/esun
+
 Fixes:
 * fix `ggR()` and `ggRGB()` in  annotation mode (default). No image was drawn and excessive memory allocation requested (= RStudio crash) (reported by Christian Walther)
 * fix `spectralIndices()` documentation for NDWI. Formula was based on McFeeters1996 but attributed to Gao1996. Now there is NDWI (McFeeters) and NDWI2 (Gao) (reported by Christian Bauer)
