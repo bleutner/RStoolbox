@@ -12,7 +12,7 @@ pifMatch(img, ref, method = "cor", quantile = 0.95, returnPifMap = TRUE,
 
 \item{ref}{RasterStack or RasterBruck. Reference image.}
 
-\item{method}{Method to calculate pixel similariry. Options: euclidean distance ('ed'), spectral angle}
+\item{method}{Method to calculate pixel similariry. Options: euclidean distance ('ed'), spectral angle ('sam') or pearson correlation coefficient ('cor').}
 
 \item{quantile}{Numeric. Threshold quantile used to identify PIFs}
 
