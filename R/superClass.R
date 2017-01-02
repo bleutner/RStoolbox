@@ -163,7 +163,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 	## Split into training and validation data (polygon basis)
 	if(is.null(valData) & !is.null(trainPartition)){
 		training  <- createDataPartition(trainData[[responseCol]], p = trainPartition)[[1]] ## this works for polygons as well because every polygon has only one entry in the attribnute table @data
-		if(length(training) == nrow(trainData)) stop(paste0("There are not enough polygons to split into training and validation partitions. \n  You could either ",
+		if(length(training) == nrow(trainData)) stop(paste0("There are not enough polygons/points to split into training and validation partitions. \n  You could either ",
 							"\n   * provide more (often smaller) polygons instead of few large ones (recommended)",
 							"\n   * provide pre-defined validation polygons via the valData argument",
 							"\n   * decrease trainPartition",
@@ -209,10 +209,30 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 		} else { 
 			## Check for and deal with overlapping training & validation data                 
 			dummy <- if(minDist != 0) .omniBuffer(trainData, minDist = minDist, img = img)  else trainData
-			inter <- gIntersects(valData, dummy, byid = T)
+			inter <- gIntersects(valData, dummy, byid = TRUE)
 			if(any(inter)){            
 				inter <- colnames(inter)[which(inter, arr.ind = TRUE)[,2]]
 				valData <- valData[!rownames(valData@data) %in% inter,]
+				
+				if(!nrow(valData)){
+					stop(paste0("After applying a buffer of ",minDist," pixels (minDist) no validation points remained.",
+									"\nPossible solutions:",
+									"\n * split datasets yourself, i.e. provide valData instead of trainPartition",
+									"\n * reduce minDist (may cause optimistic bias in validation!)",
+									"\n * provide more trainingPoints which are well spread across the scene"		
+									), call. = FALSE)
+				}
+				## TODO: add tests
+				if(mode == "classification" && !all(classMapping$class %in% valData[[responseCol]])){
+					stop(paste0("After applying a buffer of ",minDist," pixels (minDist) validation not all classes are represented in the validation set.",
+									"\nPossible solutions:",
+									"\n * split datasets yourself, i.e. provide valData instead of trainPartition",
+									"\n * reduce minDist (may cause optimistic bias in validation!)",
+									"\n * provide more trainingPoints which are well spread across the scene"		
+							), call. = FALSE)
+				}
+				
+				
 			}
 		}     
 	}
