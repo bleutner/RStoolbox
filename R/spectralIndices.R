@@ -7,8 +7,9 @@
 #' @param green Character or integer. Green band. 
 #' @param red Character or integer. Red band. 
 #' @param nir Character or integer. Near-infrared band (700-1100nm). 
-#' @param swir1 Character or integer. Short-wave-infrared band (1100 1351nm). 
+#' @param swir1 [temporarily deprecated]
 #' @param swir2 Character or integer. Short-wave-infrared band (1400-1800nm). 
+#' @param swir3 Character or integer. Short-wave-infrared band (2000-2500nm). 
 #' @param indices Character. One or more spectral indices to calculate (see Details). By default (NULL) all implemented indices given the spectral bands which are provided will be calculated.
 #' @param index Character. Alias for \code{indices}.
 #' @param scaleFactor Numeric. Scale factor for the conversion of scaled reflectances to [0,1] value range (applied as reflectance/scaleFactor) Neccesary for calculating EVI/EVI2 with scaled reflectance values.
@@ -38,10 +39,10 @@
 #' SI <- spectralIndices(lsat_ref, red = "B3_tre", nir = "B4_tre")
 #' plot(SI)
 spectralIndices <- function(img,
-        blue=NULL, green=NULL, red=NULL, nir=NULL, swir1 =NULL, swir2 = NULL, scaleFactor = 1, skipRefCheck = FALSE,
-        indices=NULL, index = NULL, coefs = list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5, s = 1, swir2ccc = NULL, swir2coc = NULL),
+        blue=NULL, green=NULL, red=NULL, nir = NULL, swir1 = NULL, swir2 =NULL, swir3 = NULL,
+        scaleFactor = 1, skipRefCheck = FALSE,   indices=NULL, index = NULL, 
+        coefs = list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5, s = 1, swir2ccc = NULL, swir2coc = NULL),
         ... ) {
-    # TODO: add further indices
     # TODO: soil line estimator
     
     ## We will use the following wavlength range definitions (following Schowengerdt 2007, p 10)
@@ -58,8 +59,13 @@ spectralIndices <- function(img,
     # TIR1  | thermal infra-red    |  8000  -   9500 nm
     # TIR2  | thermal infra-red    | 10000  - 140000 nm
     ##	
-    
+   
     if(!is.null(index)) indices <- index  ## argument translation for convenience
+    if("LSWI" %in% toupper(indices)) stop("LSWI has been deprecated. Use NDWI2 instead; it is identical.")
+    if(!is.null(swir1)) stop(paste0("Currently there is no spectral index requiring swir1.", 
+                       "\nIn case you were using spectralIndices from a previous version of RStoolbox with the swir1 argument,",
+                       "\nplease note that there has been naming correction. Former swir1 is now swir2 and former swir2 is now swir3.",
+                       "\nsee: news(package='RStoolbox')"), call.=FALSE)
     
     ## Coefficients
     defaultCoefs <- list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5, s = 1, swir2ccc = NULL, swir2coc = NULL)     
@@ -82,7 +88,7 @@ spectralIndices <- function(img,
     if(coefs$swir2cdiff <= 0) stop("NDVIc coefficient swir2ccc (completeley closed canopy) must be smaller than swir2coc (completely open canopy)")
     
     ## Gather function arguments (all provided bands) and create args
-    potArgs  <- c("blue", "green", "red", "nir", "swir2", "swir1")
+    potArgs  <- c("blue", "green", "red", "nir", "swir1", "swir2", "swir3")
     actArgs  <- vapply(potArgs, function(x) !is.null(get(x)), logical(1))    
     bands    <- potArgs[actArgs]
     
@@ -136,8 +142,9 @@ spectralIndices <- function(img,
                                 greenBand = fullSet[["green"]], 
                                 redBand   = fullSet[["red"]],
                                 nirBand   = fullSet[["nir"]], 
-                                swir1Band   = fullSet[["swir1"]], 
+                                swir1Band  = fullSet[["swir1"]],                             
                                 swir2Band  = fullSet[["swir2"]],
+                                swir3Band  = fullSet[["swir3"]],
                                 L = coefs[["L"]],  G = coefs[["G"]], Levi = coefs[["L_evi"]], 
                                 C1 = coefs[["C1"]], C2 = coefs[["C2"]], s = coefs[["s"]],
                                 swir2ccc = coefs[["swir2ccc"]], swir2cdiff = coefs[["swir2cdiff"]], sf = scaleFactor
@@ -162,19 +169,17 @@ spectralIndices <- function(img,
         EVI  	= function(red, nir, blue) {G * ((nir - red) / (nir + C1 * red - C2 * blue + L_evi))},
         EVI2    = function(red, nir) {G * (nir-red)/(nir + 2.4*red +1)},
         GEMI	= function(red, nir) {(((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5) ) / (nir + red + 0.5)) * (1 - ((((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5) ) / (nir + red + 0.5)) * 0.25)) - ((red - 0.125) / (1 - red))},
-        LSWI	= function(nir, swir1) {(nir-swir1)/(nir+swir1)},
-        MNDWI    = function(green, swir1) {(green-swir1) / (green+swir1)},
+        MNDWI   = function(green, swir2) {(green-swir2) / (green+swir2)},
         MSAVI	= function(red, nir) {nir + 0.5 - (0.5 * sqrt((2 * nir + 1)^2 - 8 * (nir - (2 * red))))},
         MSAVI2	= function(red, nir) {(2 * (nir + 1) - sqrt((2 * nir + 1)^2 - 8 * (nir - red))) / 2},
-        #     MSI     = function(nir, swir2) {swir2/nir},
-        NBRI    = function(nir, swir2) { (nir - swir2) / (nir + swir2)},
+        NBRI    = function(nir, swir3) { (nir - swir3) / (nir + swir3)},
         NDVI	= function(red, nir) {(nir-red)/(nir+red)}, 
         NDVIC   = function(red, nir, swir2) {(nir-red)/(nir+red)*(1-((swir2 - swir2ccc)/(swir2coc-swir2ccc)))},
         NDWI 	= function(green, nir) {(green - nir)/(green + nir)},
-        NDWI2	= function(nir, swir1) {(nir - swir1)/(nir + swir1)},       
+        NDWI2	= function(nir, swir2) {(nir - swir2)/(nir + swir2)},    
         NRVI    = function(red, nir) {(red/nir - 1)/(red/nir + 1)},
         RVI     = function(red, nir) {red/nir},
-        SATVI   = function(red, swir1, swir2) {(swir1 - red) / (swir1 + red + L) * (1 + L) - (swir2 / 2)},
+        SATVI   = function(red, swir2, swir3) {(swir2 - red) / (swir2 + red + L) * (1 + L) - (swir3 / 2)},
         SAVI    = function(red, nir) {(nir - red) * (1+L) / (nir + red + L)}, 
         SLAVI	= function(red, nir, swir2) {nir / (red + swir2)},
         SR  	= function(red, nir) {nir / red},     
@@ -195,18 +200,17 @@ BANDSdb <- lapply(.IDXdb, function(x) names(formals(x)))
         EVI     = c("Huete1999", "Enhanced Vegetation Index"),
         EVI2    = c("Jiang 2008", "Two-band Enhanced Vegetation Index"), # Development of a two-band enhanced vegetation index without a blue band
         GEMI    = c("Pinty1992","Global Environmental Monitoring Index"),
-        LSWI    = c("Xiao2004", "Land Surface Water Index"),
         MSAVI	= c("Qi1994","Modified Soil Adjusted Vegetation Index"),
         MSAVI2	= c("Qi1994","Modified Soil Adjusted Vegetation Index 2"),
-        MNDWI   = c("", "Modified Normalised Difference Water Index"),       
-        NBRI    = c("", "Normalised Burn Ratio Index"),
+        MNDWI   = c("Xu2006", "Modified Normalised Difference Water Index"),       
+        NBRI    = c("Garcia1991", "Normalised Burn Ratio Index"),
         NDVI	= c("Rouse1974", "Normalised Difference Vegetation Index"),
         NDVIC   = c("Nemani1993", "Corrected Normalised Difference Vegetation Index"),
         NDWI	= c("McFeeters1996", "Normalised Difference Water Index"), # The use of the Normalized Difference Water Index (NDWI) in the delineation of open water features
         NDWI2	= c("Gao1996", "Normalised Difference Water Index"),
         NRVI    = c("Baret1991","Normalised Ratio Vegetation Index"),
         RVI     = c("", "Ratio Vegetation Index"),
-        SATVI   = c("", "Soil Adjusted Total Vegetation Index"),
+        SATVI   = c("Marsett2006", "Soil Adjusted Total Vegetation Index"),
         SAVI    = c("Huete1988", "Soil Adjusted Vegetation Index"),
         SLAVI	= c("Lymburger2000","Specific Leaf Area Vegetation Index"),
         SR      = c("Birth1968", "Simple Ratio Vegetation Index"),  #or Jordan1969
@@ -219,7 +223,10 @@ BANDSdb <- lapply(.IDXdb, function(x) names(formals(x)))
 
 .wavlDB <- data.frame( Band = c("vis", "nir", "swir1", "swir2", "swir3", "mir1", "mir2", "tir1", "tir2"), 
           Description = c("visible", "near infra-red", "short-wave infra-red", "short-wave infra-red", "short-wave infra-red", "mid-wave infra-red", "mid-wave infra-red", "thermal infra-red", "thermal infra-red"),
-           Wavl_min = c(400,700,1100,1400,2000,3000,45000,8000,10000), Wavl_max = c(700,1100,1351, 1800,2500,4000,5000,9500,140000)) 
+           Wavl_min = c(400,700,1100,1400,2000,3000,45000,8000,10000), 
+           Wavl_max = c(700,1100,1351, 1800,2500,4000,5000,9500,140000),
+           "Landsat5_Band" = c("1,2,3", 4, "-", 5, 7, "-", "-", "-", 6)
+           ) 
 
 
 

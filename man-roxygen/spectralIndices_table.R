@@ -1,6 +1,6 @@
 #' @details
-#' \code{spectralIndices} calculates all indices in one go in C++, i.e. one call to raster::calc, which is far more efficient, than calculating each index separately (for large rasters).
-#' By default all indices which can be calculated given the specified indices will be calcultated. If you don't want all indices, use the \code{indices} argument to specify exactly which indices are to be calculated.
+#' \code{spectralIndices} calculates all indices in one go in C++,  which is more efficient than calculating each index separately (for large rasters).
+#' By default all indices which can be calculated given the specified indices will be calculated. If you don't want all indices, use the \code{indices} argument to specify exactly which indices are to be calculated.
 #' See the table bellow for index names and required bands.
 #'    
 #' Index values outside the valid value ranges (if such a range exists) will be set to NA. For example a pixel with NDVI > 1 will be set to NA.
@@ -27,7 +27,8 @@
 #' }
 #' 
 #' 
-#' The wavelength band names are defined following Schowengertd 2007, p10 as:
+#' The wavelength band names are defined following Schowengertd 2007, p10. 
+#' The last column shows exemplarily which Landsat 5 TM bands correspond to which wavelength range definition.
 #' <%= .df2tab(.wavlDB, "llll") %>
 
 

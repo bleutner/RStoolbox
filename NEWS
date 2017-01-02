@@ -7,14 +7,20 @@ New:
    and also the exact samples taken for validation including cell number and coordinates ($validation$validationSamples)
 
 Changes:
-*  ESUN lookup tables for `radCor()` are adjusted to match current USGS reccomendations from: https://landsat.usgs.gov/esun
-
+* ESUN lookup tables for `radCor()` are adjusted to match current USGS reccomendations from: https://landsat.usgs.gov/esun
+* `spectralIndices()` swir wavelength ranges are now defined consistently and correctly. 
+   Bands formerly provided as swir1 (version <1.7.0) should now (>=1.7.0) be provided as swir2 and former swir2 as swir3 respectively (see docu). 
+   The actual calculations were correct, but the naming was off. 
+   
 Fixes:
 * fix `ggR()` and `ggRGB()` in  annotation mode (default). No image was drawn and excessive memory allocation requested (= RStudio crash) (reported by Christian Walther)
 * fix `spectralIndices()` documentation for NDWI. Formula was based on McFeeters1996 but attributed to Gao1996. Now there is NDWI (McFeeters) and NDWI2 (Gao) (reported by Christian Bauer)
 * `estimateHaze()` now ensures correct histogram order, which could be off when raster had to read from disk (reported by Xavier Bailleau).   
 * `readMeta()` now makes concise bandnames also for Landsat Collection MTL files.
 * fix `radCor()` for Landsat 4 TM (reported by Thomas Day)
+
+Deprecated:
+* `spectralIndices()` index `LSWI` has been deprecated, as it is identical with the now available NDWI2.
 
 RStoolbox 0.1.6
 =====================================

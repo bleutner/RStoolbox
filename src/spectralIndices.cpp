@@ -4,7 +4,7 @@ using namespace Rcpp;
 //[[Rcpp::export]]
 NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 		 const int redBand,  const int blueBand, const int greenBand, const int nirBand,
-		 const int swir2Band, const int swir1Band,
+		 const int swir1Band, const int swir2Band, const int swir3Band,
 		 const double L,  const double s, const double G, const double C1,
 		 const double C2, double Levi, const double swir2ccc, const double swir2cdiff, const double sf) {
 
@@ -19,7 +19,7 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 	}
 ***/
 	NumericMatrix out(nsamp, nind);
-	NumericVector blue, green, red, nir, swir1, swir2;
+	NumericVector blue, green, red, nir, swir1, swir2, swir3;
 
 	if(blueBand  != NA_INTEGER)     blue = x(_,blueBand - 1);
 	if(greenBand != NA_INTEGER)    green = x(_,greenBand - 1);
@@ -27,6 +27,8 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 	if(nirBand   != NA_INTEGER)      nir = x(_,nirBand - 1);
 	if(swir1Band != NA_INTEGER)    swir1 = x(_,swir1Band - 1);
 	if(swir2Band != NA_INTEGER)    swir2 = x(_,swir2Band - 1);
+	if(swir3Band != NA_INTEGER)    swir2 = x(_,swir3Band - 1);
+
     if(sf != 1) {
     	Levi = Levi * sf;
     }
@@ -62,15 +64,10 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 					(nir + red + 0.5)) * (1 - ((((pow(nir,2) - pow(red,2)) * 2 + (nir * 1.5) + (red * 0.5) ) /
 							(nir + red + 0.5)) * 0.25)) - ((red - 0.125) / (1 - red));
 			out(_,j) = ifelse(is_na(out(_,j)), NA_REAL, out(_,j));
-		}
-		else if(indices[j] == "LSWI") {
-                        // Land surface water index
-			out(_,j) = (nir-swir1) / (nir+swir1);
-			out(_,j) = ifelse(is_na(out(_,j)) | (out(_,j) > 1.0) | (out(_,j) < -1.0) , NA_REAL, out(_,j));
-		}
+		}	
 		else if(indices[j] == "MNDWI") {
-                        // Modified Normalised Difference Water Index
-			out(_,j) = (green-swir1) / (green+swir1);
+            // Modified Normalised Difference Water Index
+			out(_,j) = (green-swir2) / (green+swir2);
 			out(_,j) = ifelse(is_na(out(_,j)) | (out(_,j) > 1.0) | (out(_,j) < -1.0) , NA_REAL, out(_,j));
 		}
 		else if(indices[j] == "MSAVI") {
@@ -79,18 +76,10 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 			out(_,j) = ifelse(is_na(out(_,j)), NA_REAL, out(_,j));
 		}
 		else if(indices[j] == "MSAVI2") {
-			// Modified soil adjusted vegetation index 2
+		    // Modified soil adjusted vegetation index 2
 			out(_,j) = (2.0 * nir + 1.0 - sqrt(pow(2.0 * nir + 1.0, 2) - 8.0 * (nir - red))) / 2.0;
 			out(_,j) = ifelse(is_na(out(_,j)), NA_REAL, out(_,j));
-	}
-/***
-		else if(indices[j] == "MSI") {
-			// Moisture stress index
-			out(_,j) =  swir2 / nir;
-			out(_,j) = ifelse(is_na(out(_,j)), NA_REAL, out(_,j));
-
-	}
-***/	
+	   }
 	   else if(indices[j] == "NDVIC") {
 			//Normalized difference vegetation index
 			out(_,j) = (nir - red) / (nir + red) * (1 - (swir2 - swir2ccc)/swir2cdiff);
@@ -98,7 +87,7 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 		}
 		else if(indices[j] == "NBRI"){
             // Normalised Burn Ratio Index
-			out(_,j) = (nir - swir2) / (nir + swir2);
+			out(_,j) = (nir - swir3) / (nir + swir3);
 			out(_,j) = ifelse(is_na(out(_,j)) | (out(_,j) > 1.0) | (out(_,j) < -1.0), NA_REAL, out(_,j));
 		}
 		else if(indices[j] == "NDVI") {
@@ -114,8 +103,9 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 		}
 		else if(indices[j] == "NDWI2") {
 			// Normalized difference water index
-			// Gao 1996
-			out(_,j) = (nir - swir1)/(nir + swir1);
+			// Gao 1996, Chen 2005
+			// a.k.a. LSWI
+			out(_,j) = (nir - swir2)/(nir + swir2);
 			out(_,j) = ifelse(is_na(out(_,j)) | (out(_,j) > 1.0) | (out(_,j) < -1.0) , NA_REAL, out(_,j));
 		}
 	    else if(indices[j] == "NRVI") {
@@ -133,8 +123,8 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 		}
 	
 		else if(indices[j] == "SATVI"){
-                        // Soil adjusted total vegetation index
-			out(_,j) = ((swir1 - red) / (swir1 + red + L)) * (1.0 + L) - (swir2 / 2.0);
+            // Soil adjusted total vegetation index
+			out(_,j) = ((swir2 - red) / (swir2 + red + L)) * (1.0 + L) - (swir3 / 2.0);
 			out(_,j) = ifelse(is_na(out(_,j)), NA_REAL, out(_,j));
                 }
 		else if(indices[j] == "SAVI") {
