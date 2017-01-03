@@ -29,7 +29,7 @@
 #' 
 #' The wavelength band names are defined following Schowengertd 2007, p10. 
 #' The last column shows exemplarily which Landsat 5 TM bands correspond to which wavelength range definition.
-#' <%= .df2tab(.wavlDB, "llll") %>
+#' <%= .df2tab(.wavlDB, "lllll") %>
 
 
 

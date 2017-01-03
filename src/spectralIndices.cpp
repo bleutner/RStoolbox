@@ -27,7 +27,7 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 	if(nirBand   != NA_INTEGER)      nir = x(_,nirBand - 1);
 	if(swir1Band != NA_INTEGER)    swir1 = x(_,swir1Band - 1);
 	if(swir2Band != NA_INTEGER)    swir2 = x(_,swir2Band - 1);
-	if(swir3Band != NA_INTEGER)    swir2 = x(_,swir3Band - 1);
+	if(swir3Band != NA_INTEGER)    swir3 = x(_,swir3Band - 1);
 
     if(sf != 1) {
     	Levi = Levi * sf;

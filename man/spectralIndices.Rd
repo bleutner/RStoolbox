@@ -77,7 +77,7 @@ The coefficients are:
 
 The wavelength band names are defined following Schowengertd 2007, p10. 
 The last column shows exemplarily which Landsat 5 TM bands correspond to which wavelength range definition.
-\tabular{llll}{ \strong{ Band } \tab \strong{ Description } \tab \strong{ Wavl_min } \tab \strong{ Wavl_max } \tab \strong{ Landsat5_Band } \cr vis \tab visible \tab   400 \tab    700 \tab 1,2,3 \cr nir \tab near infra-red \tab   700 \tab   1100 \tab 4 \cr swir1 \tab short-wave infra-red \tab  1100 \tab   1351 \tab - \cr swir2 \tab short-wave infra-red \tab  1400 \tab   1800 \tab 5 \cr swir3 \tab short-wave infra-red \tab  2000 \tab   2500 \tab 7 \cr mir1 \tab mid-wave infra-red \tab  3000 \tab   4000 \tab - \cr mir2 \tab mid-wave infra-red \tab 45000 \tab   5000 \tab - \cr tir1 \tab thermal infra-red \tab  8000 \tab   9500 \tab - \cr tir2 \tab thermal infra-red \tab 10000 \tab 140000 \tab 6 }
+\tabular{lllll}{ \strong{ Band } \tab \strong{ Description } \tab \strong{ Wavl_min } \tab \strong{ Wavl_max } \tab \strong{ Landsat5_Band } \cr vis \tab visible \tab   400 \tab    700 \tab 1,2,3 \cr nir \tab near infra-red \tab   700 \tab   1100 \tab 4 \cr swir1 \tab short-wave infra-red \tab  1100 \tab   1351 \tab - \cr swir2 \tab short-wave infra-red \tab  1400 \tab   1800 \tab 5 \cr swir3 \tab short-wave infra-red \tab  2000 \tab   2500 \tab 7 \cr mir1 \tab mid-wave infra-red \tab  3000 \tab   4000 \tab - \cr mir2 \tab mid-wave infra-red \tab 45000 \tab   5000 \tab - \cr tir1 \tab thermal infra-red \tab  8000 \tab   9500 \tab - \cr tir2 \tab thermal infra-red \tab 10000 \tab 140000 \tab 6 }
 }
 \examples{
 library(ggplot2)

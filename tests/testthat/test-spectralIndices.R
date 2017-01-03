@@ -47,9 +47,11 @@ test_that("returned classes", {
 
 data(lsat)
 test_that("excercise all indices", {
-            expect_is(sp <- spectralIndices(lsat, blue = 1, green=2, red=3, nir=4, swir2=5, swir3=7, skipRefCheck = TRUE), "RasterBrick")
-            expect_equal(nlayers(sp), 21)
+            expect_is(sp <- spectralIndices(lsat, blue = 1, green=2, red=3, nir=4, swir2=5, swir3=7,
+                            coefs = list(L=0.4,s=0.3,swir2ccc=30,swir2coc=140), scaleFactor=255), "RasterBrick")
+            expect_equal(nlayers(sp), 22)
         })
+
 
 ## Check for duplicate indices
 #tmat <- do.call(rbind, lapply(1:ncol(k), function(i){colSums(k[,i]-k, na.rm = T)==0}))
