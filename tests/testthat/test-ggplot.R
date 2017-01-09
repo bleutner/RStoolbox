@@ -58,9 +58,10 @@ test_that("ggR works with single valued rasters", {
 
 test_that("ggRGB returns proper ggplot2 classes or data.frames", {
             data(rlogo) 
-            
-            tests  <- expand.grid(anno = c(TRUE, FALSE), ggLayer = c(TRUE, FALSE), ggObj = c(TRUE,FALSE))
-            builds <- lapply(1:nrow(tests), function(i) ggRGB(rlogo, ggObj = tests$ggObj[i], geom_raster = !tests$anno[i], ggLayer = tests$ggLayer[i]))            
+            data(lsat)
+
+            tests  <- expand.grid(anno = c(TRUE, FALSE), ggLayer = c(TRUE, FALSE), ggObj = c(TRUE,FALSE), stretch=c("sqrt", "hist", "log", "lin"))
+            builds <- lapply(1:nrow(tests), function(i) ggRGB(rlogo, ggObj = tests$ggObj[i], geom_raster = !tests$anno[i], ggLayer = tests$ggLayer[i], stretch = tests$stretch[i] ))            
             tinfo <- paste0("anno=", tests$anno, ", ggLayer=", tests$ggLayer, ", ggObj=", tests$ggObj)
             
             ## Stand-alone
@@ -81,6 +82,8 @@ test_that("ggRGB returns proper ggplot2 classes or data.frames", {
             ## Data.frames
             for(s in  which(with(tests, !ggObj))) expect_is(builds[[s]], "data.frame", info = tinfo[s])
             for(s in  which(with(tests, !ggObj))) expect_is(builds[[s]]$fill, "character", info = tinfo[s])
+
+
         })
 
 
