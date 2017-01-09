@@ -68,8 +68,10 @@ echo "**********************************************************"
 #Rscript -e "library(devtools); library(methods);  check(); build_win(version = c('R-release', 'R-devel'))" 
 #Valgrind times out --> run locally
 #Rscript -e "library(rhub); library(methods);  check(platform='debian-gcc-release', valgrind = TRUE)" &> ${HOME}/RHub_RStoolbox_check_with_valgrind.log
-Rscript -e "library(rhub); library(methods);  check(platform=c('debian-gcc-release', 'debian-gcc-devel', 'ubuntu-gcc-devel',  'windows-x86_64-oldrel', 'windows-x86_64-release', 'windows-x86_64-devel','linux-x86_64-rocker-gcc-san'))" &> ${HOME}/RHub_RStoolbox_checks.log
+Rscript -e "library(rhub); library(methods);  check(platform=c('debian-gcc-release', 'debian-gcc-devel', 'ubuntu-gcc-devel',  'windows-x86_64-oldrel', 'windows-x86_64-release', 'windows-x86_64-devel','linux-x86_64-rocker-gcc-san'))" 
 cd ..
 R CMD build RStoolbox 
 R CMD check RStoolbox_0.*tar.gz -o /tmp/RStoolbox --run-donttest --as-cran --use-valgrind 
 rm RStoolbox_0*tar.gz
+
+
