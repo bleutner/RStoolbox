@@ -4,14 +4,16 @@
 \alias{sam}
 \title{Spectral Angle Mapper}
 \usage{
-sam(x, em, angles = FALSE)
+sam(img, em, angles = FALSE, ...)
 }
 \arguments{
-\item{x}{RasterBrick or RasterStack. Remote sensing imagery (usually hyperspectral)}
+\item{img}{RasterBrick or RasterStack. Remote sensing imagery (usually hyperspectral)}
 
-\item{em}{Matrix containing endmembers in rows and bands in columns}
+\item{em}{Matrix or data.frame with endmembers. Each row should contain the endmember spectrum of a class, i.e. columns correspond to bands in \code{img}. It is reccomended to set the rownames to class names.}
 
 \item{angles}{Logical. If \code{TRUE} a RasterBrick containing each one layer per endmember will be returned containing the spectral angles.}
+
+\item{...}{further arguments to be passed to \code{\link[raster]{writeRaster}}}
 }
 \value{
 RasterBrick or RasterLayer
