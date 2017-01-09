@@ -1,16 +1,19 @@
 context("Multicore/Singlecore")
-	
+library(parallel)
+library(raster)
+
+
 test_that(".paraRasterFun is equal to predict, calc, overlay, Both single and multicore.", {
             #skip_on_cran() # hadley says its risky to test paralell code on cran :-)
-            library(parallel)
-            library(raster)
+for (clusterType in c('PSOCK', 'FORK')){
+if(Sys.info()[["sysname"]] != "Linux") next
             r <- raster(ncol=10,nrow=10, vals=1:100)
             r <- stack(r, r^2)
             names(r) <- c("red", "nir")  
             m <- lm(red~nir, data = as.data.frame(r))
             f <- function(a,b){a-b}            
             
-            beginCluster(2, type='PSOCK')
+            beginCluster(2, type=clusterType)
             cluster <- "multicore"
             for(i in 1:2){
                 expect_identical(.paraRasterFun(r, rasterFun = predict, args = list(model = m)), predict(r, m), label = paste("predict:", cluster))
@@ -19,17 +22,17 @@ test_that(".paraRasterFun is equal to predict, calc, overlay, Both single and mu
                 endCluster()
                 cluster <- "singlecore"
             }
-            
+     }       
         })
 
 
 test_that(".parXapply family returns identical results to ?pply family. Both single and multicore.", {
             #skip_on_cran()
-			library(parallel)
-            library(raster)
+for (clusterType in c('PSOCK', 'FORK')){
+if(Sys.info()[["sysname"]] != "Linux") next
             lis <- lapply(1:5, rnorm)
             mat <- matrix(1:100,10,10)
-            beginCluster(2, type = 'PSOCK')
+            beginCluster(2, type = clusterType)
             cluster <- "multicore"
             for(i in 1:2){
                 expect_identical(.parXapply(X = lis, XFUN ="lapply", FUN=sum, envir = environment()), lapply(lis, sum), label = paste("lapply:", cluster))
@@ -38,6 +41,7 @@ test_that(".parXapply family returns identical results to ?pply family. Both sin
                 endCluster()
                 cluster <- "singlecore"
             }
+}
         })  
 
 
