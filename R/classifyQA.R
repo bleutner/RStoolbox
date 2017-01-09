@@ -71,9 +71,9 @@ classifyQA <- function(img, type = c("background", "cloud", "cirrus","snow", "wa
 						cbind(is = encodeQA(snow = "high"),   becomes = 3L)),
 				
 				water = rbind(
-						cbind(is = encodeQA(water = "low"),  becomes = 5L),
-						cbind(is = encodeQA(water = "med"),  becomes = 5L),
-						cbind(is = encodeQA(water = "high"),  becomes = 5L)))
+						cbind(is = encodeQA(water = "low"),  becomes = 1L),
+						cbind(is = encodeQA(water = "med"),  becomes = 2L),
+						cbind(is = encodeQA(water = "high"),  becomes = 3L)))
 		
 		out <- lapply(type[type != "background"], function(i){ 
 					.paraRasterFun(img, rasterFun = calc, args = list(fun = function(xi, na.rm = FALSE) classQA(x = xi, rcl = rclxList[[i]]), forcefun = TRUE))
