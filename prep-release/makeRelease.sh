@@ -71,7 +71,7 @@ echo "**********************************************************"
 Rscript -e "library(rhub); library(methods);  check(platform=c('debian-gcc-release', 'debian-gcc-devel', 'ubuntu-gcc-devel',  'windows-x86_64-oldrel', 'windows-x86_64-release', 'windows-x86_64-devel','linux-x86_64-rocker-gcc-san'))" 
 cd ..
 R CMD build RStoolbox 
-R CMD check RStoolbox_0.*tar.gz -o /tmp/RStoolbox --run-donttest --as-cran --use-valgrind 
+R CMD check RStoolbox_0.*tar.gz -o /tmp --run-donttest --as-cran --use-valgrind 
 rm RStoolbox_0*tar.gz
 
 
