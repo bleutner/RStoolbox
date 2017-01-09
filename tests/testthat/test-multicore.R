@@ -10,7 +10,7 @@ test_that(".paraRasterFun is equal to predict, calc, overlay, Both single and mu
             m <- lm(red~nir, data = as.data.frame(r))
             f <- function(a,b){a-b}            
             
-            beginCluster(2)
+            beginCluster(2, type='PSOCK')
             cluster <- "multicore"
             for(i in 1:2){
                 expect_identical(.paraRasterFun(r, rasterFun = predict, args = list(model = m)), predict(r, m), label = paste("predict:", cluster))
@@ -29,7 +29,7 @@ test_that(".parXapply family returns identical results to ?pply family. Both sin
             library(raster)
             lis <- lapply(1:5, rnorm)
             mat <- matrix(1:100,10,10)
-            beginCluster(2)
+            beginCluster(2, type = 'PSOCK')
             cluster <- "multicore"
             for(i in 1:2){
                 expect_identical(.parXapply(X = lis, XFUN ="lapply", FUN=sum, envir = environment()), lapply(lis, sum), label = paste("lapply:", cluster))
