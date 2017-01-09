@@ -58,7 +58,8 @@ p <- ggR(reference, sat = 1, alpha = .5)
 p + ggR(missreg, sat = 1, hue = .5, alpha = 0.5, ggLayer=TRUE) 
 
 ## Coregister images (and report statistics)
-coreg <- coregisterImages(missreg, master = reference, nSamples = 500, reportStats = TRUE)
+coreg <- coregisterImages(missreg, master = reference,
+                         nSamples = 500, reportStats = TRUE)
 
 ## Plot mutual information per shift
 ggplot(coreg$MI) + geom_raster(aes(x,y,fill=mi))

@@ -21,7 +21,8 @@
 #' \tabular{ll}{
 #'  \code{ggObj = TRUE}:   \tab ggplot2 plot \cr
 #'  \code{ggLayer = TRUE}: \tab ggplot2 layer to be combined with an existing ggplot2 \cr
-#'  \code{ggObj = FALSE}:  \tab data.frame in long format suitable for plotting with ggplot2, includes the pixel values and the calculated colors  \cr  
+#'  \code{ggObj = FALSE}:  \tab data.frame in long format suitable for plotting with ggplot2, 
+#'                          includes the pixel values and the calculated colors  \cr  
 #' }
 #' @details
 #' When \code{img} contains factor values and \code{annotation=TRUE}, the raster values will automatically be converted

@@ -40,7 +40,8 @@ Note however, that this does not apply if (\code{ggLayer=FALSE}).}
 \tabular{ll}{
  \code{ggObj = TRUE}:   \tab ggplot2 plot \cr
  \code{ggLayer = TRUE}: \tab ggplot2 layer to be combined with an existing ggplot2 \cr
- \code{ggObj = FALSE}:  \tab data.frame in long format suitable for plotting with ggplot2, includes the pixel values and the calculated colors  \cr  
+ \code{ggObj = FALSE}:  \tab data.frame in long format suitable for plotting with ggplot2, 
+                         includes the pixel values and the calculated colors  \cr  
 }
 }
 \description{

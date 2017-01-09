@@ -8,7 +8,7 @@ estimateHaze(x, hazeBands, darkProp = 0.01, maxSlope = TRUE, plot = FALSE,
   returnTables = FALSE)
 }
 \arguments{
-\item{x}{Raster* object or a previous result from \code{estimateHaze(x , returnTables = TRUE} from which to estimate haze}
+\item{x}{Raster* object or a previous result from \code{estimateHaze} with \code{returnTables = TRUE} from which to estimate haze}
 
 \item{hazeBands}{Integer or Character. Band number or bandname from which to estimate atmospheric haze (optional if x contains only one layer)}
 

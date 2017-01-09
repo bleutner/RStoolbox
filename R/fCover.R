@@ -60,8 +60,8 @@
 #' ## Perform classification
 #' lc	  <- unsuperClass(lsat, nClass=2)
 #' 
-#' ## Calculate the true cover (possible in this example because the fake corse resolution imagery 
-#' ## is exactly res(lsat)*9
+#' ## Calculate the true cover, which is of course only possible in this example, 
+#' ## because the fake corse resolution imagery is exactly res(lsat)*9
 #' trueCover <- aggregate(lc$map, agg.level, fun = function(x, ...){sum(x == 1, ...)/sum(!is.na(x))})
 #' 
 #' ## Run with randomForest and support vector machine (radial basis kernel)

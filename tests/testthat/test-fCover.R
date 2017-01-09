@@ -1,8 +1,8 @@
 context("fCover")
 
 
-library(raster)
-library(randomForest)
+suppressPackageStartupMessages(library(raster))
+suppressPackageStartupMessages(library(randomForest))
 
 data(lsat)
 lc	  <- unsuperClass(lsat, nClass=3)$map

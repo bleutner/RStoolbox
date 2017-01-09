@@ -41,7 +41,8 @@ library(ggplot2)
 
 ## Load example data
 data(lsat)
-## Fake panchromatic image (30m resolution, wavelength: visible (integral from blue to red)
+## Fake panchromatic image (30m resolution covering
+the visible range (integral from blue to red))
 pan       <- sum(lsat[[1:3]]) 
 ggR(pan, stretch = "lin") 
 

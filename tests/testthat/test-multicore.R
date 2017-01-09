@@ -1,7 +1,7 @@
 context("Multicore/Singlecore")
 	
 test_that(".paraRasterFun is equal to predict, calc, overlay, Both single and multicore.", {
-            skip_on_cran() # hadley says its risky to test paralell code on cran :-)
+            #skip_on_cran() # hadley says its risky to test paralell code on cran :-)
             library(parallel)
             library(raster)
             r <- raster(ncol=10,nrow=10, vals=1:100)
@@ -24,7 +24,7 @@ test_that(".paraRasterFun is equal to predict, calc, overlay, Both single and mu
 
 
 test_that(".parXapply family returns identical results to ?pply family. Both single and multicore.", {
-            skip_on_cran()
+            #skip_on_cran()
 			library(parallel)
             library(raster)
             lis <- lapply(1:5, rnorm)

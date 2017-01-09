@@ -2,32 +2,27 @@
 cd ${HOME}/eclipseWorkspace/RStoolbox
 
 ## Check for uncommited changes
-function enforce_up2date {
-    git status | grep -q up-to-date
-    status=$? 
-    if [ $status -eq 1 ] 
-    then
-	   echo "Uncommited changes. Clean-up first."
-	   git status
-	   exit 1
-    fi
-}
+if [[ -n $(git status -s) ]] 
+then
+	echo "Uncommited changes. Clean-up first."
+	git status
+	exit 1
+fi
 
 
 ## Begin build and check
 git checkout master
-enforce_up2date
-echo "\n**********************************************************"
-echo "Generate sysdata *****************************************"
-echo "**********************************************************"
-statDir=$(git diff --stat HEAD -- data-raw)
-statSysDat=$(git diff --stat HEAD -- R/sysdata.rda)
-if [[ ! -n $statDir ]] || [[ ! -n $statSysDat ]]
+datScr=$(git log -1 --format=%ct data-raw/)
+datSys=$(git log -1 --format=%ct R/sysdata.rda)
+if [ $(( satScr > datSys )) -eq 1 ]
 then
+    echo "\n**********************************************************"
+    echo "Generate sysdata *****************************************"
+    echo "**********************************************************"
     Rscript data-raw/generate_sysdata.R
     git commit -a -m "Automatic commit: Document & Update sysdata"
 else
-    echo 'R/sysdata.R is up-to-date'
+    echo 'R/sysdata.R is already up-to-date'
 fi 
 
 echo "\n**********************************************************"
@@ -37,18 +32,26 @@ Rscript -e "library(devtools); library(methods); document(); install()"
 
 
 ## Re-build example data
-git checkout example-data
-echo "\n**********************************************************"
-echo "Generate example data ************************************"
-echo "**********************************************************"
-Rscript data-raw/generate_data.R
-git commit -a -m "Automatic commit: Update example data (landsat, rlogo, srtm, lsat)"
+tmstr=$(git log -1 --format=%ct data/ inst/external/trainingPoints.rds inst/external/landsat/)
+texmpl=$(git log example-data -1  --format=%ct)
+if [ $(( tmstr > texmpl )) -eq 0 ]
+then
+    echo "\n**********************************************************"
+    echo "Generate example data ************************************"
+    echo "**********************************************************"
+    git checkout example-data
+    Rscript data-raw/generate_data.R
+    git commit -a -m "Automatic commit: Update example data (landsat, rlogo, srtm, lsat)"
 
-## Back to master
-git checkout master
-git checkout example-data data/rlogo.rda data/srtm.rda  data/lsat.rda inst/external/landsat inst/external/trainingPolygons.rds
-Rscript -e "library(devtools); library(methods); document()"
-git commit -a -m "Automatic commit: Pull example data from branch example-data"
+    ## Back to master
+    git checkout master
+    git checkout example-data data/rlogo.rda data/srtm.rda  data/lsat.rda inst/external/landsat inst/external/trainingPolygons.rds
+    Rscript -e "library(devtools); library(methods); document()"
+    git commit -a -m "Automatic commit: Pull example data from branch example-data"
+else 
+    echo "Example data already up-to-date."    
+fi
+
 
 ## Website
 echo "\n**********************************************************"
@@ -66,4 +69,7 @@ echo "**********************************************************"
 #Valgrind times out --> run locally
 #Rscript -e "library(rhub); library(methods);  check(platform='debian-gcc-release', valgrind = TRUE)" &> ${HOME}/RHub_RStoolbox_check_with_valgrind.log
 Rscript -e "library(rhub); library(methods);  check(platform=c('debian-gcc-release', 'debian-gcc-devel', 'ubuntu-gcc-devel',  'windows-x86_64-oldrel', 'windows-x86_64-release', 'windows-x86_64-devel','linux-x86_64-rocker-gcc-san'))" &> ${HOME}/RHub_RStoolbox_checks.log
-
+cd ..
+R CMD build RStoolbox 
+R CMD check RStoolbox_0.*tar.gz -o /tmp/RStoolbox --run-donttest --as-cran --use-valgrind 
+rm RStoolbox_0*tar.gz

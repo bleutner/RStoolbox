@@ -45,13 +45,15 @@ sc <- superClass(lsat, trainData = train, responseCol = "class", nSamples = 50, 
 
 ## Polish map with majority filter
 
-polishMap <- focal(sc$map, matrix(1,3,3), fun = modal) 
+polishedMap <- focal(sc$map, matrix(1,3,3), fun = modal) 
 
 ## Validation
 ## Before filtering
-val0 <- validateMap(sc$map, valData = val, responseCol = "class", classMapping = sc$classMapping)
+val0 <- validateMap(sc$map, valData = val, responseCol = "class", 
+							classMapping = sc$classMapping)
 ## After filtering
-val1 <- validateMap(polishMap, valData = val, responseCol = "class", classMapping = sc$classMapping)
+val1 <- validateMap(polishedMap, valData = val, responseCol = "class",
+							 classMapping = sc$classMapping)
 }
 }
 
