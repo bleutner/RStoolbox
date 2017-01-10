@@ -35,7 +35,7 @@
 #' lsat_minnaert <- topCor(lsat, dem = srtm, metaData = metaData, method = "minnaert")
 #' 
 #' ## C correction, solar angles provided manually
-#' lsat_C <- topCor(lsat, dem = srtm, solarAngles = c(1.081533, 0.7023922), method = "C", ...)
+#' lsat_C <- topCor(lsat, dem = srtm, solarAngles = c(1.081533, 0.7023922), method = "C")
 #' 
 topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg = NULL, nStrat = 5, illu, ...){
     
@@ -111,7 +111,7 @@ topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg
                 })
         Lh <- stack(Lh)  
         ellip <- list(...)
-        if ('filename' %in% names(ellip) && !is.null(elip[["filename"]])) {
+        if ('filename' %in% names(ellip) && !is.null(ellip[["filename"]])) {
             names(Lh) <- names(img)
             Lh <- writeRaster(Lh, ...)
         }
