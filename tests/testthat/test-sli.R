@@ -14,7 +14,7 @@ test_that("read and write are compatible", {
                 expect_equal(names(sli), c("wavelength", "veg_stressed", "veg_vital"))
                 expect_equal(nrow(sli), 2151)
                 expect_equal(sli, sliR)
-                file.remove(list.files(tempdir(), basename(sliTmpFile)))
+                file.remove(list.files(tempdir(), basename(sliTmpFile), full = TRUE))
             }
             
             
