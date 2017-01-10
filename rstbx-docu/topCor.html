@@ -27,7 +27,7 @@ group: navigation
 
 <pre>
 topCor(img, dem, metaData, solarAngles = c(), method = "C",
-  stratImg = NULL, nStrat = 5, illu)
+  stratImg = NULL, nStrat = 5, illu, ...)
 </pre>
 
 
@@ -66,6 +66,10 @@ Must have the same dimensions as <code class="r">img</code>.</p>
 <tr valign="top"><td><code class="r">illu</code></td>
 <td>
 <p>Raster*. Optional pre-calculated ilumination map. Run topCor with method=&quot;illu&quot; to calculate an ilumination map</p>
+</td></tr>
+<tr valign="top"><td><code class="r">...</code></td>
+<td>
+<p>arguments passed to <code class="r"><a href="http://www.inside-r.org/packages/cran/raster/docs/writeRaster">writeRaster</a></code></p>
 </td></tr>
 </table>
 
