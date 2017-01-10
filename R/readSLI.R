@@ -12,48 +12,63 @@
 #' @template examples_SLI
 readSLI <- function(path) {
     
-    ## Figure out file naming convention of hdr file for either combination of 
-    ## (filename.sli + filename.sli.hdr) OR (filename.sli + filename.hdr)
-    hdr_path <- paste0(path, ".hdr")
-    if(!file.exists(hdr_path)){
-        hdr_path <- paste0(strsplit(path,"[.]")[[1]][1], ".hdr")
-        if (!file.exists(hdr_path)){
-            stop(paste0("Can't find header file of", path), call.= FALSE)
+    ## Check if is binary
+    f   <- file(path,"rb",raw = TRUE)
+    b   <- readBin(f, "int", 1000, size=1, signed = FALSE)
+    bin <- max(b)>128
+    close(f)
+    
+    if(bin) {
+        ## Figure out file naming convention of hdr file for either combination of 
+        ## (filename.sli + filename.sli.hdr) OR (filename.sli + filename.hdr)
+        hdr_path <- paste0(path, ".hdr")
+        if(!file.exists(hdr_path)){
+            hdr_path <- paste0(strsplit(path,"[.]")[[1]][1], ".hdr")
+            if (!file.exists(hdr_path)){
+                stop(paste0("Can't find header file of", path), call.= FALSE)
+            }
         }
-    }
-    
-    ## Get header info
-    hdr   <- readLines(hdr_path, n=-1L)
-    bands <- .getNumeric(hdr[grep("samples", hdr)])
-    lines <- .getNumeric(hdr[grep("lines", hdr)])
-    data_type <- .getNumeric(hdr[grep("data type", hdr)])
-    
-    ## Extract spectra labels
-    id <- .bracketRange(hdr, "spectra names")
-    if(id[1]==id[2]) {
-        labels <- hdr[(id[1])]
-        labels <- strsplit(labels, "[{]")[[1]][2]
+        
+        ## Get header info
+        hdr   <- readLines(hdr_path, n=-1L)
+        bands <- .getNumeric(hdr[grep("samples", hdr)])
+        lines <- .getNumeric(hdr[grep("lines", hdr)])
+        data_type <- .getNumeric(hdr[grep("data type", hdr)])
+        
+        ## Extract spectra labels
+        id <- .bracketRange(hdr, "spectra names")
+        if(id[1]==id[2]) {
+            labels <- hdr[(id[1])]
+            labels <- strsplit(labels, "[{]")[[1]][2]
+        } else {
+            labels <- hdr[(id[1]+1):(id[2])]
+        }
+        
+        labels <- gsub( "\\}| ", "", paste(labels, collapse = ","))
+        labels <- unlist(strsplit(gsub(",,",",", labels), ","))
+        
+        ## Extract wavelengths
+        id <- .bracketRange(hdr, "wavelength = ")
+        wavelengths <- hdr[(id[1]+1):(id[2])]
+        wavelengths <- gsub( "\\}| ", "", paste( wavelengths, collapse=","))
+        wavelengths <- as.numeric( unlist( strsplit( gsub(",,",",", wavelengths), ",")))
+        
+        ## Read binary sli file
+        if (data_type == 4) bytes <- 4
+        if (data_type == 5) bytes <- 8	
+        x <- data.frame(matrix(nrow=bands, ncol=lines))
+        x[] <- readBin(path, "numeric", n = 1000000, size = bytes)
+        colnames(x) <- labels
+        x <- cbind(wavelengths,x)
+        colnames(x)[1] <- "wavelength"
     } else {
-        labels <- hdr[(id[1]+1):(id[2])]
+        x <- readLines(path)
+        cc <- tail(grep("^Column", x),1)
+        cnames <- gsub("Column[[:space:]][[:digit:]]:[[:space:]]|~~[[:digit:]]", "", x[2:cc])
+        cnames <- gsub(" ", ".", cnames)
+        x <- read.table(path, skip=cc)
+        colnames(x) <- cnames
     }
-    
-    labels <- gsub( "\\}| ", "", paste(labels, collapse = ","))
-    labels <- unlist(strsplit(gsub(",,",",", labels), ","))
-    
-    ## Extract wavelengths
-    id <- .bracketRange(hdr, "wavelength = ")
-    wavelengths <- hdr[(id[1]+1):(id[2])]
-    wavelengths <- gsub( "\\}| ", "", paste( wavelengths, collapse=","))
-    wavelengths <- as.numeric( unlist( strsplit( gsub(",,",",", wavelengths), ",")))
-    
-    ## Read binary sli file
-    if (data_type == 4) bytes <- 4
-    if (data_type == 5) bytes <- 8	
-    x <- data.frame(matrix(nrow=bands, ncol=lines))
-    x[] <- readBin(path, "numeric", n = 1000000, size = bytes)
-    colnames(x) <- labels
-    x <- cbind(wavelengths,x)
-    colnames(x)[1] <- "wavelength"
     return(x)
     
 } ## EOF readSLI
@@ -68,7 +83,7 @@ readSLI <- function(path) {
 #' @param x data.frame with first column containing wavelengths and all other columns containing spectra.
 #' @param wavl.units wavelength units. Defaults to Micrometers. Nanometers is another typical option.
 #' @param scaleF optional reflectance scaling factor. Defaults to 1.
-#' @param mode character string specifying output file type. Must be one of \code{"bin"} for binary .sli files or \code{"ASCII"} for --guess what-- ASCII spectral library files (still in an ENVI compatible format).
+#' @param mode character string specifying output file type. Must be one of \code{"bin"} for binary .sli files or \code{"ASCII"} for ASCII ENVI plot files.
 #' @seealso \code{\link{readSLI}}
 #' @export
 #' @template examples_SLI
@@ -115,7 +130,7 @@ writeSLI <- function(x, path, wavl.units="Micrometers", scaleF=1, mode="bin") {
         sink(path)
         ## Write txt file header
         writeLines(paste0("ENVI ASCII Plot File [", date(),"]\n",
-                        "Column 1: wavelength [!7l!3m]!N", 
+                        "Column 1: wavelength", 
                         paste0(collector, collapse="")))
         sink()
         ## Append data

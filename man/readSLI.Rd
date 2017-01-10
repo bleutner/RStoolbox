@@ -19,19 +19,19 @@ read/write support for ENVI spectral libraries
 ENVI spectral libraries consist of a binary data file (.sli) and a corresponding header (.hdr, or .sli.hdr) file.
 }
 \examples{
-## Create fake spectra
-data <- data.frame(wavelength=350:2500, spectrumA=cumsum(abs(rnorm(2151))), 
-						spectrumB=cumsum(abs(rnorm(2151))))
-pathToFile <- paste0(tempdir(),"/specLib.sli")
 
+## Example data
+sliFile <- system.file("external/vegSpec.sli", package="RStoolbox")
+sliTmpFile <- paste0(tempdir(),"/vegetationSpectra.sli") 
+
+## Read spectral library
+sli <- readSLI(sliFile)
+head(sli)
+plot(sli[,1:2], col = "orange", type = "l")
+lines(sli[,c(1,3)], col = "green")
+ 
 ## Write to binary spectral library
-writeSLI(x = data, path = pathToFile)
-
-## Read from binary spectral library
-dataRe <- readSLI(path = pathToFile)
-
-## Check whether they are the same
-all.equal(data, dataRe)
+writeSLI(sli, path = sliTmpFile)
 }
 \seealso{
 \code{\link{writeSLI}}

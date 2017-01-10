@@ -61,7 +61,7 @@
 #' @importFrom stats coefficients lm ecdf median approxfun knots kmeans na.omit complete.cases loadings princomp cov filter cor
 #' @importFrom graphics par abline
 #' @importFrom methods as
-#' @importFrom utils read.csv read.delim str write.table data capture.output
+#' @importFrom utils read.csv read.delim read.table str write.table data capture.output
 #' @importFrom grDevices hsv
 #' @useDynLib RStoolbox
 #' @importFrom Rcpp sourceCpp

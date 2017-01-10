@@ -15,7 +15,7 @@ writeSLI(x, path, wavl.units = "Micrometers", scaleF = 1, mode = "bin")
 
 \item{scaleF}{optional reflectance scaling factor. Defaults to 1.}
 
-\item{mode}{character string specifying output file type. Must be one of \code{"bin"} for binary .sli files or \code{"ASCII"} for --guess what-- ASCII spectral library files (still in an ENVI compatible format).}
+\item{mode}{character string specifying output file type. Must be one of \code{"bin"} for binary .sli files or \code{"ASCII"} for ASCII ENVI plot files.}
 }
 \description{
 Writes binary ENVI spectral library files (sli) with accompanying header (.sli.hdr) files OR ASCII spectral library files in ENVI format.
@@ -24,19 +24,19 @@ Writes binary ENVI spectral library files (sli) with accompanying header (.sli.h
 ENVI spectral libraries with ending .sli are binary arrays with spectra saved in rows.
 }
 \examples{
-## Create fake spectra
-data <- data.frame(wavelength=350:2500, spectrumA=cumsum(abs(rnorm(2151))), 
-						spectrumB=cumsum(abs(rnorm(2151))))
-pathToFile <- paste0(tempdir(),"/specLib.sli")
 
+## Example data
+sliFile <- system.file("external/vegSpec.sli", package="RStoolbox")
+sliTmpFile <- paste0(tempdir(),"/vegetationSpectra.sli") 
+
+## Read spectral library
+sli <- readSLI(sliFile)
+head(sli)
+plot(sli[,1:2], col = "orange", type = "l")
+lines(sli[,c(1,3)], col = "green")
+ 
 ## Write to binary spectral library
-writeSLI(x = data, path = pathToFile)
-
-## Read from binary spectral library
-dataRe <- readSLI(path = pathToFile)
-
-## Check whether they are the same
-all.equal(data, dataRe)
+writeSLI(sli, path = sliTmpFile)
 }
 \seealso{
 \code{\link{readSLI}}
