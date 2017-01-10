@@ -5,6 +5,8 @@ New:
    This can be usefull if clouds with reflectance > 1.5 are part of the image.
 * `superClass()` now returns the geometries which were used for validation, e.g. polygons (under $validation$geometry)
    and also the exact samples taken for validation including cell number and coordinates ($validation$validationSamples)
+*  added example data-set for spectral library see ?readSLI
+*  increased overall test coverage 
 
 Changes:
 * ESUN lookup tables for `radCor()` are adjusted to match current USGS reccomendations from: https://landsat.usgs.gov/esun
