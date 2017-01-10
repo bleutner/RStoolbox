@@ -5,7 +5,7 @@
 \title{Topographic Illumination Correction}
 \usage{
 topCor(img, dem, metaData, solarAngles = c(), method = "C",
-  stratImg = NULL, nStrat = 5, illu)
+  stratImg = NULL, nStrat = 5, illu, ...)
 }
 \arguments{
 \item{img}{Raster*. Imagery to correct}
@@ -24,6 +24,8 @@ Must have the same dimensions as \code{img}.}
 \item{nStrat}{Integer. Number of bins or quantiles to stratify by. If a bin has less than 50 samples it will be merged with the next bin. Only relevant if \code{method = 'minnaert'}.}
 
 \item{illu}{Raster*. Optional pre-calculated ilumination map. Run topCor with method="illu" to calculate an ilumination map}
+
+\item{...}{arguments passed to \code{\link[raster]{writeRaster}}}
 }
 \description{
 account and correct for changes in illumination due to terrain elevation.
@@ -49,7 +51,7 @@ data(lsat)
 lsat_minnaert <- topCor(lsat, dem = srtm, metaData = metaData, method = "minnaert")
 
 ## C correction, solar angles provided manually
-lsat_C <- topCor(lsat, dem = srtm, solarAngles = c(1.081533, 0.7023922), method = "C")
+lsat_C <- topCor(lsat, dem = srtm, solarAngles = c(1.081533, 0.7023922), method = "C", ...)
 
 }
 \references{

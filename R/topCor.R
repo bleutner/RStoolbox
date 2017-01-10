@@ -11,6 +11,7 @@
 #' @param stratImg RasterLayer to define strata, e.g. NDVI. Or the string 'slope' in which case stratification will be on \code{nStrat} slope classes. Only relevant if \code{method = 'minnaert'}.
 #' @param nStrat Integer. Number of bins or quantiles to stratify by. If a bin has less than 50 samples it will be merged with the next bin. Only relevant if \code{method = 'minnaert'}.
 #' @param illu Raster*. Optional pre-calculated ilumination map. Run topCor with method="illu" to calculate an ilumination map
+#' @param ... arguments passed to \code{\link[raster]{writeRaster}}
 #' @details
 #' For detailed discussion of the various approaches please see Riano et al. (2003).
 #' 
@@ -34,12 +35,12 @@
 #' lsat_minnaert <- topCor(lsat, dem = srtm, metaData = metaData, method = "minnaert")
 #' 
 #' ## C correction, solar angles provided manually
-#' lsat_C <- topCor(lsat, dem = srtm, solarAngles = c(1.081533, 0.7023922), method = "C")
+#' lsat_C <- topCor(lsat, dem = srtm, solarAngles = c(1.081533, 0.7023922), method = "C", ...)
 #' 
-topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg = NULL, nStrat = 5, illu){
+topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg = NULL, nStrat = 5, illu, ...){
     
     stopifnot(method %in% c("cos", "avgcos", "minnaert", "C", "stat", "illu"))
-    
+    ## TODO: improve performance
     ## Metadata 
     if(!missing("solarAngles")) {
         if(length(solarAngles)!=2) stop ("If metaData is used to provide solar azimuth and solar zenith it must be a numeric vector of length 2: c(azimuth, zenith)")
@@ -81,14 +82,14 @@ topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg
     if (method == "cos") {
         ## valid range: <55 degree
         ## Eq 3 in Riano2003
-        ## Lambertian assumption
-        return(Lh <- img * (cos(sz) / illu))  
+        ## Lambertian assumption              
+        Lh <- raster::overlay(img, illu, fun= function(x,y){x * (cos(sz) / y)}, forcefun = TRUE, ...)      
     }
     if (method == "avgcos") {
         ## Eq 4 in Riano2003
         ## Lambertian assumption
         avgillu <- cellStats(illu, mean)
-        return(Lh <- img + img * (avgillu-illu) / avgillu)  
+        Lh <- overlay(img, illu, fun= function(x,y){ x + x * (avgillu-y) / avgillu}, forcefun = TRUE, ...)  
     }
     if(method =="minnaert") {
         ## Eq 5 in Riano2003
@@ -108,10 +109,12 @@ topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg
                                 Lh <- img * c(cos(sz)/ illu)^k 
                             })
                 })
-        Lh <- stack(Lh)       
-        names(Lh) <- names(img)
-        
-        return(Lh)
+        Lh <- stack(Lh)  
+        ellip <- list(...)
+        if ('filename' %in% names(ellip) && !is.null(elip[["filename"]])) {
+            names(Lh) <- names(img)
+            Lh <- writeRaster(Lh, ...)
+        }
     }    
     if(method ==  "stat") {
         ## Eq 8 in Riano2003        
@@ -119,7 +122,7 @@ topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg
         sub <- stack(lapply(ks$k, function(x){
                             x[,2] * illu
                         }))
-        return(Lh <- img - sub)
+        Lh <- overlay(img, sub, fun = function(x,y) {x-y}, ..., forcefun = TRUE)
     }
     if(method == "C") {
         ks <- .kestimate(img, illu, slope, method = "stat")
@@ -127,8 +130,11 @@ topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg
                             ck <- x[,1]/x[,2] 
                             (cos(sz) + ck) /  (illu + ck)
                         })) 
-        return(Lh <-  img * mult)   
+        Lh <- overlay(img, mult, fun = function(x,y) {x * y}, forcefun = TRUE, ...)
     }
+    
+    names(Lh) <- names(img)
+    return(Lh)
 #    if(FALSE && method == "minnaMod"){
 #        ## Richter 2009
 #        if(sz < 45*pi/180) {
