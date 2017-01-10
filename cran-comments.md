@@ -2,6 +2,7 @@
 ### Test environments
 * Ubuntu 16.10 64bit (release)
 * Ubuntu 12.04 (on travis-ci), (oldrel, release, devel)
+* winbuilder (devel)
 * r-hub: 'debian-gcc-release', 
     'debian-gcc-devel',
     'ubuntu-gcc-devel', 
