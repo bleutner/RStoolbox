@@ -51,7 +51,7 @@ data(lsat)
 lsat_minnaert <- topCor(lsat, dem = srtm, metaData = metaData, method = "minnaert")
 
 ## C correction, solar angles provided manually
-lsat_C <- topCor(lsat, dem = srtm, solarAngles = c(1.081533, 0.7023922), method = "C", ...)
+lsat_C <- topCor(lsat, dem = srtm, solarAngles = c(1.081533, 0.7023922), method = "C")
 
 }
 \references{
