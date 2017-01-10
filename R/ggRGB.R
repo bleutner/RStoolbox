@@ -67,7 +67,7 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
     
     ## TODO: handle single value rasters (e.g. masks)
     
-	# RGB processing originally forked from raster:::plotRGB
+	# RGB processing originally forked from raster::plotRGB
 	# Author: Robert J. Hijmans 
 	# Version 0.9
 	# Licence GPL v3

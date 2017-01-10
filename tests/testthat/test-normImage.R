@@ -37,12 +37,12 @@ test_that("normImage.cpp works", {
 			cm <- colMeans(m, na.rm = TRUE)
 			cs <- apply(m, 2, sd, na.rm = TRUE)
 			
-			expect_is(cmat <- RStoolbox:::normImageCpp(m, cm, cs), "matrix")
+			expect_is(cmat <- normImageCpp(m, cm, cs), "matrix")
 			expect_true(all(round(colMeans(cmat, na.rm = T), 10)==0))
 			expect_true(all(round(apply(cmat, 2, sd, na.rm = T), 10)==1))
 			expect_equal(sum(is.na(cmat[1,])), 7)
 			expect_equal(sum(is.na(cmat[2,])), 1)	
-			expect_equivalent( RStoolbox:::normImageCpp(m, cm, cs), scale(m, T, T))
+			expect_equivalent(normImageCpp(m, cm, cs), scale(m, T, T))
 				
 		}
 )
