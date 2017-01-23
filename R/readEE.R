@@ -21,14 +21,18 @@
 #' 		scale_y_continuous(name = "Scene quality (% clear sky)")
 #' 
 readEE <- function(x) {
+    
 	llee <- lapply(x, function(ix){
 				df <- read.csv(ix, stringsAsFactors = FALSE, quote = "", fileEncoding = "latin1")
 				names(df)[names(df) == "Scene.Cloud.Cover"] <- "Cloud.Cover"
 				allLScats <- c("Landsat.Scene.Identifier", "WRS.Path", "WRS.Row", "Data.Category", "Cloud.Cover",
 						"Station.Identifier", "Day.Night", "Data.Type.Level.1", "Date.Acquired", 
 						"Sun.Elevation", "Sun.Azimuth", "Geometric.RMSE.Model.X", 
-						"Geometric.RMSE.Model.Y", "Display.ID", "Ordering.ID", "Download.Link")
-				df <- df[,allLScats]
+						"Geometric.RMSE.Model.Y", "Display.ID", "Ordering.ID", "Download.Link", "Browse.Link")        
+                inter <- allLScats %in% colnames(df)
+				df <- df[,allLScats[inter]]
+                df[,allLScats[!inter]] <- NA
+                df <- df[, allLScats]
 				df$Date <- strptime(df$Date.Acquired, "%Y/%m/%d")
 				df$Doy  <- as.numeric(strftime(df$Date, format = "%j"))
 				df$Year <- as.numeric(strftime(df$Date, format = "%Y"))

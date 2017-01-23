@@ -1,9 +1,7 @@
 RStoolbox 0.1.8
 =====================================
-
-
-
-
+Fixes: 
+* update `readEE()` to deal with new EarthExplorer export columns (reported by Christian Bauer)
 
 RStoolbox 0.1.7
 =====================================
