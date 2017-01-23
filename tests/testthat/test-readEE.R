@@ -1,8 +1,8 @@
 context("readEE")
 
 exfile <- system.file("external/EarthExplorer_LS8.txt", package = "RStoolbox")
-tdir <- system.file("tests/testdata/earthexplorer", package="RStoolbox")
-files <- list.files(tdir, full = TRUE)
+tdir   <- system.file("tests/testdata/earthexplorer", package="RStoolbox")
+files  <- list.files(tdir, full = TRUE)
 
 test_that("returned classes", {
 			expect_is(ee <- readEE(files[1]), "data.frame")

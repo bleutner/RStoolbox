@@ -23,12 +23,14 @@
 readEE <- function(x) {
     
 	llee <- lapply(x, function(ix){
+                if(!file.exists(ix)) stop(paste0("Can't find file ", xi), call.=FALSE )
 				df <- read.csv(ix, stringsAsFactors = FALSE, quote = "", fileEncoding = "latin1")
 				names(df)[names(df) == "Scene.Cloud.Cover"] <- "Cloud.Cover"
 				allLScats <- c("Landsat.Scene.Identifier", "WRS.Path", "WRS.Row", "Data.Category", "Cloud.Cover",
 						"Station.Identifier", "Day.Night", "Data.Type.Level.1", "Date.Acquired", 
 						"Sun.Elevation", "Sun.Azimuth", "Geometric.RMSE.Model.X", 
 						"Geometric.RMSE.Model.Y", "Display.ID", "Ordering.ID", "Download.Link", "Browse.Link")        
+              
                 inter <- allLScats %in% colnames(df)
 				df <- df[,allLScats[inter]]
                 df[,allLScats[!inter]] <- NA
