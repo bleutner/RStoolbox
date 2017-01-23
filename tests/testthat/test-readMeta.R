@@ -1,7 +1,6 @@
 context("readMeta & stackMeta")
 
-tdir <- system.file("tests/testdata/metadata", package="RStoolbox")
-mfil <- list.files(tdir, full = TRUE)
+mfil <- list.files("testdata/metadata", full = TRUE)
 
 for(f in mfil) {
 	test_that(paste("readMeta and summary(readMeta)", basename(f)), {
@@ -23,4 +22,3 @@ test_that("stackMeta with exampleData", {
 			expect_s4_class(stackMeta(readMeta(mtlFile)), "RasterStack")
             expect_true(all(grepl("B[1-7]_dn", names(st))))
 		})
-

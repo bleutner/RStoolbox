@@ -23,7 +23,7 @@
 readEE <- function(x) {
     
 	llee <- lapply(x, function(ix){
-                if(!file.exists(ix)) stop(paste0("Can't find file ", xi), call.=FALSE )
+                if(!file.exists(ix)) stop(paste0("Can't find file ", ix), call.=FALSE )
 				df <- read.csv(ix, stringsAsFactors = FALSE, quote = "", fileEncoding = "latin1")
 				names(df)[names(df) == "Scene.Cloud.Cover"] <- "Cloud.Cover"
 				allLScats <- c("Landsat.Scene.Identifier", "WRS.Path", "WRS.Row", "Data.Category", "Cloud.Cover",
