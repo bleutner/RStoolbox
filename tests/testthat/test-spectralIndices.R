@@ -6,11 +6,15 @@ suppressPackageStartupMessages(library(pls))
 ## Create test data-sets
 vals <- c(-1, 0, 0.5, 1, 2, NA)
 vals <- expand.grid(vals,vals)
-r    <- raster(ncol= 6, nrow = 6)
+r  <-  ml <- raster(ncol= 6, nrow = 6)
 r[]  <- vals[,1]
 r    <- stack(r,r)
 names(r) <- c("L1", "L2")
 r[[2]]<-vals[,2]
+ml[] <- 1
+ml[,2] <- 10
+ml[,3] <- NA
+names(ml) <- "henryMaske"
 
 test_that("errors and warnings", {
             expect_error(spectralIndices(r, red = 1, indices = "NDVI"), "you must specify \\*all\\* required bands")
@@ -18,7 +22,20 @@ test_that("errors and warnings", {
             expect_warning(spectralIndices(r, red = 1, nir = 2, indices = c("NDVI", "EVI")), "not specified: blue")
             expect_warning(spectralIndices(r, red = 1, nir = 2, blue = 1, index = c("NDVI", "EVI")), "Skipping EVI")
             expect_is(spectralIndices(r, red = 1, nir = 2, blue = 1, index = c( "EVI"), skipRefCheck = TRUE), "RasterLayer")
+            expect_error(spectralIndices(r, red = 1, nir = 2, blue = 1, maskLayer = FALSE, index = c( "ndvi"), skipRefCheck = TRUE), "maskLayer must be")
+            expect_error(spectralIndices(r, red = 1, nir = 2, blue = 1, maskLayer = "reginaHalmich", index = c( "ndvi"), skipRefCheck = TRUE), "is not a layer")
         })
+
+m_cfg <- list(ml, 3, "henryMaske")
+test_that("maskLayer",  {
+            for(i in 1:3){
+                expect_s4_class(nd <- spectralIndices(stack(r,ml), red = 1, nir=2, indices = "NDVI", maskLayer = m_cfg[[i]], maskValue = 10), "RasterLayer")
+                expect_equal(nd[,2], rep(NA_real_, 6))
+                expect_s4_class(nd <- spectralIndices(stack(r,ml), red = 1, nir=2, indices = "NDVI",  maskLayer = m_cfg[[i]], maskValue = NA), "RasterLayer")
+                expect_equal(nd[,3], rep(NA_real_, 6))            
+            }          
+        })
+
 
 
 test_that("returned classes", {
@@ -51,6 +68,10 @@ test_that("excercise all indices", {
                             coefs = list(L=0.4,s=0.3,swir2ccc=30,swir2coc=140), scaleFactor=255), "RasterBrick")
             expect_equal(nlayers(sp), 22)
         })
+
+
+
+
 
 
 ## Check for duplicate indices

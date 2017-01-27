@@ -12,6 +12,8 @@
 #' @param swir3 Character or integer. Short-wave-infrared band (2000-2500nm). 
 #' @param indices Character. One or more spectral indices to calculate (see Details). By default (NULL) all implemented indices given the spectral bands which are provided will be calculated.
 #' @param index Character. Alias for \code{indices}.
+#' @param maskLayer RasterLayer containing a mask, e.g. clouds, for which pixels are set to NA. Alternatively a layername or -number can be provided if the mask is part of \code{img}. 
+#' @param maskValue Integer. Pixel value in \code{maskLayer} which should be masked in output, i.e. will be set to \code{NA} in all calculated indices.
 #' @param scaleFactor Numeric. Scale factor for the conversion of scaled reflectances to [0,1] value range (applied as reflectance/scaleFactor) Neccesary for calculating EVI/EVI2 with scaled reflectance values.
 #' @param skipRefCheck Logical. When EVI/EVI2 is to be calculated there is a rough heuristic check, whether the data are inside [0,1]+/-0.5 (after applying a potential \code{scaleFactor}).
 #'  If there are invalid reflectances, e.g. clouds with reflectance > 1 this check will result in a false positive and skip EVI calculation. Use this argument to skip this check in such cases *iff* you are sure the data and scaleFactor are valid. 
@@ -40,7 +42,7 @@
 #' plot(SI)
 spectralIndices <- function(img,
         blue=NULL, green=NULL, red=NULL, nir = NULL, swir1 = NULL, swir2 =NULL, swir3 = NULL,
-        scaleFactor = 1, skipRefCheck = FALSE,   indices=NULL, index = NULL, 
+        scaleFactor = 1, skipRefCheck = FALSE,   indices=NULL, index = NULL, maskLayer = NULL, maskValue = 1,
         coefs = list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5, s = 1, swir2ccc = NULL, swir2coc = NULL),
         ... ) {
     # TODO: soil line estimator
@@ -59,13 +61,13 @@ spectralIndices <- function(img,
     # TIR1  | thermal infra-red    |  8000  -   9500 nm
     # TIR2  | thermal infra-red    | 10000  - 140000 nm
     ##	
-   
+    
     if(!is.null(index)) indices <- index  ## argument translation for convenience
     if("LSWI" %in% toupper(indices)) stop("LSWI has been deprecated. Use NDWI2 instead; it is identical.")
     if(!is.null(swir1)) stop(paste0("Currently there is no spectral index requiring swir1.", 
-                       "\nIn case you were using spectralIndices from a previous version of RStoolbox with the swir1 argument,",
-                       "\nplease note that there has been naming correction. Former swir1 is now swir2 and former swir2 is now swir3.",
-                       "\nsee: news(package='RStoolbox')"), call.=FALSE)
+                        "\nIn case you were using spectralIndices from a previous version of RStoolbox with the swir1 argument,",
+                        "\nplease note that there has been naming correction. Former swir1 is now swir2 and former swir2 is now swir3.",
+                        "\nsee: news(package='RStoolbox')"), call.=FALSE)
     
     ## Coefficients
     defaultCoefs <- list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5, s = 1, swir2ccc = NULL, swir2coc = NULL)     
@@ -98,8 +100,8 @@ spectralIndices <- function(img,
     canCalc  <- names(requested)[!vapply(requested, function(x) any(!x %in% bands), logical(1))]
     if(!skipRefCheck && any(c("EVI","EVI2") %in% canCalc)){
         ## TODO: clarify setMinMax reqiurements throughout RStoolbox
-		if(!.hasMinMax(img[[red]])) img[[red]] <- setMinMax(img[[red]])
-		if((maxValue(img[[red]])/scaleFactor > 1.5 | minValue(img[[red]])/scaleFactor < -.5)){
+        if(!.hasMinMax(img[[red]])) img[[red]] <- setMinMax(img[[red]])
+        if((maxValue(img[[red]])/scaleFactor > 1.5 | minValue(img[[red]])/scaleFactor < -.5)){
             ## checking for range [0,1] +/- .5 to allow for artifacts in reflectance.
             warning("EVI/EVI2 parameters L_evi, G, C1 and C2 are defined for reflectance [0,1] but img values are outside of this range.\n",
                     "  If you are using scaled reflectance values please provide the scaleFactor argument.\n", 
@@ -128,9 +130,30 @@ spectralIndices <- function(img,
     bandsCalc  <- vapply(retrieve, function(xi) {  if(is.character(xi)) match(xi, names(img)) else xi  }, numeric(1))
     names(bandsCalc) <- bands       
     
+    ## Add mask layer to img if present
+    if(!is.null(maskLayer)){
+        if(inherits(maskLayer, "Raster")) {
+            if(nlayers(maskLayer) > 1) warning(sprintf("maskLayer has %s layers. Only the first layer will be used for masking.", nlayers(maskLayer)),call.=FALSE)
+            img <- stack(img, maskLayer[[1]])
+            names(img)[nlayers(img)] <- "mask"
+        } else if (is.numeric(maskLayer)) {
+            names(img)[maskLayer] <- "mask"
+        }  else if (is.character(maskLayer)) {
+            if(!maskLayer %in% names(img)) stop(paste0(maskLayer, "is not a layer in img.\nAvailable layers are: ", paste(names(img))), call. =FALSE)
+            names(img)[names(img) == maskLayer] <- "mask"
+        } else {
+            stop("maskLayer must be NULL, a RasterLayer, a layer name or a layer number", call. =FALSE)
+        }
+        bandsCalc[["mask"]] <- which(names(img) == "mask") 
+    }
+    potArgs <- c(potArgs, "mask")
+
+    
     ## Adjust layer argument so that the first layer we use is now layer 1, etc.
     ## This way we don't have to sample the whole stack if we only need a few layers
     fullSet <- vapply(potArgs, function(n) match(n, names(bandsCalc)), integer(1))
+    
+    
     
     # Perform calculations 
     indexMagic <- .paraRasterFun(img[[bandsCalc]], rasterFun = raster::calc,
@@ -145,6 +168,8 @@ spectralIndices <- function(img,
                                 swir1Band  = fullSet[["swir1"]],                             
                                 swir2Band  = fullSet[["swir2"]],
                                 swir3Band  = fullSet[["swir3"]],
+                                maskLayer = fullSet[["mask"]],
+                                maskValue = maskValue,
                                 L = coefs[["L"]],  G = coefs[["G"]], Levi = coefs[["L_evi"]], 
                                 C1 = coefs[["C1"]], C2 = coefs[["C2"]], s = coefs[["s"]],
                                 swir2ccc = coefs[["swir2ccc"]], swir2cdiff = coefs[["swir2cdiff"]], sf = scaleFactor
@@ -164,7 +189,7 @@ spectralIndices <- function(img,
 #' @keywords internal
 #' @noRd 
 .IDXdb <-  list(     
-		CTVI    = function(red, nir) {(NDVI+.5)/sqrt(abs(NDVI+.5))},
+        CTVI    = function(red, nir) {(NDVI+.5)/sqrt(abs(NDVI+.5))},
         DVI 	= function(red, nir) {s*nir-red},
         EVI  	= function(red, nir, blue) {G * ((nir - red) / (nir + C1 * red - C2 * blue + L_evi))},
         EVI2    = function(red, nir) {G * (nir-red)/(nir + 2.4*red +1)},
@@ -222,11 +247,11 @@ BANDSdb <- lapply(.IDXdb, function(x) names(formals(x)))
 
 
 .wavlDB <- data.frame( Band = c("vis", "nir", "swir1", "swir2", "swir3", "mir1", "mir2", "tir1", "tir2"), 
-          Description = c("visible", "near infra-red", "short-wave infra-red", "short-wave infra-red", "short-wave infra-red", "mid-wave infra-red", "mid-wave infra-red", "thermal infra-red", "thermal infra-red"),
-           Wavl_min = c(400,700,1100,1400,2000,3000,45000,8000,10000), 
-           Wavl_max = c(700,1100,1351, 1800,2500,4000,5000,9500,140000),
-           "Landsat5_Band" = c("1,2,3", 4, "-", 5, 7, "-", "-", "-", 6)
-           ) 
+        Description = c("visible", "near infra-red", "short-wave infra-red", "short-wave infra-red", "short-wave infra-red", "mid-wave infra-red", "mid-wave infra-red", "thermal infra-red", "thermal infra-red"),
+        Wavl_min = c(400,700,1100,1400,2000,3000,45000,8000,10000), 
+        Wavl_max = c(700,1100,1351, 1800,2500,4000,5000,9500,140000),
+        "Landsat5_Band" = c("1,2,3", 4, "-", 5, 7, "-", "-", "-", 6)
+) 
 
 
 

@@ -6,9 +6,9 @@
 \usage{
 spectralIndices(img, blue = NULL, green = NULL, red = NULL, nir = NULL,
   swir1 = NULL, swir2 = NULL, swir3 = NULL, scaleFactor = 1,
-  skipRefCheck = FALSE, indices = NULL, index = NULL, coefs = list(L =
-  0.5, G = 2.5, L_evi = 1, C1 = 6, C2 = 7.5, s = 1, swir2ccc = NULL, swir2coc =
-  NULL), ...)
+  skipRefCheck = FALSE, indices = NULL, index = NULL, maskLayer = NULL,
+  maskValue = 1, coefs = list(L = 0.5, G = 2.5, L_evi = 1, C1 = 6, C2 = 7.5,
+  s = 1, swir2ccc = NULL, swir2coc = NULL), ...)
 }
 \arguments{
 \item{img}{Raster* object. Typically remote sensing imagery, which is to be classified.}
@@ -35,6 +35,10 @@ If there are invalid reflectances, e.g. clouds with reflectance > 1 this check w
 \item{indices}{Character. One or more spectral indices to calculate (see Details). By default (NULL) all implemented indices given the spectral bands which are provided will be calculated.}
 
 \item{index}{Character. Alias for \code{indices}.}
+
+\item{maskLayer}{RasterLayer containing a mask, e.g. clouds, for which pixels are set to NA. Alternatively a layername or -number can be provided if the mask is part of \code{img}.}
+
+\item{maskValue}{Integer. Pixel value in \code{maskLayer} which should be masked in output, i.e. will be set to \code{NA} in all calculated indices.}
 
 \item{coefs}{List of coefficients (see Details).}
 

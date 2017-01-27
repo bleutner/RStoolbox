@@ -1,5 +1,9 @@
 RStoolbox 0.1.8
 =====================================
+New:
+* `spectralIndices()` can now apply a mask internally, e.g. to exclude cloud pixels. New arguments are: 
+   `maskLayer` and `maskValue` (suggested by Andrea Hess).
+
 Fixes: 
 * update `readEE()` to deal with new EarthExplorer export columns (reported by Christian Bauer)
 

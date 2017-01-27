@@ -1,25 +1,44 @@
-#include <Rcpp.h>
+#include<Rcpp.h>
+
 using namespace Rcpp;
 
 //[[Rcpp::export]]
 NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 		 const int redBand,  const int blueBand, const int greenBand, const int nirBand,
 		 const int swir1Band, const int swir2Band, const int swir3Band,
+		 int maskLayer, const int maskValue,
 		 const double L,  const double s, const double G, const double C1,
 		 const double C2, double Levi, const double swir2ccc, const double swir2cdiff, const double sf) {
 
 	int nind = indices.size();
 	int nsamp = x.nrow();
 
-/***
-	for(int ro = 0; ro < nsamp; ++ro) {
-		for(int co = 0; co < nind; ++co) {
-			if(ISNAN(x(ro,co))) x(ro,co) = NA_REAL;
-		}
-	}
-***/
 	NumericMatrix out(nsamp, nind);
 	NumericVector blue, green, red, nir, swir1, swir2, swir3;
+    
+    // Apply mask layer
+    if(maskLayer != NA_INTEGER){
+        maskLayer-=1 ;
+        int nx = x.nrow();
+        std::vector<int> m;
+        m.reserve(nx);
+        if(IntegerVector::is_na(maskValue)){
+            for(int i = 0; i < nx; i++) {
+                if (ISNAN(x(i, maskLayer))) m.push_back(i);
+            }
+        } else {
+            for(int i = 0; i < nx; i++) {
+                if (x(i, maskLayer) == maskValue) m.push_back(i);
+            }
+        } 
+        
+        for(int j = 0; j < x.ncol(); j++) { 
+            if (j == maskLayer) continue;
+            for(int i = 0; i < m.size(); i++) {
+                 x(m[i],j) = NA_REAL;
+            }    
+         }
+    }
 
 	if(blueBand  != NA_INTEGER)     blue = x(_,blueBand - 1);
 	if(greenBand != NA_INTEGER)    green = x(_,greenBand - 1);
@@ -29,6 +48,7 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 	if(swir2Band != NA_INTEGER)    swir2 = x(_,swir2Band - 1);
 	if(swir3Band != NA_INTEGER)    swir3 = x(_,swir3Band - 1);
 
+   
     if(sf != 1) {
     	Levi = Levi * sf;
     }
