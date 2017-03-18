@@ -16,4 +16,3 @@ data(lsat)
 ggRGB(lsat, stretch = "lin")
 }
 \keyword{datasets}
-

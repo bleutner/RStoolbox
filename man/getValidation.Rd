@@ -34,4 +34,3 @@ getValidation(SC, metrics = "classwise")
 ## Cross-validation based 
 getValidation(SC, from = "cv")
 }
-

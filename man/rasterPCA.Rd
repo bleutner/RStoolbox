@@ -58,4 +58,3 @@ plots <- lapply(1:3, function(x) ggR(rpc$map, x, geom_raster = TRUE))
 grid.arrange(plots[[1]],plots[[2]], plots[[3]], ncol=2)
 }
 }
-

@@ -40,18 +40,16 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
          }
     }
 
-	if(blueBand  != NA_INTEGER)     blue = x(_,blueBand - 1);
-	if(greenBand != NA_INTEGER)    green = x(_,greenBand - 1);
-	if(redBand   != NA_INTEGER)      red = x(_,redBand - 1);
-	if(nirBand   != NA_INTEGER)      nir = x(_,nirBand - 1);
-	if(swir1Band != NA_INTEGER)    swir1 = x(_,swir1Band - 1);
-	if(swir2Band != NA_INTEGER)    swir2 = x(_,swir2Band - 1);
-	if(swir3Band != NA_INTEGER)    swir3 = x(_,swir3Band - 1);
+	if(blueBand  != NA_INTEGER)     blue = x(_,blueBand - 1) / sf;
+	if(greenBand != NA_INTEGER)    green = x(_,greenBand - 1) / sf;
+	if(redBand   != NA_INTEGER)      red = x(_,redBand - 1) / sf;
+	if(nirBand   != NA_INTEGER)      nir = x(_,nirBand - 1) / sf;
+	if(swir1Band != NA_INTEGER)    swir1 = x(_,swir1Band - 1) / sf;
+	if(swir2Band != NA_INTEGER)    swir2 = x(_,swir2Band - 1) / sf;
+	if(swir3Band != NA_INTEGER)    swir3 = x(_,swir3Band - 1) / sf;
 
    
-    if(sf != 1) {
-    	Levi = Levi * sf;
-    }
+
 	for(int j = 0; j < nind; ++j) {
 
 		if(indices[j] == "DVI") {
@@ -75,7 +73,7 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 		else if(indices[j] == "EVI2") {
 				// Two-band Enhanced vegetation index
 				// Jiang et al 2008
-				out(_,j) = G * ((nir - red) / (nir + 2.4 * red + sf));
+				out(_,j) = G * ((nir - red) / (nir + 2.4 * red ));
 				out(_,j) = ifelse(is_na(out(_,j)) | (out(_,j) > 1.0) | (out(_,j) < -1.0) , NA_REAL, out(_,j));
 			}
 
@@ -85,6 +83,12 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 							(nir + red + 0.5)) * 0.25)) - ((red - 0.125) / (1 - red));
 			out(_,j) = ifelse(is_na(out(_,j)), NA_REAL, out(_,j));
 		}	
+		else if(indices[j] == "GNDVI") {
+					// green Normalized diff vegetation index: -> more sensitive to cholorphyll than ndvi
+					// Gitelson, A., and M. Merzlyak. "Remote Sensing of Chlorophyll Concentration in Higher Plant Leaves." Advances in Space Research 22 (1998): 689-692
+					out(_,j) = (nir - green)/( nir + green);
+					out(_,j) = ifelse(is_na(out(_,j)) | (out(_,j) > 1.0) | (out(_,j) < -1.0) , NA_REAL, out(_,j));
+				}
 		else if(indices[j] == "MNDWI") {
             // Modified Normalised Difference Water Index
 			out(_,j) = (green-swir2) / (green+swir2);

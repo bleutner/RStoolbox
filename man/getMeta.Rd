@@ -65,4 +65,3 @@ getMeta(lsat, metaData = meta, what = "SCALE_FACTOR")
 getMeta(lsat, metaData = meta, what = "FILES")
 
 }
-

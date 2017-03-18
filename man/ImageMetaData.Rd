@@ -66,4 +66,3 @@ ImageMetaData(file = NA, format = NA, sat = NA, sen = NA, scene = NA,
 \description{
 ImageMetaData Class
 }
-

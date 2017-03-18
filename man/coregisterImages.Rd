@@ -76,4 +76,3 @@ ggplot(df) + geom_raster(aes(x = Var2, y = Var1,fill=value)) + facet_wrap(~L1) +
 ggR(reference, sat = 1, alpha = .5, 3) +
   ggR(coreg$coregImg, sat = 1, hue = .5, alpha = 0.5, ggLayer=TRUE) 
 }
-

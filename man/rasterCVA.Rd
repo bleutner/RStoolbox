@@ -41,4 +41,3 @@ cva <- rasterCVA(pca[[1:2]], pca[[3:4]])
 cva
 plot(cva)
 }
-

@@ -76,4 +76,3 @@ ggRGB(lsat, stretch = "lin") +
 \seealso{
 \link{cloudMask}
 }
-
