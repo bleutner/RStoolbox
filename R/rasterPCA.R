@@ -75,7 +75,7 @@ rasterPCA <- function(img, nSamples = NULL, nComp = nlayers(img), spca = FALSE, 
 		}
 	}
 	## Predict
-	out   <- .paraRasterFun(img, rasterFun=raster::predict, args = list(model = model, na.rm = TRUE, index = 1:nComp), wrArgs = )  
+	out   <- .paraRasterFun(img, rasterFun=raster::predict, args = list(model = model, na.rm = TRUE, index = 1:nComp), wrArgs = ellip)  
 	names(out) <- paste0("PC", 1:nComp)
 	structure(list(call = match.call(), model = model, map = out), class = c("rasterPCA", "RStoolbox"))  
 	
