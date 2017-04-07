@@ -102,3 +102,4 @@ lsat_ref <- radCor(lsat, mtlFile, method = "apref")
 SI <- spectralIndices(lsat_ref, red = "B3_tre", nir = "B4_tre")
 plot(SI)
 }
+

@@ -110,3 +110,4 @@ par(olpar) # reset par
 \seealso{
 \code{\link[caret]{train}}
 }
+

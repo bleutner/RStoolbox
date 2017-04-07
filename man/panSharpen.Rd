@@ -58,3 +58,4 @@ ggRGB(lowResImg, stretch = "lin") + ggtitle("Original")
 ggRGB(lowResImg_pan, stretch="lin") + ggtitle("Pansharpened (Brovey)")
 	
 }
+

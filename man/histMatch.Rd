@@ -78,3 +78,4 @@ par(opar)
 \references{
 Richards and Jia: Remote Sensing Digital Image Analysis. Springer, Berlin, Heidelberg, Germany, 439pp.
 }
+

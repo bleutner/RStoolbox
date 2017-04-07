@@ -36,3 +36,4 @@ writeSLI(sli, path = sliTmpFile)
 \seealso{
 \code{\link{writeSLI}}
 }
+

@@ -56,3 +56,4 @@ val1 <- validateMap(polishedMap, valData = val, responseCol = "class",
 							 classMapping = sc$classMapping)
 }
 }
+

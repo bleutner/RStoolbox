@@ -94,3 +94,4 @@ p + ggRGB(rlogo, ggLayer = TRUE) +
 \seealso{
 \link{ggR}, \link[=fortify.raster]{fortify}
 }
+

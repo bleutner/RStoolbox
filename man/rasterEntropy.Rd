@@ -26,3 +26,4 @@ data(rlogo)
 re <- rasterEntropy(rlogo)
 ggR(re, geom_raster = TRUE)
 }
+
