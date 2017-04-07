@@ -33,6 +33,10 @@ before_script:
   - ./pkg-build.sh install_deps
 # Run twice, just to be sure because sometimes cran mirror fails randomly 
   - ./pkg-build.sh install_deps
+  - wget http://cran.r-project.org/src/contrib/Archive/rgdal/rgdal_1.2-5.tar.gz
+  - ./pkg-build.sh install_r_local rgdal_1.2-5.tar.gz
+  - rm rgdal_1.2-5.tar.gz
+  - ./pkg-build.sh install_r rgdal
   - ./pkg-build.sh install_r covr
   - ./pkg-build.sh dump_sysinfo
 
