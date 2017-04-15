@@ -1,3 +1,5 @@
+This is a minor update of unit tests which broke the downstream tests of the recently updated 'caret' package.
+
 ### R CMD checks
 ### Test environments
 * Ubuntu 16.10 64bit (release)
@@ -23,29 +25,11 @@ This is a false alarm; 'indices' is spelled correctly.
 ### Downstream dependencies
 none
 
-### Changelog RStoolbox 0.1.7
+### Changelog RStoolbox 0.1.8
 New:
-* `spectralIndices()` has a new argument skipRefCheck, which skips the heuristic check for reflectance-like values [0,1] which is run if EVI/EVI2 are requested.
-   This can be usefull if clouds with reflectance > 1.5 are part of the image.
-* `superClass()` now returns the geometries which were used for validation, e.g. polygons (under $validation$geometry)
-   and also the exact samples taken for validation including cell number and coordinates ($validation$validationSamples)
-*  added example data-set for spectral library see ?readSLI
-*  increased overall test coverage 
+* `spectralIndices()` can now apply a mask internally, e.g. to exclude cloud pixels. New arguments are: 
+   `maskLayer` and `maskValue` (suggested by Andrea Hess).   
+* added spectral index GNDWI   
 
-Changes:
-* ESUN lookup tables for `radCor()` are adjusted to match current USGS reccomendations from: https://landsat.usgs.gov/esun
-* `spectralIndices()` swir wavelength ranges are now defined consistently and correctly. 
-   Bands formerly provided as swir1 (version <1.7.0) should now (>=1.7.0) be provided as swir2 and former swir2 as swir3 respectively (see docu). 
-   The actual calculations were correct, but the naming was off. 
-   
-Fixes:
-* fix `ggR()` and `ggRGB()` in  annotation mode (default). No image was drawn and excessive memory allocation requested (= RStudio crash) (reported by Christian Walther)
-* fix `spectralIndices()` documentation for NDWI. Formula was based on McFeeters1996 but attributed to Gao1996. Now there is NDWI (McFeeters) and NDWI2 (Gao) (reported by Christian Bauer)
-* `estimateHaze()` now ensures correct histogram order, which could be off when raster had to read from disk (reported by Xavier Bailleau).   
-* `readMeta()` now makes concise bandnames also for Landsat Collection MTL files.
-* fix `radCor()` for Landsat 4 TM (reported by Thomas Day)
-* `classifyQA()` confidence layer for type='water' now correctly returns only confidence levels in [1,3] 
-* enable reading ENVI plot files in ASCII mode with `readSLI()`
-
-Deprecated:
-* `spectralIndices()` index `LSWI` has been deprecated, as it is identical with the now available NDWI2.
+Fixes: 
+* update `readEE()` to deal with new EarthExplorer export columns (reported by Christian Bauer)

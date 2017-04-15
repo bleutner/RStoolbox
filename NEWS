@@ -2,7 +2,7 @@ RStoolbox 0.1.8
 =====================================
 New:
 * `spectralIndices()` can now apply a mask internally, e.g. to exclude cloud pixels. New arguments are: 
-   `maskLayer` and `maskValue` (suggested by Andrea Hess).
+   `maskLayer` and `maskValue` (suggested by Andrea Hess).   
 * added spectral index GNDWI   
 
 Fixes: 
