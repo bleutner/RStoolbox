@@ -65,21 +65,21 @@ unsuperClass(img, nSamples = 10000, nClasses = 5, nStarts = 25,
 </td></tr>
 <tr valign="top"><td><code class="r">algorithm</code></td>
 <td>
-<p>Character. <a href="http://www.inside-r.org/r-doc/stats/kmeans">kmeans</a> algorithm. One of c(&quot;Hartigan-Wong&quot;, &quot;Lloyd&quot;, &quot;MacQueen&quot;)</p>
+<p>Character. <a href="https://www.rdocumentation.org/packages/raster/stats/topics/kmeans">kmeans</a> algorithm. One of c(&quot;Hartigan-Wong&quot;, &quot;Lloyd&quot;, &quot;MacQueen&quot;)</p>
 </td></tr>
 <tr valign="top"><td><code class="r">...</code></td>
 <td>
-<p>further arguments to be passed to <a href="http://www.inside-r.org/packages/cran/raster/docs/writeRaster">writeRaster</a>, e.g. filename</p>
+<p>further arguments to be passed to <a href="https://www.rdocumentation.org/packages/raster/raster/topics/writeRaster">writeRaster</a>, e.g. filename</p>
 </td></tr>
 </table>
 
 
 <h3>Details</h3>
 
-<p>Clustering is done using <code class="r"><a href="http://www.inside-r.org/r-doc/stats/kmeans">kmeans</a></code>. This can be done for all pixels of the image (<code class="r">clusterMap=FALSE</code>), however this can be slow and is
+<p>Clustering is done using <code class="r"><a href="https://www.rdocumentation.org/packages/raster/stats/topics/kmeans">kmeans</a></code>. This can be done for all pixels of the image (<code class="r">clusterMap=FALSE</code>), however this can be slow and is
 not memory safe. Therefore if you have large raster data (&gt; memory), as is typically the case with remote sensing imagery it is advisable to choose clusterMap=TRUE (the default).
 This means that a kmeans cluster model is calculated based on a random subset of pixels (<code class="r">nSamples</code>). Then the distance of *all* pixels to the cluster centers 
-is calculated in a stepwise fashion using <code class="r"><a href="http://www.inside-r.org/packages/cran/raster/docs/predict">predict</a></code>. Class assignment is based on minimum euclidean distance to the cluster centers.   
+is calculated in a stepwise fashion using <code class="r"><a href="https://www.rdocumentation.org/packages/raster/raster/topics/predict">predict</a></code>. Class assignment is based on minimum euclidean distance to the cluster centers.   
 </p>
 <p>The solution of the kmeans algorithm often depends on the initial configuration of class centers which is chosen randomly. 
 Therefore, kmeans is usually run with multiple random starting configurations in order to find a convergent solution from different starting configurations.

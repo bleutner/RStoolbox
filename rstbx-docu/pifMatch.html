@@ -76,7 +76,7 @@ Finally the linear models are applied to all pixels in the <code class="r">img</
 <p>Pixel-wise similarity can be calculated using one of three methods: euclidean distance (<code class="r">method = "ed"</code>), spectral angle (<code class="r">"sam"</code>) or pearsons correlation coefficient (<code class="r">"cor"</code>).
 The threshold is defined as a similarity quantile. Setting <code class="r">quantile=0.95</code> will select all pixels with a similarity above the 95% quantile as pseudo-invariant features.
 </p>
-<p>Model fitting is performed with simple linear models (<code class="r"><a href="http://www.inside-r.org/r-doc/stats/lm">lm</a></code>); fitting one model per layer.
+<p>Model fitting is performed with simple linear models (<code class="r"><a href="https://www.rdocumentation.org/packages/raster/stats/topics/lm">lm</a></code>); fitting one model per layer.
 </p>
 
 
