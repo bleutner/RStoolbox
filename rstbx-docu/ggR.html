@@ -96,7 +96,7 @@ Note however, that this does not apply if (<code class="r">ggLayer=FALSE</code>)
 <p>When <code class="r">img</code> contains factor values and <code class="r">annotation=TRUE</code>, the raster values will automatically be converted
 to numeric in order to proceed with the brightness calculation. 
 </p>
-<p>The raster package provides a class lookup-table for categorical rasters (e.g. what you get if you run superClass in classification mode). If your raster has a lookup-table ggR will automatically treat it as categorical (see <a href="https://www.rdocumentation.org/packages/raster/raster/topics/factor">factor</a>). 
+<p>The raster package provides a class lookup-table for categorical rasters (e.g. what you get if you run superClass in classification mode). If your raster has a lookup-table ggR will automatically treat it as categorical (see <a href="https://www.rdocumentation.org/packages/raster/topics/factor">factor</a>). 
 However, the factor status of Raster objects is easily lost and the values are interpreted as numeric. In such cases you should make use of the <code class="r">forceCat = TRUE</code> argument, which makes sure
 that ggplot2 uses a discrete scale, not a continuous one.
 </p>

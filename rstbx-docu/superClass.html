@@ -67,11 +67,11 @@ superClass(img, trainData, valData = NULL, responseCol = NULL,
 </td></tr>
 <tr valign="top"><td><code class="r">model</code></td>
 <td>
-<p>Character. Which model to use. See <a href="https://www.rdocumentation.org/packages/raster/caret/topics/train">train</a> for options. Defaults to randomForest ('rf'). In addition to the standard caret models, a maximum likelihood classification is available via <code class="r">model = 'mlc'</code>.</p>
+<p>Character. Which model to use. See <a href="https://www.rdocumentation.org/packages/caret/topics/train">train</a> for options. Defaults to randomForest ('rf'). In addition to the standard caret models, a maximum likelihood classification is available via <code class="r">model = 'mlc'</code>.</p>
 </td></tr>
 <tr valign="top"><td><code class="r">tuneLength</code></td>
 <td>
-<p>Integer. Number of levels for each tuning parameter (see <a href="https://www.rdocumentation.org/packages/raster/caret/topics/train">train</a> for details).</p>
+<p>Integer. Number of levels for each tuning parameter (see <a href="https://www.rdocumentation.org/packages/caret/topics/train">train</a> for details).</p>
 </td></tr>
 <tr valign="top"><td><code class="r">kfold</code></td>
 <td>
@@ -93,7 +93,7 @@ Requires all data to carry valid projection information.</p>
 </td></tr>
 <tr valign="top"><td><code class="r">predType</code></td>
 <td>
-<p>Character. Type of the final output raster. Either &quot;raw&quot; for class predictions or &quot;prob&quot; for class probabilities. Class probabilities are not available for all classification models (<a href="https://www.rdocumentation.org/packages/raster/caret/topics/predict.train">predict.train</a>).</p>
+<p>Character. Type of the final output raster. Either &quot;raw&quot; for class predictions or &quot;prob&quot; for class probabilities. Class probabilities are not available for all classification models (<a href="https://www.rdocumentation.org/packages/caret/topics/predict.train">predict.train</a>).</p>
 </td></tr>
 <tr valign="top"><td><code class="r">filename</code></td>
 <td>
@@ -109,7 +109,7 @@ Requires all data to carry valid projection information.</p>
 </td></tr>
 <tr valign="top"><td><code class="r">...</code></td>
 <td>
-<p>further arguments to be passed to <code class="r"><a href="https://www.rdocumentation.org/packages/raster/caret/topics/train">train</a></code></p>
+<p>further arguments to be passed to <code class="r"><a href="https://www.rdocumentation.org/packages/caret/topics/train">train</a></code></p>
 </td></tr>
 </table>
 
@@ -159,7 +159,7 @@ otherwise it will be performed on a per-pixel basis.
 
 <h3>See Also</h3>
 
-<p><code class="r"><a href="https://www.rdocumentation.org/packages/raster/caret/topics/train">train</a></code>
+<p><code class="r"><a href="https://www.rdocumentation.org/packages/caret/topics/train">train</a></code>
 </p>
 
 

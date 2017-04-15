@@ -57,14 +57,14 @@ Takes effect only if nSamples is NULL.</p>
 </td></tr>
 <tr valign="top"><td><code class="r">...</code></td>
 <td>
-<p>further arguments to be passed to <a href="https://www.rdocumentation.org/packages/raster/raster/topics/writeRaster">writeRaster</a>, e.g. filename.</p>
+<p>further arguments to be passed to <a href="https://www.rdocumentation.org/packages/raster/topics/writeRaster">writeRaster</a>, e.g. filename.</p>
 </td></tr>
 </table>
 
 
 <h3>Details</h3>
 
-<p>Internally rasterPCA relies on the use of <a href="https://www.rdocumentation.org/packages/raster/stats/topics/princomp">princomp</a> (R-mode PCA). If nSamples is given the PCA will be calculated
+<p>Internally rasterPCA relies on the use of <a href="https://www.rdocumentation.org/packages/stats/topics/princomp">princomp</a> (R-mode PCA). If nSamples is given the PCA will be calculated
 based on a random sample of pixels and then predicted for the full raster. If nSamples is NULL then the covariance matrix will be calculated
 first and will then be used to calculate princomp and predict the full raster. The latter is more precise, since it considers all pixels,
 however, it may be slower than calculating the PCA only on a subset of pixels.
