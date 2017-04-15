@@ -16,7 +16,7 @@ datScr=$(git log -1 --format=%ct data-raw/)
 datSys=$(git log -1 --format=%ct R/sysdata.rda)
 if [ $(( satScr > datSys )) -eq 1 ]
 then
-    echo "\n**********************************************************"
+    echo -e "\n**********************************************************"
     echo "Generate sysdata *****************************************"
     echo "**********************************************************"
     Rscript data-raw/generate_sysdata.R
@@ -25,7 +25,7 @@ else
     echo 'R/sysdata.R is already up-to-date'
 fi 
 
-echo "\n**********************************************************"
+echo -e "\n**********************************************************"
 echo "Document and install RStoolbox ***************************"
 echo "**********************************************************"
 Rscript -e "library(devtools); library(methods); document(); install()"
@@ -36,7 +36,7 @@ tmstr=$(git log -1 --format=%ct data/ inst/external/trainingPoints.rds inst/exte
 texmpl=$(git log example-data -1  --format=%ct)
 if [ $(( tmstr > texmpl )) -eq 0 ]
 then
-    echo "\n**********************************************************"
+    echo -e "\n**********************************************************"
     echo "Generate example data ************************************"
     echo "**********************************************************"
     git checkout example-data
@@ -54,7 +54,7 @@ fi
 
 
 ## Website
-echo "\n**********************************************************"
+echo -e "\n**********************************************************"
 echo "Build website documentation ******************************"
 echo "**********************************************************"
 git checkout gh-pages
@@ -62,7 +62,7 @@ Rscript rstbx-docu/build_docu.R
 git commit -a -m "Automatic commit: Update gh-pages package documentation"
 git checkout master
 
-echo "\n**********************************************************"
+echo -e "\n**********************************************************"
 echo "R CMD check **********************************************"
 echo "**********************************************************"
 #Rscript -e "library(devtools); library(methods);  check(); build_win(version = c('R-release', 'R-devel'))" 
