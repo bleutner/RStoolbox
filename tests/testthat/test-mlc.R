@@ -3,6 +3,7 @@ suppressPackageStartupMessages(library(caret))
 
 set.seed(1)
 mat <- matrix(rnorm(300), ncol = 3, nrow = 100)
+colnames(mat) <- letters[1:3]
 y <- sample(factor(c("a", "b")), 100, replace = TRUE)
 
 
