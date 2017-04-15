@@ -1,4 +1,5 @@
-This is a minor update of unit tests which broke the downstream tests of the recently updated 'caret' package.
+This is a minor update fixing unit tests which broke the downstream tests of the recently updated 'caret' package.
+Also registration of native routines has been added.
 
 ### R CMD checks
 ### Test environments

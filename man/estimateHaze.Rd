@@ -51,4 +51,3 @@ haze <- estimateHaze(lsat, hazeBands = 1:3, returnTables = TRUE)
 haze <- estimateHaze(haze, hazeBands = 1:3, darkProp = .1, plot = TRUE)
 haze$SHV
 }
-

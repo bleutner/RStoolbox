@@ -54,4 +54,3 @@ qacs_conf <- classifyQA(img = qa, confLayers = TRUE)
 \seealso{
 \link{encodeQA} \link{decodeQA}
 }
-

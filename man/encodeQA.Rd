@@ -38,4 +38,3 @@ encodeQA(snow = "low", cirrus = c("med", "high"), cloud = "high")
 \references{
 \url{https://landsat.usgs.gov/qualityband}
 }
-

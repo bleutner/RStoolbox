@@ -57,4 +57,3 @@ lsat_C <- topCor(lsat, dem = srtm, solarAngles = c(1.081533, 0.7023922), method 
 \references{
 Riano et al. (2003) Assessment of different topographic correction in Landsat-TM data for mapping vegetation types. IEEE Transactions on Geoscience and Remote Sensing.
 }
-

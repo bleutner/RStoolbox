@@ -31,4 +31,3 @@ hist(rlogo_center_norm)
 ## Centering
 rlogo_center <- normImage(rlogo, norm = FALSE)
 }
-

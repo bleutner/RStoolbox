@@ -15,4 +15,3 @@ data(srtm)
 ggR(srtm)
 }
 \keyword{datasets}
-

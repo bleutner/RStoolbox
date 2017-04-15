@@ -102,4 +102,3 @@ S. Goslee (2011): Analyzing Remote Sensing Data in R: The landsat Package. Journ
 
 G. Thuillier et al. (2003)  THE SOLAR SPECTRAL IRRADIANCE FROM 200 TO 2400 nm AS MEASURED BY THE SOLSPEC SPECTROMETER FROM THE ATLAS AND EURECA MISSIONS. Solar Physics 214(1): 1-22 (
 }
-
