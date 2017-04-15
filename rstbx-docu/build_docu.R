@@ -50,7 +50,10 @@ knit_rd2 <- function(pkg, path = ".", links =  tools::findHTMLlinks(pkg), frame 
         }
         
         ## Replace links to other packages with external link
-        txt[extlinks] <- gsub(".html", "", gsub("/html/", "/docs/", gsub("../../", "http://www.inside-r.org/packages/cran/", txt[extlinks])))
+        txt[extlinks] <- gsub(".html", "", 
+                         gsub("/html/", "/topics/", 
+                         gsub("../../", "https://www.rdocumentation.org/packages/raster/",
+                             txt[extlinks])))
         extIntLinks   <- sapply(included, function(x) any(grepl(x, txt[extlinks])))
         ints <- included[extIntLinks]
         if(length(ints)) for(i in ints) {
