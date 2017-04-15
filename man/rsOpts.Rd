@@ -16,3 +16,4 @@ shortcut to options(RStoolbox.*)
 # rsOpts(verbose=TRUE)
 
 }
+

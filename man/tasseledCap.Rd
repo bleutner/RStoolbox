@@ -42,3 +42,4 @@ lsat_tc <- tasseledCap(lsat[[c(1:5,7)]], sat = "Landsat5TM")
 lsat_tc
 plot(lsat_tc)
 }
+

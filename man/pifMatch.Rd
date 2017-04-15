@@ -75,3 +75,4 @@ hist(lsat_b_adj$img[[1]], main = "lsat_b adjusted")
 ## Model summary for first band
 summary(lsat_b_adj$models[[1]])
 }
+

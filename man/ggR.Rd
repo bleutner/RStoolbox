@@ -114,3 +114,4 @@ ggR(hill) +
 \seealso{
 \link{ggRGB}, \link[=fortify.raster]{fortify}
 }
+

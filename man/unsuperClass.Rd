@@ -62,3 +62,4 @@ legend(1,1, legend = paste0("C",1:5), fill = colors,
 
 par(olpar) # reset par
 }
+

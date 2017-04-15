@@ -14,7 +14,7 @@ rasterPCA(img, nSamples = NULL, nComp = nlayers(img), spca = FALSE,
 
 \item{nComp}{Integer. Number of PCA components to return.}
 
-\item{spca}{Logical. If \code{TRUE}, perform standardized PCA. Corresponds to centered and scaled input image. This is usually benefitial for equal weighting of all layers. (\code{TRUE} by default)}
+\item{spca}{Logical. If \code{TRUE}, perform standardized PCA. Corresponds to centered and scaled input image. This is usually benefitial for equal weighting of all layers. (\code{FALSE} by default)}
 
 \item{maskCheck}{Logical. Masks all pixels which have at least one NA (default TRUE is reccomended but introduces a slow-down, see Details when it is wise to disable maskCheck). 
 Takes effect only if nSamples is NULL.}
@@ -58,3 +58,4 @@ plots <- lapply(1:3, function(x) ggR(rpc$map, x, geom_raster = TRUE))
 grid.arrange(plots[[1]],plots[[2]], plots[[3]], ncol=2)
 }
 }
+

@@ -32,3 +32,4 @@ ggplot(ee) +
 		scale_y_continuous(name = "Scene quality (\% clear sky)")
 
 }
+

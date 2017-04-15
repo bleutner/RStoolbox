@@ -34,3 +34,4 @@ SC 	  <- superClass(rlogo, trainData = train, responseCol = "class",
 
 map <- predict(SC, rlogo)
 }
+

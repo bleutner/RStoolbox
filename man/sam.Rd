@@ -49,3 +49,4 @@ lsat_sam <- sam(lsat, endmembers, angles = FALSE)
 \donttest{ggR(lsat_sam, forceCat = TRUE, geom_raster=TRUE) + 
 		scale_fill_manual(values = c("blue", "green"), labels = c("water", "vegetation"))}
 }
+
