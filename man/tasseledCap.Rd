@@ -21,16 +21,18 @@ Calculates brightness, greenness and wetness from multispectral imagery.
 Currently implemented Landsat 4 TM, Landsat 5 TM, Landsat 7ETM+, Landsat 8 OLI and MODIS.
 }
 \details{
-Currently implemented: Landsat 4 TM, Landsat 5 TM, Landsat 7ETM+, Landsat 8 OLI and MODIS. Input data must be in top of atmosphere reflectance.
-Bands must be available in the correct order and irrelevant bands, such as Landsat Thermal Bands must be removed.
+Currently implemented: Landsat 4 TM, Landsat 5 TM, Landsat 7ETM+, Landsat 8 OLI and MODIS. 
+Input data must be in top of atmosphere reflectance.
+Moreover, bands must be provided in ascending order as listed in the table below. 
+Irrelevant bands, such as Landsat Thermal Bands must be omitted.
 Required bands are:
-\tabular{rrr}{
- sat \tab bands \tab coefficients \cr
- Landsat4TM \tab 1,2,3,4,5,7 \tab Crist 1985 \cr
- Landsat5TM  \tab 1,2,3,4,5,7 \tab Crist 1985 \cr
- Landsat7ETM \tab 1,2,3,4,5,7 \tab Huang 2002 \cr
- Landsat8OLI \tab 2,3,4,5,6,7 \tab Baig 2014 \cr
- MODIS \tab 1,2,3,4,5,6,7 \tab Lobser 2007 \cr
+\tabular{rrrl}{
+ sat \tab bands \tab coefficients \tab data unit\cr
+ Landsat4TM \tab 1,2,3,4,5,7 \tab Crist 1985 \tab reflectance \cr
+ Landsat5TM  \tab 1,2,3,4,5,7 \tab Crist 1985 \tab reflectance \cr
+ Landsat7ETM \tab 1,2,3,4,5,7 \tab Huang 2002 \tab reflectance \cr
+ Landsat8OLI \tab 2,3,4,5,6,7 \tab Baig 2014 \tab reflectance \cr
+ MODIS \tab 1,2,3,4,5,6,7 \tab Lobser 2007 \tab reflectance \cr
 }
 }
 \examples{
@@ -41,4 +43,13 @@ data(lsat)
 lsat_tc <- tasseledCap(lsat[[c(1:5,7)]], sat = "Landsat5TM")
 lsat_tc
 plot(lsat_tc)
+}
+\references{
+Crist (1985) "A TM Tasseled Cap Equivalent Transformation for Reflectance Factor Data." Remote Sensing of Environment 17 (3): 301–306
+
+Huang et al. (2002) "Derivation of a Tasselled Cap Transformation Based on Landsat 7 At-Satellite Reflectance." International Journal of Remote Sensing 23 (8): 1741–1748
+
+Baig et al. (2014) "Derivation of a Tasselled Cap Transformation Based on Landsat 8 At-Satellite Reflectance." Remote Sensing Letters 5 (5): 423–431.
+
+Lobser et al. (2007) "MODIS Tasselled Cap: Land Cover Characteristics Expressed through Transformed MODIS Data." International Journal of Remote Sensing 28 (22): 5079–5101.
 }
