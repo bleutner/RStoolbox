@@ -110,6 +110,11 @@ cloudShadowMask <- function (img, cm, nc = 5, shiftEstimate = NULL, preciseShift
         
         csind <- sum(img)
         csindm <- csind < quantile(csind, quantile)
+        uvals <- unique(csindm)
+        if(length(uvals)==1){
+            if(uvals == 0) stop("Argument 'quantiles' is too low.", call. = FALSE)
+            if(uvals == 1) stop("Argument 'quantiles' is too high.", call. = FALSE)
+        } 
         if(is.null(shiftEstimate)){
             
             plotRGB(img, stretch = "hist")
