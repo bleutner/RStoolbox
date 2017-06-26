@@ -180,7 +180,7 @@ readMeta <- function(file, raw = FALSE){
         cat[grep("opacity", names(cat))] <- "qa"
         
         bands	<- gsub(paste0(scene, "_|.tif"), "", files)					
-        bs 		<- grepl("_band", files)
+        bs 		<- grepl("_surface_reflectance", names(files))
         bands[bs] 	<- paste0("B", .getNumeric(bands[bs]), "_", quant[bs])
         bands[cat == "qa"] <- paste0("QA_", gsub("sr_|_qa", "", bands[cat == "qa"]))
         bands[cat == "index"] <- gsub("SR_", "", toupper(bands[cat == "index"]))

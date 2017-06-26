@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<espa_metadata version="2.0"
+xmlns="http://espa.cr.usgs.gov/v2"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://espa.cr.usgs.gov/v2 http://espa.cr.usgs.gov/schema/espa_internal_metadata_v2_0.xsd">
+
+    <global_metadata>
+        <data_provider>USGS/EROS</data_provider>
+        <satellite>LANDSAT_7</satellite>
+        <instrument>ETM</instrument>
+        <acquisition_date>2011-04-16</acquisition_date>
+        <scene_center_time>06:35:23.6717770Z</scene_center_time>
+        <level1_production_date>2016-12-10T15:00:31Z</level1_production_date>
+        <solar_angles zenith="36.770893" azimuth="143.607834" units="degrees"/>
+        <earth_sun_distance>1.003429</earth_sun_distance>
+        <wrs system="2" path="160" row="31"/>
+        <product_id>LE07_L1TP_160031_20110416_20161210_01_T1</product_id>
+        <lpgs_metadata_file>LE07_L1TP_160031_20110416_20161210_01_T1_MTL.txt</lpgs_metadata_file>
+        <corner location="UL" latitude="42.742260" longitude="58.577290"/>
+        <corner location="LR" latitude="40.770870" longitude="61.365890"/>
+        <bounding_coordinates>
+            <west>58.531222</west>
+            <east>61.496453</east>
+            <north>42.742397</north>
+            <south>40.770729</south>
+        </bounding_coordinates>
+        <projection_information projection="UTM" datum="WGS84" units="meters">
+            <corner_point location="UL" x="629100.000000" y="4733400.000000"/>
+            <corner_point location="LR" x="868500.000000" y="4522500.000000"/>
+            <grid_origin>CENTER</grid_origin>
+            <utm_proj_params>
+                <zone_code>40</zone_code>
+            </utm_proj_params>
+        </projection_information>
+        <orientation_angle>0.000000</orientation_angle>
+    </global_metadata>
+
+    <bands>
+        <band product="level2_qa" source="level1" name="pixel_qa" category="qa" data_type="UINT16" nlines="7031" nsamps="7981" fill_value="1">
+            <short_name>LE7PQA</short_name>
+            <long_name>level-2 pixel quality band</long_name>
+            <file_name>LE07_L1TP_160031_20110416_20161210_01_T1_pixel_qa.tif</file_name>
+            <pixel_size x="30" y="30" units="meters"/>
+            <resample_method>none</resample_method>
+            <data_units>quality/feature classification</data_units>
+            <bitmap_description>
+                <bit num="0">fill</bit>
+                <bit num="1">clear</bit>
+                <bit num="2">water</bit>
+                <bit num="3">cloud shadow</bit>
+                <bit num="4">snow</bit>
+                <bit num="5">cloud</bit>
+                <bit num="6">cloud confidence</bit>
+                <bit num="7">cloud confidence</bit>
+                <bit num="8">unused</bit>
+                <bit num="9">unused</bit>
+                <bit num="10">unused</bit>
+                <bit num="11">unused</bit>
+                <bit num="12">unused</bit>
+                <bit num="13">unused</bit>
+                <bit num="14">unused</bit>
+                <bit num="15">unused</bit>
+            </bitmap_description>
+            <app_version>generate_pixel_qa_1.4.0</app_version>
+            <production_date>2017-05-27T02:38:40Z</production_date>
+        </band>
+        <band product="angle_bands" source="level1" name="solar_zenith_band4" category="image" data_type="INT16" nlines="7031" nsamps="7981" fill_value="-32768" scale_factor="0.010000">
+            <short_name>LE7SOLZEN</short_name>
+            <long_name>band 4 solar zenith angles</long_name>
+            <file_name>LE07_L1TP_160031_20110416_20161210_01_T1_solar_zenith_band4.tif</file_name>
+            <pixel_size x="30" y="30" units="meters"/>
+            <resample_method>none</resample_method>
+            <data_units>degrees</data_units>
+            <app_version>create_angle_bands_1.12.0</app_version>
+            <production_date>2017-05-27T02:38:40Z</production_date>
+        </band>
+        <band product="angle_bands" source="level1" name="solar_azimuth_band4" category="image" data_type="INT16" nlines="7031" nsamps="7981" fill_value="-32768" scale_factor="0.010000">
+            <short_name>LE7SOLAZ</short_name>
+            <long_name>band 4 solar azimuth angles</long_name>
+            <file_name>LE07_L1TP_160031_20110416_20161210_01_T1_solar_azimuth_band4.tif</file_name>
+            <pixel_size x="30" y="30" units="meters"/>
+            <resample_method>none</resample_method>
+            <data_units>degrees</data_units>
+            <app_version>create_angle_bands_1.12.0</app_version>
+            <production_date>2017-05-27T02:38:40Z</production_date>
+        </band>
+        <band product="angle_bands" source="level1" name="sensor_zenith_band4" category="image" data_type="INT16" nlines="7031" nsamps="7981" fill_value="-32768" scale_factor="0.010000">
+            <short_name>LE7SENZEN</short_name>
+            <long_name>band 4 sensor zenith angles</long_name>
+            <file_name>LE07_L1TP_160031_20110416_20161210_01_T1_sensor_zenith_band4.tif</file_name>
+            <pixel_size x="30" y="30" units="meters"/>
+            <resample_method>none</resample_method>
+            <data_units>degrees</data_units>
+            <app_version>create_angle_bands_1.12.0</app_version>
+            <production_date>2017-05-27T02:38:40Z</production_date>
+        </band>
+        <band product="angle_bands" source="level1" name="sensor_azimuth_band4" category="image" data_type="INT16" nlines="7031" nsamps="7981" fill_value="-32768" scale_factor="0.010000">
+            <short_name>LE7SENAZ</short_name>
+            <long_name>band 4 sensor azimuth angles</long_name>
+            <file_name>LE07_L1TP_160031_20110416_20161210_01_T1_sensor_azimuth_band4.tif</file_name>
+            <pixel_size x="30" y="30" units="meters"/>
+            <resample_method>none</resample_method>
+            <data_units>degrees</data_units>
+            <app_version>create_angle_bands_1.12.0</app_version>
+            <production_date>2017-05-27T02:38:40Z</production_date>
+        </band>
+        <band product="toa_refl" source="level1" name="radsat_qa" category="qa" data_type="UINT8" nlines="7031" nsamps="7981" fill_value="1">
+            <short_name>LE7RADSAT</short_name>
+            <long_name>saturation mask</long_name>
+            <file_name>LE07_L1TP_160031_20110416_20161210_01_T1_radsat_qa.tif</file_name>
+            <pixel_size x="30" y="30" units="meters"/>
+            <resample_method>none</resample_method>
+            <data_units>bitmap</data_units>
+            <valid_range min="0.000000" max="255.000000"/>
+            <bitmap_description>
+                <bit num="0">Data Fill Flag (0 = valid data, 1 = invalid data)</bit>
+                <bit num="1">Band 1 Data Saturation Flag (0 = valid data, 1 = saturated data)</bit>
+                <bit num="2">Band 2 Data Saturation Flag (0 = valid data, 1 = saturated data)</bit>
+                <bit num="3">Band 3 Data Saturation Flag (0 = valid data, 1 = saturated data)</bit>
+                <bit num="4">Band 4 Data Saturation Flag (0 = valid data, 1 = saturated data)</bit>
+                <bit num="5">Band 5 Data Saturation Flag (0 = valid data, 1 = saturated data)</bit>
+                <bit num="6">Band 6 Data Saturation Flag (0 = valid data, 1 = saturated data)</bit>
+                <bit num="7">Band 7 Data Saturation Flag (0 = valid data, 1 = saturated data)</bit>
+            </bitmap_description>
+            <app_version>LEDAPS_3.1.3</app_version>
+            <production_date>2017-05-27T02:39:28Z</production_date>
+        </band>
+        <band product="sr_refl" source="toa_refl" name="sr_band1" category="image" data_type="INT16" nlines="7031" nsamps="7981" fill_value="-9999" saturate_value="20000" scale_factor="0.000100" add_offset="0.000000">
+            <short_name>LE7SR</short_name>
+            <long_name>band 1 surface reflectance</long_name>
+            <file_name>LE07_L1TP_160031_20110416_20161210_01_T1_sr_band1.tif</file_name>
+            <pixel_size x="30" y="30" units="meters"/>
+            <resample_method>none</resample_method>
+            <data_units>reflectance</data_units>
+            <valid_range min="-2000.000000" max="16000.000000"/>
+            <app_version>LEDAPS_3.1.3</app_version>
+            <production_date>2017-05-27T02:39:40Z</production_date>
+        </band>
+        <band product="sr_refl" source="toa_refl" name="sr_band2" category="image" data_type="INT16" nlines="7031" nsamps="7981" fill_value="-9999" saturate_value="20000" scale_factor="0.000100" add_offset="0.000000">
+            <short_name>LE7SR</short_name>
+            <long_name>band 2 surface reflectance</long_name>
+            <file_name>LE07_L1TP_160031_20110416_20161210_01_T1_sr_band2.tif</file_name>
+            <pixel_size x="30" y="30" units="meters"/>
+            <resample_method>none</resample_method>
+            <data_units>reflectance</data_units>
+            <valid_range min="-2000.000000" max="16000.000000"/>
+            <app_version>LEDAPS_3.1.3</app_version>
+            <production_date>2017-05-27T02:39:40Z</production_date>
+        </band>
+        <band product="sr_refl" source="toa_refl" name="sr_band3" category="image" data_type="INT16" nlines="7031" nsamps="7981" fill_value="-9999" saturate_value="20000" scale_factor="0.000100" add_offset="0.000000">
+            <short_name>LE7SR</short_name>
+            <long_name>band 3 surface reflectance</long_name>
+            <file_name>LE07_L1TP_160031_20110416_20161210_01_T1_sr_band3.tif</file_name>
+            <pixel_size x="30" y="30" units="meters"/>
+            <resample_method>none</resample_method>
+            <data_units>reflectance</data_units>
+            <valid_range min="-2000.000000" max="16000.000000"/>
+            <app_version>LEDAPS_3.1.3</app_version>
+            <production_date>2017-05-27T02:39:40Z</production_date>
+        </band>
+        <band product="sr_refl" source="toa_refl" name="sr_band4" category="image" data_type="INT16" nlines="7031" nsamps="7981" fill_value="-9999" saturate_value="20000" scale_factor="0.000100" add_offset="0.000000">
+            <short_name>LE7SR</short_name>
+            <long_name>band 4 surface reflectance</long_name>
+            <file_name>LE07_L1TP_160031_20110416_20161210_01_T1_sr_band4.tif</file_name>
+            <pixel_size x="30" y="30" units="meters"/>
+            <resample_method>none</resample_method>
+            <data_units>reflectance</data_units>
+            <valid_range min="-2000.000000" max="16000.000000"/>
+            <app_version>LEDAPS_3.1.3</app_version>
+            <production_date>2017-05-27T02:39:40Z</production_date>
+        </band>
+        <band product="sr_refl" source="toa_refl" name="sr_band5" category="image" data_type="INT16" nlines="7031" nsamps="7981" fill_value="-9999" saturate_value="20000" scale_factor="0.000100" add_offset="0.000000">
+            <short_name>LE7SR</short_name>
+            <long_name>band 5 surface reflectance</long_name>
+            <file_name>LE07_L1TP_160031_20110416_20161210_01_T1_sr_band5.tif</file_name>
+            <pixel_size x="30" y="30" units="meters"/>
+            <resample_method>none</resample_method>
+            <data_units>reflectance</data_units>
+            <valid_range min="-2000.000000" max="16000.000000"/>
+            <app_version>LEDAPS_3.1.3</app_version>
+            <production_date>2017-05-27T02:39:40Z</production_date>
+        </band>
+        <band product="sr_refl" source="toa_refl" name="sr_band7" category="image" data_type="INT16" nlines="7031" nsamps="7981" fill_value="-9999" saturate_value="20000" scale_factor="0.000100" add_offset="0.000000">
+            <short_name>LE7SR</short_name>
+            <long_name>band 7 surface reflectance</long_name>
+            <file_name>LE07_L1TP_160031_20110416_20161210_01_T1_sr_band7.tif</file_name>
+            <pixel_size x="30" y="30" units="meters"/>
+            <resample_method>none</resample_method>
+            <data_units>reflectance</data_units>
+            <valid_range min="-2000.000000" max="16000.000000"/>
+            <app_version>LEDAPS_3.1.3</app_version>
+            <production_date>2017-05-27T02:39:40Z</production_date>
+        </band>
+        <band product="sr_refl" source="toa_refl" name="sr_atmos_opacity" category="image" data_type="INT16" nlines="7031" nsamps="7981" fill_value="-9999" scale_factor="0.001000">
+            <short_name>LE7SR</short_name>
+            <long_name>atmos_opacity</long_name>
+            <file_name>LE07_L1TP_160031_20110416_20161210_01_T1_sr_atmos_opacity.tif</file_name>
+            <pixel_size x="30" y="30" units="meters"/>
+            <resample_method>none</resample_method>
+            <data_units>reflectance</data_units>
+            <valid_range min="-2000.000000" max="16000.000000"/>
+            <app_version>LEDAPS_3.1.3</app_version>
+            <production_date>2017-05-27T02:39:40Z</production_date>
+        </band>
+        <band product="sr_refl" source="toa_refl" name="sr_cloud_qa" category="qa" data_type="UINT8" nlines="7031" nsamps="7981">
+            <short_name>LE7SR</short_name>
+            <long_name>cloud_qa</long_name>
+            <file_name>LE07_L1TP_160031_20110416_20161210_01_T1_sr_cloud_qa.tif</file_name>
+            <pixel_size x="30" y="30" units="meters"/>
+            <resample_method>none</resample_method>
+            <data_units>quality/feature classification</data_units>
+            <valid_range min="0.000000" max="255.000000"/>
+            <bitmap_description>
+                <bit num="0">dark dense vegetation</bit>
+                <bit num="1">cloud</bit>
+                <bit num="2">cloud shadow</bit>
+                <bit num="3">adjacent to cloud</bit>
+                <bit num="4">snow</bit>
+                <bit num="5">land/water</bit>
+            </bitmap_description>
+            <app_version>LEDAPS_3.1.3</app_version>
+            <production_date>2017-05-27T02:39:40Z</production_date>
+        </band>
+    </bands>
+</espa_metadata>
