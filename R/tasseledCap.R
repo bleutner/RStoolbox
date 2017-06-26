@@ -22,13 +22,13 @@
 #'  MODIS \tab 1,2,3,4,5,6,7 \tab Lobser 2007 \tab reflectance \cr
 #' }
 #' @references 
-#' Crist (1985) "A TM Tasseled Cap Equivalent Transformation for Reflectance Factor Data." Remote Sensing of Environment 17 (3): 301–306
+#' Crist (1985) "A TM Tasseled Cap Equivalent Transformation for Reflectance Factor Data." Remote Sensing of Environment 17 (3): 301-306
 #' 
-#' Huang et al. (2002) "Derivation of a Tasselled Cap Transformation Based on Landsat 7 At-Satellite Reflectance." International Journal of Remote Sensing 23 (8): 1741–1748
+#' Huang et al. (2002) "Derivation of a Tasselled Cap Transformation Based on Landsat 7 At-Satellite Reflectance." International Journal of Remote Sensing 23 (8): 1741-1748
 #' 
-#' Baig et al. (2014) "Derivation of a Tasselled Cap Transformation Based on Landsat 8 At-Satellite Reflectance." Remote Sensing Letters 5 (5): 423–431.
+#' Baig et al. (2014) "Derivation of a Tasselled Cap Transformation Based on Landsat 8 At-Satellite Reflectance." Remote Sensing Letters 5 (5): 423-431.
 #' 
-#' Lobser et al. (2007) "MODIS Tasselled Cap: Land Cover Characteristics Expressed through Transformed MODIS Data." International Journal of Remote Sensing 28 (22): 5079–5101.
+#' Lobser et al. (2007) "MODIS Tasselled Cap: Land Cover Characteristics Expressed through Transformed MODIS Data." International Journal of Remote Sensing 28 (22): 5079-5101.
 #' @return 
 #' Returns a RasterBrick with the thee bands: brigthness, greenness, and (soil) wetness. 
 #' @examples 
