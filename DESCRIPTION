@@ -22,6 +22,7 @@ Imports:
     ggplot2,
     reshape2,
     rgeos,
+    rgdal,
     codetools,
     parallel,
     doParallel,
@@ -29,7 +30,6 @@ Imports:
     Rcpp,
     methods
 Suggests:
-    rgdal,
     randomForest,
     kernlab,
     e1071,
@@ -40,4 +40,4 @@ LinkingTo: Rcpp,
     RcppArmadillo
 License: GPL (>=3)
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 6.0.1.9000

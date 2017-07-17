@@ -29,6 +29,7 @@ Be aware that by default stackMeta() does NOT import panchromatic bands nor ther
 Note that nowadays the USGS uses cubic convolution to resample the TIR bands to 30m resolution.
 }
 \examples{
+library(rgdal)
 ## Example metadata file (MTL)
 mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
 

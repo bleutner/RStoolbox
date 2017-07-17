@@ -48,6 +48,7 @@
 #' }
 #' 
 #' @import raster sp 
+#' @importFrom rgdal readOGR
 #' @importFrom ggplot2 aes aes_string annotation_raster coord_equal fortify geom_raster geom_blank ggplot scale_fill_discrete scale_fill_gradientn scale_fill_identity   
 #' @importFrom caret confusionMatrix train trainControl postResample  createDataPartition createFolds getTrainPerf
 #' @importFrom rgeos gArea gBuffer gDifference gDisjoint gIntersection gIntersects gUnionCascaded intersect row.names 
