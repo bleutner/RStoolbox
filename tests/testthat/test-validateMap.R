@@ -35,7 +35,7 @@ test_that("regression",{
             expect_is(val, "mapValidation")
             expect_equal(lapply(val, "class"), list(performance="numeric",validationSet = "data.frame"))
             expect_equal(colnames(val$validationSet), c("reference", "prediction", "cell"))
-            expect_equal(names(val$performance), c("RMSE", "Rsquared"))
+            expect_equal(names(val$performance)[1:2], c("RMSE", "Rsquared"))
             
         }) 
 
