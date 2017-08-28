@@ -1,7 +1,10 @@
 RStoolbox 0.1.9
 =====================================
 Fixes:
+* adapt to new caret version
+* fix readEE for new EarthExplorer formats
 * corrected sign of greenness tasseledCap coefficient for Landsat5 TM band 1 (reported by Thomas Day)
+* adapt to new Landsat collection 1 metadata
 
 RStoolbox 0.1.8
 =====================================

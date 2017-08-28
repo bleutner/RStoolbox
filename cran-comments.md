@@ -1,5 +1,6 @@
-This is a minor update, fixing unit tests which broke the downstream tests of the 'caret' package.
-Also registration of native routines has been added.
+Adapts tests to upcoming caret version. 
+Should fix MacOS CRAN errors due to non-installed suggested package (rgdal).
+Plus multiple smaller fixes.
 
 ### R CMD checks
 ### Test environments
@@ -19,11 +20,9 @@ This is a false alarm; 'indices' is spelled correctly.
 ### Downstream dependencies
 none
 
-### Changelog RStoolbox 0.1.8
-New:
-* `spectralIndices()` can now apply a mask internally, e.g. to exclude cloud pixels. New arguments are: 
-   `maskLayer` and `maskValue` (suggested by Andrea Hess).   
-* added spectral index GNDWI   
-
-Fixes: 
-* update `readEE()` to deal with new EarthExplorer export columns (reported by Christian Bauer)
+### Changelog RStoolbox 0.1.9
+Fixes:
+* adapt to new caret version
+* fix readEE for new EarthExplorer formats
+* corrected sign of greenness tasseledCap coefficient for Landsat5 TM band 1 (reported by Thomas Day)
+* adapt to new Landsat Collection 1 metadata
