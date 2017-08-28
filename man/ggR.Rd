@@ -25,7 +25,7 @@ ggR(img, layer = 1, maxpixels = 5e+05, alpha = 1, hue = 1, sat = 0,
 
 \item{quantiles}{Numeric vector with two elements. Min and max quantiles to stretch to. Defaults to 2\% stretch, i.e. c(0.02,0.98).}
 
-\item{coord_equal}{Logical. Force addition of coord_equal, i.e. aspect ratio of 1:1. Typically usefull for remote sensing data (depending on your projection), hence it defaults to TRUE.
+\item{coord_equal}{Logical. Force addition of coord_equal, i.e. aspect ratio of 1:1. Typically useful for remote sensing data (depending on your projection), hence it defaults to TRUE.
 Note however, that this does not apply if (\code{ggLayer=FALSE}).}
 
 \item{ggLayer}{Logical. Return only a ggplot layer which must be added to an existing ggplot. If \code{FALSE} s stand-alone ggplot will be returned.}

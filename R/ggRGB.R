@@ -21,10 +21,10 @@
 #' A vector of length two (c(min,max)) can be used to specify lower and higher replace values, applied to all bands. 
 #' A two column matrix (typically with three rows) can be used to fully control lower and upper clipping values differently for each band.
 #' @param ggObj Logical. If \code{TRUE} a ggplot2 object is returned. If \code{FALSE} a data.frame with coordinates and color will be returned.
-#' @param ggLayer Logical. If \code{TRUE} a ggplot2 layer is returned. This is usefull if you want to add it to an existing ggplot2 object.
+#' @param ggLayer Logical. If \code{TRUE} a ggplot2 layer is returned. This is useful if you want to add it to an existing ggplot2 object.
 #'  Note that if \code{TRUE} & \code{annotate = FALSE} you have to add a scale_fill_identity() manually in your call to ggplot().
 #' @param alpha Numeric. Transparency (0-1).
-#' @param coord_equal Logical. Force addition of coord_equal, i.e. aspect ratio of 1:1. Typically usefull for remote sensing data (depending on your projection), hence it defaults to TRUE.
+#' @param coord_equal Logical. Force addition of coord_equal, i.e. aspect ratio of 1:1. Typically useful for remote sensing data (depending on your projection), hence it defaults to TRUE.
 #'         Note howver, that this does not apply if (\code{ggLayer=FALSE}).
 #' @param geom_raster Logical. If \code{FALSE} annotation_raster is used, otherwise geom_raster()+scale_fill_identity is used.
 #'  Note that you can't use scale_fill* in addition to the latter, because it already requires scale_fill_identity().

@@ -11,7 +11,7 @@ fCover(classImage, predImage, nSamples = 1000, classes = 1, model = "rf",
 \arguments{
 \item{classImage}{high resolution RasterLayer containing a landcover classification, e.g. as obtained by \link{superClass}.}
 
-\item{predImage}{coearse resolution RasterLayer for which fractional cover will be estimated.}
+\item{predImage}{coarse resolution RasterLayer for which fractional cover will be estimated.}
 
 \item{nSamples}{Integer. Number of pixels to sample from predImage to train the regression model}
 
@@ -51,7 +51,7 @@ that correspond to a single 30m pixel and calculate the percentage of the 1m pix
 are forest. For example, if there were 600 forest pixels and 300 non-forest pixels the value 
 given for the output pixel would be 0.67 since 67% of the block of 1m pixels were forest. 
 
-fCover relies on the train() function from the caret package which provides acces to a huge number of classifiers.
+fCover relies on the train() function from the caret package which provides access to a huge number of classifiers.
 Please see the available options at \link[caret]{train}. The default classifier (randomForest) we chose has been shown
 to provide very good results in image regression and hence it is recomended you start with this one. If you choose a different
 classifier, make sure it can run in regression mode.

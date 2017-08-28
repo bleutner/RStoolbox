@@ -14,7 +14,7 @@ rasterPCA(img, nSamples = NULL, nComp = nlayers(img), spca = FALSE,
 
 \item{nComp}{Integer. Number of PCA components to return.}
 
-\item{spca}{Logical. If \code{TRUE}, perform standardized PCA. Corresponds to centered and scaled input image. This is usually benefitial for equal weighting of all layers. (\code{FALSE} by default)}
+\item{spca}{Logical. If \code{TRUE}, perform standardized PCA. Corresponds to centered and scaled input image. This is usually beneficial for equal weighting of all layers. (\code{FALSE} by default)}
 
 \item{maskCheck}{Logical. Masks all pixels which have at least one NA (default TRUE is reccomended but introduces a slow-down, see Details when it is wise to disable maskCheck). 
 Takes effect only if nSamples is NULL.}
@@ -37,7 +37,7 @@ Pixels with missing values in one or more bands will be set to NA. The built-in 
 However, if you make sure or know beforehand that all pixels have either only valid values or only NAs throughout all layers you can disable this check
 by setting maskCheck=FALSE which speeds up the computation.
 
-Standardised PCA (SPCA) can be usefull if imagery or bands of different dynamic ranges are combined. SPC uses the correlation matrix instead of the covariance matrix, which
+Standardised PCA (SPCA) can be useful if imagery or bands of different dynamic ranges are combined. SPC uses the correlation matrix instead of the covariance matrix, which
 has the same effect as using normalised bands of unit variance.
 }
 \examples{

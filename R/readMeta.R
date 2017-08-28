@@ -215,7 +215,7 @@ readMeta <- function(file, raw = FALSE){
 #' @param sen Character. Sensor
 #' @param scene Character. Scene_ID
 #' @param proj CRS. Projection.
-#' @param date POSIXct. Aquosition date.
+#' @param date POSIXct. Aquisition date.
 #' @param pdate POSIXct. Processing date.
 #' @param path Integer. Path.
 #' @param row Integer. Row.

@@ -17,7 +17,7 @@ Select 'overall' for overall accuracy metrics, 'classwise' for classwise metrics
 }
 \value{
 Returns a data.frame with validation results. 
-If metrics = 'confmat' or 'caret' wil return a table or the full caret::confusionMatrix object, respectively.
+If metrics = 'confmat' or 'caret' will return a table or the full caret::confusionMatrix object, respectively.
 }
 \description{
 Extract validation results from superClass objects

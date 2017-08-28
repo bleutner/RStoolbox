@@ -37,7 +37,7 @@
 #' \item \code{\link{rasterCVA}}: change vector analysis
 #' \item \code{\link{unsuperClass}}: unsupervised classification
 #' \item \code{\link{superClass}}: supervised classification
-#' \item \code{\link{fCover}}: fractional cover of coarse resolution imagery based on high resolution classificaton
+#' \item \code{\link{fCover}}: fractional cover of coarse resolution imagery based on high resolution classification
 #' }
 #' 
 #' @section Data Display:

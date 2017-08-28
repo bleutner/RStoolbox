@@ -38,12 +38,12 @@ A two column matrix (typically with three rows) can be used to fully control low
 
 \item{ggObj}{Logical. If \code{TRUE} a ggplot2 object is returned. If \code{FALSE} a data.frame with coordinates and color will be returned.}
 
-\item{ggLayer}{Logical. If \code{TRUE} a ggplot2 layer is returned. This is usefull if you want to add it to an existing ggplot2 object.
+\item{ggLayer}{Logical. If \code{TRUE} a ggplot2 layer is returned. This is useful if you want to add it to an existing ggplot2 object.
 Note that if \code{TRUE} & \code{annotate = FALSE} you have to add a scale_fill_identity() manually in your call to ggplot().}
 
 \item{alpha}{Numeric. Transparency (0-1).}
 
-\item{coord_equal}{Logical. Force addition of coord_equal, i.e. aspect ratio of 1:1. Typically usefull for remote sensing data (depending on your projection), hence it defaults to TRUE.
+\item{coord_equal}{Logical. Force addition of coord_equal, i.e. aspect ratio of 1:1. Typically useful for remote sensing data (depending on your projection), hence it defaults to TRUE.
 Note howver, that this does not apply if (\code{ggLayer=FALSE}).}
 
 \item{geom_raster}{Logical. If \code{FALSE} annotation_raster is used, otherwise geom_raster()+scale_fill_identity is used.

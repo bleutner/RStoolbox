@@ -14,8 +14,8 @@
 #' <%= .df2tab(df, "lllll") %>
 #' 
 #' 
-#' Some indices require additional parameters, such as the slope of the soil line wich are specified via a list to the \code{coefs} argument. 
-#' Although the defaults are sensible values, values like the soil brigthness factor \code{L} for SAVI should be adapted depending on the characteristics of the scene.
+#' Some indices require additional parameters, such as the slope of the soil line which are specified via a list to the \code{coefs} argument. 
+#' Although the defaults are sensible values, values like the soil brightnes factor \code{L} for SAVI should be adapted depending on the characteristics of the scene.
 #' The coefficients are:
 #' \tabular{lll}{
 #' \strong{Coefficient} \tab \strong{Description} \tab \strong{Affected Indices} \cr

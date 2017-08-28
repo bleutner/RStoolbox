@@ -23,7 +23,7 @@ ImageMetaData(file = NA, format = NA, sat = NA, sen = NA, scene = NA,
 
 \item{proj}{CRS. Projection.}
 
-\item{date}{POSIXct. Aquosition date.}
+\item{date}{POSIXct. Aquisition date.}
 
 \item{pdate}{POSIXct. Processing date.}
 
