@@ -2,42 +2,42 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 classQA <- function(x, rcl) {
-    .Call('RStoolbox_classQA', PACKAGE = 'RStoolbox', x, rcl)
+    .Call('_RStoolbox_classQA', PACKAGE = 'RStoolbox', x, rcl)
 }
 
 entropyCpp <- function(x) {
-    .Call('RStoolbox_entropyCpp', PACKAGE = 'RStoolbox', x)
+    .Call('_RStoolbox_entropyCpp', PACKAGE = 'RStoolbox', x)
 }
 
 gainOffsetRescale <- function(x, g, o, clamp) {
-    .Call('RStoolbox_gainOffsetRescale', PACKAGE = 'RStoolbox', x, g, o, clamp)
+    .Call('_RStoolbox_gainOffsetRescale', PACKAGE = 'RStoolbox', x, g, o, clamp)
 }
 
 normImageCpp <- function(x, M, S) {
-    .Call('RStoolbox_normImageCpp', PACKAGE = 'RStoolbox', x, M, S)
+    .Call('_RStoolbox_normImageCpp', PACKAGE = 'RStoolbox', x, M, S)
 }
 
 predKmeansCpp <- function(x, centers) {
-    .Call('RStoolbox_predKmeansCpp', PACKAGE = 'RStoolbox', x, centers)
+    .Call('_RStoolbox_predKmeansCpp', PACKAGE = 'RStoolbox', x, centers)
 }
 
 predictMlcCpp <- function(newdata, model, nclasses) {
-    .Call('RStoolbox_predictMlcCpp', PACKAGE = 'RStoolbox', newdata, model, nclasses)
+    .Call('_RStoolbox_predictMlcCpp', PACKAGE = 'RStoolbox', newdata, model, nclasses)
 }
 
 pwSimilarityCpp <- function(img, ref, method) {
-    .Call('RStoolbox_pwSimilarityCpp', PACKAGE = 'RStoolbox', img, ref, method)
+    .Call('_RStoolbox_pwSimilarityCpp', PACKAGE = 'RStoolbox', img, ref, method)
 }
 
 rescaleImageCpp <- function(x, scal, xmin, ymin) {
-    .Call('RStoolbox_rescaleImageCpp', PACKAGE = 'RStoolbox', x, scal, xmin, ymin)
+    .Call('_RStoolbox_rescaleImageCpp', PACKAGE = 'RStoolbox', x, scal, xmin, ymin)
 }
 
 specSimC <- function(x, em) {
-    .Call('RStoolbox_specSimC', PACKAGE = 'RStoolbox', x, em)
+    .Call('_RStoolbox_specSimC', PACKAGE = 'RStoolbox', x, em)
 }
 
 spectralIndicesCpp <- function(x, indices, redBand, blueBand, greenBand, nirBand, swir1Band, swir2Band, swir3Band, maskLayer, maskValue, L, s, G, C1, C2, Levi, swir2ccc, swir2cdiff, sf) {
-    .Call('RStoolbox_spectralIndicesCpp', PACKAGE = 'RStoolbox', x, indices, redBand, blueBand, greenBand, nirBand, swir1Band, swir2Band, swir3Band, maskLayer, maskValue, L, s, G, C1, C2, Levi, swir2ccc, swir2cdiff, sf)
+    .Call('_RStoolbox_spectralIndicesCpp', PACKAGE = 'RStoolbox', x, indices, redBand, blueBand, greenBand, nirBand, swir1Band, swir2Band, swir3Band, maskLayer, maskValue, L, s, G, C1, C2, Levi, swir2ccc, swir2cdiff, sf)
 }
 

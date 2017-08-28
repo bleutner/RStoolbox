@@ -8,7 +8,7 @@ using namespace Rcpp;
 
 // classQA
 IntegerVector classQA(NumericVector& x, NumericMatrix rcl);
-RcppExport SEXP RStoolbox_classQA(SEXP xSEXP, SEXP rclSEXP) {
+RcppExport SEXP _RStoolbox_classQA(SEXP xSEXP, SEXP rclSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -20,7 +20,7 @@ END_RCPP
 }
 // entropyCpp
 NumericVector entropyCpp(NumericMatrix& x);
-RcppExport SEXP RStoolbox_entropyCpp(SEXP xSEXP) {
+RcppExport SEXP _RStoolbox_entropyCpp(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -31,7 +31,7 @@ END_RCPP
 }
 // gainOffsetRescale
 NumericMatrix gainOffsetRescale(NumericMatrix x, NumericVector g, NumericVector o, LogicalVector clamp);
-RcppExport SEXP RStoolbox_gainOffsetRescale(SEXP xSEXP, SEXP gSEXP, SEXP oSEXP, SEXP clampSEXP) {
+RcppExport SEXP _RStoolbox_gainOffsetRescale(SEXP xSEXP, SEXP gSEXP, SEXP oSEXP, SEXP clampSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -45,7 +45,7 @@ END_RCPP
 }
 // normImageCpp
 NumericMatrix normImageCpp(NumericMatrix& x, NumericVector& M, NumericVector& S);
-RcppExport SEXP RStoolbox_normImageCpp(SEXP xSEXP, SEXP MSEXP, SEXP SSEXP) {
+RcppExport SEXP _RStoolbox_normImageCpp(SEXP xSEXP, SEXP MSEXP, SEXP SSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -58,7 +58,7 @@ END_RCPP
 }
 // predKmeansCpp
 IntegerVector predKmeansCpp(NumericMatrix x, NumericMatrix centers);
-RcppExport SEXP RStoolbox_predKmeansCpp(SEXP xSEXP, SEXP centersSEXP) {
+RcppExport SEXP _RStoolbox_predKmeansCpp(SEXP xSEXP, SEXP centersSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -70,7 +70,7 @@ END_RCPP
 }
 // predictMlcCpp
 arma::mat predictMlcCpp(NumericMatrix newdata, List model, int nclasses);
-RcppExport SEXP RStoolbox_predictMlcCpp(SEXP newdataSEXP, SEXP modelSEXP, SEXP nclassesSEXP) {
+RcppExport SEXP _RStoolbox_predictMlcCpp(SEXP newdataSEXP, SEXP modelSEXP, SEXP nclassesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -83,7 +83,7 @@ END_RCPP
 }
 // pwSimilarityCpp
 NumericVector pwSimilarityCpp(NumericMatrix& img, NumericMatrix& ref, int method);
-RcppExport SEXP RStoolbox_pwSimilarityCpp(SEXP imgSEXP, SEXP refSEXP, SEXP methodSEXP) {
+RcppExport SEXP _RStoolbox_pwSimilarityCpp(SEXP imgSEXP, SEXP refSEXP, SEXP methodSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -96,7 +96,7 @@ END_RCPP
 }
 // rescaleImageCpp
 NumericMatrix rescaleImageCpp(NumericMatrix x, NumericVector scal, NumericVector xmin, NumericVector ymin);
-RcppExport SEXP RStoolbox_rescaleImageCpp(SEXP xSEXP, SEXP scalSEXP, SEXP xminSEXP, SEXP yminSEXP) {
+RcppExport SEXP _RStoolbox_rescaleImageCpp(SEXP xSEXP, SEXP scalSEXP, SEXP xminSEXP, SEXP yminSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -110,7 +110,7 @@ END_RCPP
 }
 // specSimC
 NumericMatrix specSimC(NumericMatrix& x, NumericMatrix& em);
-RcppExport SEXP RStoolbox_specSimC(SEXP xSEXP, SEXP emSEXP) {
+RcppExport SEXP _RStoolbox_specSimC(SEXP xSEXP, SEXP emSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -122,7 +122,7 @@ END_RCPP
 }
 // spectralIndicesCpp
 NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices, const int redBand, const int blueBand, const int greenBand, const int nirBand, const int swir1Band, const int swir2Band, const int swir3Band, int maskLayer, const int maskValue, const double L, const double s, const double G, const double C1, const double C2, double Levi, const double swir2ccc, const double swir2cdiff, const double sf);
-RcppExport SEXP RStoolbox_spectralIndicesCpp(SEXP xSEXP, SEXP indicesSEXP, SEXP redBandSEXP, SEXP blueBandSEXP, SEXP greenBandSEXP, SEXP nirBandSEXP, SEXP swir1BandSEXP, SEXP swir2BandSEXP, SEXP swir3BandSEXP, SEXP maskLayerSEXP, SEXP maskValueSEXP, SEXP LSEXP, SEXP sSEXP, SEXP GSEXP, SEXP C1SEXP, SEXP C2SEXP, SEXP LeviSEXP, SEXP swir2cccSEXP, SEXP swir2cdiffSEXP, SEXP sfSEXP) {
+RcppExport SEXP _RStoolbox_spectralIndicesCpp(SEXP xSEXP, SEXP indicesSEXP, SEXP redBandSEXP, SEXP blueBandSEXP, SEXP greenBandSEXP, SEXP nirBandSEXP, SEXP swir1BandSEXP, SEXP swir2BandSEXP, SEXP swir3BandSEXP, SEXP maskLayerSEXP, SEXP maskValueSEXP, SEXP LSEXP, SEXP sSEXP, SEXP GSEXP, SEXP C1SEXP, SEXP C2SEXP, SEXP LeviSEXP, SEXP swir2cccSEXP, SEXP swir2cdiffSEXP, SEXP sfSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
