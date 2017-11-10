@@ -54,8 +54,8 @@ notifications:
 
 env:
   matrix:
-    - RVERSION=oldrel
-    - RVERSION=release
+#    - RVERSION=oldrel
+#    - RVERSION=release
     - RVERSION=devel COVERAGE=true
     
 r_github_packages:
