@@ -28,6 +28,8 @@ Returns the Integer value for the QA values
 \description{
 Intended for use with the Landsat 8 OLI QA band. Converts pixel quality flags from human readable to integer, which can then be used to 
 subset the QA image. Please be aware of the default settings which differ for different parameters.
+NOTE: THE NEW USGS LANDSAT COLLECTION 1 DATA HAS CHANGED THE QA BITWORD ASSIGNMENTS. THIS IS NOT YET IMPLEMENTED HERE.
+DO NOT USE encodeQA, decodeQA and classifyQA FOR LANDSAT COLLECTION 1 DATA (yet)!
 }
 \note{
 Only currently populated bits are available as arguments, i.e. vegetation confidence, cloud shadow and bit nr. 3. are currently useless and hence not available.

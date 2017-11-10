@@ -1,5 +1,6 @@
 #include<Rcpp.h>
 using namespace Rcpp;
+
 // [[Rcpp::export]]
 IntegerVector classQA(NumericVector& x, NumericMatrix rcl){
     int xs = x.size();

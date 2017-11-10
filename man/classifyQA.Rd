@@ -37,6 +37,8 @@ high   \tab 3L \cr
 }
 \description{
 extracts five classes from QA band: background, cloud, cirrus, snow and water.
+NOTE: THE NEW USGS LANDSAT COLLECTION 1 DATA HAS CHANGED THE QA BITWORD ASSIGNMENTS. THIS IS NOT YET IMPLEMENTED HERE.
+DO NOT USE encodeQA, decodeQA and classifyQA FOR LANDSAT COLLECTION 1 DATA (yet)!
 }
 \details{
 By default each class is queried for *high* confidence. See \link{encodeQA} for details. To return the different confidence levels per condition use \code{confLayers=TRUE}.

@@ -1,6 +1,8 @@
 #' Classify Landsat8 QA Band
 #' 
 #' extracts five classes from QA band: background, cloud, cirrus, snow and water.
+#' NOTE: THE NEW USGS LANDSAT COLLECTION 1 DATA HAS CHANGED THE QA BITWORD ASSIGNMENTS. THIS IS NOT YET IMPLEMENTED HERE.
+#' DO NOT USE encodeQA, decodeQA and classifyQA FOR LANDSAT COLLECTION 1 DATA (yet)! 
 #' 
 #' @param img RasterLayer. Landsat 8 OLI QA band. 
 #' @param type Character. Classes which should be returned. One or more of c("background", "cloud", "cirrus","snow", "water").

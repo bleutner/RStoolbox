@@ -11,6 +11,8 @@ decodeQA(x)
 }
 \description{
 Intended for use with the Landsat 8 OLI QA band. Decodes pixel quality flags from integer to bit-words.
+NOTE: THE NEW USGS LANDSAT COLLECTION 1 DATA HAS CHANGED THE QA BITWORD ASSIGNMENTS. THIS IS NOT YET IMPLEMENTED HERE.
+DO NOT USE encodeQA, decodeQA and classifyQA FOR LANDSAT COLLECTION 1 DATA (yet)!
 }
 \examples{
 decodeQA(53248)

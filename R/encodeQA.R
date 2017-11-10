@@ -2,6 +2,8 @@
 #' 
 #' Intended for use with the Landsat 8 OLI QA band. Converts pixel quality flags from human readable to integer, which can then be used to 
 #' subset the QA image. Please be aware of the default settings which differ for different parameters.
+#' NOTE: THE NEW USGS LANDSAT COLLECTION 1 DATA HAS CHANGED THE QA BITWORD ASSIGNMENTS. THIS IS NOT YET IMPLEMENTED HERE.
+#' DO NOT USE encodeQA, decodeQA and classifyQA FOR LANDSAT COLLECTION 1 DATA (yet)! 
 #' 
 #' @param fill Designated fill. Options: \code{c("yes", "no", "all")}. 
 #' @param droppedFrame Dropped frame. Options: \code{c("yes", "no", "all")}.
@@ -61,6 +63,9 @@ encodeQA <- function(fill = "no", droppedFrame = "no", terrainOcclusion = "no",
 #' Decode QA flags to bit-words
 #' 
 #' Intended for use with the Landsat 8 OLI QA band. Decodes pixel quality flags from integer to bit-words.
+#' NOTE: THE NEW USGS LANDSAT COLLECTION 1 DATA HAS CHANGED THE QA BITWORD ASSIGNMENTS. THIS IS NOT YET IMPLEMENTED HERE.
+#' DO NOT USE encodeQA, decodeQA and classifyQA FOR LANDSAT COLLECTION 1 DATA (yet)! 
+#' 
 #' @param x Integer (16bit)
 #' @export
 #' @seealso \link{encodeQA}
