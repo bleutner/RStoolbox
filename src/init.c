@@ -1,31 +1,35 @@
 #include <R.h>
 #include <Rinternals.h>
-#include <stdlib.h>
+#include <stdlib.h> // for NULL
 #include <R_ext/Rdynload.h>
 
+/* FIXME:
+   Check these declarations against the C/Fortran source code.
+*/
+
 /* .Call calls */
-extern SEXP RStoolbox_classQA(SEXP, SEXP);
-extern SEXP RStoolbox_entropyCpp(SEXP);
-extern SEXP RStoolbox_gainOffsetRescale(SEXP, SEXP, SEXP, SEXP);
-extern SEXP RStoolbox_normImageCpp(SEXP, SEXP, SEXP);
-extern SEXP RStoolbox_predictMlcCpp(SEXP, SEXP, SEXP);
-extern SEXP RStoolbox_predKmeansCpp(SEXP, SEXP);
-extern SEXP RStoolbox_pwSimilarityCpp(SEXP, SEXP, SEXP);
-extern SEXP RStoolbox_rescaleImageCpp(SEXP, SEXP, SEXP, SEXP);
-extern SEXP RStoolbox_specSimC(SEXP, SEXP);
-extern SEXP RStoolbox_spectralIndicesCpp(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP _RStoolbox_classQA(SEXP, SEXP);
+extern SEXP _RStoolbox_entropyCpp(SEXP);
+extern SEXP _RStoolbox_gainOffsetRescale(SEXP, SEXP, SEXP, SEXP);
+extern SEXP _RStoolbox_normImageCpp(SEXP, SEXP, SEXP);
+extern SEXP _RStoolbox_predictMlcCpp(SEXP, SEXP, SEXP);
+extern SEXP _RStoolbox_predKmeansCpp(SEXP, SEXP);
+extern SEXP _RStoolbox_pwSimilarityCpp(SEXP, SEXP, SEXP);
+extern SEXP _RStoolbox_rescaleImageCpp(SEXP, SEXP, SEXP, SEXP);
+extern SEXP _RStoolbox_specSimC(SEXP, SEXP);
+extern SEXP _RStoolbox_spectralIndicesCpp(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
-    {"RStoolbox_classQA",            (DL_FUNC) &RStoolbox_classQA,             2},
-    {"RStoolbox_entropyCpp",         (DL_FUNC) &RStoolbox_entropyCpp,          1},
-    {"RStoolbox_gainOffsetRescale",  (DL_FUNC) &RStoolbox_gainOffsetRescale,   4},
-    {"RStoolbox_normImageCpp",       (DL_FUNC) &RStoolbox_normImageCpp,        3},
-    {"RStoolbox_predictMlcCpp",      (DL_FUNC) &RStoolbox_predictMlcCpp,       3},
-    {"RStoolbox_predKmeansCpp",      (DL_FUNC) &RStoolbox_predKmeansCpp,       2},
-    {"RStoolbox_pwSimilarityCpp",    (DL_FUNC) &RStoolbox_pwSimilarityCpp,     3},
-    {"RStoolbox_rescaleImageCpp",    (DL_FUNC) &RStoolbox_rescaleImageCpp,     4},
-    {"RStoolbox_specSimC",           (DL_FUNC) &RStoolbox_specSimC,            2},
-    {"RStoolbox_spectralIndicesCpp", (DL_FUNC) &RStoolbox_spectralIndicesCpp, 20},
+    {"_RStoolbox_classQA",            (DL_FUNC) &_RStoolbox_classQA,             2},
+    {"_RStoolbox_entropyCpp",         (DL_FUNC) &_RStoolbox_entropyCpp,          1},
+    {"_RStoolbox_gainOffsetRescale",  (DL_FUNC) &_RStoolbox_gainOffsetRescale,   4},
+    {"_RStoolbox_normImageCpp",       (DL_FUNC) &_RStoolbox_normImageCpp,        3},
+    {"_RStoolbox_predictMlcCpp",      (DL_FUNC) &_RStoolbox_predictMlcCpp,       3},
+    {"_RStoolbox_predKmeansCpp",      (DL_FUNC) &_RStoolbox_predKmeansCpp,       2},
+    {"_RStoolbox_pwSimilarityCpp",    (DL_FUNC) &_RStoolbox_pwSimilarityCpp,     3},
+    {"_RStoolbox_rescaleImageCpp",    (DL_FUNC) &_RStoolbox_rescaleImageCpp,     4},
+    {"_RStoolbox_specSimC",           (DL_FUNC) &_RStoolbox_specSimC,            2},
+    {"_RStoolbox_spectralIndicesCpp", (DL_FUNC) &_RStoolbox_spectralIndicesCpp, 20},
     {NULL, NULL, 0}
 };
 
