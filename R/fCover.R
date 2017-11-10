@@ -4,7 +4,7 @@
 #' pixels of a coarser resolution, e.g. MODIS.
 #' 
 #' @param classImage high resolution RasterLayer containing a landcover classification, e.g. as obtained by \link{superClass}.
-#' @param predImage coearse resolution RasterLayer for which fractional cover will be estimated.
+#' @param predImage coarse resolution RasterLayer for which fractional cover will be estimated.
 #' @param nSamples Integer. Number of pixels to sample from predImage to train the regression model
 #' @param classes Integer. Classes for which fractional cover should be estimated (one or more). 
 #' @param model Character. Which model to fit for image regression. See \link[caret]{train} for options. Defaults to randomForest ('rf')
@@ -25,7 +25,7 @@
 #' are forest. For example, if there were 600 forest pixels and 300 non-forest pixels the value 
 #' given for the output pixel would be 0.67 since 67% of the block of 1m pixels were forest. 
 #' 
-#' fCover relies on the train() function from the caret package which provides acces to a huge number of classifiers.
+#' fCover relies on the train() function from the caret package which provides access to a huge number of classifiers.
 #' Please see the available options at \link[caret]{train}. The default classifier (randomForest) we chose has been shown
 #' to provide very good results in image regression and hence it is recomended you start with this one. If you choose a different
 #' classifier, make sure it can run in regression mode.

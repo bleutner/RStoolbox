@@ -25,7 +25,7 @@ Dimensionality is limited to two bands per image.
 \details{
 Change Vector Analysis (CVA) is used to identify spectral changes between two identical scenes which were acquired at different times. 
 CVA is limited to two bands per image. For each pixel it calculates the change vector in the two-dimensional spectral space. 
-For example for a given pixel in image A and B for the red and nir band the change vector is caclulated for the coordinate pairs: (red_A | nir_A) and (red_B | nir_B).
+For example for a given pixel in image A and B for the red and nir band the change vector is calculated for the coordinate pairs: (red_A | nir_A) and (red_B | nir_B).
 
  The coordinate system is defined by the order of the input bands: the first band defines the x-axis and the second band the y-axis, respectively.
  Angles are returned *in degree* beginning with 0 degrees pointing 'north', i.e. the y-axis, i.e. the second band.

@@ -13,7 +13,7 @@
 #' @param ggObj Logical. Return a stand-alone ggplot object (TRUE) or just the data.frame with values and colors
 #' @param ggLayer Logical. Return only a ggplot layer which must be added to an existing ggplot. If \code{FALSE} s stand-alone ggplot will be returned.
 #' @param geom_raster Logical. If \code{FALSE} uses annotation_raster (good to keep aestetic mappings free). If \code{TRUE} uses \code{geom_raster} (and \code{aes(fill)}). See Details.
-#' @param coord_equal Logical. Force addition of coord_equal, i.e. aspect ratio of 1:1. Typically usefull for remote sensing data (depending on your projection), hence it defaults to TRUE.
+#' @param coord_equal Logical. Force addition of coord_equal, i.e. aspect ratio of 1:1. Typically useful for remote sensing data (depending on your projection), hence it defaults to TRUE.
 #'         Note however, that this does not apply if (\code{ggLayer=FALSE}).
 #' @param forceCat Logical. If \code{TRUE} the raster values will be forced to be categorical (will be converted to factor if needed). 
 #' @seealso \link{ggRGB}, \link[=fortify.raster]{fortify}

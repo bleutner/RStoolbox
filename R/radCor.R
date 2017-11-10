@@ -1,6 +1,6 @@
 #' Radiometric Calibration and Correction
 #' 
-#' Implements several different methods for radiometric calibraion and correction of Landsat data.
+#' Implements several different methods for radiometric calibration and correction of Landsat data.
 #' You can either specify a metadata file, or supply all neccesary values manually. 
 #' With proper parametrization apref and sdos should work for other sensors as well.
 #' 

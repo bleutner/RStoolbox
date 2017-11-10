@@ -7,7 +7,7 @@
 #' 'confmat' for the confusion matrix itself and 'caret' to return the whole caret::confusionMatrix object.
 #' @export 
 #' @return Returns a data.frame with validation results. 
-#' If metrics = 'confmat' or 'caret' wil return a table or the full caret::confusionMatrix object, respectively.
+#' If metrics = 'confmat' or 'caret' will return a table or the full caret::confusionMatrix object, respectively.
 #' @examples
 #' library(pls)
 #' ## Fit classifier (splitting training into 70\% training data, 30\% validation data)
