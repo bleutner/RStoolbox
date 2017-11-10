@@ -3,22 +3,19 @@ context("normImage")
 library(raster)
 data(lsat)
 
-rasterOptions(todisk = TRUE)
-
-for(mem in 1:2){
+for(mem in c(TRUE, FALSE)){
+    rasterOptions(todisk = mem)
 	test_that("normImage for single or multiple layers", {
 				## Multiple layers 	
 				expect_is(nlsat <- normImage(lsat, norm = TRUE), "RasterBrick")		
-				expect_true(all(round(colMeans(nlsat[]), 10)==0))
+				expect_true(all(round(colMeans(nlsat[]), 5)==0))
 				
 				## Single layer
 				expect_is(nlsat <- normImage(lsat[[1]], norm = TRUE), "RasterLayer")
-				expect_equal(round(mean(nlsat[])),0)
+				expect_equal(round(mean(nlsat[]), 5),0)
 			}
 	)
-	rasterOptions(todisk = FALSE)
 }
-
 
 lsat[1,1] <- NA
 lsat[[2]][2] <- NA

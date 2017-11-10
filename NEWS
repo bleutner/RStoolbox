@@ -1,3 +1,8 @@
+RStoolbox 0.1.10
+=====================================
+Fixes:
+* fix tests for upcoming raster version
+
 RStoolbox 0.1.9
 =====================================
 Fixes:
