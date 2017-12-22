@@ -5,28 +5,33 @@
 #' @keywords internal
 #' @noRd
 mlc <- function(x, y, ...){
-	classes <- levels(y)
-	mod <- lapply(classes, function(ci){
-				cl <- y == ci
-				cod <- cov(x[cl,])
-				## Check&Fix for singularity due to fully correlated variables
-				## TODO: exclude correlated variables on a per class basis?
-				dups <- duplicated(cod)
-                warn <- FALSE
-				while(any(dups)) {
-                    warn <- TRUE
-					d <- which(dups)[1]
-					cod[d, d] <- cod[d, d] + 1e-10
-					dups <- duplicated(cod)				
-				}
-				list(m = colMeans(x[cl,]),  D = -log(det(cod)), I = solve(cod), warn = warn)
-			})		
+        classes <- setNames(nm=levels(y))
+        mod <- lapply(classes, function(ci){
+          cl <- y %in% ci
+          
+          if(!any(cl)) return(list(warn=TRUE, msg=paste("No data for class", ci)))
+          
+          cod <- cov(x[cl,])
+          ## Check&Fix for singularity due to fully correlated variables
+          ## TODO: exclude correlated variables on a per class basis?
+          dups <- duplicated(cod)
+          warn <- any(dups) 
+          if(warn) {
+            diag(cod) <- diag(cod) + cumsum(1e-10*dups)*dups
+          }
+          
+          upper <- chol(cod)
+          
+          list(m = colMeans(x[cl,]),  
+               D = -2*sum(log(diag(upper))), 
+               I = provideDimnames(chol2inv(upper), base=dimnames(upper)), 
+               warn = warn)
+  			})		
     
-    warn <- classes[ vapply(mod, "[[", logical(1),"warn")]
-    if(length(warn)) warning(paste0("Covariance matrix of class/classes ", warn, " is singular, i.e. holds perfectly correlated variables."))
-    for(i in seq_along(mod)) mod[[i]][["warn"]] <- NULL
-	names(mod) <- as.character(levels(y))
-    mod[["levels"]] <- unique(y)
+  warn <- classes[ vapply(mod, "[[", FALSE, "warn")]
+  if(length(warn)) warning("Covariance matrix of class/classes ", paste0(warn, collapse =", "), " is singular, i.e. holds perfectly correlated variables.")
+  for(i in seq_along(mod)) mod[[i]][["warn"]] <- NULL
+  mod[["levels"]] <- unique(y)
 	mod
 }
 
