@@ -26,13 +26,13 @@ mlc <- function(x, y, ...){
                D = -2*sum(log(diag(upper))), 
                I = provideDimnames(chol2inv(upper), base=dimnames(upper)), 
                warn = warn)
-  			})		
+              })        
     
   warn <- classes[ vapply(mod, "[[", FALSE, "warn")]
   if(length(warn)) warning("Covariance matrix of class/classes ", paste0(warn, collapse =", "), " is singular, i.e. holds perfectly correlated variables.")
   for(i in seq_along(mod)) mod[[i]][["warn"]] <- NULL
   mod[["levels"]] <- unique(y)
-	mod
+    mod
 }
 
 #' Predict Maximum Likelihood Classification
@@ -42,10 +42,10 @@ mlc <- function(x, y, ...){
 #' @param ... not used
 #' @noRd 
 #' @keywords internal
-predict.mlc <- function(modelFit, newdata, ...){	
-	if(inherits(modelFit, "train")) modelFit <- modelFit$finalModel
-	classes <- modelFit$obsLevels
-	pred <- predictMlcCpp(newdata, model = modelFit, nclasses = length(classes))
+predict.mlc <- function(modelFit, newdata, ...){    
+    if(inherits(modelFit, "train")) modelFit <- modelFit$finalModel
+    classes <- modelFit$obsLevels
+    pred <- predictMlcCpp(newdata, model = modelFit, nclasses = length(classes))
     factor(classes[pred[,1]], classes)
 }
 
@@ -56,7 +56,7 @@ predict.mlc <- function(modelFit, newdata, ...){
 #' @param ... not used
 #' @noRd 
 #' @keywords internal
-predict.mlc.prob <- function(modelFit, newdata, ...){	
+predict.mlc.prob <- function(modelFit, newdata, ...){    
     if(inherits(modelFit, "train")) modelFit <- modelFit$finalModel
     classes <- modelFit$obsLevels
     if(is.data.frame(newdata)) newdata <- as.matrix(newdata)
@@ -70,14 +70,14 @@ predict.mlc.prob <- function(modelFit, newdata, ...){
 #' @noRd 
 #' @keywords internal
 mlcCaret <- list(
-		label = "Maximum Likelihood Classification",
-		library = NULL,
-		type = "Classification",
-		parameters = data.frame(parameter = "parameter", class = "class", label = "label"),
-		grid = function (x, y, len = NULL, ...) {data.frame(parameter = "none")},
-		fit = mlc,
-		predict = predict.mlc,
-		prob = predict.mlc.prob,
-		sort = function(x) x,
+        label = "Maximum Likelihood Classification",
+        library = NULL,
+        type = "Classification",
+        parameters = data.frame(parameter = "parameter", class = "class", label = "label"),
+        grid = function (x, y, len = NULL, ...) {data.frame(parameter = "none")},
+        fit = mlc,
+        predict = predict.mlc,
+        prob = predict.mlc.prob,
+        sort = function(x) x,
         levels = function(x) levels(x$levels)
 )

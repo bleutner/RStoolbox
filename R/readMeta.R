@@ -55,23 +55,23 @@ readMeta <- function(file, raw = FALSE){
         legacy <- "PROCESSING_SOFTWARE" %in% rownames(meta$PRODUCT_METADATA)
         if(legacy) message("This scene was processed before August 29, 2012. Using MTL legacy format. Some minor infos such as SCENE_ID will be missing")
         
-        sat		<- paste0("LANDSAT", .getNumeric(meta$PRODUCT_METADATA["SPACECRAFT_ID",]))
-        sen		<- meta$PRODUCT_METADATA["SENSOR_ID",]				
-        scene	<- meta$METADATA_FILE_INFO["LANDSAT_SCENE_ID",]  ## could assemble name for legacy files: http://landsat.usgs.gov/naming_conventions_scene_identifiers.php
+        sat        <- paste0("LANDSAT", .getNumeric(meta$PRODUCT_METADATA["SPACECRAFT_ID",]))
+        sen        <- meta$PRODUCT_METADATA["SENSOR_ID",]                
+        scene    <- meta$METADATA_FILE_INFO["LANDSAT_SCENE_ID",]  ## could assemble name for legacy files: http://landsat.usgs.gov/naming_conventions_scene_identifiers.php
         
-        date	<- as.POSIXct(if(!legacy) meta$PRODUCT_METADATA["DATE_ACQUIRED",] else meta$PRODUCT_METADATA["ACQUISITION_DATE",], tz="GMT")
+        date    <- as.POSIXct(if(!legacy) meta$PRODUCT_METADATA["DATE_ACQUIRED",] else meta$PRODUCT_METADATA["ACQUISITION_DATE",], tz="GMT")
         date    <- strptime(paste0(date, meta$PRODUCT_METADATA["SCENE_CENTER_TIME",]), "%Y-%m-%d %H:%M:%S", tz = "GMT")
         
-        pdate	<- as.POSIXct(if(!legacy) meta$METADATA_FILE_INFO["FILE_DATE",] else meta$METADATA_FILE_INFO["PRODUCT_CREATION_TIME",], tz="GMT")
-        path	<- as.numeric(meta$PRODUCT_METADATA["WRS_PATH",])
-        row		<- if(!legacy) as.numeric(meta$PRODUCT_METADATA["WRS_ROW",]) else as.numeric(meta$PRODUCT_METADATA["STARTING_ROW",])
+        pdate    <- as.POSIXct(if(!legacy) meta$METADATA_FILE_INFO["FILE_DATE",] else meta$METADATA_FILE_INFO["PRODUCT_CREATION_TIME",], tz="GMT")
+        path    <- as.numeric(meta$PRODUCT_METADATA["WRS_PATH",])
+        row        <- if(!legacy) as.numeric(meta$PRODUCT_METADATA["WRS_ROW",]) else as.numeric(meta$PRODUCT_METADATA["STARTING_ROW",])
         
-        pars 	<- meta$PROJECTION_PARAMETERS[c("MAP_PROJECTION","UTM_ZONE","DATUM"),]
+        pars     <- meta$PROJECTION_PARAMETERS[c("MAP_PROJECTION","UTM_ZONE","DATUM"),]
         pars[1] <- tolower(pars[1])
-        proj 	<- CRS(paste0(c("+proj=", "+zone=", "+units=m +datum="), pars, collapse=" "))
-        files	<- row.names(meta[["PRODUCT_METADATA"]])[grep("^.*BAND", row.names(meta$PRODUCT_METADATA))]
+        proj     <- CRS(paste0(c("+proj=", "+zone=", "+units=m +datum="), pars, collapse=" "))
+        files    <- row.names(meta[["PRODUCT_METADATA"]])[grep("^.*BAND", row.names(meta$PRODUCT_METADATA))]
         files   <- files[!grepl("PRESENT", files)]
-        files	<- meta[["PRODUCT_METADATA"]][files,]
+        files    <- meta[["PRODUCT_METADATA"]][files,]
         
         if(grepl(paste0("^",scene,".*"), files[1])){
             bands <- gsub(paste0(scene,"_|.TIF"), "", files)
@@ -85,7 +85,7 @@ readMeta <- function(file, raw = FALSE){
         if(trailingZeros <- length(grep("0.TIF", bands)) > 1) stop("Trailing zeros")
         
         quant  <- rep("dn", length(bands))
-        cat	  <-  rep("image", length(bands)) 
+        cat      <-  rep("image", length(bands)) 
         cat[grep("QA", bands)] <- "qa"
         cat[grep("B8", bands)] <- "pan"
         spatRes  <- rep(meta$PROJECTION_PARAMETERS["GRID_CELL_SIZE_REFLECTIVE", ], length(bands))
@@ -95,41 +95,41 @@ readMeta <- function(file, raw = FALSE){
         }
         spatRes <-  as.numeric(spatRes)
         
-        na		<- NA
-        az		<- if(!legacy) as.numeric(meta$IMAGE_ATTRIBUTES["SUN_AZIMUTH",]) else as.numeric(meta$PRODUCT_PARAMETERS["SUN_AZIMUTH",])
-        selv	<- if(!legacy) as.numeric(meta$IMAGE_ATTRIBUTES["SUN_ELEVATION",]) else as.numeric(meta$PRODUCT_PARAMETERS["SUN_ELEVATION",])
-        esd		<- meta$IMAGE_ATTRIBUTES["EARTH_SUN_DISTANCE",]
+        na        <- NA
+        az        <- if(!legacy) as.numeric(meta$IMAGE_ATTRIBUTES["SUN_AZIMUTH",]) else as.numeric(meta$PRODUCT_PARAMETERS["SUN_AZIMUTH",])
+        selv    <- if(!legacy) as.numeric(meta$IMAGE_ATTRIBUTES["SUN_ELEVATION",]) else as.numeric(meta$PRODUCT_PARAMETERS["SUN_ELEVATION",])
+        esd        <- meta$IMAGE_ATTRIBUTES["EARTH_SUN_DISTANCE",]
         if(is.null(esd) || is.na(esd)) esd <- .ESdist(date)
-        esd		<- as.numeric(esd)
-        vsat 	<- NA ## or set to max?
-        scal 	<- 1
-        dtyp 	<- NA
+        esd        <- as.numeric(esd)
+        vsat     <- NA ## or set to max?
+        scal     <- 1
+        dtyp     <- NA
         
         ## Calculate ESUN the GRASS Way: https://grass.osgeo.org/grass64/manuals/i.landsat.toar.html
         # esun <- pi * esd * r[grepl("MAXIMUM", rownames(r)),,drop = F][1:9,]/  reflMax[grepl("MAXIMUM", rownames(reflMax)),,drop = F]
         
         
         ## RADIOMETRIC CORRECTION/RESCALING PARAMETERS     
-        if(!legacy) { 	            
+        if(!legacy) {                 
             r <- meta$RADIOMETRIC_RESCALING
             rnr <- rownames(r)
-            calrad	<- data.frame(offset = r[grep("RADIANCE_ADD*", rownames(r)),], gain = r[grep("RADIANCE_MULT*", rownames(r)),])
-            calref	<- data.frame(offset = r[grep("REFLECTANCE_ADD*", rownames(r)),], gain = r[grep("REFLECTANCE_MULT*", rownames(r)),])
+            calrad    <- data.frame(offset = r[grep("RADIANCE_ADD*", rownames(r)),], gain = r[grep("RADIANCE_MULT*", rownames(r)),])
+            calref    <- data.frame(offset = r[grep("REFLECTANCE_ADD*", rownames(r)),], gain = r[grep("REFLECTANCE_MULT*", rownames(r)),])
             rownames(calrad) <-  paste0(gsub("^.*BAND_","B", rnr[grep("RADIANCE_MULT", rnr)]), "_dn")
             if(nrow(calref) != 0)  rownames(calref) <-  paste0(gsub("^.*BAND_","B", rnr[grep("REFLECTANCE_MULT", rnr)]), "_dn") else calref <- NA
             
         } else {
             
-            r 		<- meta$MIN_MAX_RADIANCE
-            rp		<- meta$MIN_MAX_PIXEL_VALUE
-            rnr		<- rownames(r)
-            e2nd 	<- seq(1, nrow(r), 2)
-            L 		<- diff(r[,1])[e2nd]                        
-            Q 		<- diff(rp[,1])[e2nd]                         
-            radg	<- L/Q
-            rado 	<- r[seq(2,nrow(r),2),1] - radg                     
-            calrad 	<- data.frame(offset = rado, gain = radg)
-            calref	<- NA
+            r         <- meta$MIN_MAX_RADIANCE
+            rp        <- meta$MIN_MAX_PIXEL_VALUE
+            rnr        <- rownames(r)
+            e2nd     <- seq(1, nrow(r), 2)
+            L         <- diff(r[,1])[e2nd]                        
+            Q         <- diff(rp[,1])[e2nd]                         
+            radg    <- L/Q
+            rado     <- r[seq(2,nrow(r),2),1] - radg                     
+            calrad     <- data.frame(offset = rado, gain = radg)
+            calref    <- NA
             rownames(calrad) <- paste0(gsub("^.*BAND_","B", rnr[grep("MAX", rnr)]), "_dn")                                  
         }
         
@@ -161,35 +161,35 @@ readMeta <- function(file, raw = FALSE){
         
         if(raw) return(meta)
         
-        luv		<- c(dn = "dn", toa_rad = "tra", toa_refl = "tre", toa_bt = "bt", sr_refl = "sre", spectral_indices = "idx", cfmask = "tre")
-        atts 	<- sapply(meta$bands, "[", ".attrs") 
-        sat		<- paste0("LANDSAT", .getNumeric(meta$global_metadata$satellite))
-        sen 	<- meta$global_metadata$instrument
-        scene 	<- gsub("_MTL.txt", "", meta$global_metadata$lpgs_metadata_file)  ## could assemble name for legacy files: http://landsat.usgs.gov/naming_conventions_scene_identifiers.php
-        date	<- strptime(paste(meta$global_metadata$acquisition_date,meta$global_metadata$scene_center_time), format = "%Y-%m-%d %H:%M:%OS", tz = "GMT")
-        pdate	<- as.POSIXct(meta$bands[[1]]$production_date, tz = "GMT")
-        path	<- as.numeric(meta$global_metadata$wrs["path"])
-        row		<- as.numeric(meta$global_metadata$wrs["row"])
-        az		<- as.numeric(meta$global_metadata$solar_angles["azimuth"])
-        selv	<- 90 - as.numeric(meta$global_metadata$solar_angles["zenith"])        
-        proj 	<- CRS(paste0("+proj=utm +zone=",meta$global_metadata$projection_information$utm_proj_params," +datum=WGS84 +units=m"))
-        esd		<- .ESdist(date)
-        files	<- sapply(meta$bands, "[[", "file_name")   
-        quant	<- luv[sapply(atts, "[", "product")]
-        cat		<- sapply(atts, "[", "category") 
+        luv        <- c(dn = "dn", toa_rad = "tra", toa_refl = "tre", toa_bt = "bt", sr_refl = "sre", spectral_indices = "idx", cfmask = "tre")
+        atts     <- sapply(meta$bands, "[", ".attrs") 
+        sat        <- paste0("LANDSAT", .getNumeric(meta$global_metadata$satellite))
+        sen     <- meta$global_metadata$instrument
+        scene     <- gsub("_MTL.txt", "", meta$global_metadata$lpgs_metadata_file)  ## could assemble name for legacy files: http://landsat.usgs.gov/naming_conventions_scene_identifiers.php
+        date    <- strptime(paste(meta$global_metadata$acquisition_date,meta$global_metadata$scene_center_time), format = "%Y-%m-%d %H:%M:%OS", tz = "GMT")
+        pdate    <- as.POSIXct(meta$bands[[1]]$production_date, tz = "GMT")
+        path    <- as.numeric(meta$global_metadata$wrs["path"])
+        row        <- as.numeric(meta$global_metadata$wrs["row"])
+        az        <- as.numeric(meta$global_metadata$solar_angles["azimuth"])
+        selv    <- 90 - as.numeric(meta$global_metadata$solar_angles["zenith"])        
+        proj     <- CRS(paste0("+proj=utm +zone=",meta$global_metadata$projection_information$utm_proj_params," +datum=WGS84 +units=m"))
+        esd        <- .ESdist(date)
+        files    <- sapply(meta$bands, "[[", "file_name")   
+        quant    <- luv[sapply(atts, "[", "product")]
+        cat        <- sapply(atts, "[", "category") 
         cat[grep("opacity", names(cat))] <- "qa"
         
-        bands	<- gsub(paste0(scene, "_|.tif"), "", files)					
-        bs 		<- grepl("_surface_reflectance", names(files))
-        bands[bs] 	<- paste0("B", .getNumeric(bands[bs]), "_", quant[bs])
+        bands    <- gsub(paste0(scene, "_|.tif"), "", files)                    
+        bs         <- grepl("_surface_reflectance", names(files))
+        bands[bs]     <- paste0("B", .getNumeric(bands[bs]), "_", quant[bs])
         bands[cat == "qa"] <- paste0("QA_", gsub("sr_|_qa", "", bands[cat == "qa"]))
         bands[cat == "index"] <- gsub("SR_", "", toupper(bands[cat == "index"]))
         spatRes <-  vapply(meta$bands,function(x) x$pixel_size["x"], character(1))
-        na		<- as.numeric(sapply(atts, "[" , "fill_value"))
-        vsat	<- as.numeric(sapply(atts, "[" , "saturate_value"))
-        scal	<- as.numeric(sapply(atts, "[" , "scale_factor"))
+        na        <- as.numeric(sapply(atts, "[" , "fill_value"))
+        vsat    <- as.numeric(sapply(atts, "[" , "saturate_value"))
+        scal    <- as.numeric(sapply(atts, "[" , "scale_factor"))
         dataTypes <- c(INT16 = "INT4S", UINT8 = "INT1U")
-        dtyp	<- dataTypes[as.character(sapply(atts, "[" , "data_type"))] 
+        dtyp    <- dataTypes[as.character(sapply(atts, "[" , "data_type"))] 
         
         ## Missing
         calrad <- calref <- calbt <- NA
@@ -197,7 +197,7 @@ readMeta <- function(file, raw = FALSE){
     } 
     
     ## Add-on data:
-    radRes	<- if(sat == "LANDSAT8") 16 else if(sen == "MSS") 6 else 8
+    radRes    <- if(sat == "LANDSAT8") 16 else if(sen == "MSS") 6 else 8
     
     
     ImageMetaData(file = file, format = format, sat = sat, sen = sen, scene = scene, date = date, pdate = pdate, path = path, radRes=radRes, spatRes = spatRes, row = row, az = az,

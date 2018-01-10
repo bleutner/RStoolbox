@@ -99,7 +99,7 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0
 #        xfort <- stack(xfort,xfort)  ## workaround raster bug #6043    >> apparently solved now in raster    
 #        names(xfort)[1] <- names(img)[layer]   
 #    }
-    df 	  <- as.data.frame(xfort, xy = TRUE)
+    df       <- as.data.frame(xfort, xy = TRUE)
     layer <- names(img)[layer]
     colnames(df) <- c("x", "y", layer) 
     if(forceCat & !is.factor(df[,layer])) df[,layer] <- as.factor(df[,layer])
@@ -120,8 +120,8 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0
         normVals    <- suppressWarnings(rescaleImage(df[,layer], ymin = 0, ymax = 1))  ## suppress warnings due to single value bands. rescaleImage returns NA, which is fine.
         uval        <- unique(df[,layer])
         if(sum(is.finite(uval)) == 1)   normVals[is.finite(df[,layer])] <- 1
-        nona 		<- !is.na(normVals)
-        df$fill  	<- NA
+        nona         <- !is.na(normVals)
+        df$fill      <- NA
         df[nona, "fill"] <- hsv(h = hue, s = sat, v = normVals[nona], alpha = alpha)
     }
     

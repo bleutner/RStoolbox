@@ -42,43 +42,43 @@
 #' }
 
 rasterPCA <- function(img, nSamples = NULL, nComp = nlayers(img), spca = FALSE,  maskCheck = TRUE, ...){      
-	
-	if(nlayers(img) <= 1) stop("Need at least two layers to calculate PCA.")   
-	ellip <- list(...)
-	
-	## Deprecate norm, as it has the same effect as spca
-	if("norm" %in% names(ellip)) {
-		warning("Argument 'norm' has been deprecated. Use argument 'spca' instead.\nFormer 'norm=TRUE' corresponds to 'spca=TRUE'.", call. = FALSE)
-		ellip[["norm"]] <- NULL
-	}
-	
-	if(nComp > nlayers(img)) nComp <- nlayers(img)
-	
-	if(!is.null(nSamples)){    
-		trainData <- sampleRandom(img, size = nSamples, na.rm = TRUE)
-		if(nrow(trainData) < nlayers(img)) stop("nSamples too small or img contains a layer with NAs only")
-		model <- princomp(trainData, scores = FALSE, cor = spca)
-	} else {
-		if(maskCheck) {
-			totalMask <- !sum(calc(img, is.na))
-			if(cellStats(totalMask, sum) == 0) stop("img contains either a layer with NAs only or no single pixel with valid values across all layers")
-			img <- mask(img, totalMask , maskvalue = 0) ## NA areas must be masked from all layers, otherwise the covariance matrix is not non-negative definite   
-		}
-		covMat <- layerStats(img, stat = "cov", na.rm = TRUE)
-		model  <- princomp(covmat = covMat[[1]], cor=spca)
-		model$center <- covMat$mean
-		model$n.obs  <- ncell(img)
-		if(spca) {	
-			## Calculate scale as population sd like in in princomp
-			S <- diag(covMat$covariance)
-			model$scale <- sqrt(S * (model$n.obs-1)/model$n.obs)
-		}
-	}
-	## Predict
-	out   <- .paraRasterFun(img, rasterFun=raster::predict, args = list(model = model, na.rm = TRUE, index = 1:nComp), wrArgs = ellip)  
-	names(out) <- paste0("PC", 1:nComp)
-	structure(list(call = match.call(), model = model, map = out), class = c("rasterPCA", "RStoolbox"))  
-	
+    
+    if(nlayers(img) <= 1) stop("Need at least two layers to calculate PCA.")   
+    ellip <- list(...)
+    
+    ## Deprecate norm, as it has the same effect as spca
+    if("norm" %in% names(ellip)) {
+        warning("Argument 'norm' has been deprecated. Use argument 'spca' instead.\nFormer 'norm=TRUE' corresponds to 'spca=TRUE'.", call. = FALSE)
+        ellip[["norm"]] <- NULL
+    }
+    
+    if(nComp > nlayers(img)) nComp <- nlayers(img)
+    
+    if(!is.null(nSamples)){    
+        trainData <- sampleRandom(img, size = nSamples, na.rm = TRUE)
+        if(nrow(trainData) < nlayers(img)) stop("nSamples too small or img contains a layer with NAs only")
+        model <- princomp(trainData, scores = FALSE, cor = spca)
+    } else {
+        if(maskCheck) {
+            totalMask <- !sum(calc(img, is.na))
+            if(cellStats(totalMask, sum) == 0) stop("img contains either a layer with NAs only or no single pixel with valid values across all layers")
+            img <- mask(img, totalMask , maskvalue = 0) ## NA areas must be masked from all layers, otherwise the covariance matrix is not non-negative definite   
+        }
+        covMat <- layerStats(img, stat = "cov", na.rm = TRUE)
+        model  <- princomp(covmat = covMat[[1]], cor=spca)
+        model$center <- covMat$mean
+        model$n.obs  <- ncell(img)
+        if(spca) {    
+            ## Calculate scale as population sd like in in princomp
+            S <- diag(covMat$covariance)
+            model$scale <- sqrt(S * (model$n.obs-1)/model$n.obs)
+        }
+    }
+    ## Predict
+    out   <- .paraRasterFun(img, rasterFun=raster::predict, args = list(model = model, na.rm = TRUE, index = 1:nComp), wrArgs = ellip)  
+    names(out) <- paste0("PC", 1:nComp)
+    structure(list(call = match.call(), model = model, map = out), class = c("rasterPCA", "RStoolbox"))  
+    
 }
 
 

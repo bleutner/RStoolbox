@@ -60,7 +60,7 @@ spectralIndices <- function(img,
     # mir2  | midwave infra-red    |  4500  -   5000 nm 
     # TIR1  | thermal infra-red    |  8000  -   9500 nm
     # TIR2  | thermal infra-red    | 10000  - 140000 nm
-    ##	
+    ##    
     
     if(!is.null(index)) indices <- index  ## argument translation for convenience
     if("LSWI" %in% toupper(indices)) stop("LSWI has been deprecated. Use NDWI2 instead; it is identical.")
@@ -190,26 +190,26 @@ spectralIndices <- function(img,
 #' @noRd 
 .IDXdb <-  list(     
         CTVI    = function(red, nir) {(NDVI+.5)/sqrt(abs(NDVI+.5))},
-        DVI 	= function(red, nir) {s*nir-red},
-        EVI  	= function(red, nir, blue) {G * ((nir - red) / (nir + C1 * red - C2 * blue + L_evi))},
+        DVI     = function(red, nir) {s*nir-red},
+        EVI      = function(red, nir, blue) {G * ((nir - red) / (nir + C1 * red - C2 * blue + L_evi))},
         EVI2    = function(red, nir) {G * (nir-red)/(nir + 2.4*red +1)},
-        GEMI	= function(red, nir) {(((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5) ) / (nir + red + 0.5)) * (1 - ((((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5) ) / (nir + red + 0.5)) * 0.25)) - ((red - 0.125) / (1 - red))},
-        GNDVI	= function(green, nir) {(nir-green)/(nir+green)}, 
+        GEMI    = function(red, nir) {(((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5) ) / (nir + red + 0.5)) * (1 - ((((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5) ) / (nir + red + 0.5)) * 0.25)) - ((red - 0.125) / (1 - red))},
+        GNDVI    = function(green, nir) {(nir-green)/(nir+green)}, 
         MNDWI   = function(green, swir2) {(green-swir2) / (green+swir2)},
-        MSAVI	= function(red, nir) {nir + 0.5 - (0.5 * sqrt((2 * nir + 1)^2 - 8 * (nir - (2 * red))))},
-        MSAVI2	= function(red, nir) {(2 * (nir + 1) - sqrt((2 * nir + 1)^2 - 8 * (nir - red))) / 2},
+        MSAVI    = function(red, nir) {nir + 0.5 - (0.5 * sqrt((2 * nir + 1)^2 - 8 * (nir - (2 * red))))},
+        MSAVI2    = function(red, nir) {(2 * (nir + 1) - sqrt((2 * nir + 1)^2 - 8 * (nir - red))) / 2},
         NBRI    = function(nir, swir3) { (nir - swir3) / (nir + swir3)},
-        NDVI	= function(red, nir) {(nir-red)/(nir+red)}, 
+        NDVI    = function(red, nir) {(nir-red)/(nir+red)}, 
         NDVIC   = function(red, nir, swir2) {(nir-red)/(nir+red)*(1-((swir2 - swir2ccc)/(swir2coc-swir2ccc)))},
-        NDWI 	= function(green, nir) {(green - nir)/(green + nir)},
-        NDWI2	= function(nir, swir2) {(nir - swir2)/(nir + swir2)},    
+        NDWI     = function(green, nir) {(green - nir)/(green + nir)},
+        NDWI2    = function(nir, swir2) {(nir - swir2)/(nir + swir2)},    
         NRVI    = function(red, nir) {(red/nir - 1)/(red/nir + 1)},
         RVI     = function(red, nir) {red/nir},
         SATVI   = function(red, swir2, swir3) {(swir2 - red) / (swir2 + red + L) * (1 + L) - (swir3 / 2)},
         SAVI    = function(red, nir) {(nir - red) * (1+L) / (nir + red + L)}, 
-        SLAVI	= function(red, nir, swir2) {nir / (red + swir2)},
-        SR  	= function(red, nir) {nir / red},     
-        TVI 	= function(red, nir) {sqrt((nir-red)/(nir+red)+0.5)},
+        SLAVI    = function(red, nir, swir2) {nir / (red + swir2)},
+        SR      = function(red, nir) {nir / red},     
+        TVI     = function(red, nir) {sqrt((nir-red)/(nir+red)+0.5)},
         TTVI    = function(red, nir) {sqrt(abs((nir-red)/(nir+red) + 0.5))},
         WDVI    = function(red, nir) {nir - s * red}
 )
@@ -226,22 +226,22 @@ BANDSdb <- lapply(.IDXdb, function(x) names(formals(x)))
         EVI     = c("Huete1999", "Enhanced Vegetation Index"),
         EVI2    = c("Jiang 2008", "Two-band Enhanced Vegetation Index"), # Development of a two-band enhanced vegetation index without a blue band
         GEMI    = c("Pinty1992","Global Environmental Monitoring Index"),
-        GNDVI	= c("Gitelson1998", "Green Normalised Difference Vegetation Index"),
-        MSAVI	= c("Qi1994","Modified Soil Adjusted Vegetation Index"),
-        MSAVI2	= c("Qi1994","Modified Soil Adjusted Vegetation Index 2"),
+        GNDVI    = c("Gitelson1998", "Green Normalised Difference Vegetation Index"),
+        MSAVI    = c("Qi1994","Modified Soil Adjusted Vegetation Index"),
+        MSAVI2    = c("Qi1994","Modified Soil Adjusted Vegetation Index 2"),
         MNDWI   = c("Xu2006", "Modified Normalised Difference Water Index"),       
         NBRI    = c("Garcia1991", "Normalised Burn Ratio Index"),
-        NDVI	= c("Rouse1974", "Normalised Difference Vegetation Index"),
+        NDVI    = c("Rouse1974", "Normalised Difference Vegetation Index"),
         NDVIC   = c("Nemani1993", "Corrected Normalised Difference Vegetation Index"),
-        NDWI	= c("McFeeters1996", "Normalised Difference Water Index"), # The use of the Normalized Difference Water Index (NDWI) in the delineation of open water features
-        NDWI2	= c("Gao1996", "Normalised Difference Water Index"),
+        NDWI    = c("McFeeters1996", "Normalised Difference Water Index"), # The use of the Normalized Difference Water Index (NDWI) in the delineation of open water features
+        NDWI2    = c("Gao1996", "Normalised Difference Water Index"),
         NRVI    = c("Baret1991","Normalised Ratio Vegetation Index"),
         RVI     = c("", "Ratio Vegetation Index"),
         SATVI   = c("Marsett2006", "Soil Adjusted Total Vegetation Index"),
         SAVI    = c("Huete1988", "Soil Adjusted Vegetation Index"),
-        SLAVI	= c("Lymburger2000","Specific Leaf Area Vegetation Index"),
+        SLAVI    = c("Lymburger2000","Specific Leaf Area Vegetation Index"),
         SR      = c("Birth1968", "Simple Ratio Vegetation Index"),  #or Jordan1969
-        TVI 	= c("Deering1975","Transformed Vegetation Index"),
+        TVI     = c("Deering1975","Transformed Vegetation Index"),
         TTVI    = c("Thiam1997", "Thiam's Transformed Vegetation Index"),
         WDVI    = c("Richardson1977","Weighted Difference Vegetation Index")
 )

@@ -34,7 +34,7 @@ cloudMask <- function(x, threshold = 0.8,  blue = "B1_sre", tir = "B6_sre", buff
     op <- par(mfrow = c(2+is.null(buffer),1))
     on.exit(par(op), add = TRUE)
     
-    ## Calculate or re-reuse cloud difference layer	
+    ## Calculate or re-reuse cloud difference layer    
     if("NDTCI" %in% names(x)) {
         .vMessage("Re-using NDTCI layer from previous run.") 
         ndtci <- x[["NDTCI"]]

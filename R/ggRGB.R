@@ -67,149 +67,149 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
     
     ## TODO: handle single value rasters (e.g. masks)
     
-	# RGB processing originally forked from raster::plotRGB
-	# Author: Robert J. Hijmans 
-	# Version 0.9
-	# Licence GPL v3
-	# partly based on functions in the pixmap package by Friedrich Leisch
-	verbose <- getOption("RStoolbox.verbose")
+    # RGB processing originally forked from raster::plotRGB
+    # Author: Robert J. Hijmans 
+    # Version 0.9
+    # Licence GPL v3
+    # partly based on functions in the pixmap package by Friedrich Leisch
+    verbose <- getOption("RStoolbox.verbose")
     annotation <- !geom_raster
-	## Subsample raster		
-	rgb <- unlist(.numBand(raster=img,r,g,b))
-	nComps <- length(rgb)
-	if(inherits(img, "RasterLayer")) img <- brick(img)
-	rr 	<- sampleRegular(img[[rgb]], maxpixels, ext=ext, asRaster=TRUE)
-	RGB <- getValues(rr)
-	if(!is.matrix(RGB)) RGB <- as.matrix(RGB)
-	
-	## Clip to limits
-	if (!is.null(limits)) {
-		## Tidy limits
-		if (!is.matrix(limits)) {
-			limits <- matrix(limits, ncol = 2, nrow = nComps, byrow = TRUE)		
-		} 		
-		## Tidy clip values
-		if(!is.matrix(clipValues)){
-			if(!anyNA(clipValues) && clipValues[1] == "limits") {
-				clipValues <- limits
-			} else {
-				clipValues <- matrix(clipValues, ncol = 2, nrow = nComps, byrow = TRUE)							
-			} 
-		}
-		## Do clipping
-		for (i in 1:nComps) {	
-			if(verbose){
-				message("Number of pixels clipped in ", c("red", "green", "blue")[i], " band:\n",
-						"below limit: ", sum(RGB[,i] < limits[i,1], na.rm = TRUE), " | above limit: ", sum(RGB[,i] > limits[i,2], na.rm = TRUE))
-			}
-			RGB[RGB[,i] < limits[i,1], i] <- clipValues[i,1]
-			RGB[RGB[,i] > limits[i,2], i] <- clipValues[i,2]			
-		}
-	}   
-	rangeRGB <- range(RGB, na.rm = TRUE)
-	if(missing('scale')){ scale <- rangeRGB[2] }
-	
-	if(rangeRGB[1] < 0){
-		RGB 	 <- RGB - rangeRGB[1]
-		scale    <- scale - rangeRGB[1] 
-		rangeRGB <- rangeRGB - rangeRGB[1]
-	}   
-	
-	if(scale < rangeRGB[2]) {
-		warning("Scale < max value. Resetting scale to max.", call.=FALSE)
-		scale <- rangeRGB[2]
-	}
-	RGB <- na.omit(RGB)
-	
-	
-	## Perform data stretch
-	if (stretch != "none") {
-		stretch <- tolower(stretch)
-		for(i in seq_along(rgb)){
-			RGB[,i] <- .stretch(RGB[,i], method = stretch, quantiles=quantiles)
-		}
-		scale <- 1		
-	}
-	
-	## Assemble colors
-	naind <- as.vector( attr(RGB, "na.action") ) 
-	nullbands <- sapply(list(r,g,b), is.null)       
-	
-	
-	if(any(nullbands)) {
-		RGBm <- matrix(nullValue, ncol = 3, nrow = NROW(RGB))
-		RGBm[,!nullbands] <- RGB
-		RGB <- RGBm      
-	}
-	
-	
-	if (!is.null(naind)) {
-		z <- rep( NA, times=ncell(rr))
-		z[-naind] <- rgb(RGB[,1], RGB[,2], RGB[,3],  max = scale, alpha = alpha*scale)
-	} else {
-		z <- rgb(RGB[,1], RGB[,2], RGB[,3], max = scale, alpha = alpha*scale)
-	}
-	df_raster <- data.frame(coordinates(rr), fill = z, stringsAsFactors = FALSE)
-	
-	x <- y <- fill <- NULL ## workaround for a R CMD check 'note' about non-visible global variable in call to ggplot (variables are column names created earlier within 'data' and hence not visible to check). This does not in any way affect ggRGB,
-	if(ggObj){ 
-		
-		## We need to set up ggplot with at least the minimum aestetics x and y
-		exe <- as.vector(extent(rr))
-		df <- data.frame(x=exe[1:2],y=exe[3:4])
-		
-		## Set-up plot       
-		## I prefer annotate_raster instead of geom_raster or tile to keep the fill scale free for additional rasters        
-		if(annotation) {           
-			dz <- matrix(z, nrow=nrow(rr), ncol=ncol(rr), byrow = TRUE)  
-			p <- annotation_raster(raster = dz, xmin = exe[1], xmax = exe[2], ymin = exe[3], ymax = exe[4], interpolate = FALSE)
-			if(!ggLayer) {
-				p <- ggplot() + p + geom_blank(data = df, aes(x = x,y = y))
-			}
-		} else {
-			p <- geom_raster(data = df_raster, aes(x = x, y = y, fill = fill), alpha = alpha)  
-			if(!ggLayer) {
-				p <- ggplot() + p + scale_fill_identity() 
-			}
-		}   
-		
-		if(coord_equal & !ggLayer) p <- p + coord_equal()
-		
-		return(p)
-		
-	} else {
-		return(df_raster)
-	}
-	
-	
+    ## Subsample raster        
+    rgb <- unlist(.numBand(raster=img,r,g,b))
+    nComps <- length(rgb)
+    if(inherits(img, "RasterLayer")) img <- brick(img)
+    rr     <- sampleRegular(img[[rgb]], maxpixels, ext=ext, asRaster=TRUE)
+    RGB <- getValues(rr)
+    if(!is.matrix(RGB)) RGB <- as.matrix(RGB)
+    
+    ## Clip to limits
+    if (!is.null(limits)) {
+        ## Tidy limits
+        if (!is.matrix(limits)) {
+            limits <- matrix(limits, ncol = 2, nrow = nComps, byrow = TRUE)        
+        }         
+        ## Tidy clip values
+        if(!is.matrix(clipValues)){
+            if(!anyNA(clipValues) && clipValues[1] == "limits") {
+                clipValues <- limits
+            } else {
+                clipValues <- matrix(clipValues, ncol = 2, nrow = nComps, byrow = TRUE)                            
+            } 
+        }
+        ## Do clipping
+        for (i in 1:nComps) {    
+            if(verbose){
+                message("Number of pixels clipped in ", c("red", "green", "blue")[i], " band:\n",
+                        "below limit: ", sum(RGB[,i] < limits[i,1], na.rm = TRUE), " | above limit: ", sum(RGB[,i] > limits[i,2], na.rm = TRUE))
+            }
+            RGB[RGB[,i] < limits[i,1], i] <- clipValues[i,1]
+            RGB[RGB[,i] > limits[i,2], i] <- clipValues[i,2]            
+        }
+    }   
+    rangeRGB <- range(RGB, na.rm = TRUE)
+    if(missing('scale')){ scale <- rangeRGB[2] }
+    
+    if(rangeRGB[1] < 0){
+        RGB      <- RGB - rangeRGB[1]
+        scale    <- scale - rangeRGB[1] 
+        rangeRGB <- rangeRGB - rangeRGB[1]
+    }   
+    
+    if(scale < rangeRGB[2]) {
+        warning("Scale < max value. Resetting scale to max.", call.=FALSE)
+        scale <- rangeRGB[2]
+    }
+    RGB <- na.omit(RGB)
+    
+    
+    ## Perform data stretch
+    if (stretch != "none") {
+        stretch <- tolower(stretch)
+        for(i in seq_along(rgb)){
+            RGB[,i] <- .stretch(RGB[,i], method = stretch, quantiles=quantiles)
+        }
+        scale <- 1        
+    }
+    
+    ## Assemble colors
+    naind <- as.vector( attr(RGB, "na.action") ) 
+    nullbands <- sapply(list(r,g,b), is.null)       
+    
+    
+    if(any(nullbands)) {
+        RGBm <- matrix(nullValue, ncol = 3, nrow = NROW(RGB))
+        RGBm[,!nullbands] <- RGB
+        RGB <- RGBm      
+    }
+    
+    
+    if (!is.null(naind)) {
+        z <- rep( NA, times=ncell(rr))
+        z[-naind] <- rgb(RGB[,1], RGB[,2], RGB[,3],  max = scale, alpha = alpha*scale)
+    } else {
+        z <- rgb(RGB[,1], RGB[,2], RGB[,3], max = scale, alpha = alpha*scale)
+    }
+    df_raster <- data.frame(coordinates(rr), fill = z, stringsAsFactors = FALSE)
+    
+    x <- y <- fill <- NULL ## workaround for a R CMD check 'note' about non-visible global variable in call to ggplot (variables are column names created earlier within 'data' and hence not visible to check). This does not in any way affect ggRGB,
+    if(ggObj){ 
+        
+        ## We need to set up ggplot with at least the minimum aestetics x and y
+        exe <- as.vector(extent(rr))
+        df <- data.frame(x=exe[1:2],y=exe[3:4])
+        
+        ## Set-up plot       
+        ## I prefer annotate_raster instead of geom_raster or tile to keep the fill scale free for additional rasters        
+        if(annotation) {           
+            dz <- matrix(z, nrow=nrow(rr), ncol=ncol(rr), byrow = TRUE)  
+            p <- annotation_raster(raster = dz, xmin = exe[1], xmax = exe[2], ymin = exe[3], ymax = exe[4], interpolate = FALSE)
+            if(!ggLayer) {
+                p <- ggplot() + p + geom_blank(data = df, aes(x = x,y = y))
+            }
+        } else {
+            p <- geom_raster(data = df_raster, aes(x = x, y = y, fill = fill), alpha = alpha)  
+            if(!ggLayer) {
+                p <- ggplot() + p + scale_fill_identity() 
+            }
+        }   
+        
+        if(coord_equal & !ggLayer) p <- p + coord_equal()
+        
+        return(p)
+        
+    } else {
+        return(df_raster)
+    }
+    
+    
 }
 
 
 ## Perform histogram, sqrt log and 98% linear stretching
 .stretch <- function (x, method = "lin", quantiles = c(0.02,0.98)) {
-	if(!method %in% c("lin", "hist", "log", "sqrt")) stop("Stretch method must be 'lin', 'hist', 'sqrt' or 'log'", call. = FALSE)
-	if(method == "lin"){
-		if(length(quantiles) == 1) quantiles <- c(0,1) + c(quantiles, -quantiles)/100
-		v <- quantile(x, quantiles, na.rm = TRUE)
-		temp <-  (x - v[1])/(v[2] - v[1])
-		temp[temp < 0] <- 0
-		temp[temp > 1] <- 1 
-		return(temp)
-	} 
-	if(method == "hist"){
-		ecdfun <- ecdf(x)
-		return(ecdfun(x))
-	} 
-	if(method == "log"){
-		x <- log(x + 1)
-		x <- x - min(x)
-		return(x / max(x))         
-	}
-	if(method == "sqrt"){
-		x <- sqrt(x)
-		x <- x - min(x)
-		return(x /max(x))
-	}
+    if(!method %in% c("lin", "hist", "log", "sqrt")) stop("Stretch method must be 'lin', 'hist', 'sqrt' or 'log'", call. = FALSE)
+    if(method == "lin"){
+        if(length(quantiles) == 1) quantiles <- c(0,1) + c(quantiles, -quantiles)/100
+        v <- quantile(x, quantiles, na.rm = TRUE)
+        temp <-  (x - v[1])/(v[2] - v[1])
+        temp[temp < 0] <- 0
+        temp[temp > 1] <- 1 
+        return(temp)
+    } 
+    if(method == "hist"){
+        ecdfun <- ecdf(x)
+        return(ecdfun(x))
+    } 
+    if(method == "log"){
+        x <- log(x + 1)
+        x <- x - min(x)
+        return(x / max(x))         
+    }
+    if(method == "sqrt"){
+        x <- sqrt(x)
+        x <- x - min(x)
+        return(x /max(x))
+    }
 }
 
 

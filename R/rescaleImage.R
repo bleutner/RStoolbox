@@ -38,7 +38,7 @@ rescaleImage <- function(x, y, xmin, xmax, ymin, ymax, forceMinMax = FALSE) {
         if(!missing("y") && forceMinMax)  y <- setMinMax(y)
         if(missing("ymin")) ymin <- minValue(y)
         if(missing("ymax")) ymax <- maxValue(y)
-        if(missing("xmin"))	xmin <- minValue(x) 
+        if(missing("xmin"))    xmin <- minValue(x) 
         if(missing("xmax")) xmax <- maxValue(x)
         
         
@@ -53,7 +53,7 @@ rescaleImage <- function(x, y, xmin, xmax, ymin, ymax, forceMinMax = FALSE) {
                 })
         list2env(li, environment())
     } else {
-        if(missing("xmin"))	xmin <- min(x, na.rm = T)
+        if(missing("xmin"))    xmin <- min(x, na.rm = T)
         if(missing("xmax")) xmax <- max(x, na.rm = T)
     }
     

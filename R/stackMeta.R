@@ -44,26 +44,26 @@ stackMeta <- function(file,  quantity = "all", category = "image", allResolution
     quantAvail <- quantity %in% meta$DATA$QUANTITY
     typAvail <- category %in% meta$DATA$CATEGORY
     if(sum(quantAvail)  == 0) 
-		stop("None of the specifed quantities exist according to the metadata. You specified: ", paste0(quantity, collapse=", "),
-				"\nThis is what's available:\n",
-					paste(capture.output(print(meta$DATA[,c("QUANTITY","CATEGORY")])), collapse = "\n"), call. = FALSE) 
+        stop("None of the specifed quantities exist according to the metadata. You specified: ", paste0(quantity, collapse=", "),
+                "\nThis is what's available:\n",
+                    paste(capture.output(print(meta$DATA[,c("QUANTITY","CATEGORY")])), collapse = "\n"), call. = FALSE) 
     if(any(!quantAvail)) 
-		warning("The following specified quantities don't exist: ", paste0(quantity[!quantAvail], collapse=", ") ,"\nReturning available quantities:", paste0(quantity[quantAvail], collapse=", "), call.=FALSE)
+        warning("The following specified quantities don't exist: ", paste0(quantity[!quantAvail], collapse=", ") ,"\nReturning available quantities:", paste0(quantity[quantAvail], collapse=", "), call.=FALSE)
     if(sum(typAvail)  == 0) 
-		stop("None of the specifed categories exists according to the metadata. You specified: ", paste0(category, collapse=", "),
-				"\nThis is what's available:\n",
-					paste(capture.output(print(meta$DATA[,c("QUANTITY","CATEGORY")])), collapse = "\n"), call. = FALSE) 
+        stop("None of the specifed categories exists according to the metadata. You specified: ", paste0(category, collapse=", "),
+                "\nThis is what's available:\n",
+                    paste(capture.output(print(meta$DATA[,c("QUANTITY","CATEGORY")])), collapse = "\n"), call. = FALSE) 
     if(any(!typAvail))
-		warning("The following specified categories don't exist: ", paste0(category[!typAvail], collapse=", ") ,"\nReturning available categories:", paste0(category[typAvail], collapse=", "), call.=FALSE)
+        warning("The following specified categories don't exist: ", paste0(category[!typAvail], collapse=", ") ,"\nReturning available categories:", paste0(category[typAvail], collapse=", "), call.=FALSE)
     
     combi <- paste0(quantity,category) %in% paste0(meta$DATA$QUANTITY, meta$DATA$CATEGORY)
-	if(any(!combi)) {
-		if(sum(combi) < 1) stop("Both quantity and category do exist, but not in this combination. \nThis is what's available:\n",
-					paste(capture.output(print(meta$DATA[,c("QUANTITY","CATEGORY")])), collapse = "\n"), call. = FALSE) 
+    if(any(!combi)) {
+        if(sum(combi) < 1) stop("Both quantity and category do exist, but not in this combination. \nThis is what's available:\n",
+                    paste(capture.output(print(meta$DATA[,c("QUANTITY","CATEGORY")])), collapse = "\n"), call. = FALSE) 
         #warning("The following combination of quantity and category does not exist: ", paste0("quantity == '", quantity, "' & category == '", category)[combi],"'")
-	}
-	
-	
+    }
+    
+    
     ## Load layers
     path  <- if(basename(metaFile) != metaFile)  gsub(basename(metaFile), "", metaFile) else NULL
     
@@ -87,9 +87,9 @@ stackMeta <- function(file,  quantity = "all", category = "image", allResolution
             } 
     
     ## Stack
-    LS 	<- lapply(returnRes, function(x){
-                s			<- stack(rl[resL == x])
-                names(s) 	<- meta$DATA$BANDS[resL == x]
+    LS     <- lapply(returnRes, function(x){
+                s            <- stack(rl[resL == x])
+                names(s)     <- meta$DATA$BANDS[resL == x]
                 s[[ which(names(s) %in% select)]]
             })
     LS[lapply(LS, nlayers) == 0] <- NULL

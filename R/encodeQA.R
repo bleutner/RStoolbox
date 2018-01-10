@@ -25,7 +25,7 @@
 #' encodeQA(snow = "low", cirrus = c("med", "high"), cloud = "high")
 encodeQA <- function(fill = "no", droppedFrame = "no", terrainOcclusion = "no", 
         water = "all", snow = "all", cirrus = "all", cloud = "all"){
-     
+    
     ## Input checks
     s <- list(fill = fill, droppedFrame = droppedFrame, terrainOcclusion = terrainOcclusion)
     lapply(names(s), function(i) if(any(!s[[i]] %in% c("yes", "no", "all"))) stop(i, " is a single bit parameter. Can digest only values c('yes', 'no', 'all')", call.=FALSE))

@@ -70,7 +70,7 @@ saveRSTBX <- function(x, filename, format ="raster", ...){
 readRSTBX <- function(filename){
     rdsFile <- rastFile <- .fullPath(filename)
     extension(rdsFile)  <- ".rds"
-    x 	    <- readRDS(rdsFile)
+    x         <- readRDS(rdsFile)
     if(!inherits(x, "RStoolbox")) stop(filename, "is not a RStoolbox object.", call. = FALSE)
     namesBU <- names(x$map) ## backup names (might get lost between file formats)
     if(inherits(x$map, "Raster")){

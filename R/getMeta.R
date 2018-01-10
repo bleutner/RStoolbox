@@ -54,14 +54,14 @@
 #' 
 getMeta <- function(img, metaData, what){
    
-		
+        
     if(inherits(metaData, "character")) {
         metaData <- readMeta(metaData)
     } else if(!inherits(metaData, "ImageMetaData")){
         stop("metaData must be character or ImageMetaData")
     }
-	
-   	stopifnot(what %in% c(names(metaData$DATA), "CALREF", "CALRAD", "CALBT") & length(what) == 1)
+    
+       stopifnot(what %in% c(names(metaData$DATA), "CALREF", "CALRAD", "CALBT") & length(what) == 1)
 
     if(inherits(img, "Raster")){
         bds <- names(img) 
@@ -72,20 +72,20 @@ getMeta <- function(img, metaData, what){
     }
     
     if(what %in% c("CALREF", "CALRAD", "CALBT")) {
-		if(length(metaData[[what]]) == 1) stop(paste(what, "is not populated in metaData"))
-		present <- bds %in% rownames(metaData[[what]])		
-		if (any(!present)) stop("Bands ", paste0(bds[!present], collapse = ", ") , " are not present in metaData.\n",
-					"Available bands: ", rownames(metaData[[what]])	, collapse = ", ")
-		out <- metaData[[what]][bds,]
-	} else {
-		present <- bds %in% rownames(metaData$DATA)
-	    if (any(!present)) stop("Bands ", paste0(bds[!present], collapse = ", ") , " are not present in metaData.\n",
-				"Available bands: ", paste0(rownames(metaData$DATA), collapse = ", "))
+        if(length(metaData[[what]]) == 1) stop(paste(what, "is not populated in metaData"))
+        present <- bds %in% rownames(metaData[[what]])        
+        if (any(!present)) stop("Bands ", paste0(bds[!present], collapse = ", ") , " are not present in metaData.\n",
+                    "Available bands: ", rownames(metaData[[what]])    , collapse = ", ")
+        out <- metaData[[what]][bds,]
+    } else {
+        present <- bds %in% rownames(metaData$DATA)
+        if (any(!present)) stop("Bands ", paste0(bds[!present], collapse = ", ") , " are not present in metaData.\n",
+                "Available bands: ", paste0(rownames(metaData$DATA), collapse = ", "))
         out <- metaData$DATA[bds,what]
-		names(out) <- bds
-	}
-	
-	return(out)
+        names(out) <- bds
+    }
+    
+    return(out)
     
 }
 

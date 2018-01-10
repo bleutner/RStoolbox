@@ -46,7 +46,7 @@ estimateHaze <- function(x, hazeBands, darkProp = 0.01, maxSlope = TRUE, plot = 
             returnTables <- TRUE
         } else {
             stop("x must be a Raster* object or the result of a previous run of estimateHaze(Raster*, ) with argument 'returnTables = TRUE'", call. = FALSE)
-        }	
+        }    
     }
     
     if(!preCalc){
@@ -55,7 +55,7 @@ estimateHaze <- function(x, hazeBands, darkProp = 0.01, maxSlope = TRUE, plot = 
                 hazeBands <- names(x)        
             } else {
                 stop("Please specify the band from which you want to estimate the haze dn")
-            }	
+            }    
         }
         if(is.numeric(hazeBands)) hazeBands <- names(x)[hazeBands]
         
@@ -63,12 +63,12 @@ estimateHaze <- function(x, hazeBands, darkProp = 0.01, maxSlope = TRUE, plot = 
         
         if(is.numeric(hazeBands)) hazeBands <- names(x$table)[hazeBands]
         preCalcAvail <- hazeBands %in% names(x$table)
-        if(!any(preCalcAvail)) 	stop("Cannot estimate SHV because tables are missing for all specified bands", call. = FALSE)
+        if(!any(preCalcAvail))     stop("Cannot estimate SHV because tables are missing for all specified bands", call. = FALSE)
         
         if(any(!preCalcAvail)) {
             warning(paste0("Cannot estimate SHV for >> ", hazeBands[!preCalcAvail], " << because tables are missing."), call. = FALSE)
-            hazeBands <- hazeBands[preCalcAvail] 				
-        }	
+            hazeBands <- hazeBands[preCalcAvail]                 
+        }    
     }
     
     ## Prepare plot device
