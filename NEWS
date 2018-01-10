@@ -1,3 +1,9 @@
+RStoolbox 0.2.0
+=====================================
+Fixes: 
+* improved NA handling and faster implementation of mlc classifier (#32, pull request by Neal Fultz)
+
+
 RStoolbox 0.1.10
 =====================================
 Fixes:
