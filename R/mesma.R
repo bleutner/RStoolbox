@@ -1,6 +1,6 @@
 #' Multiple Endmember Spectral Mixture Analysis (Spectral Unmixing)
 #' 
-#' \code{mesma} performs a multiple endmember spectral mixture analysis on a multiband raster image. Currently, a sequential coordinate-wise algorthm is used to apply a non negative least square regression (NNLS).
+#' \code{mesma} performs a multiple endmember spectral mixture analysis on a multiband raster image. Currently, a sequential coordinate-wise algorithm is used to apply a non negative least square regression (NNLS).
 #' 
 #' @param img RasterBrick or RasterStack. Remote sensing imagery (usually hyperspectral).
 #' @param em Matrix or data.frame with spectral endmembers. Rows represent a single endmember of a class, columns represent the spectral bands (i.e. columns correspond to number of bands in \code{img}). Number of rows needs to be > 1.
