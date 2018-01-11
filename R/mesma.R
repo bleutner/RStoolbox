@@ -6,7 +6,7 @@
 #' @param em Matrix or data.frame with spectral endmembers. Rows represent a single endmember of a class, columns represent the spectral bands (i.e. columns correspond to number of bands in \code{img}). Number of rows needs to be > 1.
 #' @param method Character. Select a unmixing method. Currently, only "NNLS" is implemented. Default is "NNLS".
 #' @param iterate Integer. Set maximum iteration per pixel. Processing time could increase the more iterations are made possible. Default is 400.
-#' @param tolerance Floating point. Tolerance limit represneting a nearly zero minimal number. Default is 0.000001. 
+#' @param tolerance Floating point. Tolerance limit represneting a nearly zero minimal number. Default is 1e-8. 
 #' @param verbose Logical. Prints progress messages during execution.
 #' @param ... further arguments passed to \link[raster]{writeRaster}.
 #' 
@@ -39,7 +39,6 @@
 #' raster::hist(props$land)
 #' raster::plot(props$land, col = c("white","brown"))
 #' 
-#' 
 #' @export
 #' 
 mesma <- function(img, em, method = "NNLS", iterate = 400, tolerance = 0.00000001, ..., verbose){
@@ -50,17 +49,16 @@ mesma <- function(img, em, method = "NNLS", iterate = 400, tolerance = 0.0000000
   
   ## breaking pre-checks
   .vMessage("Checking user inputs...")
-  if(class(img)[1] != "RasterBrick"){stop("'img' needs to be a 'RasterBrick' class object.")}
-  if(class(em)[1] != "matrix"){stop("'em' needs to be a 'matrix' class object.")}
-  meth_avail <- c("NNLS")
-  if(class(method) != "character"){stop("'method' needs to be a 'character' class object.")} 
+  if(!inherits(img, c("RasterStack","RasterBrick"))){stop("'img' needs to be a 'RasterBrick' class object.")}
+  if(!inherits(em, c("matrix", "data.frame"))){stop("'em' needs to be a 'matrix' or 'data.frame' class object.")}
+  if(inherits(em, "data.frame")){em <- as.matrix(em)}
+  if(TRUE %in% is.na(em)){stop("'em' is not allowed to contain NA values. Spectra must be consistent.")}
+  
+  meth_avail <- c("NNLS") #available methods
+  if(!inherits(method, "character")){stop("'method' needs to be a 'character' class object.")} 
   if(!method %in% meth_avail){stop(paste0("Unknown 'method': '", method, "'"))}
   if(length(em[,1]) < 2){stop("'em' must contain at least two endmembers (number of rows in 'em').")}
   if(length(em[1,]) != dim(img)[3]){stop("'em' and 'img' have different numbers of spectral features (number of columns in 'em'). Both need to represent the same number of spectral bands for equal spectral resolutions/ranges.")}
-  
-  ## warnings
-  if(tolerance > 0.00000001){warning("Caution! 'tolerance' is set to a higher number than default.")}
-  if(iterate > 400){warning("Cauton! 'iterate' is set to a lower number than default.")}
   
   ## hand over to C++ nnls_solver
   .vMessage(paste0("Unmixing imagery using '", method, "'..."))

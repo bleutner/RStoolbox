@@ -16,7 +16,7 @@ mesma(img, em, method = "NNLS", iterate = 400, tolerance = 1e-08, ...,
 
 \item{iterate}{Integer. Set maximum iteration per pixel. Processing time could increase the more iterations are made possible. Default is 400.}
 
-\item{tolerance}{Floating point. Tolerance limit represneting a nearly zero minimal number. Default is 0.000001.}
+\item{tolerance}{Floating point. Tolerance limit represneting a nearly zero minimal number. Default is 1e-8.}
 
 \item{...}{further arguments passed to \link[raster]{writeRaster}.}
 
@@ -54,7 +54,6 @@ raster::hist(props$water)
 raster::plot(props$water, col = c("white","blue"))
 raster::hist(props$land)
 raster::plot(props$land, col = c("white","brown"))
-
 
 }
 \author{
