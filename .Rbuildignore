@@ -10,3 +10,5 @@ prep-release
 cran-comments.md
 .README.md.html
 pkg-build.sh
+^.*\.Rproj$
+^\.Rproj\.user$

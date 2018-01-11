@@ -2,6 +2,7 @@
 % Please edit documentation in R/saveRSTBX.R
 \name{saveRSTBX}
 \alias{saveRSTBX}
+\alias{saveRSTBX}
 \alias{readRSTBX}
 \title{Save and Read RStoolbox Classification Results}
 \usage{

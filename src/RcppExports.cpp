@@ -43,6 +43,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// nnls_solver
+arma::mat nnls_solver(arma::mat x, arma::mat A, int iterate, float tolerance);
+RcppExport SEXP _RStoolbox_nnls_solver(SEXP xSEXP, SEXP ASEXP, SEXP iterateSEXP, SEXP toleranceSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type A(ASEXP);
+    Rcpp::traits::input_parameter< int >::type iterate(iterateSEXP);
+    Rcpp::traits::input_parameter< float >::type tolerance(toleranceSEXP);
+    rcpp_result_gen = Rcpp::wrap(nnls_solver(x, A, iterate, tolerance));
+    return rcpp_result_gen;
+END_RCPP
+}
 // normImageCpp
 NumericMatrix normImageCpp(NumericMatrix& x, NumericVector& M, NumericVector& S);
 RcppExport SEXP _RStoolbox_normImageCpp(SEXP xSEXP, SEXP MSEXP, SEXP SSEXP) {

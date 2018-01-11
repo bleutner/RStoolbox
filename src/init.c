@@ -3,7 +3,7 @@
 #include <stdlib.h> // for NULL
 #include <R_ext/Rdynload.h>
 
-/* FIXME:
+/* FIXME: 
    Check these declarations against the C/Fortran source code.
 */
 
@@ -11,6 +11,7 @@
 extern SEXP _RStoolbox_classQA(SEXP, SEXP);
 extern SEXP _RStoolbox_entropyCpp(SEXP);
 extern SEXP _RStoolbox_gainOffsetRescale(SEXP, SEXP, SEXP, SEXP);
+extern SEXP _RStoolbox_nnls_solver(SEXP, SEXP, SEXP, SEXP);
 extern SEXP _RStoolbox_normImageCpp(SEXP, SEXP, SEXP);
 extern SEXP _RStoolbox_predictMlcCpp(SEXP, SEXP, SEXP);
 extern SEXP _RStoolbox_predKmeansCpp(SEXP, SEXP);
@@ -23,6 +24,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_RStoolbox_classQA",            (DL_FUNC) &_RStoolbox_classQA,             2},
     {"_RStoolbox_entropyCpp",         (DL_FUNC) &_RStoolbox_entropyCpp,          1},
     {"_RStoolbox_gainOffsetRescale",  (DL_FUNC) &_RStoolbox_gainOffsetRescale,   4},
+    {"_RStoolbox_nnls_solver",        (DL_FUNC) &_RStoolbox_nnls_solver,         4},
     {"_RStoolbox_normImageCpp",       (DL_FUNC) &_RStoolbox_normImageCpp,        3},
     {"_RStoolbox_predictMlcCpp",      (DL_FUNC) &_RStoolbox_predictMlcCpp,       3},
     {"_RStoolbox_predKmeansCpp",      (DL_FUNC) &_RStoolbox_predKmeansCpp,       2},
