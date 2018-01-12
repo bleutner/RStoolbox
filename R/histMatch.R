@@ -78,7 +78,7 @@ histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e5, inte
 
     ref.sample  <- as.matrix(sampleRandom(ref, size = nSamples, na.rm = TRUE, ext = ext, xy = paired))
     if(!is.null(refmask)) ref.sample <- ref.sample[,-ncol(ref.sample), drop = FALSE]
-	
+    
     if(paired) {
         x.sample   <- extract(x, ref.sample[,c("x","y")])
         if(is.vector(x.sample)) x.sample <- as.matrix(x.sample)
@@ -86,7 +86,7 @@ histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e5, inte
         ref.sample <- ref.sample[valid, -c(1:2), drop = FALSE] 
         x.sample      <- x.sample[valid, , drop = FALSE]
     } else {
-        x.sample 	<- as.matrix(sampleRandom(x, size = nSamples, na.rm = T, ext = ext))
+        x.sample     <- as.matrix(sampleRandom(x, size = nSamples, na.rm = T, ext = ext))
     }
     
     .vMessage("Calculate empirical cumulative histograms")
@@ -96,8 +96,8 @@ histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e5, inte
                 
                 ## Estimate and invert reference ecdf
                 ecdf.ref <- ecdf(ref.sample[,i])
-                kn 		 <- knots(ecdf.ref)
-                y    	 <- ecdf.ref(kn) 
+                kn          <- knots(ecdf.ref)
+                y         <- ecdf.ref(kn) 
                 limits   <- if(.hasMinMax(ref[[i]])) c(minValue(ref)[i], maxValue(ref)[i]) else range(ref.sample)
                 inverse.ref.ecdf <- approxfun(y, kn, method = "linear", yleft = limits[1] , yright = limits[2], ties = "ordered")
                 
@@ -111,7 +111,7 @@ histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e5, inte
             })
     
     totalFun <- function(xvals, f = layerFun) {
-		if(is.vector(xvals)) xvals <- as.matrix(xvals)
+        if(is.vector(xvals)) xvals <- as.matrix(xvals)
         app <- lapply(1:ncol(xvals), function(i) {
             f[[i]](xvals[,i])       
         })
@@ -125,7 +125,7 @@ histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e5, inte
     }
     ## Apply histMatch to raster 
     .vMessage("Apply histogram match functions")
-	
+    
     out <- raster::calc(x, fun = totalFun, forcefun = TRUE, ...)
     
     if(!is.null(xmask)) out <- merge(xfull, out, ..., overwrite = TRUE)

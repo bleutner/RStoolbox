@@ -58,9 +58,9 @@
 #'   ggR(coreg$coregImg, sat = 1, hue = .5, alpha = 0.5, ggLayer=TRUE) 
 coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, nSamples = 1e5, reportStats = FALSE, verbose, nBins = 100, ...) {
     
-	## TODO: allow user selected pseudo control points
+    ## TODO: allow user selected pseudo control points
     ## TODO: add computation of MI to docu
-	#if(!swin%%2 | !mwin%%2) stop("swin and mwin must be odd numbers")
+    #if(!swin%%2 | !mwin%%2) stop("swin and mwin must be odd numbers")
     if(!missing("verbose")) .initVerbose(verbose)
     if(!compareCRS(master,  slave)) stop("Projection must be the same for master and slave")
     nSamples <- min(nSamples, ncell(slave))
@@ -77,7 +77,7 @@ coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, nSamples = 
     ran   <- apply(shifts, 2, range)
     minex <- extent(shift(slave, ran[1,1], ran[1,2]))
     maxex <- extent(shift(slave, ran[2,1], ran[2,2]))   
-
+    
     XYslaves <- sampleRandom(master, size = nSamples, ext = .getExtentOverlap(minex, maxex)*0.9, xy = TRUE)
     xy <- XYslaves[,c(1,2)]
     me <- XYslaves[,-c(1,2)]     
@@ -88,7 +88,7 @@ coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, nSamples = 
     
     mbreax <- seq(mmin, mmax, by = (mmax - mmin)/nBins)
     sbreax <- seq(smin, smax, by = (smax - smin)/nBins)
-    me 	  <- cut(me, breaks = mbreax, labels = FALSE, include.lowest = TRUE)
+    me       <- cut(me, breaks = mbreax, labels = FALSE, include.lowest = TRUE)
     
     nsl <- nlayers(slave)
     nml <- nlayers(master)

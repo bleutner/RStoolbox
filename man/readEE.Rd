@@ -29,8 +29,8 @@ ee[ee$Cloud.Cover < 20,]
 
 ## Available time-series
 ggplot(ee) + 
-		geom_segment(aes(x = Date, xend = Date, y = 0, yend = 100 - Cloud.Cover, 
+        geom_segment(aes(x = Date, xend = Date, y = 0, yend = 100 - Cloud.Cover, 
      col = as.factor(Year))) +
-		scale_y_continuous(name = "Scene quality (\% clear sky)")
+        scale_y_continuous(name = "Scene quality (\% clear sky)")
 
 }

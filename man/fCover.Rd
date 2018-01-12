@@ -79,7 +79,7 @@ agg.level <- 9
 modis <- aggregate(lsat, agg.level)
 
 ## Perform classification
-lc	  <- unsuperClass(lsat, nClass=2)
+lc      <- unsuperClass(lsat, nClass=2)
 
 ## Calculate the true cover, which is of course only possible in this example, 
 ## because the fake corse resolution imagery is exactly res(lsat)*9

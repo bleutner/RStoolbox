@@ -5,7 +5,7 @@
 #' @param date character. date in format "YYYY-MM-DD" 
 #' @keywords internal
 #' @noRd 
-.ESdist <- function(date){	
+.ESdist <- function(date){    
     doy <- as.numeric(format(as.POSIXct(date), "%j"))
     .ESdistance[doy]
 }
@@ -241,9 +241,9 @@
                 pp    <- gIntersection(pgrid, polygons[i,], byid=TRUE, drop_lower_td = TRUE)
                 pp    <- as(pp, "SpatialPolygonsDataFrame")
                 data  <- polygons@data[i,]
-				pp@data <- data.frame(data, rn = paste0(rownames(data),"_", seq_along(pp)), row.names = "rn")
-				pp <- spChFIDs(pp, rownames(pp@data))
-				pp
+                pp@data <- data.frame(data, rn = paste0(rownames(data),"_", seq_along(pp)), row.names = "rn")
+                pp <- spChFIDs(pp, rownames(pp@data))
+                pp
             })
     plo <- do.call("rbind", pl)
     projection(plo) <- projection(polygons)
@@ -257,7 +257,7 @@
 #' @noRd 
 #' @keywords internal
 .rmse <- function (pred, obs) {
-	sqrt(mean((pred - obs)^2, na.rm = T))
+    sqrt(mean((pred - obs)^2, na.rm = T))
 }
 
 

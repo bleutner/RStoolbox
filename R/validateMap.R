@@ -37,10 +37,10 @@
 #' ## Validation
 #' ## Before filtering
 #' val0 <- validateMap(sc$map, valData = val, responseCol = "class", 
-#' 							classMapping = sc$classMapping)
+#'                             classMapping = sc$classMapping)
 #' ## After filtering
 #' val1 <- validateMap(polishedMap, valData = val, responseCol = "class",
-#' 							 classMapping = sc$classMapping)
+#'                              classMapping = sc$classMapping)
 #' }
 validateMap <- function(map, valData, responseCol, nSamples = 500,  mode = "classification", classMapping = NULL){
     

@@ -32,7 +32,7 @@ Pan sharpening options:
 \itemize{ 
  \item{\code{method='pca'}: Performs a pca using \link{rasterPCA}. The first component is then swapped for the pan band an the PCA is rotated backwards.}
  \item{\code{method='ihs'}: Performs a color space transform to Intensity-Hue-Saturation space, swaps intensity for the histogram matched pan and does the backwards transformation.}
-	\item{\code{method='brovey'}: Performs Brovey reweighting. Pan and img must be at the same value scale (e.g. 0:1, or 0:255) otherwise you'll end up with psychodelic colors.}
+    \item{\code{method='brovey'}: Performs Brovey reweighting. Pan and img must be at the same value scale (e.g. 0:1, or 0:255) otherwise you'll end up with psychodelic colors.}
 }
 }
 \examples{
@@ -56,5 +56,5 @@ lowResImg_pan
 ## Plot 
 ggRGB(lowResImg, stretch = "lin") + ggtitle("Original")
 ggRGB(lowResImg_pan, stretch="lin") + ggtitle("Pansharpened (Brovey)")
-	
+    
 }

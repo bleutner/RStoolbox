@@ -58,7 +58,7 @@ lsat_b <- log(lsat)
 
 ## Run pifMatch and return similarity layer, invariant features mask and models
 lsat_b_adj <- pifMatch(lsat_b, lsat, returnPifMap = TRUE, 
- 						returnSimMap = TRUE, returnModels = TRUE)
+                         returnSimMap = TRUE, returnModels = TRUE)
 
 ## Pixelwise similarity
 ggR(lsat_b_adj$simMap, geom_raster = TRUE)

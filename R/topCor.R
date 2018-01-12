@@ -152,7 +152,7 @@ topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg
 #                1/3)  ## vegetation (wavelength > 720nm)
 #   
 #        minnaMod <- function(x, beta_tx, b_lut) {
-#            b 	 <- b_lut[x[,2]]
+#            b      <- b_lut[x[,2]]
 #            mult <- (x[,1]/beta_tx)^b
 #            mult[mult > 0.25] <- 0.25
 #            mult
@@ -180,7 +180,7 @@ topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg
     ## Following Lu 2008 sample pre selection
     set.seed(10)
     strat <- if(inherits(stratImg, "character")) NULL else {names(stratImg) <- "strat"; stratImg} 
-    sr 	  <- as.data.frame(sampleRandom(stack(img, illu, slope, strat), size = 10000))
+    sr       <- as.data.frame(sampleRandom(stack(img, illu, slope, strat), size = 10000))
     
     if(method != "stat") sr  <- sr[sr$slope > 2*pi/180 & sr$illu >= 0,]
     if(method != "noStrat" & inherits(stratImg, "character")) {
@@ -219,7 +219,7 @@ topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg
         }           
     }
     .vMessage("Estimate coefficients")
-    x 	<- if(method == "stat") sr$illu else log(sr$illu/cos(sz))
+    x     <- if(method == "stat") sr$illu else log(sr$illu/cos(sz))
     kl <- lapply(1:nlayers(img), function(i){
                 if(method == "stat") {
                     y <- sr[,i] 

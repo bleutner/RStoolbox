@@ -21,7 +21,7 @@
 #'  \item \code{\link{cloudMask} & \link{cloudShadowMask}}: mask clouds and cloud shadows in Landsat or other imagery which comes with a thermal band
 #'  \item \code{\link{classifyQA}}: extract layers from Landsat 8 QA bands, e.g. cloud confidence
 #'  \item \code{\link{rescaleImage}}: rescale image to match min/max from another image or a specified min/max range
-#' 	\item \code{\link{normImage}}: normalize imagery by centering and scaling
+#'     \item \code{\link{normImage}}: normalize imagery by centering and scaling
 #'  \item \code{\link{histMatch}}: matches the histograms of two scenes
 #'  \item \code{\link{coregisterImages}}: co-register images based on mutual information
 #'  \item \code{\link{panSharpen}}: sharpen a coarse resolution image with a high resolution image (typically panchromatic)
@@ -59,7 +59,7 @@
 #' @importFrom geosphere areaPolygon
 #' @importFrom parallel parLapply parSapply parApply clusterExport makeCluster
 #' @importFrom XML xmlParse xmlToList
-#' @importFrom stats coefficients lm ecdf median approxfun knots kmeans na.omit complete.cases loadings princomp cov filter cor
+#' @importFrom stats coefficients lm ecdf median approxfun knots kmeans na.omit complete.cases loadings princomp cov filter cor setNames
 #' @importFrom graphics par abline
 #' @importFrom methods as
 #' @importFrom utils read.csv read.delim read.table str write.table data capture.output
