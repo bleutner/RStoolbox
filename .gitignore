@@ -7,3 +7,5 @@
 *.dll
 *.README.md.html
 _Rmd
+.Rproj.user
+RStoolbox.Rproj

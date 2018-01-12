@@ -13,6 +13,10 @@ gainOffsetRescale <- function(x, g, o, clamp) {
     .Call('_RStoolbox_gainOffsetRescale', PACKAGE = 'RStoolbox', x, g, o, clamp)
 }
 
+nnls_solver <- function(x, A, iterate = 400L, tolerance = 0.000001) {
+    .Call('_RStoolbox_nnls_solver', PACKAGE = 'RStoolbox', x, A, iterate, tolerance)
+}
+
 normImageCpp <- function(x, M, S) {
     .Call('_RStoolbox_normImageCpp', PACKAGE = 'RStoolbox', x, M, S)
 }
