@@ -23,13 +23,13 @@ mesma(img, em, method = "NNLS", iterate = 400, tolerance = 1e-08, ...,
 \item{verbose}{Logical. Prints progress messages during execution.}
 }
 \value{
-RasterBrick. The object will contain one band per endmember, with each value representing the estimated presence propabiliy of the endmember per pixel (0 to 1), and an RMSE band.
+RasterBrick. The object will contain one band per endmember, with each value representing the estimated presence probability of the endmember per pixel (0 to 1), and an RMSE band.
 }
 \description{
 \code{mesma} performs a multiple endmember spectral mixture analysis on a multiband raster image. Currently, a sequential coordinate-wise algorithm is used to apply a non negative least square regression (NNLS).
 }
 \note{
-Depending on \code{iterate} and \code{tolerance} settings, the sum of estimated presence propabilites per pixel varies around 1.
+Depending on \code{iterate} and \code{tolerance} settings, the sum of estimated presence probabilites per pixel varies around 1.
 }
 \examples{
 
@@ -47,13 +47,13 @@ em <- lsat[pts$cell]
 rownames(em) <- em_names
 
 #unmix the image for water and land
-props <- mesma(lsat, em, method = "NNLS")
+probs <- mesma(lsat, em, method = "NNLS")
 
 #take a look
-raster::hist(props$water)
-raster::plot(props$water, col = c("white","blue"))
-raster::hist(props$land)
-raster::plot(props$land, col = c("white","brown"))
+raster::hist(probs$water)
+raster::plot(probs$water, col = c("white","blue"))
+raster::hist(probs$land)
+raster::plot(probs$land, col = c("white","brown"))
 
 }
 \author{
