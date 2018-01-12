@@ -1,5 +1,8 @@
 RStoolbox 0.2.0
 =====================================
+New:
+* function `mesma` for spectral unmixing (#33, pull request by Jakob Schwalb-Willmann)
+
 Fixes: 
 * improved NA handling and faster implementation of mlc classifier (#32, pull request by Neal Fultz)
 
