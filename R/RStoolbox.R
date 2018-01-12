@@ -59,7 +59,7 @@
 #' @importFrom geosphere areaPolygon
 #' @importFrom parallel parLapply parSapply parApply clusterExport makeCluster
 #' @importFrom XML xmlParse xmlToList
-#' @importFrom stats coefficients lm ecdf median approxfun knots kmeans na.omit complete.cases loadings princomp cov filter cor
+#' @importFrom stats coefficients lm ecdf median approxfun knots kmeans na.omit complete.cases loadings princomp cov filter cor setNames
 #' @importFrom graphics par abline
 #' @importFrom methods as
 #' @importFrom utils read.csv read.delim read.table str write.table data capture.output

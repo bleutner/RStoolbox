@@ -16,7 +16,7 @@ mesma(img, em, method = "NNLS", iterate = 400, tolerance = 1e-08, ...,
 
 \item{iterate}{Integer. Set maximum iteration per pixel. Processing time could increase the more iterations are made possible. Default is 400.}
 
-\item{tolerance}{Floating point. Tolerance limit represneting a nearly zero minimal number. Default is 1e-8.}
+\item{tolerance}{Numeric. Tolerance limit represneting a nearly zero minimal number. Default is 1e-8.}
 
 \item{...}{further arguments passed to \link[raster]{writeRaster}.}
 
@@ -26,7 +26,7 @@ mesma(img, em, method = "NNLS", iterate = 400, tolerance = 1e-08, ...,
 RasterBrick. The object will contain one band per endmember, with each value representing the estimated presence propabiliy of the endmember per pixel (0 to 1), and an RMSE band.
 }
 \description{
-\code{mesma} performs a multiple endmember spectral mixture analysis on a multiband raster image. Currently, a sequential coordinate-wise algorthm is used to apply a non negative least square regression (NNLS).
+\code{mesma} performs a multiple endmember spectral mixture analysis on a multiband raster image. Currently, a sequential coordinate-wise algorithm is used to apply a non negative least square regression (NNLS).
 }
 \note{
 Depending on \code{iterate} and \code{tolerance} settings, the sum of estimated presence propabilites per pixel varies around 1.

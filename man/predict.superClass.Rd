@@ -29,7 +29,7 @@ data(rlogo)
 train <- readRDS(system.file("external/trainingPoints.rds", package="RStoolbox"))
 
 ## Fit classifier 
-SC 	  <- superClass(rlogo, trainData = train, responseCol = "class", 
+SC       <- superClass(rlogo, trainData = train, responseCol = "class", 
               model = "rf", tuneLength = 1, predict = FALSE)
 
 map <- predict(SC, rlogo)

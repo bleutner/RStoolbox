@@ -79,7 +79,7 @@ This was originally a fork of randcorr() function in the landsat package. This v
 library(raster)
 ## Import meta-data and bands based on MTL file
 mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", 
-								package="RStoolbox")
+                                package="RStoolbox")
 metaData <- readMeta(mtlFile)
 \donttest{lsat     <- stackMeta(mtlFile)}
 

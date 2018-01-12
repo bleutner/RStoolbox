@@ -65,7 +65,7 @@ SuperClass performs the following steps:
 \item Sample training coordinates. If \code{trainData} (and \code{valData} if present) are SpatialPolygonsDataFrames \code{superClass} will calculate the area per polygon and sample
 \code{nSamples} locations per class within these polygons. The number of samples per individual polygon scales with the polygon area, i.e. the bigger the polygon, the more samples.
 
-\item Split training/validation	  
+\item Split training/validation      
 If \code{valData} was provided (reccomended) the samples from these polygons will be held-out and not used for model fitting but only for validation. 
 If \code{trainPartition} is provided the trainingPolygons will be divided into training polygons and validation polygons.
 
@@ -97,7 +97,7 @@ plotRGB(rlogo)
 plot(train, add = TRUE, col =  colors[train$class], pch = 19)
 
 ## Fit classifier (splitting training into 70\\\% training data, 30\\\% validation data)
-SC 	  <- superClass(rlogo, trainData = train, responseCol = "class", 
+SC       <- superClass(rlogo, trainData = train, responseCol = "class", 
 model = "rf", tuneLength = 1, trainPartition = 0.7)
 SC
 

@@ -50,9 +50,9 @@ polishedMap <- focal(sc$map, matrix(1,3,3), fun = modal)
 ## Validation
 ## Before filtering
 val0 <- validateMap(sc$map, valData = val, responseCol = "class", 
-							classMapping = sc$classMapping)
+                            classMapping = sc$classMapping)
 ## After filtering
 val1 <- validateMap(polishedMap, valData = val, responseCol = "class",
-							 classMapping = sc$classMapping)
+                             classMapping = sc$classMapping)
 }
 }
