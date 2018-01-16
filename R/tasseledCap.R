@@ -49,7 +49,7 @@ tasseledCap <- function(img, sat, ...) {
         x %*% cof 
     }
     
-    calc(img, fun = tct, forcefun = TRUE, ...)
+	.paraRasterFun(img, rasterFun = calc, args = list(fun = tct, forcefun = TRUE), wrArgs = list(...))
 }
 
 
