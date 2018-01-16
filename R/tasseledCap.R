@@ -49,7 +49,9 @@ tasseledCap <- function(img, sat, ...) {
         x %*% cof 
     }
     
-	.paraRasterFun(img, rasterFun = calc, args = list(fun = tct, forcefun = TRUE), wrArgs = list(...))
+	out <- .paraRasterFun(img, rasterFun = calc, args = list(fun = tct, forcefun = TRUE), wrArgs = list(...))
+	out <- .updateLayerNames(out, colnames(.TCcoefs[[sat]]))
+	out
 }
 
 
