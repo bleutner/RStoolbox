@@ -12,11 +12,14 @@ mesma(img, em, method = "NNLS", iterate = 400, tolerance = 1e-08, ...,
 
 \item{em}{Matrix or data.frame with spectral endmembers. Rows represent a single endmember of a class, columns represent the spectral bands (i.e. columns correspond to number of bands in \code{img}). Number of rows needs to be > 1.}
 
-\item{method}{Character. Select a unmixing method. Currently, only "NNLS" is implemented. Default is "NNLS".}
+\item{method}{Character. Select an unmixing method. Currently, only "NNLS" is implemented. Default is "NNLS".
+\itemize{
+   \item \code{NNLS:} applies a non-negative least squares (NNLS) regression which is using a sequential coordinate-wise algorithm (SCA) based on Franc et al. (2005).
+}}
 
 \item{iterate}{Integer. Set maximum iteration per pixel. Processing time could increase the more iterations are made possible. Default is 400.}
 
-\item{tolerance}{Numeric. Tolerance limit represneting a nearly zero minimal number. Default is 1e-8.}
+\item{tolerance}{Numeric. Tolerance limit representing a nearly zero minimal number. Default is 1e-8.}
 
 \item{...}{further arguments passed to \link[raster]{writeRaster}.}
 
@@ -26,7 +29,7 @@ mesma(img, em, method = "NNLS", iterate = 400, tolerance = 1e-08, ...,
 RasterBrick. The object will contain one band per endmember, with each value representing the estimated presence probability of the endmember per pixel (0 to 1), and an RMSE band.
 }
 \description{
-\code{mesma} performs a multiple endmember spectral mixture analysis on a multiband raster image. Currently, a sequential coordinate-wise algorithm is used to apply a non negative least square regression (NNLS).
+\code{mesma} performs a multiple endmember spectral mixture analysis on a multiband raster image.
 }
 \note{
 Depending on \code{iterate} and \code{tolerance} settings, the sum of estimated presence probabilites per pixel varies around 1.
@@ -55,6 +58,9 @@ raster::plot(probs$water, col = c("white","blue"))
 raster::hist(probs$land)
 raster::plot(probs$land, col = c("white","brown"))
 
+}
+\references{
+Franc, V., Hlaváč, V., & Navara, M. (2005). Sequential coordinate-wise algorithm for the non-negative least squares problem. In: International Conference on Computer Analysis of Images and Patterns (pp. 407-414). Berlin, Heidelberg.
 }
 \author{
 Jakob Schwalb-Willmann
