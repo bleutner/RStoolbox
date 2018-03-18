@@ -34,7 +34,7 @@ getValidation <- function(x, from = "testset", metrics = "overall"){
         if(inherits(x,"confusionMatrix")) {
             confMat <- x
         } else if(from == "cv") {
-            confMat <- confusionMatrix(x$model$pred$pred, x$model$pred$obs) 
+            confMat <- confusionMatrix(as.factor(x$model$pred$pred), as.factor(x$model$pred$obs)) 
         } else {
             confMat <- x$validation$performance
         }
