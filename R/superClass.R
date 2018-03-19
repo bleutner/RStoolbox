@@ -324,7 +324,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
                 }
                 valiSet$prediction <- factor(levels(classes)[pr], levels = levels(classes))
             }
-            validation <- confusionMatrix(data = valiSet$prediction, reference = valiSet$reference)              
+            validation <- confusionMatrix(data = as.factor(valiSet$prediction), reference = as.factor(valiSet$reference))              
         } else {
             valiSet$residuals <- valiSet$reference - valiSet$prediction
             validation <-  data.frame(RMSE = .rmse(valiSet$prediction, valiSet$reference), Rsquared = cor(valiSet$prediction, valiSet$reference, use = "complete.obs")^2)   
