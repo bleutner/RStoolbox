@@ -1,8 +1,6 @@
-Patch release: fixes tests for upcoming raster version. 
-
 ### R CMD checks
 ### Test environments
-* Ubuntu 16.10 64bit (release)
+* Ubuntu 17.10 64bit (release)
 * Travis-CI Ubuntu 14.04 (devel)
 * winbuilder (devel, release, oldrel)
 * r-hub (devel+ubsan)
@@ -20,5 +18,10 @@ This is a false alarm; 'indices' is spelled correctly.
 none
 
 ### Changelog RStoolbox 0.1.10
-Fixes:
-* adapt to upcoming raster version
+New:
+* function `mesma` for spectral unmixing (#33, provided by Jakob Schwalb-Willmann)
+
+Fixes: 
+* improved NA handling and faster implementation of mlc classifier (#32, pull request by Neal Fultz)
+* adapt to upcoming caret version (new constraint caret >= 6.0-79)
+
