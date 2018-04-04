@@ -20,6 +20,8 @@ group: navigation
 <h3>Description</h3>
 
 <p>Intended for use with the Landsat 8 OLI QA band. Decodes pixel quality flags from integer to bit-words.
+NOTE: THE NEW USGS LANDSAT COLLECTION 1 DATA HAS CHANGED THE QA BITWORD ASSIGNMENTS. THIS IS NOT YET IMPLEMENTED HERE.
+DO NOT USE encodeQA, decodeQA and classifyQA FOR LANDSAT COLLECTION 1 DATA (yet)!
 </p>
 
 
@@ -55,5 +57,5 @@ decodeQA(x)
 </code></pre>
 
 
-<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.1.8 <a href="index.html">Index</a>]</div>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.2.0 <a href="index.html">Index</a>]</div>
 </body></html>
