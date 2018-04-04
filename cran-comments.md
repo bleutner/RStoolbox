@@ -1,3 +1,5 @@
+fixes current incompatibility with new caret version
+
 ### R CMD checks
 ### Test environments
 * Ubuntu 17.10 64bit (release)
