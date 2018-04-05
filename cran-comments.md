@@ -19,7 +19,7 @@ This is a false alarm; 'indices' is spelled correctly.
 ### Downstream dependencies
 none
 
-### Changelog RStoolbox 0.1.10
+### Changelog RStoolbox 0.2.0
 New:
 * function `mesma` for spectral unmixing (#33, provided by Jakob Schwalb-Willmann)
 
