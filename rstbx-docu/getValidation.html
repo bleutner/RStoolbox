@@ -68,27 +68,27 @@ SC   &lt;- superClass(rlogo, trainData = train, responseCol = &quot;class&quot;,
 getValidation(SC)
 </code></pre>
 
-<pre><code class="r">#&gt;   model validation  Accuracy     Kappa AccuracyLower AccuracyUpper
-#&gt; 1   pls    testset 0.8888889 0.8333333     0.5175035     0.9971909
-#&gt;   AccuracyNull AccuracyPValue McnemarPValue
-#&gt; 1    0.3333333      0.0009653           NaN
+<pre><code class="r">#&gt;   model validation Accuracy Kappa AccuracyLower AccuracyUpper AccuracyNull
+#&gt; 1   pls    testset        1     1     0.6637329             1    0.3333333
+#&gt;   AccuracyPValue McnemarPValue
+#&gt; 1   5.080526e-05           NaN
 </code></pre>
 
 <pre><code class="r">getValidation(SC, metrics = &quot;classwise&quot;)
 </code></pre>
 
 <pre><code class="r">#&gt;   model validation class Sensitivity Specificity Pos.Pred.Value
-#&gt; 1   pls    testset     A   1.0000000   0.8333333           0.75
-#&gt; 2   pls    testset     B   0.6666667   1.0000000           1.00
-#&gt; 3   pls    testset     C   1.0000000   1.0000000           1.00
-#&gt;   Neg.Pred.Value Precision    Recall        F1 Prevalence Detection.Rate
-#&gt; 1      1.0000000      0.75 1.0000000 0.8571429  0.3333333      0.3333333
-#&gt; 2      0.8571429      1.00 0.6666667 0.8000000  0.3333333      0.2222222
-#&gt; 3      1.0000000      1.00 1.0000000 1.0000000  0.3333333      0.3333333
+#&gt; 1   pls    testset     A           1           1              1
+#&gt; 2   pls    testset     B           1           1              1
+#&gt; 3   pls    testset     C           1           1              1
+#&gt;   Neg.Pred.Value Precision Recall F1 Prevalence Detection.Rate
+#&gt; 1              1         1      1  1  0.3333333      0.3333333
+#&gt; 2              1         1      1  1  0.3333333      0.3333333
+#&gt; 3              1         1      1  1  0.3333333      0.3333333
 #&gt;   Detection.Prevalence Balanced.Accuracy
-#&gt; 1            0.4444444         0.9166667
-#&gt; 2            0.2222222         0.8333333
-#&gt; 3            0.3333333         1.0000000
+#&gt; 1            0.3333333                 1
+#&gt; 2            0.3333333                 1
+#&gt; 3            0.3333333                 1
 </code></pre>
 
 <pre><code class="r">## Cross-validation based 
@@ -96,9 +96,9 @@ getValidation(SC, from = &quot;cv&quot;)
 </code></pre>
 
 <pre><code class="r">#&gt;   model validation  Accuracy     Kappa AccuracyLower AccuracyUpper
-#&gt; 1   pls         cv 0.8571429 0.7857143      0.636576      0.969511
+#&gt; 1   pls         cv 0.8095238 0.7142857      0.580934     0.9455364
 #&gt;   AccuracyNull AccuracyPValue McnemarPValue
-#&gt; 1    0.3333333   1.101588e-06           NaN
+#&gt; 1    0.3333333   1.025615e-05           NaN
 </code></pre>
 
 
