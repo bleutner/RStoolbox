@@ -1,4 +1,4 @@
-fixes current incompatibility with new caret version
+patch release, fix non-portable c++ code 
 
 ### R CMD checks
 ### Test environments
@@ -19,11 +19,5 @@ This is a false alarm; 'indices' is spelled correctly.
 ### Downstream dependencies
 none
 
-### Changelog RStoolbox 0.2.0
-New:
-* function `mesma` for spectral unmixing (#33, provided by Jakob Schwalb-Willmann)
-
-Fixes: 
-* improved NA handling and faster implementation of mlc classifier (#32, pull request by Neal Fultz)
-* adapt to upcoming caret version (new constraint caret >= 6.0-79)
+### Changelog RStoolbox 0.2.1
 

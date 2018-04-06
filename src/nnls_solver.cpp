@@ -1,5 +1,4 @@
 //[[Rcpp::depends(RcppArmadillo)]]
-#include <bits/stdc++.h>
 #include <RcppArmadillo.h>
 #include <Rcpp.h>
 
