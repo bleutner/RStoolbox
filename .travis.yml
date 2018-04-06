@@ -31,14 +31,12 @@ before_script:
   - rm pbkrtest_0.4-5.tar.gz
 # - ./pkg-build.sh install_r_version car 2.0-25 
   - ./pkg-build.sh install_deps
-# Run twice, just to be sure because sometimes cran mirror fails randomly 
-  - ./pkg-build.sh install_deps
   - wget http://cran.r-project.org/src/contrib/Archive/rgdal/rgdal_1.2-5.tar.gz
   - ./pkg-build.sh install_r_local rgdal_1.2-5.tar.gz
   - rm rgdal_1.2-5.tar.gz
   - ./pkg-build.sh install_r rgdal
   - ./pkg-build.sh install_r covr
-  - ./pkg-build.sh dump_sysinfo
+#  - ./pkg-build.sh dump_sysinfo
 
 script: 
   - ./pkg-build.sh run_build

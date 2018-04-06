@@ -5,7 +5,7 @@ patch release, fix non-portable c++ code
 * Ubuntu 17.10 64bit (release)
 * Travis-CI Ubuntu 14.04 (devel)
 * winbuilder (devel, release, oldrel)
-* r-hub (devel+ubsan)
+* r-hub (fedora-devel-clang)
 
 ### R CMD check results
 There were no ERRORs or WARNINGs. 
