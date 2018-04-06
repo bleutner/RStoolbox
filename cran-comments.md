@@ -1,4 +1,4 @@
-patch release, fix non-portable c++ code 
+patch release, fixes non-portable c++ code which was introduced with v.0.2.0
 
 ### R CMD checks
 ### Test environments
@@ -17,7 +17,8 @@ Possibly mis-spelled words in DESCRIPTION:
 This is a false alarm; 'indices' is spelled correctly.  
 
 ### Downstream dependencies
-none
+moveVis OK
 
 ### Changelog RStoolbox 0.2.1
+* patch release, fixes non-portable c++ code which was introduced with v.0.2.0
 

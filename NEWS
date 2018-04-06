@@ -1,3 +1,8 @@
+RStoolbox 0.2.1
+=====================================
+Fixes:
+* fixed non-portable c++ headers
+
 RStoolbox 0.2.0
 =====================================
 New:
