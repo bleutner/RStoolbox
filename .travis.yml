@@ -54,10 +54,10 @@ env:
   matrix:
 #    - RVERSION=oldrel
 #    - RVERSION=release
-    - RVERSION=devel COVERAGE=true
+    - RVERSION=devel #COVERAGE=true
     
-r_github_packages:
-  - jimhester/covr
+#r_github_packages:
+#  - jimhester/covr
 
-after_success:
-  - if [[ ! -z "$COVERAGE" ]];then ./pkg-build.sh run_script -e 'covr::codecov()'; fi
+#after_success:
+#  - if [[ ! -z "$COVERAGE" ]];then ./pkg-build.sh run_script -e 'covr::codecov()'; fi

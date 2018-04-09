@@ -1,5 +1,5 @@
 patch release, fixes non-portable c++ code which was introduced with v.0.2.0
-added Robert Hijmans as contributor
+added Robert Hijmans as contributor as requested by CRAN
 
 ### R CMD checks
 ### Test environments
