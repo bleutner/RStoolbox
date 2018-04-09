@@ -1,4 +1,5 @@
 patch release, fixes non-portable c++ code which was introduced with v.0.2.0
+added Robert Hijmans as contributor
 
 ### R CMD checks
 ### Test environments
