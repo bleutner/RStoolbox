@@ -50,15 +50,14 @@ input <- brick(system.file("external/rlogo.grd", package="raster"))
 ## Create filename
 file  <- paste0(tempdir(), "/test", runif(1))
 ## Run PCA
-rpc   <- rasterPCA(input, filename = file, nSample = 100)
+rpc   <- rasterPCA(input, nSample = 100)
 ## Save object
 saveRSTBX(rpc, filename=file)
 ## Which files were written?
 list.files(tempdir(), pattern = basename(file))
 ## Re-read files
 re_rpc <- readRSTBX(file)
-## Compare 
-all.equal(re_rpc, rpc)
-file.remove(file)
+## Remove files 
+file.remove(list.files(tempdir(), pattern = basename(file), full = TRUE))
 }
 }
