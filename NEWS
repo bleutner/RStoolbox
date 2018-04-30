@@ -1,3 +1,9 @@
+RStoolbox 0.2.2
+=====================================
+Fixes:
+* corrected tasseledCap coefficient for Landsat 5 TM (#40, reported by @philipperufin)
+
+
 RStoolbox 0.2.1
 =====================================
 Fixes:
