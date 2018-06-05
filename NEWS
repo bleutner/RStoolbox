@@ -1,5 +1,11 @@
 RStoolbox 0.2.2
 =====================================
+New:
+* added `tasseledCap` coefficients for Quickbird, Spot5 and RapidEye
+
+Changes:
+* `readEE` 'Date' column is now returned as POSIXct instead of POSIXlt
+
 Fixes:
 * corrected tasseledCap coefficient for Landsat 5 TM (#40, reported by @philipperufin)
 

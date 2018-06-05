@@ -19,7 +19,7 @@
 #' 
 #' ## Available time-series
 #' ggplot(ee) + 
-#'         geom_segment(aes(x = Date, xend = Date, y = 0, yend = 100 - Cloud.Cover, 
+#'      geom_segment(aes(x = Date, xend = Date, y = 0, yend = 100 - Cloud.Cover, 
 #'      col = as.factor(Year))) +
 #'         scale_y_continuous(name = "Scene quality (% clear sky)")
 #' 
@@ -41,9 +41,9 @@ readEE <- function(x) {
                 df <- df[,allLScats[inter]]
                 df[,allLScats[!inter]] <- NA
                 df <- df[, allLScats]
-                df$Date <- strptime(df$Date.Acquired, "%Y/%m/%d")
-                df$Doy  <- as.numeric(strftime(df$Date, format = "%j"))
-                df$Year <- as.numeric(strftime(df$Date, format = "%Y"))
+                df$Date <- as.POSIXct(df$Date.Acquired, "%Y/%m/%d")
+                df$Doy  <- as.numeric(format(df$Date, format = "%j"))
+                df$Year <- as.numeric(format(df$Date, format = "%Y"))
                 df$Satellite <- paste0("LS", substr(df$Landsat.Scene.Identifier, 3, 3))
                 df$Num <- as.numeric(substr(df$Landsat.Scene.Identifier,3,3))
                 df
