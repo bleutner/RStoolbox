@@ -1,5 +1,5 @@
-patch release, fixes non-portable c++ code which was introduced with v.0.2.0
-added Robert Hijmans as contributor as requested by CRAN
+Complies with email from CRAN/Hornik (17/05/2018): removed superfluous/undeclared package dependency in unit tests (lattice)
+Adds compatibility with upcoming ggplot2 v2.3.0
 
 ### R CMD checks
 ### Test environments
@@ -20,6 +20,5 @@ This is a false alarm; 'indices' is spelled correctly.
 ### Downstream dependencies
 moveVis OK
 
-### Changelog RStoolbox 0.2.1
-* patch release, fixes non-portable c++ code which was introduced with v.0.2.0
+### Changelog RStoolbox 0.2.2
 
