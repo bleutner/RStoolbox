@@ -1,7 +1,7 @@
 context("classifyQA")
 
 set.seed(1)
-qa <- raster(ncol = 100, nrow=100, val = sample(1:2^14,  10000))
+qa <- raster(ncol = 128, nrow=128, val = 1:2^14)
 ## TODO: add real LS8 example data
 
 test_that("returned classes and number of layers", {
