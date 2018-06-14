@@ -67,11 +67,7 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
     
     ## TODO: handle single value rasters (e.g. masks)
     
-    # RGB processing originally forked from raster::plotRGB
-    # Author: Robert J. Hijmans 
-    # Version 0.9
-    # Licence GPL v3
-    # partly based on functions in the pixmap package by Friedrich Leisch
+    # RGB processing originally forked from raster::plotRGB (Author: Robert J. Hijmans) GPL3 
     verbose <- getOption("RStoolbox.verbose")
     annotation <- !geom_raster
     ## Subsample raster        
@@ -79,7 +75,7 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
     nComps <- length(rgb)
     if(inherits(img, "RasterLayer")) img <- brick(img)
     rr     <- sampleRegular(img[[rgb]], maxpixels, ext=ext, asRaster=TRUE)
-    RGB <- getValues(rr)
+    RGB    <- getValues(rr)
     if(!is.matrix(RGB)) RGB <- as.matrix(RGB)
     
     ## Clip to limits
@@ -106,7 +102,9 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
             RGB[RGB[,i] > limits[i,2], i] <- clipValues[i,2]            
         }
     }   
-    rangeRGB <- range(RGB, na.rm = TRUE)
+    rangeRGBL <- apply(RGB, 2, range, na.rm = TRUE)  
+    rangeRGB <- range(rangeRGBL, na.rm = TRUE)
+    
     if(missing('scale')){ scale <- rangeRGB[2] }
     
     if(rangeRGB[1] < 0){
@@ -126,7 +124,7 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
     if (stretch != "none") {
         stretch <- tolower(stretch)
         for(i in seq_along(rgb)){
-            RGB[,i] <- .stretch(RGB[,i], method = stretch, quantiles=quantiles)
+            RGB[,i] <- .stretch(RGB[,i], method = stretch, quantiles=quantiles, band = i)
         }
         scale <- 1        
     }
@@ -186,11 +184,25 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
 
 
 ## Perform histogram, sqrt log and 98% linear stretching
-.stretch <- function (x, method = "lin", quantiles = c(0.02,0.98)) {
+.stretch <- function (x, method = "lin", quantiles = c(0.02,0.98), band = NULL) {
+    
     if(!method %in% c("lin", "hist", "log", "sqrt")) stop("Stretch method must be 'lin', 'hist', 'sqrt' or 'log'", call. = FALSE)
+    ra <- range(x)
+    if(diff(ra) == 0 & method %in% c("lin", "log", "sqrt")){ 
+        if(ra[1] > 1 | ra [1] < 0) {
+            warning("Only one unique value in band ", band," (", c("red","green","blue")[band], "). Stretch not possible -> assigning a value of 1 for rgb color calculation. ", call. = FALSE)  
+            return( rep( 1, length(x)))
+        } else {
+            return(x)
+        }
+    }
     if(method == "lin"){
         if(length(quantiles) == 1) quantiles <- c(0,1) + c(quantiles, -quantiles)/100
         v <- quantile(x, quantiles, na.rm = TRUE)
+        if(diff(v)==0) {
+            ## sometimes lowr and upr quantile can be identical, which breaks the color calculation --> enforce a minimal distance by adding ~0
+            v[2] <- v[2] + 1e-9
+        }
         temp <-  (x - v[1])/(v[2] - v[1])
         temp[temp < 0] <- 0
         temp[temp > 1] <- 1 
@@ -201,6 +213,7 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
         return(ecdfun(x))
     } 
     if(method == "log"){
+        
         x <- log(x + 1)
         x <- x - min(x)
         return(x / max(x))         
