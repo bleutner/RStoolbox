@@ -102,8 +102,7 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
             RGB[RGB[,i] > limits[i,2], i] <- clipValues[i,2]            
         }
     }   
-    rangeRGBL <- apply(RGB, 2, range, na.rm = TRUE)  
-    rangeRGB <- range(rangeRGBL, na.rm = TRUE)
+    rangeRGB <- range(RGB, na.rm = TRUE)
     
     if(missing('scale')){ scale <- rangeRGB[2] }
     
@@ -187,10 +186,12 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
 .stretch <- function (x, method = "lin", quantiles = c(0.02,0.98), band = NULL) {
     
     if(!method %in% c("lin", "hist", "log", "sqrt")) stop("Stretch method must be 'lin', 'hist', 'sqrt' or 'log'", call. = FALSE)
+    if(!length(x)) return(x)
     ra <- range(x)
     if(diff(ra) == 0 & method %in% c("lin", "log", "sqrt")){ 
         if(ra[1] > 1 | ra [1] < 0) {
-            warning("Only one unique value in band ", band," (", c("red","green","blue")[band], "). Stretch not possible -> assigning a value of 1 for rgb color calculation. ", call. = FALSE)  
+            warning("Only one unique value in band ", band," (", c("red","green","blue")[band], 
+                    "). Stretch not possible -> assigning a value of 1 for rgb color calculation.", call. = FALSE)  
             return( rep( 1, length(x)))
         } else {
             return(x)
