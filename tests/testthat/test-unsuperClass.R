@@ -35,6 +35,7 @@ test_that("kmeans predictions",{
 
 ## pretty print
 test_that("printing method", {
+            skip_on_cran()
             expect_output(print(unsuperClass(lsat,  nClasses = 2)), "unsuperClass results")
         })
 

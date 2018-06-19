@@ -57,6 +57,10 @@ test_that("projection mismatch errors",
 for(proj in c("projected", "geographical")){
 	for(type in c("polygons", "points")){
 		
+        if (!identical(Sys.getenv("NOT_CRAN"), "true") ) {
+            if( type == "points") break
+        }
+        
 		info <- paste(c("train type = ", type, " | coordinates = ", proj), collapse = "")       
 		train <- trainList[[proj]][[type]]
 		img   <- trainList[[proj]][["img"]]
@@ -131,6 +135,7 @@ for(proj in c("projected", "geographical")){
 									mode = "classification", predict = FALSE), "superClass", info = info)
 					expect_is(sc2 <- superClass(img[[1]], trainData = train, trainPartition=.7, nSamples = 50, tuneLength = 1, responseCol = "res", model = "rf", 
 									mode = "classification", predict = TRUE), "superClass", info = info)
+                    skip_on_cran()
 					expect_is(sc2 <- superClass(img[[1]], trainData = train, trainPartition=.7, nSamples = 50, tuneGrid = data.frame(ncomp = 1), responseCol = "res", model = "pls", 
 									mode = "regression", predict = TRUE), "superClass", info = info)
 					expect_is(sc2 <- superClass(img[[1]], trainData = train, trainPartition=.7, nSamples = 50, tuneGrid = data.frame(ncomp = 1), responseCol = "res", model = "pls", 

@@ -43,8 +43,9 @@ test_that("DOS approaches", {
             
             toaref <- radCor(lsat, mtlFile, "apref")[]
             
-            hb <- list(1, 2, 2:3, c(2, 4), "B1_dn", c("B1_dn", "B2_dn"), c("B3_dn", "B1_dn"))
+            hb <- if (identical(Sys.getenv("NOT_CRAN"), "true")) list(1, 2, 2:3, c(2, 4), "B1_dn", c("B1_dn", "B2_dn"), c("B3_dn", "B1_dn")) else list(1)
             for(i in seq_along(hb)){
+                
                 expect_is(rc <- radCor(lsat, metaData = mtlFile,  method = "sdos",  hazeBands = hb[[i]]), "RasterStack", info = paste0("hazeBands=", hb[[i]], collapse = ","))
                 expect_equal(names(rc), paste0(gsub("dn", "", names(lsat)), c(rep("sre",5),"bt","sre")))
                 rcm <- rc[]
@@ -67,8 +68,8 @@ test_that("DOS approaches", {
                 }
             }
                        
-             expect_error(radCor(img = lsat,metaData =  mtlFile, method = "dos", hazeValues = 1, hazeBands = 1), "Lhaze is < 0")       
-             expect_warning(radCor(img = lsat,metaData =  mtlFile, method = "dos", hazeValues = c(55,56), hazeBands = 1:2), "Truncating hazeValues")         
+             expect_error(radCor(img = lsat, metaData =  mtlFile, method = "dos", hazeValues = 1, hazeBands = 1), "Lhaze is < 0")       
+             expect_warning(radCor(img = lsat, metaData =  mtlFile, method = "dos", hazeValues = c(55,56), hazeBands = 1:2), "Truncating hazeValues")         
              
         })
 

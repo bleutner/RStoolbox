@@ -7,12 +7,14 @@ data(srtm)
 
 
 ## Minnaert correction, solar angles from metaData
-test_that("basic functioning", {
-            for(method in c( c("cos", "avgcos", "C", "stat", "illu"))){
+test_that("basic functioning", { 
+            mths <-  if (identical(Sys.getenv("NOT_CRAN"), "true")) c("cos", "avgcos", "C", "stat", "illu")  else "cos"
+            for(method in mths){
                 expect_s4_class(tc <- topCor(lsat, dem = srtm, metaData = metaData, method = method), "Raster")
                 expect_equal(names(tc),  if(method!="illu") names(lsat) else "illu")
             }
-            for(method in c( c("cos", "avgcos", "C", "stat", "illu"))){
+            skip_on_cran()
+            for(method in  mths){
                 expect_s4_class(tc <- topCor(lsat, dem = srtm, metaData = metaData, method = method, filename = rasterTmpFile()), "Raster")
                 expect_equal(names(tc),  if(method!="illu") names(lsat) else "illu")
             }
