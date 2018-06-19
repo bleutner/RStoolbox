@@ -1,5 +1,6 @@
-Complies with email from CRAN/Hornik (17/05/2018): removed superfluous/undeclared package dependency in unit tests (lattice)
-Adds compatibility with upcoming ggplot2 v2.3.0
+* Reduces tests which run on CRAN (complies with email from CRAN/Ligges (18/06/2018))
+* Complies with email from CRAN/Hornik (17/05/2018): removed superfluous/undeclared package dependency in unit tests (lattice)
+* Adds compatibility with upcoming ggplot2 v2.3.0
 
 ### R CMD checks
 ### Test environments
