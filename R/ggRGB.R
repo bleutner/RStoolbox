@@ -187,7 +187,11 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
     
     if(!method %in% c("lin", "hist", "log", "sqrt")) stop("Stretch method must be 'lin', 'hist', 'sqrt' or 'log'", call. = FALSE)
     if(!length(x)) return(x)
-    ra <- range(x)
+    if(all(is.na(x))) {
+        warning("All values are NA. Can't compute color values -> plot will appear empty.", call. = FALSE)
+        return(NA)
+    } 
+    ra <- range(x, na.rm = TRUE)
     if(diff(ra) == 0 & method %in% c("lin", "log", "sqrt")){ 
         if(ra[1] > 1 | ra [1] < 0) {
             warning("Only one unique value in band ", band," (", c("red","green","blue")[band], 
@@ -214,7 +218,6 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
         return(ecdfun(x))
     } 
     if(method == "log"){
-        
         x <- log(x + 1)
         x <- x - min(x)
         return(x / max(x))         
