@@ -235,16 +235,16 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
                 
             }
         }     
-    }
+    }               
+    
     ## Create hold out indices on polygon level
     if(polygonBasedCV){
-        
+        foldCol      <- "excludeFromFold"
         sdf <- lapply(classes, function(ci) {
                     sub          <- trainData[trainData@data[[responseCol]] == ci,]  
                     folds        <- createFolds(sub[[responseCol]], k = kfold)
                     names(folds) <- NULL
                     folds        <- melt(folds) 
-                    foldCol      <- "excludeFromFold"
                     sub[[foldCol]] <- folds[order(folds$value),"L1"]
                     sub
                 })
