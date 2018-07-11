@@ -220,7 +220,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
                                     "\n * split datasets yourself, i.e. provide valData instead of trainPartition",
                                     "\n * reduce minDist (may cause optimistic bias in validation!)",
                                     "\n * provide more trainingPoints which are well spread across the scene"        
-                                    ), call. = FALSE)
+                            ), call. = FALSE)
                 }
                 ## TODO: add tests
                 if(mode == "classification" && !all(classMapping$class %in% valData[[responseCol]])){
@@ -238,11 +238,19 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
     }
     ## Create hold out indices on polygon level
     if(polygonBasedCV){
-        folds        <- createFolds(trainData@data[[responseCol]], k = kfold)
-        names(folds) <- NULL
-        folds        <- melt(folds) 
-        foldCol      <- "excludeFromFold"
-        trainData@data[[foldCol]] <- folds[order(folds$value),"L1"]
+        
+        sdf <- lapply(classes, function(ci) {
+                    sub          <- trainData[trainData@data[[responseCol]] == ci,]  
+                    folds        <- createFolds(sub[[responseCol]], k = kfold)
+                    names(folds) <- NULL
+                    folds        <- melt(folds) 
+                    foldCol      <- "excludeFromFold"
+                    sub[[foldCol]] <- folds[order(folds$value),"L1"]
+                    sub
+                })
+        trainData <- do.call(rbind, sdf)
+        rm(sdf)
+        
     } else {
         foldCol <- NULL
     }
@@ -250,11 +258,10 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
     ## Calculate area weighted number of samples per polygon
     ## we'll end up with n > nSamples, but make sure to sample each polygon at least once
     .vMessage("Begin sampling training data")
-    dataList  <- .samplePixels(SHAPE = trainData, RASTER=img, responseCol = responseCol, nSamples = nSamples)
+    dataList  <- .samplePixels(SHAPE = trainData, RASTER=img, responseCol = responseCol, nSamples = nSamples, foldCol = foldCol)
     dataSet   <- dataList[[1]]
     if(polygonBasedCV) {
-        indexOut <- dataSet[[foldCol]]
-        dataSet[[foldCol]] <- NULL
+        indexOut <- dataList[[2]][[foldCol]]
     }
     
     ## Meaningless predictors
@@ -345,13 +352,13 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
     
     
     out <- list(model = caretModel, modelFit = modelFit, training = list(trainingDataPartition=training), validation = validation, map = spatPred)
-
+    
     if(mode == "classification") out$classMapping <- classMapping 
     structure(out, class = c("superClass", "RStoolbox"))
 }
 
 
-.samplePixels <- function(SHAPE, RASTER, responseCol, trainCells = NULL, nSamples, maxnpix = FALSE, withXY = FALSE){
+.samplePixels <- function(SHAPE, RASTER, responseCol, trainCells = NULL, nSamples, maxnpix = FALSE, withXY = FALSE, foldCol = NULL){
     
     if(inherits(SHAPE, "SpatialPolygons")){                    
         #cells <- cellFromPolygon(RASTER, SHAPE),
@@ -368,15 +375,21 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
                     }
                 }, envir = environment()) 
         
-        area  <- lapply(polyCells, NROW) 
-        resp  <- SHAPE[[responseCol]]
-        uresp <- unique(resp)
+        area   <- lapply(polyCells, NROW) 
+        resp   <- SHAPE[[responseCol]]
+        foldID <- if(!is.null(foldCol)) SHAPE[[foldCol]]
+        uresp  <- unique(resp)
         totalarea <- vapply(uresp, function(xi) sum(unlist(area[resp == xi])), numeric(1))            
         if(maxnpix) nSamples  <- min(totalarea)
         dataSet   <- lapply(1:NROW(polyCells), function(xi) {
-                    class <- resp[[xi]]
-                    ns <- min(ceiling(nSamples * area[[xi]] / totalarea[which(uresp == resp[[xi]])]), area[[xi]] )
-                    if(ns > 0) data.frame(response = class,  polyCells[[xi]][sample(1:NROW(polyCells[[xi]]), ns), , drop = FALSE]) else NULL
+                    ns    <- min(ceiling(nSamples * area[[xi]] / totalarea[which(uresp == resp[[xi]])]), area[[xi]] )
+                    if(ns > 0) {
+                        out <- data.frame(response = resp[[xi]], polyCells[[xi]][sample(1:NROW(polyCells[[xi]]), ns), , drop = FALSE])
+                        if(!is.null(foldCol)) out[[foldCol]] <- foldID[[xi]]
+                    } else {
+                        out <- NULL
+                    } 
+                    out
                 })    
         dataSet <- do.call("rbind", dataSet)
         dataSet <- cbind(dataSet, RASTER[dataSet[,"cell"]])        
@@ -388,15 +401,15 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
             colnames(crds) <- c("x","y")
             dataSet <- data.frame(response = SHAPE[[responseCol]], vals, crds)            
         } else {
-             dataSet <- data.frame(response = SHAPE[[responseCol]], vals)
+            dataSet <- data.frame(response = SHAPE[[responseCol]], vals)
         }        
-
+        
     }
     
     ## Discard duplicate cells, cells which have been in training data and incomplete samples
     dubs     <- !duplicated(dataSet[,"cell"]) & complete.cases(dataSet) & !dataSet[,"cell"] %in% trainCells
     dataSet <- dataSet[dubs,]   
-    s <- colnames(dataSet) %in% c( "cell","x","y")
+    s <- colnames(dataSet) %in% c( "cell","x","y", foldCol)
     colnames(dataSet)[!s] <- c("response", names(RASTER))
     list(dataSet[,!s],cells = dataSet[, s, drop=FALSE])
 }

@@ -37,6 +37,7 @@ test_that("maximum likelihood model",
 for(proj in c("projected", "geographical")){
     for(type in c("polygons", "points")){
         
+        
         if (!identical(Sys.getenv("NOT_CRAN"), "true") ) {
             if( type == "points") break
         }
@@ -53,7 +54,14 @@ for(proj in c("projected", "geographical")){
         ## with prediction
         set.seed(1)    
         sc2 <- superClass(img, trainData = train, nSamples = 50, responseCol = "class", model = "pls", 
-                tuneGrid = data.frame(ncomp = 3), tuneLength = 1, trainPartition = 0.7, predict = TRUE)    
+                tuneGrid = data.frame(ncomp = 3), tuneLength = 1, trainPartition = 0.7, predict = TRUE)
+        
+        ## Polygonbased CV
+        set.seed(1)
+        test_that("polygonbased CV", {
+                    expect_is(superClass(img, trainData = train, nSamples = 50, responseCol = "class", model = "pls", 
+                                    tuneLength = 1, polygonBasedCV = TRUE, trainPartition = 0.7, predict = FALSE), c("RStoolbox", "superClass"))
+                })
         
         ## Based on numeric classes
         set.seed(1)
@@ -69,7 +77,6 @@ for(proj in c("projected", "geographical")){
                     expect_equal(cellStats(sc2$map - sc3$map, sum), 0, info = info)
                 })
         
-        
         test_that("validation sample coords and geometries are returned", {                        
                     expect_is(sc$validation$validationGeometry, geometry, info = info) 
                     expect_is(sc2$validation$validationGeometry, geometry, info = info) 
@@ -80,7 +87,7 @@ for(proj in c("projected", "geographical")){
                     expect_equal(colnames(sc$validation$validationSamples), c("reference", "prediction", "cell", "x", "y"), info = info) 
                     expect_equal(colnames(sc2$validation$validationSamples), c("reference", "prediction", "cell", "x", "y"), info = info) 
                     expect_equal(colnames(sc3$validation$validationSamples), c("reference", "prediction", "cell", "x", "y"), info = info) 
-                   
+                    
                 })
         
         
@@ -136,24 +143,24 @@ for(proj in c("projected", "geographical")){
 
 
 if (identical(Sys.getenv("NOT_CRAN"), "true") ) {
-## Tiny raster bug caused superClass to fail when predictions were written to .grd file 
-test_that("NA in raster remains NA",{
-            expect_is(sc <- superClass(lsNA, trainData = pts, responseCol = "class", model = "rf", filename = rasterTmpFile(), trainPartition = 0.7, predict = TRUE), "superClass")
-            expect_equal(sum(is.na(sc$map[1:100,])), 100*ncol(lsNA)) 
-            expect_false(anyNA(sc$map[101:nrow(lsNA),]))            
-        }) 
-
-
-## Checks after clipping 
-test_that("fails if no validation points remain after clipping",{
-            expect_error(sc <- superClass(lsNA, trainData = pts, minDist=1000, responseCol = "class", trainPartition = 0.7), "no validation points remained")
-            expect_error(sc <- superClass(lsNA, trainData = poly, minDist=1000, responseCol = "class", trainPartition = 0.7), "no validation polygons remain")
-        })
-
-## Projection checks
-test_that("projection mismatch errors", 
-        expect_error(superClass(trainList[[1]]$img, trainData = trainList[[2]]$polygons, responseCol = "class"), "must have the same projection")
-)
-
+    ## Tiny raster bug caused superClass to fail when predictions were written to .grd file 
+    test_that("NA in raster remains NA",{
+                expect_is(sc <- superClass(lsNA, trainData = pts, responseCol = "class", model = "rf", filename = rasterTmpFile(), trainPartition = 0.7, predict = TRUE), "superClass")
+                expect_equal(sum(is.na(sc$map[1:100,])), 100*ncol(lsNA)) 
+                expect_false(anyNA(sc$map[101:nrow(lsNA),]))            
+            }) 
+    
+    
+    ## Checks after clipping 
+    test_that("fails if no validation points remain after clipping",{
+                expect_error(sc <- superClass(lsNA, trainData = pts, minDist=1000, responseCol = "class", trainPartition = 0.7), "no validation points remained")
+                expect_error(sc <- superClass(lsNA, trainData = poly, minDist=1000, responseCol = "class", trainPartition = 0.7), "no validation polygons remain")
+            })
+    
+    ## Projection checks
+    test_that("projection mismatch errors", 
+            expect_error(superClass(trainList[[1]]$img, trainData = trainList[[2]]$polygons, responseCol = "class"), "must have the same projection")
+    )
+    
 }
 
