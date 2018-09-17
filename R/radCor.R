@@ -92,16 +92,16 @@ radCor <-    function(img, metaData, method = "apref", bandSet = "full", hazeVal
     } else if (!inherits(metaData, "ImageMetaData")){
         stop("metaData must be a path to the MTL file or an ImageMetaData object (see readMeta)")
     }
-    sat         <- metaData$SATELLITE
-    sensor         <- metaData$SENSOR
-    d            <- metaData$SOLAR_PARAMETERS["distance"]
-    sunElev        <- metaData$SOLAR_PARAMETERS["elevation"]   
-    rad         <- metaData$DATA$RADIOMETRIC_RESOLUTION 
+    sat        <- metaData$SATELLITE
+    sensor     <- metaData$SENSOR
+    d          <- metaData$SOLAR_PARAMETERS["distance"]
+    sunElev    <- metaData$SOLAR_PARAMETERS["elevation"]   
+    rad        <- metaData$DATA$RADIOMETRIC_RESOLUTION 
     
-    satZenith   <- 1
-    satZenith    <- satZenith * pi / 180
-    satphi         <- cos(satZenith)
-    suntheta     <- cos((90 - sunElev) * pi / 180)    
+    satZenith  <- 1
+    satZenith  <- satZenith * pi / 180
+    satphi     <- cos(satZenith)
+    suntheta   <- cos((90 - sunElev) * pi / 180)    
     
     ## Query internal db    
     # TODO: add support for non-landsat data
@@ -121,7 +121,7 @@ radCor <-    function(img, metaData, method = "apref", bandSet = "full", hazeVal
     tirBands     <- origBands[origBands %in% tirBands]  
     tirBands    <- tirBands[tirBands %in% bandSet]
     if(length(tirBands) == 0) tirBands <- NULL
-        
+    
     corBands     <- sDB[!sDB$bandtype %in% c("TIR", "PAN"), "band"]
     bandSet     <- bandSet[bandSet %in% corBands]
     exclBands    <- origBands[!origBands %in% c(bandSet, tirBands)]   
@@ -215,10 +215,10 @@ radCor <-    function(img, metaData, method = "apref", bandSet = "full", hazeVal
         
         ## 1% correction and conversion to radiance
         esun      <- sDB[hazeBands, "esun"]     
-        GAIN_h      <- metaData$CALRAD[hazeBands,"gain"]
-        OFFSET_h <- metaData$CALRAD[hazeBands,"offset"]
+        GAIN_h    <- metaData$CALRAD[hazeBands,"gain"]
+        OFFSET_h  <- metaData$CALRAD[hazeBands,"offset"]
         Ldo       <- 0.01 * ((esun * suntheta * TAUz) + Edown) * TAUv / (pi * d ^ 2)
-        Lhaze      <- (hazeValues * GAIN_h + OFFSET_h ) - Ldo
+        Lhaze     <- (hazeValues * GAIN_h + OFFSET_h ) - Ldo
         
         
         if(method %in% c("dos", "costz")) {    
@@ -226,7 +226,8 @@ radCor <-    function(img, metaData, method = "apref", bandSet = "full", hazeVal
             
             ## Pick atmoshpere type
             if(missing(atmosphere)) {
-                atmosphere.db <- data.frame(min = c(1,56,76,96,116), max = c(55,75,95,115,255)) / 255 * (2^rad-1)
+                atmosphere.db <- data.frame(min = c(0,56,76,96,116),
+                        max = c(55,75,95,115,255)) / 255 * (2^rad-1)
                 atmosphere       <- c("veryClear", "clear", "moderate", "hazy", "veryHazy")[Lhaze > atmosphere.db[,1] & Lhaze <= atmosphere.db[,2]]
                 .vMessage("Selecting atmosphere: '", atmosphere, "'")
             }    
@@ -257,11 +258,11 @@ radCor <-    function(img, metaData, method = "apref", bandSet = "full", hazeVal
         ## Reflectance
         if(inherits(metaData$CALREF, "data.frame") & method == "apref"){
             GAIN     <- metaData$CALREF[bandSet,"gain"] / suntheta
-            OFFSET     <- metaData$CALREF[bandSet,"offset"] / suntheta          
+            OFFSET   <- metaData$CALREF[bandSet,"offset"] / suntheta          
         } else  {            
             esun     <- sDB[bandSet, "esun"]            
             C        <- (pi * d ^ 2)/(TAUv * (esun * suntheta * TAUz + Edown))    
-            OFFSET  <- C * (OFFSET - Lhaze)
+            OFFSET   <- C * (OFFSET - Lhaze)
             GAIN     <- C * GAIN 
         }
         layernames <-   if(method == "apref") gsub("_dn", "_tre", bandSet) else gsub("_dn", "_sre", bandSet)               

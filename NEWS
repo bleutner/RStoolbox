@@ -1,3 +1,9 @@
+RStoolbox 0.2.3
+====================================
+
+Changes: 
+* all radCor() DOS methods now work for Landsat 8 OLI 
+
 RStoolbox 0.2.2
 =====================================
 New:
@@ -59,7 +65,7 @@ New:
 *  increased overall test coverage 
 
 Changes:
-* ESUN lookup tables for `radCor()` are adjusted to match current USGS reccomendations from: https://landsat.usgs.gov/esun
+* ESUN lookup tables for `radCor()` are adjusted to match current USGS recommendations from: https://landsat.usgs.gov/esun
 * `spectralIndices()` swir wavelength ranges are now defined consistently and correctly. 
    Bands formerly provided as swir1 (version <1.7.0) should now (>=1.7.0) be provided as swir2 and former swir2 as swir3 respectively (see docu). 
    The actual calculations were correct, but the naming was off. 

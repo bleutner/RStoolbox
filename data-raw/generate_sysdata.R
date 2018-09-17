@@ -109,8 +109,19 @@
 						spatRes1 = c(rep(30, 7), 15, rep(30,4)),
 						spatRes2 = c(rep(30, 7), 15, rep(30,4)),  ## ETM+ Band 6 is acquired at 60-meter resolution. Products processed after February 25, 2010 are resampled to 30-meter pixels.
 						centerWavl = c(0.44,0.48,0.56,0.655,0.865,1.61,2.2,0.59,1.37,10.6,11.5, NA), 
-						esun = c(1895.57139, 2005.40760, 1820.55317 , 1549.31890,  951.28307, 
-								247.93538, 85.87907 ,  367.00629, NA, NA, 1718.38626, NA ),
+						esun = c(1895.32644, #b1 (coastal)
+                                2004.56921, #b2 (blue)
+                                1820.74569, #b3 (green)
+                                1549.48934, #b4 (red)
+                                951.75597, #b5 (nir)
+                                247.55312, #b6 (swir1)
+                                85.46265, #b7 (swir2)
+                                1723.88066, #b8 (pan)
+                                366.97235, #b9 (cirrus)
+                                NA, #b10 (thermal)
+                                NA, #b11 (thermal)
+                                NA #b12 (QA)
+        ),
 						stringsAsFactors = FALSE
 				)
 		)
