@@ -4,8 +4,8 @@
 \alias{predict.superClass}
 \title{Predict a raster map based on a superClass model fit.}
 \usage{
-\method{predict}{superClass}(object, img, predType = "raw", filename = NULL,
-  datatype = "INT2U", ...)
+\method{predict}{superClass}(object, img, predType = "raw",
+  filename = NULL, datatype = "INT2U", ...)
 }
 \arguments{
 \item{object}{superClass object}

@@ -4,9 +4,9 @@
 \alias{fCover}
 \title{Fractional Cover Analysis}
 \usage{
-fCover(classImage, predImage, nSamples = 1000, classes = 1, model = "rf",
-  tuneLength = 3, method = "cv", maxNA = 0, clamp = TRUE,
-  filename = NULL, verbose, ...)
+fCover(classImage, predImage, nSamples = 1000, classes = 1,
+  model = "rf", tuneLength = 3, method = "cv", maxNA = 0,
+  clamp = TRUE, filename = NULL, verbose, ...)
 }
 \arguments{
 \item{classImage}{high resolution RasterLayer containing a landcover classification, e.g. as obtained by \link{superClass}.}

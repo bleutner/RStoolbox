@@ -21,6 +21,10 @@ normImageCpp <- function(x, M, S) {
     .Call('_RStoolbox_normImageCpp', PACKAGE = 'RStoolbox', x, M, S)
 }
 
+oneHotCpp <- function(x, classes, bg, fg, na_rm) {
+    .Call('_RStoolbox_oneHotCpp', PACKAGE = 'RStoolbox', x, classes, bg, fg, na_rm)
+}
+
 predKmeansCpp <- function(x, centers) {
     .Call('_RStoolbox_predKmeansCpp', PACKAGE = 'RStoolbox', x, centers)
 }

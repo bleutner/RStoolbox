@@ -4,8 +4,8 @@
 \alias{pifMatch}
 \title{Pseudo-Invariant Features based Image Matching}
 \usage{
-pifMatch(img, ref, method = "cor", quantile = 0.95, returnPifMap = TRUE,
-  returnSimMap = TRUE, returnModels = FALSE)
+pifMatch(img, ref, method = "cor", quantile = 0.95,
+  returnPifMap = TRUE, returnSimMap = TRUE, returnModels = FALSE)
 }
 \arguments{
 \item{img}{RasterStack or RasterBrick. Image to be adjusted.}

@@ -4,8 +4,8 @@
 \alias{estimateHaze}
 \title{Estimate Image Haze for Dark Object Subtraction (DOS)}
 \usage{
-estimateHaze(x, hazeBands, darkProp = 0.01, maxSlope = TRUE, plot = FALSE,
-  returnTables = FALSE)
+estimateHaze(x, hazeBands, darkProp = 0.01, maxSlope = TRUE,
+  plot = FALSE, returnTables = FALSE)
 }
 \arguments{
 \item{x}{Raster* object or a previous result from \code{estimateHaze} with \code{returnTables = TRUE} from which to estimate haze}

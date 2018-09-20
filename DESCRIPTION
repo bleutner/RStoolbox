@@ -1,7 +1,7 @@
 Package: RStoolbox
 Type: Package
 Title: Tools for Remote Sensing Data Analysis
-Version: 0.2.3
+Version: 0.2.4
 Authors@R: c(
     person("Benjamin", "Leutner", role=c("cre", "aut"), email="benjamin.leutner@uni-wuerzburg.de"),
     person("Ned", "Horning", role ="aut", email="horning@amnh.org"),
@@ -43,4 +43,4 @@ LinkingTo: Rcpp,
     RcppArmadillo
 License: GPL (>=3)
 LazyData: true
-RoxygenNote: 6.0.1.9000
+RoxygenNote: 6.1.0

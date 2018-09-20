@@ -70,6 +70,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// oneHotCpp
+IntegerMatrix oneHotCpp(NumericVector& x, NumericVector& classes, const int bg, const int fg, bool na_rm);
+RcppExport SEXP _RStoolbox_oneHotCpp(SEXP xSEXP, SEXP classesSEXP, SEXP bgSEXP, SEXP fgSEXP, SEXP na_rmSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericVector& >::type classes(classesSEXP);
+    Rcpp::traits::input_parameter< const int >::type bg(bgSEXP);
+    Rcpp::traits::input_parameter< const int >::type fg(fgSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    rcpp_result_gen = Rcpp::wrap(oneHotCpp(x, classes, bg, fg, na_rm));
+    return rcpp_result_gen;
+END_RCPP
+}
 // predKmeansCpp
 IntegerVector predKmeansCpp(NumericMatrix x, NumericMatrix centers);
 RcppExport SEXP _RStoolbox_predKmeansCpp(SEXP xSEXP, SEXP centersSEXP) {

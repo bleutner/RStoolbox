@@ -4,8 +4,8 @@
 \alias{mesma}
 \title{Multiple Endmember Spectral Mixture Analysis (Spectral Unmixing)}
 \usage{
-mesma(img, em, method = "NNLS", iterate = 400, tolerance = 1e-08, ...,
-  verbose)
+mesma(img, em, method = "NNLS", iterate = 400, tolerance = 1e-08,
+  ..., verbose)
 }
 \arguments{
 \item{img}{RasterBrick or RasterStack. Remote sensing imagery (usually hyperspectral).}

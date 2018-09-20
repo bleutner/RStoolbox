@@ -4,11 +4,12 @@
 \alias{ImageMetaData}
 \title{ImageMetaData Class}
 \usage{
-ImageMetaData(file = NA, format = NA, sat = NA, sen = NA, scene = NA,
-  proj = NA, date = NA, pdate = NA, path = NA, row = NA, az = NA,
-  selv = NA, esd = NA, files = NA, bands = NA, quant = NA, cat = NA,
-  na = NA, vsat = NA, scal = NA, dtyp = NA, calrad = NA,
-  calref = NA, calbt = NA, radRes = NA, spatRes = NA)
+ImageMetaData(file = NA, format = NA, sat = NA, sen = NA,
+  scene = NA, proj = NA, date = NA, pdate = NA, path = NA,
+  row = NA, az = NA, selv = NA, esd = NA, files = NA,
+  bands = NA, quant = NA, cat = NA, na = NA, vsat = NA,
+  scal = NA, dtyp = NA, calrad = NA, calref = NA, calbt = NA,
+  radRes = NA, spatRes = NA)
 }
 \arguments{
 \item{file}{Character. Metadata file}
