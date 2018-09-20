@@ -30,6 +30,6 @@ Splits a categorical raster layer (or a vector) into a multilayer raster (or mat
 \examples{
 data(rlogo)
 sc <- unsuperClass(rlogo, nClasses = 3)
-sc_oneHot <- oneHotEncode(sc$map, classes = c(1,2, 3))
+sc_oneHot <- oneHotEncode(sc$map, classes = c(1,2,3))
 plot(sc_oneHot)
 }

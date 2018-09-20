@@ -14,15 +14,18 @@
 #' @examples 
 #' data(rlogo)
 #' sc <- unsuperClass(rlogo, nClasses = 3)
-#' sc_oneHot <- oneHotEncode(sc$map, classes = c(1,2, 3))
+#' sc_oneHot <- oneHotEncode(sc$map, classes = c(1,2,3))
 #' plot(sc_oneHot)
 oneHotEncode <- function(img, classes, background = 0, foreground = 1, na.rm = FALSE, ...) {
     stopifnot(inherits(img, c("RasterLayer", "integer", "numeric")))
     if(inherits(img, "RasterLayer")) {
-        out <- calc(img, function(x, cl = classes, bg = background, fg = foreground, na.rm) oneHotCpp(x, cl, bg, fg, na.rm), na.rm = na.rm, forcefun = TRUE, ...)
+        out <- calc(img, 
+                function(x, cl = classes, bg = background, fg = foreground, na.rm) 
+                    oneHotCpp(x, classes = cl, bg = bg, fg = fg, na_rm = na.rm), 
+                na.rm = na.rm, forcefun = TRUE, ...)
         names(out) <- paste0("c_", classes)
     } else {
-        out <- oneHotCpp(img, classes, background, foreground, na_rm = na.rm)
+        out <- oneHotCpp(img, classes = classes, bg = background, fg = foreground, na_rm = na.rm)
         colnames(out) <- paste0("c_", classes)
     }
     out

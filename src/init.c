@@ -13,12 +13,13 @@ extern SEXP _RStoolbox_entropyCpp(SEXP);
 extern SEXP _RStoolbox_gainOffsetRescale(SEXP, SEXP, SEXP, SEXP);
 extern SEXP _RStoolbox_nnls_solver(SEXP, SEXP, SEXP, SEXP);
 extern SEXP _RStoolbox_normImageCpp(SEXP, SEXP, SEXP);
+extern SEXP _RStoolbox_oneHotCpp(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP _RStoolbox_predictMlcCpp(SEXP, SEXP, SEXP);
 extern SEXP _RStoolbox_predKmeansCpp(SEXP, SEXP);
 extern SEXP _RStoolbox_pwSimilarityCpp(SEXP, SEXP, SEXP);
 extern SEXP _RStoolbox_rescaleImageCpp(SEXP, SEXP, SEXP, SEXP);
 extern SEXP _RStoolbox_specSimC(SEXP, SEXP);
-extern SEXP _RStoolbox_spectralIndicesCpp(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP _RStoolbox_spectralIndicesCpp(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEX P, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
     {"_RStoolbox_classQA",            (DL_FUNC) &_RStoolbox_classQA,             2},
@@ -26,6 +27,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_RStoolbox_gainOffsetRescale",  (DL_FUNC) &_RStoolbox_gainOffsetRescale,   4},
     {"_RStoolbox_nnls_solver",        (DL_FUNC) &_RStoolbox_nnls_solver,         4},
     {"_RStoolbox_normImageCpp",       (DL_FUNC) &_RStoolbox_normImageCpp,        3},
+    {"_RStoolbox_oneHotCpp",          (DL_FUNC) &_RStoolbox_oneHotCpp,           5},
     {"_RStoolbox_predictMlcCpp",      (DL_FUNC) &_RStoolbox_predictMlcCpp,       3},
     {"_RStoolbox_predKmeansCpp",      (DL_FUNC) &_RStoolbox_predKmeansCpp,       2},
     {"_RStoolbox_pwSimilarityCpp",    (DL_FUNC) &_RStoolbox_pwSimilarityCpp,     3},

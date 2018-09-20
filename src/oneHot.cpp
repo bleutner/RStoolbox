@@ -1,12 +1,14 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-// @title
 // @param x NumericVector. Data passed from rasterLayer
 // @param classes NumericVector. Classes to be one hot encoded
+// @param bg int background value
+// @param fg int foreground value
+// @param na_rm bool: if na_rm=TRUE, NAs will be set to background value
 // @keywords internal
 // [[Rcpp::export]]
-IntegerMatrix oneHotCpp(NumericVector & x, NumericVector & classes, const int bg, const int fg, bool na_rm) {
+IntegerMatrix oneHotCpp(NumericVector & x, NumericVector & classes,  int bg,  int fg, bool na_rm) {
     const int nr=x.size();
     const int nc=classes.size();
     IntegerMatrix out(nr,nc);
