@@ -1,5 +1,9 @@
-RStoolbox 0.2.3
+RStoolbox 0.2.4
 ====================================
+New:
+
+* function `oneHotEncode`: splits a single rasterLayer into multiple layers (one per class)
+  with one-hot encoding, i.e. pixel value = 1 for matches, pixel value = 0 for all other classes (background).
 
 Changes: 
 * all radCor() DOS methods now work for Landsat 8 OLI 
