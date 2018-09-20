@@ -19,7 +19,7 @@ extern SEXP _RStoolbox_predKmeansCpp(SEXP, SEXP);
 extern SEXP _RStoolbox_pwSimilarityCpp(SEXP, SEXP, SEXP);
 extern SEXP _RStoolbox_rescaleImageCpp(SEXP, SEXP, SEXP, SEXP);
 extern SEXP _RStoolbox_specSimC(SEXP, SEXP);
-extern SEXP _RStoolbox_spectralIndicesCpp(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEX P, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP _RStoolbox_spectralIndicesCpp(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
     {"_RStoolbox_classQA",            (DL_FUNC) &_RStoolbox_classQA,             2},
