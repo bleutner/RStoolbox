@@ -12,9 +12,17 @@
 #' Pixels matching the class of interest are set to 1, backround values by default are set to 0 (see background argument)
 #' @export 
 #' @examples 
+#' library(raster)
+#' 
+#' ## example data
 #' data(rlogo)
 #' sc <- unsuperClass(rlogo, nClasses = 3)
+#' 
+#' ## one-hot encode 
 #' sc_oneHot <- oneHotEncode(sc$map, classes = c(1,2,3))
+#' 
+#' ## check results
+#' sc_oneHot
 #' plot(sc_oneHot)
 oneHotEncode <- function(img, classes, background = 0, foreground = 1, na.rm = FALSE, ...) {
     stopifnot(inherits(img, c("RasterLayer", "integer", "numeric")))
