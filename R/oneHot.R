@@ -14,8 +14,8 @@
 #' @examples 
 #' data(rlogo)
 #' sc <- unsuperClass(rlogo, nClasses = 3)
-#' sc_oneHot <- oneHotEncode(sc$map)
-#' plot(sc)
+#' sc_oneHot <- oneHotEncode(sc$map, classes = c(1,2, 3))
+#' plot(sc_oneHot)
 oneHotEncode <- function(img, classes, background = 0, foreground = 1, na.rm = FALSE, ...) {
     stopifnot(inherits(img, c("RasterLayer", "integer", "numeric")))
     if(inherits(img, "RasterLayer")) {
