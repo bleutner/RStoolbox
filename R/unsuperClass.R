@@ -43,28 +43,43 @@
 #'        title = "Classes", horiz = TRUE,  bty = "n")
 #' 
 #' par(olpar) # reset par
-unsuperClass <- function(img, nSamples = 10000, nClasses = 5, nStarts = 25, nIter = 100, norm = FALSE, clusterMap = TRUE, algorithm = "Hartigan-Wong", ...){      
+unsuperClass <- function(img, nSamples = 10000, nClasses = 5, nStarts = 25, nIter = 100, norm = FALSE, 
+        clusterMap = TRUE, algorithm = "Hartigan-Wong", ...){      
     ## TODO: check outermost prediction (cpp)
     if(atMax <- nSamples > ncell(img)) nSamples <- ncell(img)
     wrArgs <- list(...)
     if(norm) img <- normImage(img)
-    if(!clusterMap | atMax && canProcessInMemory(img, n = 4)){
-        .vMessage("Load full raster into memory")
+    
+    FULL <- !clusterMap | atMax && canProcessInMemory(img, n = 4)
+    
+    if(FULL){
+        if(!inMemory(img)).vMessage("Load full raster into memory")
         trainData <- img[]
         complete  <- complete.cases(trainData)
-        .vMessage("Starting kmeans fitting")
-        model     <- kmeans(trainData[complete,], centers = nClasses, iter.max = nIter, nstart = nStarts, algorithm = algorithm)
-        out         <- raster(img)
-        out[]     <- NA
-        out[complete] <- model$cluster      
-        if("filename" %in% names(wrArgs)) out <- writeRaster(out, ...)
+        trainData <- trainData[complete,]
     } else {
         if(!clusterMap) warning("Raster size is > memory. Resetting clusterMap to TRUE")
         .vMessage("Starting random sampling")
         trainData <- sampleRandom(img, size = nSamples, na.rm = TRUE)
-        .vMessage("Starting kmeans fitting")
-        model     <- tryCatch(kmeans(trainData, centers = nClasses, nstart = nStarts, iter.max = nIter, algorithm = algorithm))
-        if (model$ifault==4) { warning("The Harian-Wong algorithm doesn't converge properly. Consider setting algorithm to 'Lloyd' or 'MacQueen'") }
+    }
+    
+    .vMessage("Starting kmeans fitting")
+    model     <- tryCatch(kmeans(trainData, centers = nClasses, nstart = nStarts, iter.max = nIter, algorithm = algorithm))
+    if (!is.null(model$ifault)) {
+        if(model$ifault == 4 && algorithm == "Hartigan-Wong") {
+            warning("The Harian-Wong algorithm doesn't converge properly.", 
+                    "\nConsider setting algorithm to 'Lloyd' or 'MacQueen' and/or increase nStarts", call. = FALSE) 
+        } else if (model$ifault==2) {
+            warning("The kmeans algorithm did not converge. Try increasing nIter.", call. = FALSE)
+        }
+    }
+    
+    if(FULL){
+        out       <- raster(img)
+        out[]     <- NA
+        out[complete] <- model$cluster      
+        if("filename" %in% names(wrArgs)) out <- writeRaster(out, ...)
+    } else {
         .vMessage("Starting spatial prediction")
         out       <- .paraRasterFun(img, rasterFun=raster::calc, args = list(fun=function(x, kmeans=force(model)){
                             if(!is.matrix(x)) x <- as.matrix(x)
@@ -73,8 +88,8 @@ unsuperClass <- function(img, nSamples = 10000, nClasses = 5, nStarts = 25, nIte
     structure(list(call = match.call(), model = model, map = out), class = c("unsuperClass", "RStoolbox"))
 }
 
-    
-        
+
+
 #' @method print unsuperClass
 #' @export 
 print.unsuperClass <- function(x, ...){

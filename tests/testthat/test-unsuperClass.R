@@ -40,5 +40,11 @@ test_that("printing method", {
         })
 
 
+## algortithm warning
+test_that("kmeans fail detection", {
+            skip_on_cran()
+            set.seed(1)
+            expect_warning(unsuperClass(lsat, nSamples = ncell(lsat), nStarts = 1, nClasses = 20), "doesn't converge properly")
+        })
 
 

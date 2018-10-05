@@ -6,7 +6,10 @@ New:
   with one-hot encoding, i.e. pixel value = 1 for matches, pixel value = 0 for all other classes (background).
 
 Changes: 
-* all radCor() DOS methods now work for Landsat 8 OLI 
+* all `radCor` DOS methods now work for Landsat 8 OLI 
+
+Fixes:
+* fix `unsuperClass` for algorithms other than Hartigan-Wong (reported by Alex Ilich)
 
 RStoolbox 0.2.2
 =====================================
