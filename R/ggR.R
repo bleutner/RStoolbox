@@ -3,7 +3,7 @@
 #' Plot single layer imagery in grey-scale. Can be used with any Raster* object.
 #' 
 #' @param img raster
-#' @param layer Character or numeric. Layername or number.
+#' @param layer Character or numeric. Layername or number. Can be more than one layer, in which case each layer is plotted in a subplot.
 #' @param maxpixels Integer. Maximal number of pixels to sample.
 #' @param alpha Numeric. Transparency (0-1).
 #' @param hue Numeric. Hue value for color calculation [0,1] (see \[grDevices]{hsv}). Change if you need anything else than greyscale. Only effective if \code{sat > 0}.
@@ -26,7 +26,7 @@
 #' }
 #' @details
 #' When \code{img} contains factor values and \code{annotation=TRUE}, the raster values will automatically be converted
-#' to numeric in order to proceed with the brightness calculation. 
+#' to numeric in order to proceed with the brightness calculation. ä
 #' 
 #' The raster package provides a class lookup-table for categorical rasters (e.g. what you get if you run superClass in classification mode). If your raster has a lookup-table ggR will automatically treat it as categorical (see \link[raster]{factor}). 
 #' However, the factor status of Raster objects is easily lost and the values are interpreted as numeric. In such cases you should make use of the \code{forceCat = TRUE} argument, which makes sure
@@ -89,69 +89,98 @@
 #'    ggR(srtm, geom_raster = TRUE, ggLayer = TRUE, alpha = 0.3) +
 #'    scale_fill_gradientn(colours = terrain.colors(100), name = "elevation")
 ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0, stretch = "none", quantiles = c(0.02,0.98), 
-        coord_equal = TRUE, ggLayer=FALSE, ggObj = TRUE, geom_raster = FALSE, forceCat = FALSE) {
-    
-    annotation <- !geom_raster
-    layer <- unlist(.numBand(img, layer))
-    xfort <- sampleRegular(img[[layer]], maxpixels, asRaster = TRUE)
-#    if(is.factor(img[[layer]])) {
-#        rat <- levels(xfort)
-#        xfort <- stack(xfort,xfort)  ## workaround raster bug #6043    >> apparently solved now in raster    
-#        names(xfort)[1] <- names(img)[layer]   
-#    }
-    df       <- as.data.frame(xfort, xy = TRUE)
-    layer <- names(img)[layer]
-    colnames(df) <- c("x", "y", layer) 
-    if(forceCat & !is.factor(df[,layer])) df[,layer] <- as.factor(df[,layer])
-    
-    if(is.character(df[,layer])) df[,layer] <- factor(df[,layer])
-    fac <- is.factor(df[,layer]) 
-    
-    if(fac & (annotation | !ggObj)) {
-        .vMessage("img values are factors but annotation is TRUE. Converting factors as.numeric.")
-        levelLUT   <- levels(df[,layer])
-        df[,layer] <- as.numeric(df[,layer])
+                coord_equal = TRUE, ggLayer=FALSE, ggObj = TRUE, geom_raster = FALSE, forceCat = FALSE) {
+  layer <- unlist(.numBand(img, layer))
+  
+  multLayers <- if (length(layer)>1) TRUE else FALSE
+  if(multLayers & !geom_raster & ggObj) {
+    warning("You asked for multiple layers but geom_raster is FALSE.",
+            "\ngeom_raster will be reset to TRUE", 
+            "\nHint: in case you're looking for a grayscale and facetted plot, use:",
+            "\nggR(img, ..., geom_raster=TRUE)+scale_fill_gradientn(colors = grey.colors(100))",
+            call. = FALSE)
+    geom_raster <- TRUE
+  }
+  annotation <- !geom_raster
+  
+  xfort <- sampleRegular(img[[layer]], maxpixels, asRaster = TRUE)
+  ex <- extent(xfort)
+  dimImg <- dim(xfort)
+  df <- lapply(names(xfort), function(layer) {
+    df    <- data.frame(as.data.frame(xfort[[layer]],  xy = TRUE), 
+                        layerName = factor(layer, levels = names(xfort)))
+    colnames(df) <- c("x", "y", "value", "layerName") 
+    df
+  })
+  df <- do.call(rbind, df)
+  
+  if(forceCat & !is.factor(df[,"value"])) df[,"value"] <- as.factor(df[,"value"])
+  
+  if(is.character(df[,"value"])) df[,"value"] <- factor(df[,"value"])
+  fac <- is.factor(df[,"value"]) 
+  
+  if(fac & (annotation | !ggObj)) {
+    .vMessage("img values are factors but annotation is TRUE. Converting factors as.numeric.")
+    levelLUT   <- levels(df[,"value"])
+    df[,"value"] <- as.numeric(df[,"value"])
+  }
+  
+  if(!fac & stretch != "none")  {
+    for(layer in levels(df$layerName)) {
+      df[df$layerName==layer,"value"] <- .stretch(df[df$layerName==layer,"value"], method = stretch, quantiles = quantiles)    
     }
-    if(!fac & stretch != "none")  df[,layer] <- .stretch(df[,layer], method = stretch, quantiles = quantiles)    
-    
-    if(!(ggObj & !annotation)  ){
-        ## Annotation processing
-        ## Avoid rescaling layers with single values
-        normVals    <- suppressWarnings(rescaleImage(df[,layer], ymin = 0, ymax = 1))  ## suppress warnings due to single value bands. rescaleImage returns NA, which is fine.
-        uval        <- unique(df[,layer])
-        if(sum(is.finite(uval)) == 1)   normVals[is.finite(df[,layer])] <- 1
-        nona         <- !is.na(normVals)
-        df$fill      <- NA
-        df[nona, "fill"] <- hsv(h = hue, s = sat, v = normVals[nona], alpha = alpha)
-    }
-    
-    x <- y <- NULL  
-    if(ggObj) {       
-        ex    <- extent(xfort)
-        if(annotation)  {        
-            dmat <- matrix(df$fill, nrow=nrow(xfort), ncol=ncol(xfort), byrow = TRUE)  
-            ggl  <- annotation_raster(raster = dmat, xmin = ex[1], xmax = ex[2], ymin = ex[3], ymax = ex[4], interpolate = FALSE)
-        } else {
-            ggl  <- geom_raster(data = df[,c("x","y",layer)], aes_string(x = "x", y = "y", fill = layer), alpha = alpha) 
-        }
-        
-        if(ggLayer) return(ggl)
-        
-        if(annotation) {   
-            dummy <- data.frame(x=ex[1:2],y=ex[3:4])       
-            p <- ggplot()  + ggl + geom_blank(data = dummy, aes(x,y))
-            if(coord_equal) p <- p + coord_equal()
-            return(p)
-        } else {
-            p <- ggplot() + ggl
-            if(coord_equal) p <- p + coord_equal()
-            return(p)
-        }
-        
+  }
+  
+  if(!(ggObj & !annotation)  ){
+    ## Annotation processing
+    ## Avoid rescaling "value"s with single values
+    df <- lapply(levels(df$layerName), function(layer) {
+      normVals    <- suppressWarnings(rescaleImage(df[df$layerName==layer,"value"], ymin = 0, ymax = 1))  ## suppress warnings due to single value bands. rescaleImage returns NA, which is fine.
+      uval        <- unique(df[,"value"])
+      if(sum(is.finite(uval)) == 1)   normVals[is.finite(df[,"value"])] <- 1
+      nona         <- !is.na(normVals)
+      df$fill      <- NA
+      df[nona, "fill"] <- hsv(h = hue, s = sat, v = normVals[nona], alpha = alpha)
+      df
+    })
+    df <- do.call(rbind, df)
+  }
+  
+  x <- y <- value <- NULL  
+  if(ggObj) {       
+    if(annotation)  {        
+      dmat <- matrix(df$fill, nrow=dimImg[1], ncol=dimImg[2], byrow = TRUE)  
+      ggl  <- annotation_raster(raster = dmat, xmin = ex[1], xmax = ex[2], ymin = ex[3], ymax = ex[4], interpolate = FALSE)
     } else {
-        if(fac & (annotation | !ggObj)) df[,layer] <- factor(levelLUT[df[, layer]], levels=levelLUT)
-        return(df)
+      ggl  <- geom_raster(data = df[,c("x","y","value","layerName")], aes(x = x, y = y, fill = value), alpha = alpha) 
+    }
+    if(multLayers) facetObj <- facet_wrap(~layerName)
+    
+    if(ggLayer) {
+      if(multLayers) {
+        return(list(ggl, facetObj))
+      } else { 
+        return(ggl) 
+      }
     }
     
+    if(annotation) {   
+      dummy <- data.frame(x = ex[1:2],y = ex[3:4], layerName = rep(levels(df$layerName), each = 2) )       
+      p <- ggplot()  + ggl + geom_blank(data = dummy, aes(x,y))
+      if(coord_equal) p <- p + coord_equal()
+      if(multLayers) p <- p + facet_wrap(~layerName)
+      return(p)
+    } else {
+      p <- ggplot() + ggl
+      if(coord_equal) p <- p + coord_equal()
+      if(multLayers) p <- p + facetObj
+      return(p)
+    }
+    
+  } else {
+    if(fac & (annotation | !ggObj)) df[,"value"] <- factor(levelLUT[df[, "value"]], levels=levelLUT)
+    return(df)
+  }
+  
 }
 

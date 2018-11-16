@@ -4,6 +4,7 @@ New:
 
 * function `oneHotEncode`: splits a single rasterLayer into multiple layers (one per class)
   with one-hot encoding, i.e. pixel value = 1 for matches, pixel value = 0 for all other classes (background).
+* ggR() can now display more than one layer. Each layer can be plotted to a subplot in a multi-panel grafic.
 
 Changes: 
 * all `radCor` DOS methods now work for Landsat 8 OLI 

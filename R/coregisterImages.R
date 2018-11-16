@@ -54,7 +54,7 @@
 #'        scale_fill_gradientn(name = "p", colours =  heat.colors(10), na.value = NA)
 #'}
 #'## Compare correction
-#'ggR(reference, sat = 1, alpha = .5, 3) +
+#'ggR(reference, sat = 1, alpha = .5) +
 #'   ggR(coreg$coregImg, sat = 1, hue = .5, alpha = 0.5, ggLayer=TRUE) 
 coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, nSamples = 1e5, reportStats = FALSE, verbose, nBins = 100, ...) {
     

@@ -42,7 +42,7 @@ test_that("ggR works with single valued rasters", {
             for(i in 1:3) expect_is(ggR(r,i,geom_raster = TRUE), c("gg", "ggplot2"))
             
             ## All NAs
-            expect_equal(sum(is.na(ggR(r,1, ggObj = FALSE)[,3:4])), 4)  ## all na
+            expect_equal(sum(is.na(ggR(r,1, ggObj = FALSE)[,c("value", "fill")])), 4)  ## all na
             
             ## Single value
             gp <- ggR(r, 2, ggObj = FALSE)

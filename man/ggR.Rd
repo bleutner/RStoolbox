@@ -12,7 +12,7 @@ ggR(img, layer = 1, maxpixels = 5e+05, alpha = 1, hue = 1,
 \arguments{
 \item{img}{raster}
 
-\item{layer}{Character or numeric. Layername or number.}
+\item{layer}{Character or numeric. Layername or number. Can be more than one layer, in which case each layer is plotted in a subplot.}
 
 \item{maxpixels}{Integer. Maximal number of pixels to sample.}
 
@@ -50,7 +50,7 @@ Plot single layer imagery in grey-scale. Can be used with any Raster* object.
 }
 \details{
 When \code{img} contains factor values and \code{annotation=TRUE}, the raster values will automatically be converted
-to numeric in order to proceed with the brightness calculation. 
+to numeric in order to proceed with the brightness calculation. ä
 
 The raster package provides a class lookup-table for categorical rasters (e.g. what you get if you run superClass in classification mode). If your raster has a lookup-table ggR will automatically treat it as categorical (see \link[raster]{factor}). 
 However, the factor status of Raster objects is easily lost and the values are interpreted as numeric. In such cases you should make use of the \code{forceCat = TRUE} argument, which makes sure
