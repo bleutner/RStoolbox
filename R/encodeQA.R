@@ -14,6 +14,7 @@
 #' @param cirrus Cirrus confidence.  Options: \code{c("na", "low", "med", "high", "all")}.
 #' @param water Water confidence. Options: \code{c("na", "low", "med", "high", "all")}.
 #' @param droppedFrame Dropped frame. Options: \code{c("yes", "no", "all")}.
+#' @param droppedPixel Dropped pixel. Options: \code{c("yes", "no", "all")}.
 #' @param sensor Sensor to encode. Options: \code{c("OLI", "TIRS", "ETM+", "TM", "MSS")}.
 #' @param legacy Encoding systematic Options: \code{c("collection1", "pre_collection")}. Default is "collection1" for the Landsat Collection 1 8-bit quality designations. Use "pre_collection" for imagery downloaded before the Collection 1 quality designations were introduced
 #' 
