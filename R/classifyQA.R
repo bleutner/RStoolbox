@@ -1,13 +1,13 @@
-#' Classify Landsat8 QA Band
+#' Classify Landsat QA bands
 #' 
 #' extracts five classes from QA band: background, cloud, cirrus, snow and water.
-#' NOTE: THE NEW USGS LANDSAT COLLECTION 1 DATA HAS CHANGED THE QA BITWORD ASSIGNMENTS. THIS IS NOT YET IMPLEMENTED HERE.
-#' DO NOT USE encodeQA, decodeQA and classifyQA FOR LANDSAT COLLECTION 1 DATA (yet)! 
 #' 
 #' @param img RasterLayer. Landsat 8 OLI QA band. 
 #' @param type Character. Classes which should be returned. One or more of c("background", "cloud", "cirrus","snow", "water").
 #' @param confLayers Logical. Return one layer per class classified by confidence levels, i.e. cloud:low, cloud:med, cloud:high.
 #' @param ... further arguments passed to \link[raster]{writeRaster}
+#' @inheritParams encodeQA
+#' 
 #' @seealso \link{encodeQA} \link{decodeQA}
 #' @details 
 #' By default each class is queried for *high* confidence. See \link{encodeQA} for details. To return the different confidence levels per condition use \code{confLayers=TRUE}.
@@ -38,53 +38,56 @@
 #' qacs <- classifyQA(img = qa)
 #' ## Confidence levels
 #' qacs_conf <- classifyQA(img = qa, confLayers = TRUE)
-classifyQA <- function(img, type = c("background", "cloud", "cirrus","snow", "water"), confLayers = FALSE, ...){
-    if(any(!type %in% c("background", "cloud", "cirrus","snow", "water")) | !length(type)) stop("type must be element of c('background', 'cloud', 'cirrus','snow', 'water')")
-    if(nlayers(img) != 1) stop("img should be a single RasterLayer")   
+classifyQA <- function(img, type = c("background", "cloud", "cirrus","snow", "water"), confLayers = FALSE, sensor = "OLI", legacy = "collection1", ...){
     
-    if(!confLayers){
-        
-        rclx <- rbind(
-                if("background" %in% type) cbind(is = encodeQA(fill = "yes"),    becomes = 1L),
-                if("cloud" %in% type)  cbind(is = encodeQA(cloud = "high"),  becomes = 2L),
-                if("cirrus" %in% type) cbind(is = encodeQA(cirrus = "high"), becomes = 3L),
-                if("snow" %in% type)   cbind(is = encodeQA(snow = "high"),   becomes = 4L),
-                if("water" %in% type)  cbind(is = encodeQA(water = "high"),  becomes = 5L))
-        
-        out <- .paraRasterFun(img, rasterFun = calc, args = list(fun = function(xi, na.rm = FALSE) classQA(x = xi, rcl = rclx), forcefun = TRUE), wrArgs = list(...))
-        names(out) <- "QAclass"
-        return(out)
-    } else {
-        
-        rclxList <- list(
-                cloud = rbind(            
-                        cbind(is = encodeQA(cloud = "low"),  becomes = 1L),
-                        cbind(is = encodeQA(cloud = "med"),  becomes = 2L),
-                        cbind(is = encodeQA(cloud = "high"),  becomes = 3L)),
-                
-                cirrus = rbind(
-                        cbind(is = encodeQA(cirrus = "low"), becomes = 1L),
-                        cbind(is = encodeQA(cirrus = "med"), becomes = 2L),
-                        cbind(is = encodeQA(cirrus = "high"), becomes = 3L)),
-                
-                snow =  rbind(        
-                        cbind(is = encodeQA(snow = "low"),   becomes = 1L),
-                        cbind(is = encodeQA(snow = "med"),   becomes = 2L),        
-                        cbind(is = encodeQA(snow = "high"),   becomes = 3L)),
-                
-                water = rbind(
-                        cbind(is = encodeQA(water = "low"),  becomes = 1L),
-                        cbind(is = encodeQA(water = "med"),  becomes = 2L),
-                        cbind(is = encodeQA(water = "high"),  becomes = 3L)))
-        
-        out <- lapply(type[type != "background"], function(i){ 
-                    .paraRasterFun(img, rasterFun = calc, args = list(fun = function(xi, na.rm = FALSE) classQA(x = xi, rcl = rclxList[[i]]), forcefun = TRUE))
-                })
-        
-        out <- stack(out)
-        names(out) <- type[type != "background"]
-        return(out)
-    }
+  ## Input checks
+  if(legacy == "pre_collection" & !any(sensor %in% c("OLI", "TIRS"))) stop("For argument legacy = 'pre_collection', argument sensor can only be 'OLI' or 'TIRS'.", call.=FALSE)
+  
+  if(any(!type %in% c("background", "cloud", "cirrus","snow", "water")) | !length(type)) stop("type must be element of c('background', 'cloud', 'cirrus','snow', 'water')")
+  if(nlayers(img) != 1) stop("img should be a single RasterLayer")   
+  
+  if(!confLayers){
+    rclx <- rbind(
+      if("background" %in% type) cbind(is = encodeQA(fill = "yes", sensor = sensor, legacy = legacy),    becomes = 1L),
+      if("cloud" %in% type)  cbind(is = encodeQA(cloud = "high", sensor = sensor, legacy = legacy),  becomes = 2L),
+      if("cirrus" %in% type) cbind(is = encodeQA(cirrus = "high", sensor = sensor, legacy = legacy), becomes = 3L),
+      if("snow" %in% type)   cbind(is = encodeQA(snow = "high", sensor = sensor, legacy = legacy),   becomes = 4L),
+      if("water" %in% type)  cbind(is = encodeQA(water = "high", sensor = sensor, legacy = legacy),  becomes = 5L))
+    
+    out <- .paraRasterFun(img, rasterFun = calc, args = list(fun = function(xi, na.rm = FALSE) classQA(x = xi, rcl = rclx), forcefun = TRUE), wrArgs = list(...))
+    names(out) <- "QAclass"
+    return(out)
+  } else {
+    
+    rclxList <- list(
+      cloud = rbind(            
+        cbind(is = encodeQA(cloud = "low", sensor = sensor, legacy = legacy),  becomes = 1L),
+        cbind(is = encodeQA(cloud = "med", sensor = sensor, legacy = legacy),  becomes = 2L),
+        cbind(is = encodeQA(cloud = "high", sensor = sensor, legacy = legacy),  becomes = 3L)),
+      
+      cirrus = rbind(
+        cbind(is = encodeQA(cirrus = "low", sensor = sensor, legacy = legacy), becomes = 1L),
+        cbind(is = encodeQA(cirrus = "med", sensor = sensor, legacy = legacy), becomes = 2L),
+        cbind(is = encodeQA(cirrus = "high", sensor = sensor, legacy = legacy), becomes = 3L)),
+      
+      snow =  rbind(        
+        cbind(is = encodeQA(snow = "low", sensor = sensor, legacy = legacy), becomes = 1L),
+        cbind(is = encodeQA(snow = "med", sensor = sensor, legacy = legacy), becomes = 2L),        
+        cbind(is = encodeQA(snow = "high", sensor = sensor, legacy = legacy), becomes = 3L)),
+      
+      water = rbind(
+        cbind(is = encodeQA(water = "low", sensor = sensor, legacy = legacy),  becomes = 1L),
+        cbind(is = encodeQA(water = "med", sensor = sensor, legacy = legacy),  becomes = 2L),
+        cbind(is = encodeQA(water = "high", sensor = sensor, legacy = legacy),  becomes = 3L)))
+    
+    out <- lapply(type[type != "background"], function(i){ 
+      .paraRasterFun(img, rasterFun = calc, args = list(fun = function(xi, na.rm = FALSE) classQA(x = xi, rcl = rclxList[[i]]), forcefun = TRUE))
+    })
+    
+    out <- stack(out)
+    names(out) <- type[type != "background"]
+    return(out)
+  }
     
 }
 

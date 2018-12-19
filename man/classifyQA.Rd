@@ -2,10 +2,11 @@
 % Please edit documentation in R/classifyQA.R
 \name{classifyQA}
 \alias{classifyQA}
-\title{Classify Landsat8 QA Band}
+\title{Classify Landsat QA bands}
 \usage{
 classifyQA(img, type = c("background", "cloud", "cirrus", "snow",
-  "water"), confLayers = FALSE, ...)
+  "water"), confLayers = FALSE, sensor = "OLI",
+  legacy = "collection1", ...)
 }
 \arguments{
 \item{img}{RasterLayer. Landsat 8 OLI QA band.}
@@ -13,6 +14,10 @@ classifyQA(img, type = c("background", "cloud", "cirrus", "snow",
 \item{type}{Character. Classes which should be returned. One or more of c("background", "cloud", "cirrus","snow", "water").}
 
 \item{confLayers}{Logical. Return one layer per class classified by confidence levels, i.e. cloud:low, cloud:med, cloud:high.}
+
+\item{sensor}{Sensor to encode. Options: \code{c("OLI", "TIRS", "ETM+", "TM", "MSS")}.}
+
+\item{legacy}{Encoding systematic Options: \code{c("collection1", "pre_collection")}. Default is "collection1" for the Landsat Collection 1 8-bit quality designations. Use "pre_collection" for imagery downloaded before the Collection 1 quality designations were introduced}
 
 \item{...}{further arguments passed to \link[raster]{writeRaster}}
 }
@@ -37,8 +42,6 @@ high   \tab 3L \cr
 }
 \description{
 extracts five classes from QA band: background, cloud, cirrus, snow and water.
-NOTE: THE NEW USGS LANDSAT COLLECTION 1 DATA HAS CHANGED THE QA BITWORD ASSIGNMENTS. THIS IS NOT YET IMPLEMENTED HERE.
-DO NOT USE encodeQA, decodeQA and classifyQA FOR LANDSAT COLLECTION 1 DATA (yet)!
 }
 \details{
 By default each class is queried for *high* confidence. See \link{encodeQA} for details. To return the different confidence levels per condition use \code{confLayers=TRUE}.
