@@ -40,8 +40,16 @@ rescaleImage <- function(x, y, xmin, xmax, ymin, ymax, forceMinMax = FALSE) {
     if(missing("ymax")) ymax <- maxValue(y)
     if(missing("xmin")) xmin <- minValue(x) 
     if(missing("xmax")) xmax <- maxValue(x)
-    
-    li <- list(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax)
+  } else {
+    ## X and Y are vectors 
+    if(missing("xmin")) xmin <- min(x, na.rm = T)
+    if(missing("xmax")) xmax <- max(x, na.rm = T)
+    if(missing("xmin")) ymin <- min(y, na.rm = T)
+    if(missing("xmax")) ymax <- max(y, na.rm = T)
+  }
+  
+  li <- list(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax)
+  if(inherits(x, "Raster")) {
     li <- lapply(li, function(lim){
       if(length(lim) == 1) {
         return(rep(lim, nlayers(x)))
@@ -50,11 +58,6 @@ rescaleImage <- function(x, y, xmin, xmax, ymin, ymax, forceMinMax = FALSE) {
       }
       stop("xmin, xmax, ymin and ymax must be of length 1 or of length nlayers(x)", call. = FALSE)
     })
-    
-  } else {
-    li <- list()
-    if(missing("xmin")) li[["xmin"]] <- min(x, na.rm = T)
-    if(missing("xmax")) li[["xmax"]] <- max(x, na.rm = T)
   }
   
   norange <- li$xmax == li$xmin    

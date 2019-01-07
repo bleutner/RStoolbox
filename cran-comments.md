@@ -1,7 +1,4 @@
-* Reduces tests which run on CRAN (complies with email from CRAN/Ligges (18/06/2018))
-Tests take now only about 120s to 150s on win_builder/R-devel.
-* Complies with email from CRAN/Hornik (17/05/2018): removed superfluous/undeclared package dependency in unit tests (lattice)
-* Adds compatibility with upcoming ggplot2 v2.3.0
+Fixes functions/tests for current R-devel (Email from CRAN/Ripley, 4.1.19)
 
 ### R CMD checks
 ### Test environments
@@ -16,3 +13,4 @@ There were no ERRORs, WARNINGs or NOTEs.
 moveVis OK
 
 
+### Changelog:
