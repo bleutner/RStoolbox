@@ -90,6 +90,40 @@ unsuperClass <- function(img, nSamples = 10000, nClasses = 5, nStarts = 25, nIte
 
 
 
+
+#' Predict a raster map based on a unsuperClass model fit.
+#' 
+#' applies a kmeans cluster model to all pixels of a raster.
+#' Useful if you want to apply a kmeans model of scene A to scene B.
+#' 
+#' @method predict unsuperClass
+#' @param object unsuperClass object
+#' @param img Raster object. Layernames must correspond to layernames used to train the superClass model, i.e. layernames in the original raster image.
+#' @param ... Further arguments passed to writeRaster.
+#' @export 
+#' @examples 
+#' ## Load training data
+#' data(rlogo)
+#' 
+#' ## Perform unsupervised classification
+#' uc  <- unsuperClass(rlogo, nClasses = 10)
+#' 
+#' ## Apply the model to another raster
+#' map <- predict(uc, rlogo)
+predict.unsuperClass <- function(object, img, ...){
+  stopifnot(inherits(object, c("RStoolbox", "unsuperClass")))
+  model <- object$model
+  wrArgs <- list(...)
+   out   <- .paraRasterFun(img, rasterFun=raster::calc, args = list(fun=function(x, kmeans=force(model)){
+    if(!is.matrix(x)) x <- as.matrix(x)
+    predKmeansCpp(x, centers=kmeans$centers)}, forcefun=TRUE), wrArgs = wrArgs)
+  
+return(out)
+}
+
+
+
+
 #' @method print unsuperClass
 #' @export 
 print.unsuperClass <- function(x, ...){

@@ -47,4 +47,15 @@ test_that("kmeans fail detection", {
             expect_warning(unsuperClass(lsat, nSamples = ncell(lsat), nStarts = 1, nClasses = 20), "doesn't converge properly")
         })
 
-
+## Predict S3 method
+test_that("predict.unSuperClass", {
+    skip_on_cran()
+    uc <- unsuperClass(lsat, nSamples = ncell(lsat), nClasses = 2)
+    expect_s4_class(pred <- predict(uc, lsat), "RasterLayer")
+    expect_equal(unique(uc$map - pred), 0)
+    tmpFile <- tempfile(fileext = ".grd")
+    pred <- predict(uc, lsat, filename = tmpFile )
+    expect_false(inMemory(pred))
+    expect_equal(filename(pred), tmpFile)
+    file.remove(tmpFile, gsub("grd", "gri", tmpFile))
+  })
