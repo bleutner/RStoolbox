@@ -31,46 +31,45 @@
 #' lsat2_unity <- rescaleImage(lsat2, ymin = 0, ymax = 1)
 #' lsat2_unity
 rescaleImage <- function(x, y, xmin, xmax, ymin, ymax, forceMinMax = FALSE) {
+  
+  if(inherits(x, "Raster")){
+    if(!missing("y") && nlayers(x) != nlayers(y)) stop("x and y must have the same number of layers")
+    if(forceMinMax)  x <- setMinMax(x)
+    if(!missing("y") && forceMinMax)  y <- setMinMax(y)
+    if(missing("ymin")) ymin <- minValue(y)
+    if(missing("ymax")) ymax <- maxValue(y)
+    if(missing("xmin")) xmin <- minValue(x) 
+    if(missing("xmax")) xmax <- maxValue(x)
     
-    if(inherits(x, "Raster")){
-        if(!missing("y") && nlayers(x) != nlayers(y)) stop("x and y must have the same number of layers")
-        if(forceMinMax)  x <- setMinMax(x)
-        if(!missing("y") && forceMinMax)  y <- setMinMax(y)
-        if(missing("ymin")) ymin <- minValue(y)
-        if(missing("ymax")) ymax <- maxValue(y)
-        if(missing("xmin"))    xmin <- minValue(x) 
-        if(missing("xmax")) xmax <- maxValue(x)
-        
-        
-        li <- list(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax)
-        li <- lapply(li, function(lim){
-                    if(length(lim) == 1) {
-                        return(rep(lim, nlayers(x)))
-                    } else if(length(lim) == nlayers(x)){
-                        return(lim)
-                    }
-                    stop("xmin, xmax, ymin and ymax must be of length 1 or of length nlayers(x)", call. = FALSE)
-                })
-        list2env(li, environment())
-    } else {
-        if(missing("xmin"))    xmin <- min(x, na.rm = T)
-        if(missing("xmax")) xmax <- max(x, na.rm = T)
-    }
+    li <- list(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax)
+    li <- lapply(li, function(lim){
+      if(length(lim) == 1) {
+        return(rep(lim, nlayers(x)))
+      } else if(length(lim) == nlayers(x)){
+        return(lim)
+      }
+      stop("xmin, xmax, ymin and ymax must be of length 1 or of length nlayers(x)", call. = FALSE)
+    })
     
-    norange <- xmax == xmin    
-    norange[is.na(norange)] <- TRUE 
-    if(any(norange))   warning("x has no value range (xmin = xmax) or non-finite values only. Rescaling is not possible.\n  Returning NA for bands: ", paste0(names(x)[norange], collapse = ", "))       
-    
-    scal <- (ymax - ymin)/(xmax-xmin) 
-    if(inherits(x, "Raster")){   
-        x <- .paraRasterFun(x, rasterFun = calc,  args = list(fun = function(x) {
-                            if(!inherits(x, "Matrix")) x <- as.matrix(x)
-                            rescaleImageCpp(x, scal = scal, xmin = xmin, ymin = ymin)}, forcefun = T))
-    } else {
-        x <- (x - xmin) * scal + ymin
-    }
-    
-    return(x)
+  } else {
+    li <- list()
+    if(missing("xmin")) li[["xmin"]] <- min(x, na.rm = T)
+    if(missing("xmax")) li[["xmax"]] <- max(x, na.rm = T)
+  }
+  
+  norange <- li$xmax == li$xmin    
+  norange[is.na(norange)] <- TRUE 
+  if(any(norange))   warning("x has no value range (xmin = xmax) or non-finite values only. Rescaling is not possible.\n  Returning NA for bands: ", paste0(names(x)[norange], collapse = ", "))       
+  scal <- (li$ymax - li$ymin)/(li$xmax - li$xmin) 
+  
+  if(inherits(x, "Raster")){   
+    x <- .paraRasterFun(x, rasterFun = calc,  args = list(fun = function(x) {
+      if(!inherits(x, "Matrix")) x <- as.matrix(x)
+      rescaleImageCpp(x, scal = scal, xmin = li$xmin, ymin = li$ymin)}, forcefun = T))
+  } else {
+    x <- (x - li$xmin) * scal + li$ymin
+  }
+  return(x)
 }
 
 
