@@ -1,0 +1,67 @@
+---
+layout: docu
+title: ' Predict a raster map based on a unsuperClass model fit. '
+fun:  predict.unsuperClass 
+package:  RStoolbox 
+header: Pages
+group: navigation
+---
+{% include JB/setup %}
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Predict a raster map based on a unsuperClass model fit.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+
+                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+                            <script>hljs.initHighlightingOnLoad();</script>
+                            </head><body>
+
+<h3>Description</h3>
+
+<p>applies a kmeans cluster model to all pixels of a raster.
+Useful if you want to apply a kmeans model of scene A to scene B.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'unsuperClass'
+predict(object, img, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code class="r">object</code></td>
+<td>
+<p>unsuperClass object</p>
+</td></tr>
+<tr valign="top"><td><code class="r">img</code></td>
+<td>
+<p>Raster object. Layernames must correspond to layernames used to train the superClass model, i.e. layernames in the original raster image.</p>
+</td></tr>
+<tr valign="top"><td><code class="r">...</code></td>
+<td>
+<p>Further arguments passed to writeRaster.</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre><code class="r">## Load training data
+data(rlogo)
+
+## Perform unsupervised classification
+uc  &lt;- unsuperClass(rlogo, nClasses = 10)
+
+## Apply the model to another raster
+map &lt;- predict(uc, rlogo)
+</code></pre>
+
+
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.2.4 <a href="index.html">Index</a>]</div>
+</body></html>
