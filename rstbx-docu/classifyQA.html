@@ -1,13 +1,13 @@
 ---
 layout: docu
-title: ' Classify Landsat8 QA Band '
+title: ' Classify Landsat QA bands '
 fun:  classifyQA 
 package:  RStoolbox 
 header: Pages
 group: navigation
 ---
 {% include JB/setup %}
- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Classify Landsat8 QA Band</title>
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Classify Landsat QA bands</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="R.css" />
 
@@ -20,8 +20,6 @@ group: navigation
 <h3>Description</h3>
 
 <p>extracts five classes from QA band: background, cloud, cirrus, snow and water.
-NOTE: THE NEW USGS LANDSAT COLLECTION 1 DATA HAS CHANGED THE QA BITWORD ASSIGNMENTS. THIS IS NOT YET IMPLEMENTED HERE.
-DO NOT USE encodeQA, decodeQA and classifyQA FOR LANDSAT COLLECTION 1 DATA (yet)!
 </p>
 
 
@@ -29,7 +27,8 @@ DO NOT USE encodeQA, decodeQA and classifyQA FOR LANDSAT COLLECTION 1 DATA (yet)
 
 <pre>
 classifyQA(img, type = c("background", "cloud", "cirrus", "snow",
-  "water"), confLayers = FALSE, ...)
+  "water"), confLayers = FALSE, sensor = "OLI",
+  legacy = "collection1", ...)
 </pre>
 
 
@@ -47,6 +46,14 @@ classifyQA(img, type = c("background", "cloud", "cirrus", "snow",
 <tr valign="top"><td><code class="r">confLayers</code></td>
 <td>
 <p>Logical. Return one layer per class classified by confidence levels, i.e. cloud:low, cloud:med, cloud:high.</p>
+</td></tr>
+<tr valign="top"><td><code class="r">sensor</code></td>
+<td>
+<p>Sensor to encode. Options: <code class="r">c("OLI", "TIRS", "ETM+", "TM", "MSS")</code>.</p>
+</td></tr>
+<tr valign="top"><td><code class="r">legacy</code></td>
+<td>
+<p>Encoding systematic Options: <code class="r">c("collection1", "pre_collection")</code>. Default is &quot;collection1&quot; for the Landsat Collection 1 8-bit quality designations. Use &quot;pre_collection&quot; for imagery downloaded before the Collection 1 quality designations were introduced</p>
 </td></tr>
 <tr valign="top"><td><code class="r">...</code></td>
 <td>

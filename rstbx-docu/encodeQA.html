@@ -19,18 +19,19 @@ group: navigation
 
 <h3>Description</h3>
 
-<p>Intended for use with the Landsat 8 OLI QA band. Converts pixel quality flags from human readable to integer, which can then be used to 
-subset the QA image. Please be aware of the default settings which differ for different parameters.
-NOTE: THE NEW USGS LANDSAT COLLECTION 1 DATA HAS CHANGED THE QA BITWORD ASSIGNMENTS. THIS IS NOT YET IMPLEMENTED HERE.
-DO NOT USE encodeQA, decodeQA and classifyQA FOR LANDSAT COLLECTION 1 DATA (yet)!
+<p>Intended for use with Landsat 16-bit QA bands. Converts pixel quality flags from human readable to integer, which can then be used to 
+subset a QA image. Please be aware of the default settings which differ for different parameters. 
+Depending on, which <code class="r">sensor</code> and <code class="r">legacy</code> is selected, some quality parameters are not used, since the sequences of available bitwise quality designations differ per sensor and collection.
 </p>
 
 
 <h3>Usage</h3>
 
 <pre>
-encodeQA(fill = "no", droppedFrame = "no", terrainOcclusion = "no",
-  water = "all", snow = "all", cirrus = "all", cloud = "all")
+encodeQA(fill = "no", terrainOcclusion = "no", radSaturation = "na",
+  cloudMask = "all", cloud = "all", cloudShadow = "all",
+  snow = "all", cirrus = "all", droppedPixel = "no", water = "all",
+  droppedFrame = "no", sensor = "OLI", legacy = "collection1")
 </pre>
 
 
@@ -41,17 +42,25 @@ encodeQA(fill = "no", droppedFrame = "no", terrainOcclusion = "no",
 <td>
 <p>Designated fill. Options: <code class="r">c("yes", "no", "all")</code>.</p>
 </td></tr>
-<tr valign="top"><td><code class="r">droppedFrame</code></td>
-<td>
-<p>Dropped frame. Options: <code class="r">c("yes", "no", "all")</code>.</p>
-</td></tr>
 <tr valign="top"><td><code class="r">terrainOcclusion</code></td>
 <td>
 <p>Terrain induced occlusion. Options: <code class="r">c("yes", "no", "all")</code>.</p>
 </td></tr>
-<tr valign="top"><td><code class="r">water</code></td>
+<tr valign="top"><td><code class="r">radSaturation</code></td>
 <td>
-<p>Water confidence. Options: <code class="r">c("na", "low", "med", "high", "all")</code>.</p>
+<p>Number of bands that contain radiometric saturation. Options: <code class="r">c("na", "low", "med", "high", "all")</code> for no bands, 1-2 bands, 3-4 bands, 5 or more bands contain saturation.</p>
+</td></tr>
+<tr valign="top"><td><code class="r">cloudMask</code></td>
+<td>
+<p>Cloud mask. Options: <code class="r">c("yes", "no", "all")</code>.</p>
+</td></tr>
+<tr valign="top"><td><code class="r">cloud</code></td>
+<td>
+<p>Cloud confidence. Options: <code class="r">c("na", "low", "med", "high", "all")</code>.</p>
+</td></tr>
+<tr valign="top"><td><code class="r">cloudShadow</code></td>
+<td>
+<p>Cloud shadow confidence. Options: <code class="r">c("yes", "no", "all")</code>.</p>
 </td></tr>
 <tr valign="top"><td><code class="r">snow</code></td>
 <td>
@@ -61,9 +70,25 @@ encodeQA(fill = "no", droppedFrame = "no", terrainOcclusion = "no",
 <td>
 <p>Cirrus confidence.  Options: <code class="r">c("na", "low", "med", "high", "all")</code>.</p>
 </td></tr>
-<tr valign="top"><td><code class="r">cloud</code></td>
+<tr valign="top"><td><code class="r">droppedPixel</code></td>
 <td>
-<p>Cloud confidence. Options: <code class="r">c("na", "low", "med", "high", "all")</code>.</p>
+<p>Dropped pixel. Options: <code class="r">c("yes", "no", "all")</code>.</p>
+</td></tr>
+<tr valign="top"><td><code class="r">water</code></td>
+<td>
+<p>Water confidence. Options: <code class="r">c("na", "low", "med", "high", "all")</code>.</p>
+</td></tr>
+<tr valign="top"><td><code class="r">droppedFrame</code></td>
+<td>
+<p>Dropped frame. Options: <code class="r">c("yes", "no", "all")</code>.</p>
+</td></tr>
+<tr valign="top"><td><code class="r">sensor</code></td>
+<td>
+<p>Sensor to encode. Options: <code class="r">c("OLI", "TIRS", "ETM+", "TM", "MSS")</code>.</p>
+</td></tr>
+<tr valign="top"><td><code class="r">legacy</code></td>
+<td>
+<p>Encoding systematic Options: <code class="r">c("collection1", "pre_collection")</code>. Default is &quot;collection1&quot; for the Landsat Collection 1 8-bit quality designations. Use &quot;pre_collection&quot; for imagery downloaded before the Collection 1 quality designations were introduced</p>
 </td></tr>
 </table>
 
@@ -76,13 +101,14 @@ encodeQA(fill = "no", droppedFrame = "no", terrainOcclusion = "no",
 
 <h3>Note</h3>
 
-<p>Only currently populated bits are available as arguments, i.e. vegetation confidence, cloud shadow and bit nr. 3. are currently useless and hence not available.
+<p>Only currently populated bits are available as arguments.
 </p>
 
 
 <h3>References</h3>
 
-<p><a href="https://landsat.usgs.gov/qualityband">https://landsat.usgs.gov/qualityband</a>
+<p><a href="https://landsat.usgs.gov/qualityband">https://landsat.usgs.gov/qualityband</a> for pre collection quality designations (<code class="r">legacy = "pre_collection"</code>)
+<a href="https://landsat.usgs.gov/collectionqualityband">https://landsat.usgs.gov/collectionqualityband</a> for Collection 1 quality designations (<code class="r">legacy = "collection1"</code>)
 </p>
 
 
@@ -91,7 +117,7 @@ encodeQA(fill = "no", droppedFrame = "no", terrainOcclusion = "no",
 <pre><code class="r">encodeQA(snow = &quot;low&quot;, cirrus = c(&quot;med&quot;, &quot;high&quot;), cloud = &quot;high&quot;)
 </code></pre>
 
-<pre><code class="r">#&gt; [1] 58368 62464 58384 62480 58400 62496 58416 62512
+<pre><code class="r">#&gt; [1] 23136 23264 23392 23520 23152 23280 23408 23536
 </code></pre>
 
 
