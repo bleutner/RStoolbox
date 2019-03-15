@@ -5,7 +5,7 @@
 \title{Write ENVI spectral libraries}
 \usage{
 writeSLI(x, path, wavl.units = "Micrometers", scaleF = 1,
-  mode = "bin")
+  mode = "bin", endian = .Platform$endian)
 }
 \arguments{
 \item{x}{data.frame with first column containing wavelengths and all other columns containing spectra.}
@@ -17,6 +17,8 @@ writeSLI(x, path, wavl.units = "Micrometers", scaleF = 1,
 \item{scaleF}{optional reflectance scaling factor. Defaults to 1.}
 
 \item{mode}{character string specifying output file type. Must be one of \code{"bin"} for binary .sli files or \code{"ASCII"} for ASCII ENVI plot files.}
+
+\item{endian}{character. Optional. By default the endian is determined based on the platform, but can be forced manually by setting it to either "little" or "big".}
 }
 \description{
 Writes binary ENVI spectral library files (sli) with accompanying header (.sli.hdr) files OR ASCII spectral library files in ENVI format.
