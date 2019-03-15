@@ -34,6 +34,8 @@ readSLI <- function(path) {
         bands <- .getNumeric(hdr[grep("samples", hdr)])
         lines <- .getNumeric(hdr[grep("lines", hdr)])
         data_type <- .getNumeric(hdr[grep("data type", hdr)])
+        byte_order <- .getNumeric(hdr[grep("byte order", hdr)])
+        byte_order <- ifelse(byte_order==1, "big", "little") 
         
         ## Extract spectra labels
         id <- .bracketRange(hdr, "spectra names")
@@ -57,12 +59,12 @@ readSLI <- function(path) {
         if (data_type == 4) bytes <- 4
         if (data_type == 5) bytes <- 8    
         x <- data.frame(matrix(nrow=bands, ncol=lines))
-        x[] <- readBin(path, "numeric", n = 1000000, size = bytes)
+        x[] <- readBin(path, "numeric", n = 1000000, size = bytes, endian = byte_order )
         colnames(x) <- labels
         x <- cbind(wavelengths,x)
         colnames(x)[1] <- "wavelength"
     } else {
-        x <- readLines(path)
+        x  <- readLines(path)
         cc <- tail(grep("^Column", x),1)
         cnames <- gsub("Column[[:space:]][[:digit:]]:[[:space:]]|~~[[:digit:]]", "", x[2:cc])
         cnames <- gsub(" ", ".", cnames)
@@ -84,10 +86,11 @@ readSLI <- function(path) {
 #' @param wavl.units wavelength units. Defaults to Micrometers. Nanometers is another typical option.
 #' @param scaleF optional reflectance scaling factor. Defaults to 1.
 #' @param mode character string specifying output file type. Must be one of \code{"bin"} for binary .sli files or \code{"ASCII"} for ASCII ENVI plot files.
+#' @param endian character. Optional. By default the endian is determined based on the platform, but can be forced manually by setting it to either "little" or "big".
 #' @seealso \code{\link{readSLI}}
 #' @export
 #' @template examples_SLI
-writeSLI <- function(x, path, wavl.units="Micrometers", scaleF=1, mode="bin") {
+writeSLI <- function(x, path, wavl.units="Micrometers", scaleF=1, mode="bin", endian = .Platform$endian) {
     
     ## Begin write binary mode
     if (mode== "bin") {
@@ -100,12 +103,12 @@ writeSLI <- function(x, path, wavl.units="Micrometers", scaleF=1, mode="bin") {
                         "\nheader offset = 0",
                         "\nfile type = ENVI Spectral Library",
                         "\ndata type = 5",
-                        "\ninterleave = bsq",
+                        "\ninterleave = bsq", 
                         "\nsensor type = Unknown",
-                        "\nbyte order = 0",
+                        "\nbyte order = ", c("little"=0, "big"=1)[endian],
                         "\nwavelength units = ", wavl.units, 
                         "\nreflectance scale factor = ", scaleF,
-                        "\nz plot range = {0.00,", ceiling(max(x[,2])*1.2),"}",
+                        "\nz plot range = {0.00,", ceiling(max(x[,2], na.rm = TRUE)*1.2),"}",
                         "\nz plot titles = {Wavelength, Reflectance}",
                         "\nband names = {",
                         "\nSpectral Library}",
@@ -117,7 +120,7 @@ writeSLI <- function(x, path, wavl.units="Micrometers", scaleF=1, mode="bin") {
         
         ## Write actual binary file
         x1 <- as.vector(unlist(x[,-1]))
-        writeBin(x1, path)
+        writeBin(x1, path, endian = endian)
     } ## End write binary mode
     
     ## Begin write ASCII mode
