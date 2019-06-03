@@ -32,7 +32,7 @@
 #' data(rlogo)
 #' reference <- rlogo
 #' ## Shift reference 2 pixels to the right and 3 up
-#' missreg <- shift(reference, x = 2, y = 3)
+#' missreg <- shift(reference,  2,  3)
 #'
 #'## Compare shift
 #'p <- ggR(reference, sat = 1, alpha = .5) 
