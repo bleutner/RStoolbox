@@ -278,7 +278,8 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
     indexIn <- if(polygonBasedCV) lapply(1:kfold, function(x) which(x != indexOut)) 
     if(model == "mlc") model <- mlcCaret
     caretModel     <- train(response ~ ., data = dataSet, method = model, tuneLength = tuneLength, 
-            trControl = trainControl(method = "cv", number = kfold, index = indexIn, savePredictions = "final"), ...)   
+            trControl = trainControl(method = "cv", classProbs = {predType=="prob"}, 
+                    number = kfold, index = indexIn, savePredictions = "final"), ...)   
     modelFit <- getTrainPerf(caretModel)
     
     dataType <- NULL  

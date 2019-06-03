@@ -2,7 +2,7 @@ RStoolbox 0.2.5
 ====================================
 Fixes: 
 * `readSLI` and `writeSLI` now handle endian of binary spectral libraries correctly (#47, fix contributed by @aloboa)
-
+* fix calculation of prediction probabilities in `superClass`(reported by Benson Kemboi)
 
 RStoolbox 0.2.4
 ====================================
