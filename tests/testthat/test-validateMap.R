@@ -32,7 +32,7 @@ test_that("regression",{
             expect_equal(lapply(val, "class"), list(performance="numeric",validationSet = "data.frame"))
             expect_equal(colnames(val$validationSet), c("reference", "prediction", "cell"))
             expect_equal(names(val$performance)[1:2], c("RMSE", "Rsquared"))
-            
+            print(val)
         }) 
 
 
