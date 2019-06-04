@@ -163,6 +163,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
     ## Split into training and validation data (polygon basis)
     if(is.null(valData) & !is.null(trainPartition)){
         training  <- createDataPartition(trainData[[responseCol]], p = trainPartition)[[1]] ## this works for polygons as well because every polygon has only one entry in the attribnute table @data
+       
         if(length(training) == nrow(trainData)) stop(paste0("There are not enough polygons/points to split into training and validation partitions. \n  You could either ",
                             "\n   * provide more (often smaller) polygons instead of few large ones (recommended)",
                             "\n   * provide pre-defined validation polygons via the valData argument",

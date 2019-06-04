@@ -18,7 +18,6 @@ ll       <- "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"
 polyll   <- spTransform(poly, ll)  
 ptsll    <- spTransform(pts, ll)  
 lsatll   <- projectRaster(lsat, crs = ll)
-valInd   <- createDataPartition(poly$class)[[1]]
 lsNA      <- lsat
 lsNA[1:100,] <- NA
 
@@ -105,10 +104,11 @@ for(proj in c("projected", "geographical")){
                 })
         
         test_that("external valData instead of trainPartition",{
+                    set.seed(1)
+                    valInd   <- createDataPartition(train[["class"]])[[1]]
                     expect_is(sc <- superClass(img, trainData = train[valInd,], valData = train[-valInd,], nSamples = 50, responseCol = "class", model = "pls", 
                                     mode = "classification", predict = FALSE), "superClass", info = info)    
                     expect_is(sc$validation$performance, "confusionMatrix")
-                    
                 }) 
         
         
