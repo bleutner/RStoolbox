@@ -1,51 +1,24 @@
-dist: xenial
-language: c
+language: r
 sudo: required
 warnings_are_errors: true
+
+r: 
+    - devel
 
 branches:
   except:
     - example-data
     - gh-pages
 
-before_install:
-  - curl -OL https://raw.githubusercontent.com/bleutner/r-builder/master/pkg-build.sh
-  #- curl -OL https://raw.githubusercontent.com/metacran/r-builder/master/pkg-build.sh
-  - chmod 755 pkg-build.sh
-  - ./pkg-build.sh bootstrap
+apt_packages: 
+    - gdal-bin
+    - libgdal-dev
+    - libxml2-dev
+    - libproj-dev
 
-before_script:
-  - sudo apt-get install aptitude -y
-  - sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
-# - sudo add-apt-repository -y deb https://cran.r-project.org/bin/linux/ubuntu trusty/
-  - sudo apt-get update -qq
-  - sudo aptitude install -y gdal-bin
-  - sudo aptitude install -y libgdal-dev
-  - sudo aptitude install -y libproj-dev
-#  - wget https://github.com/bleutner/withr/blob/master/withr_1.0.0.9000.tar.gz?raw=true
-#  - mv withr_1.0.0.9000.tar.gz\?raw\=true withr_1.0.0.9000.tar.gz
-#  - ./pkg-build.sh install_r_local withr_1.0.0.9000.tar.gz
-#  - rm withr_1.0.0.9000.tar.gz 
-  - ./pkg-build.sh install_devtools   
-#  - ./pkg-build.sh install_r lme4
-#  - wget http://stat.ethz.ch/CRAN/src/contrib/Archive/pbkrtest/pbkrtest_0.4-5.tar.gz
-#  - ./pkg-build.sh install_r_local pbkrtest_0.4-5.tar.gz
-#  - rm pbkrtest_0.4-5.tar.gz
-# - ./pkg-build.sh install_r_version car 2.0-25 
-  - ./pkg-build.sh install_deps
-  - wget http://cran.r-project.org/src/contrib/Archive/rgdal/rgdal_1.2-5.tar.gz
-  - ./pkg-build.sh install_r_local rgdal_1.2-5.tar.gz
-  - rm rgdal_1.2-5.tar.gz
-  - ./pkg-build.sh install_r rgdal
-  - ./pkg-build.sh install_r covr
-# - ./pkg-build.sh dump_sysinfo
-
-script: 
-  - ./pkg-build.sh run_build
-  - ./pkg-build.sh run_check
-
-after_failure:
-  - ./pkg-build.sh dump_logs
+r_github_packages:
+    - r-lib/covr
+    
 
 notifications:
   email:
@@ -53,11 +26,8 @@ notifications:
     on_failure: change
 
 env:
-  matrix:
-    - RVERSION=devel COVERAGE=true
-    
-#r_github_packages:
-#  - jimhester/covr
+    - PKG_TARBALL=RStoolbox.tar.gz
 
 after_success:
-  - if [[ ! -z "$COVERAGE" ]];then ./pkg-build.sh run_script -e 'covr::codecov()'; fi
+    - tar -C .. -xf $PKG_TARBALL
+    - xvfb-run Rscript -e 'covr::codecov(type=c("tests", "examples"))'
