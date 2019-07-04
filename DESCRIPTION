@@ -3,7 +3,7 @@ Type: Package
 Title: Tools for Remote Sensing Data Analysis
 Version: 0.2.4.9999
 Authors@R: c(
-    person("Benjamin", "Leutner", role=c("cre", "aut"), email="benjamin.leutner@uni-wuerzburg.de"),
+    person("Benjamin", "Leutner", role=c("cre", "aut"), email="rstoolboxpackage@gmail.com"),
     person("Ned", "Horning", role ="aut", email="horning@amnh.org"),
     person("Jakob", "Schwalb-Willmann", role ="aut", email="movevis@schwalb-willmann.de"),
     person("Robert J.", "Hijmans", role = "ctb",  email = "r.hijmans@gmail.com")
