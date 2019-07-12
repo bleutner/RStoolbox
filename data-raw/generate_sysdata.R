@@ -205,9 +205,25 @@ d <- list(NULL, c("brightness", "greenness", "wetness"))
 )
 
 
+.wavlDB <- data.frame( Band = c("vis", "red-edge1", "red-edge2", "red-edge3", "nir", 
+                                "swir1", "swir2", "swir3", "mir1", "mir2", "tir1", "tir2"), 
+                       Description = c("visible", 
+                                       "red-edge1",
+                                       "red-edge2",
+                                       "red-edge3",
+                                       "near infra-red",
+                                       "short-wave infra-red", "short-wave infra-red", "short-wave infra-red", 
+                                       "mid-wave infra-red", "mid-wave infra-red", 
+                                       "thermal infra-red", "thermal infra-red"),
+                       Wavl_min = c(400,680,720,760,800,1100,1400,2000,3000,45000,8000,10000), 
+                       Wavl_max = c(680,720,760,800,1100,1351, 1800,2500,4000,5000,9500,140000),
+                       "Landsat5_Band" = c("1,2,3", "-","-","-",4, "-", 5, 7, "-", "-", "-", 6),
+                       "Sentinel2_Band" = c("2,3,4", 5, 6, 7, "8/8a", "9,10", 11, 12, "-", "-", "-","-")
+                       
+) 
 
 
 
 ## *******************************************************************************************************************
 ## Save internal data
-save(.ESdistance, .LANDSATdb, .DATATYPEdb,.TCcoefs, file = "R/sysdata.rda", compress = "gzip")
+save(.ESdistance, .LANDSATdb, .wavlDB, .DATATYPEdb,.TCcoefs, file = "R/sysdata.rda", compress = "gzip")

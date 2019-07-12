@@ -1,5 +1,5 @@
 #!/bin/bash
-cd ${HOME}/eclipseWorkspace/RStoolbox
+cd ${HOME}/eclipseWorkspace/RStoolbox || exit
 
 ## Check for uncommited changes
 if [[ -n $(git status -s) ]] 

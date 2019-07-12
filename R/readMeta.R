@@ -135,7 +135,8 @@ readMeta <- function(file, raw = FALSE){
         
         if(sat == "LANDSAT8"){
             r <- meta$TIRS_THERMAL_CONSTANTS          
-            calbt <- data.frame(K1 = r[1:2,] , K2 = r[3:4,])
+            calbt <- data.frame(K1 = r[grep("K1", rownames(r)), ],
+                                K2  = r[grep("K2", rownames(r)), ])
             rownames(calbt) <- c("B10_dn", "B11_dn")
             
         } else {

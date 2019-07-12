@@ -1,8 +1,12 @@
-Fixes functions/tests for current R-devel (Email from CRAN/Ripley, 4.1.19)
+NOTE: The maintainer email address has been changed from benjamin.leutner@uni-wuerzburg.de to rstoolboxpackage@gmail.com, which is futureproof. As requested bby CRAN policy, I am going to send a confirmation email for this change from the old email address.
+
+This release restores compatibility with the raster package (Email from CRAN/Hornik, 11.07.19).
+Plus other minor fixes and new functions (see Changelog below).
+
 
 ### R CMD checks
 ### Test environments
-* Ubuntu 18.04 64bit (release)
+* Ubuntu 19.04 64bit (release)
 * Travis-CI Ubuntu 14.04 (devel)
 * winbuilder (devel, release, oldrel)
 
@@ -13,20 +17,6 @@ There were no ERRORs, WARNINGs or NOTEs.
 moveVis OK
 fieldRS OK
 
-
 ### Changelog:
-RStoolbox 0.2.4
-====================================
-New:
+RStoolbox 0.2.5
 
-* function `oneHotEncode()`: splits a single rasterLayer into multiple layers (one per class)
-  with one-hot encoding, i.e. pixel value = 1 for matches, pixel value = 0 for all other classes (background).
-* `ggR()` can now display more than one layer. Each layer can be plotted to a subplot in a multi-panel grafic.
-* `encodeQA()`, `decodeQA()` and `classifyQA()` can now deal with the new QA format introduced with Landsat Collection data. Legacy QA designations can still be interpreted by setting the `legacy` argument.
-* new `predict()` method for unsupervised classification models (`unsuperClass`).
-
-Changes: 
-* all `radCor()` DOS methods now work for Landsat 8 OLI
-
-Fixes:
-* fix `unsuperClass()` for algorithms other than Hartigan-Wong (reported by Alex Ilich)

@@ -44,7 +44,9 @@
 #' SI <- spectralIndices(lsat_ref, red = "B3_tre", nir = "B4_tre")
 #' plot(SI)
 spectralIndices <- function(img,
-        blue=NULL, green=NULL, red=NULL, nir = NULL, redEdge1 = NULL, redEdge2 = NULL, redEdge3 = NULL, swir1 = NULL, swir2 =NULL, swir3 = NULL,
+        blue=NULL, green=NULL, red=NULL, nir = NULL, 
+        redEdge1 = NULL, redEdge2 = NULL, redEdge3 = NULL, 
+        swir1 = NULL, swir2 =NULL, swir3 = NULL,
         scaleFactor = 1, skipRefCheck = FALSE,   indices=NULL, index = NULL, maskLayer = NULL, maskValue = 1,
         coefs = list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5, s = 1, swir2ccc = NULL, swir2coc = NULL),
         ... ) {
@@ -96,7 +98,7 @@ spectralIndices <- function(img,
     if(coefs$swir2cdiff <= 0) stop("NDVIc coefficient swir2ccc (completeley closed canopy) must be smaller than swir2coc (completely open canopy)", call. = FALSE)
     
     ## Gather function arguments (all provided bands) and create args
-    potArgs  <- c("blue", "green", "red", "nir", "swir1", "swir2", "swir3")
+    potArgs  <- c("blue", "green", "red", "redEdge1", "redEdge2", "redEdge3", "nir", "swir1", "swir2", "swir3")
     actArgs  <- vapply(potArgs, function(x) !is.null(get(x)), logical(1))    
     bands    <- potArgs[actArgs]
     
@@ -159,8 +161,6 @@ spectralIndices <- function(img,
     ## This way we don't have to sample the whole stack if we only need a few layers
     fullSet <- vapply(potArgs, function(n) match(n, names(bandsCalc)), integer(1))
     
-    
-    
     # Perform calculations 
     indexMagic <- .paraRasterFun(img[[bandsCalc]], rasterFun = raster::calc,
             args = list(fun = function(m) {
@@ -170,9 +170,9 @@ spectralIndices <- function(img,
                                 blueBand  = fullSet[["blue"]],
                                 greenBand = fullSet[["green"]], 
                                 redBand   = fullSet[["red"]],
-								redEdgeBand1 =  fullSet[["redEdge1"]],
-								redEdgeBand2 =  fullSet[["redEdge2"]],
-								redEdgeBand3 =  fullSet[["redEdge3"]],
+							                	redEdge1Band =  fullSet[["redEdge1"]],
+								                redEdge2Band =  fullSet[["redEdge2"]],
+								                redEdge3Band =  fullSet[["redEdge3"]],
                                 nirBand   = fullSet[["nir"]], 
                                 swir1Band  = fullSet[["swir1"]],                             
                                 swir2Band  = fullSet[["swir2"]],
@@ -239,8 +239,8 @@ BANDSdb <- lapply(.IDXdb, function(x) names(formals(x)))
 .IDX.REFdb <- list(
         DVI     = c("Richardson1977", "Difference Vegetation Index") ,
         CTVI    = c("Perry1984", "Corrected Transformed Vegetation Index"),
-		CLG     = c("Gitelson2003", "Green-band Chlorophyll Index"),
-		CLRE    = c("Gitelson2003", "Red-edge-band Chlorophyll Index"),
+		    CLG     = c("Gitelson2003", "Green-band Chlorophyll Index"),
+	    	CLRE    = c("Gitelson2003", "Red-edge-band Chlorophyll Index"),
         EVI     = c("Huete1999", "Enhanced Vegetation Index"),
         EVI2    = c("Jiang 2008", "Two-band Enhanced Vegetation Index"), # Development of a two-band enhanced vegetation index without a blue band
         GEMI    = c("Pinty1992","Global Environmental Monitoring Index"),
@@ -248,18 +248,18 @@ BANDSdb <- lapply(.IDXdb, function(x) names(formals(x)))
         MSAVI   = c("Qi1994","Modified Soil Adjusted Vegetation Index"),
         MSAVI2  = c("Qi1994","Modified Soil Adjusted Vegetation Index 2"),
         MNDWI   = c("Xu2006", "Modified Normalised Difference Water Index"),  
-		MCARI   = c("Daughtery2000", "Modified Chlorophyll Absorption Ratio Index"),  
-		MTCI    = c("DashAndCurran2004", "MERIS Terrestrial Chlorophyll Index"),
+	    	MCARI   = c("Daughtery2000", "Modified Chlorophyll Absorption Ratio Index"),  
+	    	MTCI    = c("DashAndCurran2004", "MERIS Terrestrial Chlorophyll Index"),
         NBRI    = c("Garcia1991", "Normalised Burn Ratio Index"),
-		NDREI1  = c("GitelsonAndMerzlyak1994", "Normalised Difference Red Edge Index 1"),
-		NDREI2  = c("Barnes2000", "Normalised Difference Red Edge Index 2"),
+	    	NDREI1  = c("GitelsonAndMerzlyak1994", "Normalised Difference Red Edge Index 1"),
+	    	NDREI2  = c("Barnes2000", "Normalised Difference Red Edge Index 2"),
         NDVI    = c("Rouse1974", "Normalised Difference Vegetation Index"),
         NDVIC   = c("Nemani1993", "Corrected Normalised Difference Vegetation Index"),
         NDWI    = c("McFeeters1996", "Normalised Difference Water Index"), # The use of the Normalized Difference Water Index (NDWI) in the delineation of open water features
         NDWI2   = c("Gao1996", "Normalised Difference Water Index"),
         NRVI    = c("Baret1991","Normalised Ratio Vegetation Index"),
         RVI     = c("", "Ratio Vegetation Index"),
-		REIP    = c("GuyotAndBarnet1988", "Red Edge Inflection Point"),
+		    REIP    = c("GuyotAndBarnet1988", "Red Edge Inflection Point"),
         SATVI   = c("Marsett2006", "Soil Adjusted Total Vegetation Index"),
         SAVI    = c("Huete1988", "Soil Adjusted Vegetation Index"),
         SLAVI   = c("Lymburger2000","Specific Leaf Area Vegetation Index"),
@@ -270,13 +270,6 @@ BANDSdb <- lapply(.IDXdb, function(x) names(formals(x)))
 )
 
 
-
-.wavlDB <- data.frame( Band = c("vis", "nir", "swir1", "swir2", "swir3", "mir1", "mir2", "tir1", "tir2"), 
-        Description = c("visible", "near infra-red", "short-wave infra-red", "short-wave infra-red", "short-wave infra-red", "mid-wave infra-red", "mid-wave infra-red", "thermal infra-red", "thermal infra-red"),
-        Wavl_min = c(400,700,1100,1400,2000,3000,45000,8000,10000), 
-        Wavl_max = c(700,1100,1351, 1800,2500,4000,5000,9500,140000),
-        "Landsat5_Band" = c("1,2,3", 4, "-", 5, 7, "-", "-", "-", 6)
-) 
 
 
 
