@@ -23,7 +23,7 @@ readSLI <- function(path) {
         ## (filename.sli + filename.sli.hdr) OR (filename.sli + filename.hdr)
         hdr_path <- paste0(path, ".hdr")
         if(!file.exists(hdr_path)){
-            hdr_path <- paste0(strsplit(path,"[.]")[[1]][1], ".hdr")
+            hdr_path <- gsub(".sli.hdr", ".hdr", hdr_path)
             if (!file.exists(hdr_path)){
                 stop(paste0("Can't find header file of", path), call.= FALSE)
             }
