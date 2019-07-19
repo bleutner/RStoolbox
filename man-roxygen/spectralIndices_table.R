@@ -6,11 +6,11 @@
 #' Index values outside the valid value ranges (if such a range exists) will be set to NA. For example a pixel with NDVI > 1 will be set to NA.
 #' 
 #'  
-#' <% fr <- sapply(.IDXdb, function(x) paste0("\\code{",paste0(names(formals(x)), collapse=", "),"}")) %>
-#' <% dl <- sapply(.IDXdb, function(x) paste0("\\eqn", paste0(body(x), collapse=""), "}")) %>
-#' <% fn <- sapply(.IDX.REFdb[names(.IDXdb)],"[",2) %>
-#' <% sr <- sapply(.IDX.REFdb[names(.IDXdb)],"[",1) %>
-#' <% df <- data.frame(Index = names(.IDXdb), Description = fn, Source = sr, Bands = fr, Formula = dl) %>
+#' <% fr <- sapply(.IDXdbFormulae, function(x) paste0("\\code{",paste0(names(formals(x)), collapse=", "),"}")) %>
+#' <% dl <- sapply(.IDXdbFormulae, function(x) paste0("\\eqn", paste0(body(x), collapse=""), "}")) %>
+#' <% fn <- sapply(.IDX.REFdb[names(.IDXdbFormulae)],"[",2) %>
+#' <% sr <- sapply(.IDX.REFdb[names(.IDXdbFormulae)],"[",1) %>
+#' <% df <- data.frame(Index = names(.IDXdbFormulae), Description = fn, Source = sr, Bands = fr, Formula = dl) %>
 #' <%= .df2tab(df, "lllll") %>
 #' 
 #' 
@@ -29,7 +29,7 @@
 #' 
 #' The wavelength band names are defined following Schowengertd 2007, p10. 
 #' The last column shows exemplarily which Landsat 5 TM bands correspond to which wavelength range definition.
-#' <%= .df2tab(.wavlDB, "lllll") %>
+#' <%= .df2tab(.wavlDB, "lllllll") %>
 
 
 
