@@ -1,7 +1,6 @@
 context("readMeta & stackMeta")
 
 mfil <- list.files("testdata/metadata", full = TRUE)
-
 for(f in mfil) {
 	test_that(paste("readMeta and summary(readMeta)", basename(f)), {
 				expect_s3_class(m <- readMeta(f), c("RStoolbox", "ImageMetaData"))
@@ -11,10 +10,6 @@ for(f in mfil) {
 			})
 	
 }
-
-
-
-
 
 mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
 test_that("stackMeta with exampleData", {
