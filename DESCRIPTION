@@ -15,7 +15,7 @@ URL: http://bleutner.github.io/RStoolbox, https://github.com/bleutner/RStoolbox
 BugReports: https://github.com/bleutner/RStoolbox/issues
 Encoding: UTF-8
 Depends:
-    R (>= 3.1.0)
+    R (>= 3.5.0)
 Imports:
     raster (>= 2.3-40),
     caret (>= 6.0-79),

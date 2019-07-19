@@ -24,3 +24,4 @@ test_that("Get integer scale factors",{
     expect_error(gm <- getMeta(lsat, metaData = meta, what = "CALREF"), "not populated")
     
 })
+

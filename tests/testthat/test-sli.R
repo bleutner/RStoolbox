@@ -1,7 +1,7 @@
 context("readSLI & writeSLI")
 sliFile <- system.file("external/vegSpec.sli", package="RStoolbox")
 sliTmpFile <- paste0(tempdir(),"/spectralLibraryFile", Sys.getpid(),".sli")
-
+# 
 test_that("read and write are compatible", {
             expect_is(sli <- readSLI(sliFile), "data.frame") 
             

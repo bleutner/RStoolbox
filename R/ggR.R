@@ -183,4 +183,3 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0
   }
   
 }
-
