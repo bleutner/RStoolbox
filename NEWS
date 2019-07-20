@@ -13,7 +13,7 @@ Fixes:
 * fix calculation of prediction probabilities in `superClass`(reported by Benson Kemboi)
 * adapt to raster 2.9.5 API changes
 * fix order of thermal calibration coefficients for Landsat 8 L1 MTL metadata in `readMeta` (reported by Xiaoma Li)
-* fixed an issue where `readSLI` did not find header files with dots in pathnames (#51)
+* fixed an issue where `readSLI` did not find header files with dots in pathnames (#51, reported by @aloboa)
 
 Changes:
 * modified readSLI label parsing. Internal white space is now converted to underscores (#52)
