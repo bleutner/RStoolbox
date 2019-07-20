@@ -40,14 +40,14 @@ readSLI <- function(path) {
         ## Extract spectra labels
         id <- .bracketRange(hdr, "spectra names")
         if(id[1]==id[2]) {
-            labels <- hdr[(id[1])]
-            labels <- strsplit(labels, "[{]")[[1]][2]
+            labels <- hdr[id[1]]
         } else {
-            labels <- hdr[(id[1]+1):(id[2])]
+            labels <- hdr[(id[1]):(id[2])]
         }
-        
-        labels <- gsub( "\\}| ", "", paste(labels, collapse = ","))
-        labels <- unlist(strsplit(gsub(",,",",", labels), ","))
+        labels <- unlist(strsplit(labels, "^.*\\{|\\}|,"))
+        labels <- gsub("^ | $","", labels)
+        labels <- labels[labels!=""]
+        labels <- gsub(" ", "_", labels)
         
         ## Extract wavelengths
         id <- .bracketRange(hdr, "wavelength = ")

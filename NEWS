@@ -6,13 +6,18 @@ New:
    - normalized difference red-edge indices (NDREI1, NDREI2),
    - green-band chlorophyll index (CLG), red-edge chlorophyll index (CLRE)
    - Modified Chlorophyll Absorption Ratio Index (MCARI) 
-	 - MERIS Terrestrial Chlorophyll Index (MTCI)
+   - MERIS Terrestrial Chlorophyll Index (MTCI)
 
 Fixes: 
 * `readSLI` and `writeSLI` now handle endian of binary spectral libraries correctly (#47, fix contributed by @aloboa)
 * fix calculation of prediction probabilities in `superClass`(reported by Benson Kemboi)
 * adapt to raster 2.9.5 API changes
 * fix order of thermal calibration coefficients for Landsat 8 L1 MTL metadata in `readMeta` (reported by Xiaoma Li)
+* fixed an issue where `readSLI` did not find header files with dots in pathnames (#51)
+
+Changes:
+* modified readSLI label parsing. Internal white space is now converted to underscores (#52)
+
 
 RStoolbox 0.2.4
 ====================================

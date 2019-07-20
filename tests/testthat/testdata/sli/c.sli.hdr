@@ -1,0 +1,21 @@
+ENVI
+description = {
+   ENVI SpecLib created using RStoolbox for R [Sat Jul 20 10:51:03 2019]}
+samples = 2
+lines   = 2
+bands   = 1
+header offset = 0
+file type = ENVI Spectral Library
+data type = 5
+interleave = bsq
+sensor type = Unknown
+byte order = 0
+wavelength units = Nanometers
+reflectance scale factor = 1
+z plot range = {0.00,1}
+z plot titles = {Wavelength, Reflectance}
+band names = {
+Spectral Library}
+spectra names = { spectrum_a, spectrum_b}
+wavelength = {
+ 350, 351}
