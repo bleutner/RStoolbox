@@ -27,7 +27,7 @@ group: navigation
 
 <pre>
 writeSLI(x, path, wavl.units = "Micrometers", scaleF = 1,
-  mode = "bin")
+  mode = "bin", endian = .Platform$endian)
 </pre>
 
 
@@ -53,6 +53,10 @@ writeSLI(x, path, wavl.units = "Micrometers", scaleF = 1,
 <tr valign="top"><td><code class="r">mode</code></td>
 <td>
 <p>character string specifying output file type. Must be one of <code class="r">"bin"</code> for binary .sli files or <code class="r">"ASCII"</code> for ASCII ENVI plot files.</p>
+</td></tr>
+<tr valign="top"><td><code class="r">endian</code></td>
+<td>
+<p>character. Optional. By default the endian is determined based on the platform, but can be forced manually by setting it to either &quot;little&quot; or &quot;big&quot;.</p>
 </td></tr>
 </table>
 
@@ -100,5 +104,5 @@ writeSLI(sli, path = sliTmpFile)
 </code></pre>
 
 
-<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.2.4 <a href="index.html">Index</a>]</div>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.2.5 <a href="index.html">Index</a>]</div>
 </body></html>
