@@ -52,7 +52,6 @@ else
     echo "Example data already up-to-date."    
 fi
 
-
 ## Website
 echo -e "\n**********************************************************"
 echo "Build website documentation ******************************"
@@ -65,13 +64,16 @@ git checkout master
 echo -e "\n**********************************************************"
 echo "R CMD check **********************************************"
 echo "**********************************************************"
-Rscript -e "library(devtools); library(methods);  check(); build_win(version = c('R-release', 'R-devel', 'R-oldrelease'))" 
+Rscript -e "library(devtools); library(methods);  check_win_release(); check_win_oldrelease(); check_win_devel(); check()" 
 #Valgrind times out --> run locally
 #Rscript -e "library(rhub); library(methods);  check(platform='debian-gcc-release', valgrind = TRUE)" &> ${HOME}/RHub_RStoolbox_check_with_valgrind.log
 Rscript -e "library(rhub); library(methods);  check(platform=c('debian-gcc-release', 'debian-gcc-devel', 'linux-x86_64-rocker-gcc-san'))" 
+
+## Check on MAC
+Rscript -e "library(methods); library(rhub); check(platform='macos-elcapitan-release')"
 cd ..
 R CMD build RStoolbox 
-R CMD check RStoolbox_0.*tar.gz -o /tmp --run-donttest --as-cran --use-valgrind 
+R CMD check $(ls RStoolbox*tar.gz | tail -n1) -o /tmp --run-donttest --as-cran --use-valgrind 
 rm RStoolbox_0*tar.gz
 
 

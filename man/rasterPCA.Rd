@@ -22,7 +22,7 @@ Takes effect only if nSamples is NULL.}
 \item{...}{further arguments to be passed to \link[raster]{writeRaster}, e.g. filename.}
 }
 \value{
-RasterBrick
+Returns a named list containing the PCA model object ($model) and the RasterBrick with the principal component layers ($object).
 }
 \description{
 Calculates R-mode PCA for RasterBricks or RasterStacks and returns a RasterBrick with multiple layers of PCA scores.
@@ -50,7 +50,10 @@ ggRGB(rlogo, 1,2,3)
 set.seed(25)
 rpc <- rasterPCA(rlogo)
 rpc
+
+## Model parameters:
 summary(rpc$model)
+loadings(rpc$model)
 
 ggRGB(rpc$map,1,2,3, stretch="lin", q=0)
 if(require(gridExtra)){

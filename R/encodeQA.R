@@ -22,8 +22,7 @@
 #' Only currently populated bits are available as arguments.
 #' 
 #' @references 
-#' \url{https://landsat.usgs.gov/qualityband} for pre collection quality designations (\code{legacy = "pre_collection"})
-#' \url{https://landsat.usgs.gov/collectionqualityband} for Collection 1 quality designations (\code{legacy = "collection1"})
+#' \url{https://www.usgs.gov/land-resources/nli/landsat/landsat-collection-1-level-1-quality-assessment-band} for Collection 1 quality designations (\code{legacy = "collection1"})
 #' @export 
 #' @return
 #' Returns the Integer value for the QA values

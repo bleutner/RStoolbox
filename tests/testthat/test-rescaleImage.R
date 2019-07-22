@@ -6,6 +6,7 @@ lsat2r <- rescaleImage(lsat2, lsat)
 lsat2u <- rescaleImage(lsat2, ymin = 0.5, ymax = 1.6)
 
 test_that("rescales to proper limits", {
+            skip_on_cran()
             expect_true(compareRaster(lsat, lsat2r, values = TRUE))
             expect_equal(minValue(lsat2u), rep(0.5, nlayers(lsat)))
             expect_equal(maxValue(lsat2u), rep(1.6, nlayers(lsat)))
@@ -14,6 +15,7 @@ test_that("rescales to proper limits", {
 
 
 test_that("deals with missing values and single valued layers and returns NAs", {
+            skip_on_cran()
             lsat2[[1]][] <- 1
             suppressWarnings(lsat2[[2]][] <- NA)
             suppressWarnings(lsat2[[3]][] <- Inf)

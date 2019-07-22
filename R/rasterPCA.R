@@ -21,7 +21,7 @@
 #' @param maskCheck Logical. Masks all pixels which have at least one NA (default TRUE is reccomended but introduces a slow-down, see Details when it is wise to disable maskCheck). 
 #' Takes effect only if nSamples is NULL.
 #' @param ... further arguments to be passed to \link[raster]{writeRaster}, e.g. filename.
-#' @return RasterBrick
+#' @return Returns a named list containing the PCA model object ($model) and the RasterBrick with the principal component layers ($object).
 #' @export 
 #' @examples 
 #' library(ggplot2)
@@ -33,14 +33,16 @@
 #' set.seed(25)
 #' rpc <- rasterPCA(rlogo)
 #' rpc
+#' 
+#' ## Model parameters:
 #' summary(rpc$model)
+#' loadings(rpc$model)
 #' 
 #' ggRGB(rpc$map,1,2,3, stretch="lin", q=0)
 #' if(require(gridExtra)){
 #' plots <- lapply(1:3, function(x) ggR(rpc$map, x, geom_raster = TRUE))
 #' grid.arrange(plots[[1]],plots[[2]], plots[[3]], ncol=2)
 #' }
-
 rasterPCA <- function(img, nSamples = NULL, nComp = nlayers(img), spca = FALSE,  maskCheck = TRUE, ...){      
     
     if(nlayers(img) <= 1) stop("Need at least two layers to calculate PCA.")   
