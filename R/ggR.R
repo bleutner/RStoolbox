@@ -61,7 +61,7 @@
 #' 
 #' ## Plot multiple layers
 #' \donttest{
-#' ggR(lsat, 1:6, geom_raster=TRUE, maxpix=100,stretch = "lin") +
+#' ggR(lsat, 1:6, geom_raster=TRUE, stretch = "lin") +
 #'     scale_fill_gradientn(colors=grey.colors(100), guide = FALSE) +
 #'     theme(axis.text = element_text(size=5), 
 #'           axis.text.y = element_text(angle=90),
