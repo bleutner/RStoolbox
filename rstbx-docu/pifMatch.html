@@ -115,7 +115,7 @@ lsat_b &lt;- log(lsat)
 ## Run pifMatch and return similarity layer, invariant features mask and models
 lsat_b_adj &lt;- pifMatch(lsat_b, lsat, returnPifMap = TRUE, 
                          returnSimMap = TRUE, returnModels = TRUE)
-
+## No test: 
 ## Pixelwise similarity
 ggR(lsat_b_adj$simMap, geom_raster = TRUE)
 </code></pre>
@@ -161,6 +161,9 @@ summary(lsat_b_adj$models[[1]])
 #&gt; F-statistic: 1.811e+05 on 1 and 4447 DF,  p-value: &lt; 2.2e-16
 </code></pre>
 
+<pre><code class="r">## End(No test)
+</code></pre>
 
-<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.2.5 <a href="index.html">Index</a>]</div>
+
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.2.6 <a href="index.html">Index</a>]</div>
 </body></html>
