@@ -16,7 +16,6 @@ There were no ERRORs, WARNINGs or NOTEs.
 
 ### Downstream dependencies
 moveVis OK
-fieldRS OK
 
 ### Changelog:
 RStoolbox 0.2.5
