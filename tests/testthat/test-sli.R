@@ -19,7 +19,6 @@ test_that("read and write are compatible", {
       expect_equal(sli, sliR)
       
       if(mode=="bin") {
-        print(sliTmpFile)
         file.rename(paste0(sliTmpFile, ".hdr"), gsub(".sli", ".hdr", sliTmpFile))
         expect_is(readSLI(sliTmpFile) , "data.frame")
       }

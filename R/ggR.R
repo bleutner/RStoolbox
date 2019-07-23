@@ -42,17 +42,13 @@
 #' @examples
 #' library(ggplot2)
 #' library(raster)
-#' data(rlogo)
+#' data(rlogo); data(lsat); data(srtm)
 #' 
 #' ## Simple grey scale annotation
 #' ggR(rlogo)
 #' 
 #' ## With linear stretch contrast enhancement
 #' ggR(rlogo, stretch = "lin", quantiles = c(0.1,0.9))
-#' 
-#' ## Don't plot, just return a data.frame
-#' df <- ggR(rlogo, ggObj = FALSE)
-#' head(df)
 #' 
 #' ## ggplot with geom_raster instead of annotation_raster
 #' ## and default scale_fill*
@@ -62,6 +58,17 @@
 #' ggR(rlogo, geom_raster = TRUE) +
 #'         scale_fill_gradientn(name = "mojo", colours = rainbow(10)) +
 #'         ggtitle("**Funkadelic**")
+#' 
+#' ## Plot multiple layers
+#' ggR(lsat, 1:6, geom_raster=TRUE, stretch = "lin") +
+#'     scale_fill_gradientn(colors=grey.colors(100), guide = FALSE) +
+#'     theme(axis.text = element_text(size=5), 
+#'           axis.text.y = element_text(angle=90),
+#'           axis.title=element_blank())
+#' 
+#' ## Don't plot, just return a data.frame
+#' df <- ggR(rlogo, ggObj = FALSE)
+#' head(df, n = 3)
 #' 
 #' ## Layermode (ggLayer=TRUE)
 #' data <- data.frame(x = c(0, 0:100,100), y = c(0,sin(seq(0,2*pi,pi/50))*10+20, 0))
@@ -80,7 +87,6 @@
 #' ggR(rc, geom_raster = TRUE) + scale_fill_discrete(labels=paste("Class", 1:6))
 #'  
 #' ## Creating a nicely looking DEM with hillshade background
-#' data(srtm)
 #' terr <- terrain(srtm, c("slope", "aspect"))
 #' hill <- hillShade(terr[["slope"]], terr[["aspect"]])
 #' ggR(hill)
