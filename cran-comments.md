@@ -9,6 +9,7 @@ Plus other minor fixes and new functionality (see Changelog below).
 * Ubuntu 19.04 64bit (release)
 * Travis-CI Ubuntu 14.04 (devel)
 * winbuilder (devel, release, oldrel)
+* macos r-hub
 
 ### R CMD check results
 There were no ERRORs, WARNINGs or NOTEs. 
