@@ -9,4 +9,4 @@ Benjamin Leutner
 Oswald-Külpe-Weg 86  
 97074 Würzburg  
   
-Email: benjamin.leutner@uni-wuerzburg.de  
+Email: rstoolboxpackage@gmail.com 

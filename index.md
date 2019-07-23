@@ -34,7 +34,7 @@ You can view or fork the most recent code on my [GitHub repository](http://www.g
 
 #### Feedback
 I am grateful for any feedback on RStoolbox. Please do not hesitate to report an issue [here](https://github.com/bleutner/RStoolbox/issues) if you discover bugs or have a feature idea.
-If you find the package useful I'd love to hear about it as well. Just drop me an email if you like: benjamin.leutner@uni-wuerzburg.de.
+If you find the package useful I'd love to hear about it as well. Just drop me an email if you like: rstoolboxpackage@gmail.com
 
 
 
