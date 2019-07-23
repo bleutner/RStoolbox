@@ -42,7 +42,7 @@
 #' ## Run pifMatch and return similarity layer, invariant features mask and models
 #' lsat_b_adj <- pifMatch(lsat_b, lsat, returnPifMap = TRUE, 
 #'                          returnSimMap = TRUE, returnModels = TRUE)
-#' 
+#' \donttest{
 #' ## Pixelwise similarity
 #' ggR(lsat_b_adj$simMap, geom_raster = TRUE)
 #' 
@@ -57,6 +57,7 @@
 #' 
 #' ## Model summary for first band
 #' summary(lsat_b_adj$models[[1]])
+#' }
 pifMatch <- function(img, ref, method = "cor", quantile = 0.95, returnPifMap = TRUE, returnSimMap = TRUE, returnModels = FALSE){
     if(nlayers(img)!=nlayers(ref) | nlayers(img) <= 1) stop("Both images need at least two corresponding bands and must have the same number of bands.", call.=FALSE)
     

@@ -1,4 +1,6 @@
-NOTE: The maintainer email address has been changed from benjamin.leutner@uni-wuerzburg.de to rstoolboxpackage@gmail.com which is futureproof. As requested by CRAN policy, I am going to send a confirmation email for this change from the old email address.
+REVISION: Cut-down on example execution times which failed to pass CRAN submission pre-check.
+
+NOTE: The maintainer email address has been changed from benjamin.leutner@uni-wuerzburg.de to rstoolboxpackage@gmail.com which is futureproof. As requested by CRAN policy, I have sent a confirmation email for this change from the previous email address.
 
 This release restores compatibility with the raster package (Email from CRAN/Hornik, 11.07.19).
 Plus other minor fixes and new functionality (see Changelog below).
@@ -12,13 +14,14 @@ Plus other minor fixes and new functionality (see Changelog below).
 * macos r-hub
 
 ### R CMD check results
-There were no ERRORs, WARNINGs or NOTEs. 
+There is one NOTE: change in maintainer email address
+There were no ERRORs, WARNINGs
 
 ### Downstream dependencies
 moveVis OK
 
 ### Changelog:
-RStoolbox 0.2.5
+RStoolbox 0.2.6
 New:
 * added several Sentinel-2 optimized spectral indices relying on red-edge bands: 
    - red-edge inflection point (REIP),

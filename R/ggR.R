@@ -60,7 +60,8 @@
 #'         ggtitle("**Funkadelic**")
 #' 
 #' ## Plot multiple layers
-#' ggR(lsat, 1:6, geom_raster=TRUE, stretch = "lin") +
+#' \donttest{
+#' ggR(lsat, 1:6, geom_raster=TRUE, maxpix=100,stretch = "lin") +
 #'     scale_fill_gradientn(colors=grey.colors(100), guide = FALSE) +
 #'     theme(axis.text = element_text(size=5), 
 #'           axis.text.y = element_text(angle=90),
@@ -79,13 +80,13 @@
 #' ## Categorical data 
 #' ## In this case you probably want to use geom_raster=TRUE 
 #' ## in order to perform aestetic mapping (i.e. a meaningful legend)
-#' rc <- raster(rlogo)
+#' rc   <- raster(rlogo)
 #' rc[] <- cut(rlogo[[1]][], seq(0,300, 50))
 #' ggR(rc, geom_raster = TRUE)
 #' 
 #' ## Legend cusomization etc. ...
 #' ggR(rc, geom_raster = TRUE) + scale_fill_discrete(labels=paste("Class", 1:6))
-#'  
+#' }
 #' ## Creating a nicely looking DEM with hillshade background
 #' terr <- terrain(srtm, c("slope", "aspect"))
 #' hill <- hillShade(terr[["slope"]], terr[["aspect"]])

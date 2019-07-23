@@ -59,7 +59,7 @@ lsat_b <- log(lsat)
 ## Run pifMatch and return similarity layer, invariant features mask and models
 lsat_b_adj <- pifMatch(lsat_b, lsat, returnPifMap = TRUE, 
                          returnSimMap = TRUE, returnModels = TRUE)
-
+\donttest{
 ## Pixelwise similarity
 ggR(lsat_b_adj$simMap, geom_raster = TRUE)
 
@@ -74,4 +74,5 @@ hist(lsat_b_adj$img[[1]], main = "lsat_b adjusted")
 
 ## Model summary for first band
 summary(lsat_b_adj$models[[1]])
+}
 }

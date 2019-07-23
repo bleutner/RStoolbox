@@ -1,4 +1,4 @@
-RStoolbox 0.2.5
+RStoolbox 0.2.6
 ====================================
 New:
 * added several Sentinel-2 optimized spectral indices relying on red-edge bands: 

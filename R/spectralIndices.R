@@ -35,7 +35,8 @@
 #' ndvi
 #' ggR(ndvi, geom_raster = TRUE) +
 #'         scale_fill_gradientn(colours = c("black", "white")) 
-#' 
+#'
+#' \donttest{ 
 #' ## Calculate all possible indices, given the provided bands 
 #' ## Convert DNs to reflectance (required to calculate EVI and EVI2)
 #' mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
@@ -43,6 +44,7 @@
 #' 
 #' SI <- spectralIndices(lsat_ref, red = "B3_tre", nir = "B4_tre")
 #' plot(SI)
+#' }
 spectralIndices <- function(img,
         blue=NULL, green=NULL, red=NULL, nir = NULL, 
         redEdge1 = NULL, redEdge2 = NULL, redEdge3 = NULL, 
