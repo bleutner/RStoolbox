@@ -15,3 +15,15 @@ test_that("angles and magnitudes are correct (incl. NA treatment)", {
         expect_is(cva <- rasterCVA(r1,r2, tmf = 0), "RasterBrick")
         expect_equal(cva[], expectedDf)
     })
+
+
+test_that("angles and magnitudes are correct (incl. NA treatment)", {
+			skip_on_cran()
+			expect_is(cva <- rasterCVA(r1,r2), "RasterBrick")
+			expect_is(cva <- rasterCVA(r1,r2, nct = 0.7), "RasterBrick")
+			expect_is(cva <- rasterCVA(r1,r2, tmf = 0.7), "RasterBrick")
+			tmpfile <- tempfile(fileext=".tif")
+			expect_is(cva <- rasterCVA(r1,r2, nct = 0.7, filename=tmpfile), "RasterBrick")
+			expect_true(file.remove(tmpfile))
+			
+		})
