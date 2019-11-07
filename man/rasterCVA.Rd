@@ -4,14 +4,16 @@
 \alias{rasterCVA}
 \title{Change Vector Analysis}
 \usage{
-rasterCVA(x, y, tmf = 2, ...)
+rasterCVA(x, y, tmf = NULL, nct = NULL, ...)
 }
 \arguments{
 \item{x}{RasterBrick or RasterStack with two layers. This will be the reference/origin for the change calculations. Both rasters (y and y) need to correspond to each other, i.e. same resolution, extent and origin.}
 
 \item{y}{RasterBrick or RasterStack with two layers. Both rasters (y and y) need to correspond to each other, i.e. same resolution, extent and origin.}
 
-\item{tmf}{Numeric. Threshold median factor. Used to calculate a threshold magnitude for which pixels are considered stable, i.e. no change. Defaults to 2 times the median non-zero magnitude. Calculated as \code{tmf * median(magnitude[magnitude > 0])}}
+\item{tmf}{Numeric. Threshold median factor (optional). Used to calculate a threshold magnitude for which pixels are considered stable, i.e. no change. Calculated as \code{tmf * mean(magnitude[magnitude > 0])}.}
+
+\item{nct}{Numeric. No-change threshold (optional). Alternative to \code{tmf}. Sets an absolute threshold. Change magnitudes below \code{nct} are considered stable and set to NA.}
 
 \item{...}{further arguments passed to writeRaster}
 }
