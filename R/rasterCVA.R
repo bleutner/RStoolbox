@@ -34,7 +34,7 @@ rasterCVA <- function(x, y, tmf = NULL, nct = NULL,  ...) {
 	if(nlayers(x) != 2 | nlayers(y) != 2) stop("need two rasters with two layers each")
 	
 	doClamp <- !is.null(tmf) || !is.null(nct) 
-
+	
 	if(!is.null(tmf) && !is.null(nct)) {
 		stop("'tmf' and 'nct' are exclusive options, cannot use both.", call. = FALSE)
 	}
@@ -89,9 +89,10 @@ rasterCVA <- function(x, y, tmf = NULL, nct = NULL,  ...) {
 	}
 	
 	if(doClamp) {
-		ci <- which(cumsum(RStoolbox_rasterCVAEnv$medianTable) > sum(RStoolbox_rasterCVAEnv$medianTable) / 2)[1]
-		medianEstimate <- mean(medianBuckets[c(ci,ci+1)])
+		
 		if(!is.null(tmf)) {
+			ci <- which(cumsum(RStoolbox_rasterCVAEnv$medianTable) > sum(RStoolbox_rasterCVAEnv$medianTable) / 2)[1]
+			medianEstimate <- mean(medianBuckets[c(ci,ci+1)])
 			nct <- tmf * medianEstimate
 			rm(RStoolbox_rasterCVAEnv)
 		}
