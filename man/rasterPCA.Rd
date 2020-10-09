@@ -4,8 +4,14 @@
 \alias{rasterPCA}
 \title{Principal Component Analysis for Rasters}
 \usage{
-rasterPCA(img, nSamples = NULL, nComp = nlayers(img), spca = FALSE,
-  maskCheck = TRUE, ...)
+rasterPCA(
+  img,
+  nSamples = NULL,
+  nComp = nlayers(img),
+  spca = FALSE,
+  maskCheck = TRUE,
+  ...
+)
 }
 \arguments{
 \item{img}{RasterBrick or RasterStack.}
@@ -31,7 +37,7 @@ Calculates R-mode PCA for RasterBricks or RasterStacks and returns a RasterBrick
 Internally rasterPCA relies on the use of \link[stats]{princomp} (R-mode PCA). If nSamples is given the PCA will be calculated
 based on a random sample of pixels and then predicted for the full raster. If nSamples is NULL then the covariance matrix will be calculated
 first and will then be used to calculate princomp and predict the full raster. The latter is more precise, since it considers all pixels,
-however, it may be slower than calculating the PCA only on a subset of pixels.
+however, it may be slower than calculating the PCA only on a subset of pixels. 
 
 Pixels with missing values in one or more bands will be set to NA. The built-in check for such pixels can lead to a slow-down of rasterPCA.
 However, if you make sure or know beforehand that all pixels have either only valid values or only NAs throughout all layers you can disable this check

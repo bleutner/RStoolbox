@@ -4,8 +4,17 @@
 \alias{coregisterImages}
 \title{Image to Image Co-Registration based on Mutual Information}
 \usage{
-coregisterImages(slave, master, shift = 3, shiftInc = 1,
-  nSamples = 1e+05, reportStats = FALSE, verbose, nBins = 100, ...)
+coregisterImages(
+  slave,
+  master,
+  shift = 3,
+  shiftInc = 1,
+  nSamples = 1e+05,
+  reportStats = FALSE,
+  verbose,
+  nBins = 100,
+  ...
+)
 }
 \arguments{
 \item{slave}{Raster* object. Slave image to shift to master. Slave and master must have equal numbers of bands.}

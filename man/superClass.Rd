@@ -4,11 +4,26 @@
 \alias{superClass}
 \title{Supervised Classification}
 \usage{
-superClass(img, trainData, valData = NULL, responseCol = NULL,
-  nSamples = 1000, polygonBasedCV = FALSE, trainPartition = NULL,
-  model = "rf", tuneLength = 3, kfold = 5, minDist = 2,
-  mode = "classification", predict = TRUE, predType = "raw",
-  filename = NULL, verbose, overwrite = TRUE, ...)
+superClass(
+  img,
+  trainData,
+  valData = NULL,
+  responseCol = NULL,
+  nSamples = 1000,
+  polygonBasedCV = FALSE,
+  trainPartition = NULL,
+  model = "rf",
+  tuneLength = 3,
+  kfold = 5,
+  minDist = 2,
+  mode = "classification",
+  predict = TRUE,
+  predType = "raw",
+  filename = NULL,
+  verbose,
+  overwrite = TRUE,
+  ...
+)
 }
 \arguments{
 \item{img}{Raster* object. Typically remote sensing imagery, which is to be classified.}
@@ -96,7 +111,7 @@ colors <- c("yellow", "green", "deeppink")
 plotRGB(rlogo)
 plot(train, add = TRUE, col =  colors[train$class], pch = 19)
 
-## Fit classifier (splitting training into 70\\\% training data, 30\\\% validation data)
+## Fit classifier (splitting training into 70\\% training data, 30\\% validation data)
 SC       <- superClass(rlogo, trainData = train, responseCol = "class", 
 model = "rf", tuneLength = 1, trainPartition = 0.7)
 SC

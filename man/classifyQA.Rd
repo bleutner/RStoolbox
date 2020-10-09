@@ -4,9 +4,14 @@
 \alias{classifyQA}
 \title{Classify Landsat QA bands}
 \usage{
-classifyQA(img, type = c("background", "cloud", "cirrus", "snow",
-  "water"), confLayers = FALSE, sensor = "OLI",
-  legacy = "collection1", ...)
+classifyQA(
+  img,
+  type = c("background", "cloud", "cirrus", "snow", "water"),
+  confLayers = FALSE,
+  sensor = "OLI",
+  legacy = "collection1",
+  ...
+)
 }
 \arguments{
 \item{img}{RasterLayer. Landsat 8 OLI QA band.}

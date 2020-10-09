@@ -4,8 +4,15 @@
 \alias{cloudMask}
 \title{Simple Cloud Detection}
 \usage{
-cloudMask(x, threshold = 0.8, blue = "B1_sre", tir = "B6_sre",
-  buffer = NULL, plot = FALSE, verbose)
+cloudMask(
+  x,
+  threshold = 0.8,
+  blue = "B1_sre",
+  tir = "B6_sre",
+  buffer = NULL,
+  plot = FALSE,
+  verbose
+)
 }
 \arguments{
 \item{x}{RasterBrick or RasterStack with reflectance and brightness temperature OR the mask of a previous run of \code{cloudMask} with \code{returnDiffLayer=TRUE}.}

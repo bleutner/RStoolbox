@@ -4,11 +4,25 @@
 \alias{ggRGB}
 \title{Create ggplot2 Raster Plots with RGB from 3 RasterLayers}
 \usage{
-ggRGB(img, r = 3, g = 2, b = 1, scale, maxpixels = 5e+05,
-  stretch = "none", ext = NULL, limits = NULL,
-  clipValues = "limits", quantiles = c(0.02, 0.98), ggObj = TRUE,
-  ggLayer = FALSE, alpha = 1, coord_equal = TRUE,
-  geom_raster = FALSE, nullValue = 0)
+ggRGB(
+  img,
+  r = 3,
+  g = 2,
+  b = 1,
+  scale,
+  maxpixels = 5e+05,
+  stretch = "none",
+  ext = NULL,
+  limits = NULL,
+  clipValues = "limits",
+  quantiles = c(0.02, 0.98),
+  ggObj = TRUE,
+  ggLayer = FALSE,
+  alpha = 1,
+  coord_equal = TRUE,
+  geom_raster = FALSE,
+  nullValue = 0
+)
 }
 \arguments{
 \item{img}{RasterStack or RasterBrick}

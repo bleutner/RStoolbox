@@ -186,7 +186,7 @@
 #' @keywords internal
 #' @noRd 
 .vMessage <- function(...){    
-    if(getOption("RStoolbox.verbose")){message(...)}
+    if(getOption("RStoolbox.verbose")){message(format(Sys.time(), "%H:%M:%S | "), ...)}
 }
 
 

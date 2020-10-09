@@ -4,9 +4,18 @@
 \alias{histMatch}
 \title{Image to Image Contrast Matching}
 \usage{
-histMatch(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e+05,
-  intersectOnly = TRUE, paired = TRUE, forceInteger = FALSE,
-  returnFunctions = FALSE, ...)
+histMatch(
+  x,
+  ref,
+  xmask = NULL,
+  refmask = NULL,
+  nSamples = 1e+05,
+  intersectOnly = TRUE,
+  paired = TRUE,
+  forceInteger = FALSE,
+  returnFunctions = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{Raster*. Source raster which is to be modified.}

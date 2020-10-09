@@ -4,8 +4,14 @@
 \alias{writeSLI}
 \title{Write ENVI spectral libraries}
 \usage{
-writeSLI(x, path, wavl.units = "Micrometers", scaleF = 1,
-  mode = "bin", endian = .Platform$endian)
+writeSLI(
+  x,
+  path,
+  wavl.units = "Micrometers",
+  scaleF = 1,
+  mode = "bin",
+  endian = .Platform$endian
+)
 }
 \arguments{
 \item{x}{data.frame with first column containing wavelengths and all other columns containing spectra.}

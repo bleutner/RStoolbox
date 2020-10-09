@@ -4,8 +4,7 @@
 \alias{stackMeta}
 \title{Import separate Landsat files into single stack}
 \usage{
-stackMeta(file, quantity = "all", category = "image",
-  allResolutions = FALSE)
+stackMeta(file, quantity = "all", category = "image", allResolutions = FALSE)
 }
 \arguments{
 \item{file}{Character. Path to Landsat MTL metadata (*_MTL.txt) file or an Landsat CDR xml metadata file (*.xml).}

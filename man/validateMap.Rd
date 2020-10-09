@@ -4,8 +4,14 @@
 \alias{validateMap}
 \title{Map accuracy assessment}
 \usage{
-validateMap(map, valData, responseCol, nSamples = 500,
-  mode = "classification", classMapping = NULL)
+validateMap(
+  map,
+  valData,
+  responseCol,
+  nSamples = 500,
+  mode = "classification",
+  classMapping = NULL
+)
 }
 \arguments{
 \item{map}{RasterLayer. The classified map.}

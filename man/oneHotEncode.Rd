@@ -4,8 +4,7 @@
 \alias{oneHotEncode}
 \title{One-hot encode a raster or vector}
 \usage{
-oneHotEncode(img, classes, background = 0, foreground = 1,
-  na.rm = FALSE, ...)
+oneHotEncode(img, classes, background = 0, foreground = 1, na.rm = FALSE, ...)
 }
 \arguments{
 \item{img}{RasterLayer or integer/numeric vector containing multiple classes}

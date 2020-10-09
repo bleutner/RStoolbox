@@ -4,8 +4,15 @@
 \alias{cloudShadowMask}
 \title{Cloud Shadow Masking for Flat Terrain}
 \usage{
-cloudShadowMask(img, cm, nc = 5, shiftEstimate = NULL,
-  preciseShift = NULL, quantile = 0.2, returnShift = FALSE)
+cloudShadowMask(
+  img,
+  cm,
+  nc = 5,
+  shiftEstimate = NULL,
+  preciseShift = NULL,
+  quantile = 0.2,
+  returnShift = FALSE
+)
 }
 \arguments{
 \item{img}{Raster* object containing the scene}
