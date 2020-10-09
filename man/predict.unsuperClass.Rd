@@ -4,14 +4,16 @@
 \alias{predict.unsuperClass}
 \title{Predict a raster map based on a unsuperClass model fit.}
 \usage{
-\method{predict}{unsuperClass}(object, img, ...)
+\method{predict}{unsuperClass}(object, img, output = "classes", ...)
 }
 \arguments{
 \item{object}{unsuperClass object}
 
 \item{img}{Raster object. Layernames must correspond to layernames used to train the superClass model, i.e. layernames in the original raster image.}
 
-\item{...}{Further arguments passed to writeRaster.}
+\item{output}{Character. Either 'classes' (kmeans class; default) or 'distances' (euclidean distance to each cluster center).}
+
+\item{...}{further arguments to be passed to \link[raster]{writeRaster}, e.g. filename}
 }
 \description{
 applies a kmeans cluster model to all pixels of a raster.
