@@ -7,35 +7,36 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 		const int redBand,  const int blueBand, const int greenBand, const int nirBand,
 		const int redEdge1Band, const int redEdge2Band,  const int redEdge3Band,
 		const int swir1Band, const int swir2Band, const int swir3Band,
-		int maskLayer, const int maskValue,
+		size_t maskLayer, const int maskValue,
 		const double L,  const double s, const double G, const double C1,
 		const double C2, double Levi, const double swir2ccc, const double swir2cdiff, const double sf) {
 
-	int nind = indices.size();
-	int nsamp = x.nrow();
+	const size_t nind = indices.size();
+	const size_t nsamp = x.nrow();
+	const size_t nc = x.ncol();
 
 	NumericMatrix out(nsamp, nind);
 	NumericVector blue, green, red, redEdge1, redEdge2, redEdge3, nir, swir1, swir2, swir3;
 
 	// Apply mask layer
-	if(maskLayer != NA_INTEGER){
+	if((int)maskLayer != NA_INTEGER){
 		maskLayer-=1 ;
-		int nx = x.nrow();
+
 		std::vector<int> m;
-		m.reserve(nx);
+		m.reserve(nsamp);
 		if(IntegerVector::is_na(maskValue)){
-			for(int i = 0; i < nx; i++) {
+			for(size_t i = 0; i < nsamp; i++) {
 				if (ISNAN(x(i, maskLayer))) m.push_back(i);
 			}
 		} else {
-			for(int i = 0; i < nx; i++) {
+			for(size_t i = 0; i < nsamp; i++) {
 				if (x(i, maskLayer) == maskValue) m.push_back(i);
 			}
 		}
 
-		for(int j = 0; j < x.ncol(); j++) {
+		for(size_t j = 0; j < nc; j++) {
 			if (j == maskLayer) continue;
-			for(int i = 0; i < m.size(); i++) {
+			for(size_t i = 0; i < m.size(); i++) {
 				x(m[i],j) = NA_REAL;
 			}
 		}
@@ -54,7 +55,7 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 
 
 
-	for(int j = 0; j < nind; ++j) {
+	for(size_t j = 0; j < nind; ++j) {
 
 		if(indices[j] == "DVI") {
 			// Difference vegetation index
@@ -103,6 +104,14 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 			// Gitelson, A., and M. Merzlyak. "Remote Sensing of Chlorophyll Concentration in Higher Plant Leaves." Advances in Space Research 22 (1998): 689-692
 			out(_,j) = (nir - green)/( nir + green);
 			out(_,j) = ifelse(is_na(out(_,j)) | (out(_,j) > 1.0) | (out(_,j) < -1.0) , NA_REAL, out(_,j));
+		}
+		else if(indices[j] == "KNDVI") {
+			// kernel Normalized difference vegetation index
+			// Camps Valls (2021) A unified vegetation index forquantifying theterrestrial biosphere
+			// This implementation assumes sigma = mean(nir,red), which is the setting suggested by the authors
+			// Other values for sigma are not currently implemented.
+			out(_,j) = tanh(pow((nir - red) / (nir + red), 2));
+			out(_,j) = ifelse(is_na(out(_,j)) | (out(_,j) > 1.0) | (out(_,j) < 0), NA_REAL, out(_,j));
 		}
 		else if(indices[j] == "MNDWI") {
 			// Modified Normalised Difference Water Index
