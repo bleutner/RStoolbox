@@ -11,6 +11,7 @@ Fixes:
 * `rasterCVA` estimates median values now for entire rasters and not per chunk
 * `cloudMask` now returns NA for non-clouds instead of NaN
 * `topCor` now works for tiny rasters as well (fixes #55, reported by @latenooker) 
+* `rasterPCA` now correctly considers the number observations in face of missing values (fixes #79, reported by @andliszmmu)
 
 RStoolbox 0.2.6
 ====================================
