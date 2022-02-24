@@ -20,6 +20,7 @@
 #' ## Centering
 #' rlogo_center <- normImage(rlogo, norm = FALSE)
 normImage <- function(img, norm = TRUE, ...) {
+	img <- .toRaster(img)
     if(canProcessInMemory(img)) {
         out   <- img
         out[] <- scale(img[], center = TRUE, scale = norm)     

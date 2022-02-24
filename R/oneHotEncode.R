@@ -25,6 +25,7 @@
 #' sc_oneHot
 #' plot(sc_oneHot)
 oneHotEncode <- function(img, classes, background = 0, foreground = 1, na.rm = FALSE, ...) {
+	img <- .toRaster(img)
     stopifnot(inherits(img, c("RasterLayer", "integer", "numeric")))
     if(inherits(img, "RasterLayer")) {
         out <- calc(img, 

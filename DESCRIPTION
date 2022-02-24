@@ -1,7 +1,7 @@
 Package: RStoolbox
 Type: Package
 Title: Tools for Remote Sensing Data Analysis
-Version: 0.2.6.9999
+Version: 0.2.7
 Authors@R: c(
     person("Benjamin", "Leutner", role=c("cre", "aut"), email="rstoolboxpackage@gmail.com", comment = c(ORCID = "0000-0002-6893-2002")),
     person("Ned", "Horning", role ="aut", email="horning@amnh.org"),
@@ -11,7 +11,7 @@ Authors@R: c(
 Description: Toolbox for remote sensing image processing and analysis such as
     calculating spectral indices, principal component transformation, unsupervised
     and supervised classification or fractional cover analyses.
-URL: http://bleutner.github.io/RStoolbox, https://github.com/bleutner/RStoolbox
+URL: https://bleutner.github.io/RStoolbox, https://github.com/bleutner/RStoolbox
 BugReports: https://github.com/bleutner/RStoolbox/issues
 Encoding: UTF-8
 Depends:
@@ -20,6 +20,8 @@ Imports:
     raster (>= 2.3-40),
     caret (>= 6.0-79),
     sp,
+    sf,
+    terra,
     XML,
     geosphere,
     ggplot2,
@@ -43,4 +45,4 @@ LinkingTo: Rcpp,
     RcppArmadillo
 License: GPL (>=3)
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.2

@@ -46,6 +46,9 @@
 unsuperClass <- function(img, nSamples = 10000, nClasses = 5, nStarts = 25, nIter = 100, norm = FALSE, 
         clusterMap = TRUE, algorithm = "Hartigan-Wong", ...){      
     ## TODO: check outermost prediction (cpp)
+	
+	img <- .toRaster(img)
+	
     if(atMax <- nSamples > ncell(img)) nSamples <- ncell(img)
     wrArgs <- list(...)
     if(norm) img <- normImage(img)

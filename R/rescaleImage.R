@@ -31,7 +31,9 @@
 #' lsat2_unity <- rescaleImage(lsat2, ymin = 0, ymax = 1)
 #' lsat2_unity
 rescaleImage <- function(x, y, xmin, xmax, ymin, ymax, forceMinMax = FALSE) {
-  
+	x <- .toRaster(x)
+	if(!missing("y")) y <- .toRaster(y)
+	
   if(inherits(x, "Raster")){
     if(!missing("y") && nlayers(x) != nlayers(y)) stop("x and y must have the same number of layers")
     if(forceMinMax)  x <- setMinMax(x)

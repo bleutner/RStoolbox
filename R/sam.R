@@ -35,7 +35,8 @@
 #' \donttest{ggR(lsat_sam, forceCat = TRUE, geom_raster=TRUE) + 
 #'         scale_fill_manual(values = c("blue", "green"), labels = c("water", "vegetation"))}
 sam <- function(img, em, angles = FALSE, ...){
-    
+	img <- .toRaster(img)
+	
     if(is.vector(em)) {
         em <- matrix(em, nrow = 1, ncol=length(em))
     } else if (is.data.frame(em)) {

@@ -16,7 +16,7 @@
 #' provide DN, radiance or brightness temperature.
 #' 
 #' This approach to cloud masking is very simplistic. And aims only at rough removal of potentially clouded areas. Nevertheless, it is able to provide satisfactory results. 
-#' More sophisticated approaches, including cloud cast shadow detection can be found elsewhere, e.g. \href{http://code.google.com/p/fmask}{fmask}.
+#' More sophisticated approaches, including cloud cast shadow detection can be found elsewhere, e.g. \href{https://code.google.com/p/fmask}{fmask}.
 #' 
 #' It can make sense to find a suitable threshold on a cropped version of the scene. Also make sure you make use of the \code{returnDiffLayer} argument to save yourself one processing step.
 #' Buffering should be seen as final polishing, i.e. as long as the pure cloud centers are not detected properly, you might want to turn it off. since it takes some time to calculate.
@@ -30,6 +30,8 @@
 cloudMask <- function(x, threshold = 0.8,  blue = "B1_sre", tir = "B6_sre", buffer = NULL, plot = FALSE, verbose){
     
     if(!missing("verbose")) .initVerbose(verbose)
+	x <- .toRaster(x)
+	
     ## Set-up graphics device 
     op <- par(mfrow = c(2+is.null(buffer),1))
     on.exit(par(op), add = TRUE)
@@ -107,7 +109,9 @@ cloudMask <- function(x, threshold = 0.8,  blue = "B1_sre", tir = "B6_sre", buff
 cloudShadowMask <- function (img, cm, nc = 5, shiftEstimate = NULL, preciseShift = NULL, quantile = 0.2, returnShift = FALSE) {
     
     stopifnot(quantile > 0 & quantile < 1) 
-    #csind <- overlay(stack(tir, x[[]]), fun = function(high, low) (high - low) / (high + low))
+	img <- .toRaster(img)
+	cm <- .toRaster(cm)
+	
     if(is.null(preciseShift)){ 
         
         csind <- sum(img)

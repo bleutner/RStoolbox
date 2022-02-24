@@ -22,6 +22,9 @@ test_that("unsuperClass and NA",{
             }
         }) 
 
+test_that("terra inputs",{
+	expect_is(sc <- unsuperClass(rast(lsat),  nClasses = 2), "unsuperClass")
+})
 
 ## kmeans prediction function only
 mat <- matrix(1:20, by = TRUE, nrow = 5, ncol=4)

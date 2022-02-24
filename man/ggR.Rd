@@ -4,10 +4,21 @@
 \alias{ggR}
 \title{Plot RasterLayers in ggplot with greyscale}
 \usage{
-ggR(img, layer = 1, maxpixels = 5e+05, alpha = 1, hue = 1,
-  sat = 0, stretch = "none", quantiles = c(0.02, 0.98),
-  coord_equal = TRUE, ggLayer = FALSE, ggObj = TRUE,
-  geom_raster = FALSE, forceCat = FALSE)
+ggR(
+  img,
+  layer = 1,
+  maxpixels = 5e+05,
+  alpha = 1,
+  hue = 1,
+  sat = 0,
+  stretch = "none",
+  quantiles = c(0.02, 0.98),
+  coord_equal = TRUE,
+  ggLayer = FALSE,
+  ggObj = TRUE,
+  geom_raster = FALSE,
+  forceCat = FALSE
+)
 }
 \arguments{
 \item{img}{raster}

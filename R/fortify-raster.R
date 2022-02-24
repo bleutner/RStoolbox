@@ -17,6 +17,7 @@ NULL
 #' @export
 #' @method fortify RasterLayer
 fortify.RasterLayer <- function(x, maxpixels = 50000){
+	x <- .toRaster(x)
     raster <- sampleRegular(x, maxpixels, asRaster = TRUE)
     if(nlayers(x) == 1 && is.factor(x)) raster <- stack(raster,raster)  ## workaround raster bug #6043
     as.data.frame(raster, xy = TRUE)

@@ -97,6 +97,8 @@
 fCover <- function(classImage, predImage, nSamples = 1000, classes = 1, model = "rf", tuneLength = 3, 
         method = "cv",  maxNA = 0, clamp = TRUE, filename = NULL, verbose, ...){
     
+	predImage <- .toRaster(predImage)
+	classImage <- .toRaster(classImage)
     if(!missing("verbose")) .initVerbose(verbose)
     
     ## Resolution check

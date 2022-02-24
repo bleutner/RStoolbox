@@ -31,6 +31,8 @@
 #' cva
 #' plot(cva)
 rasterCVA <- function(x, y, tmf = NULL, nct = NULL,  ...) {
+	x <- .toRaster(x)
+	y <- .toRaster(y)
 	if(nlayers(x) != 2 | nlayers(y) != 2) stop("need two rasters with two layers each")
 	
 	doClamp <- !is.null(tmf) || !is.null(nct) 
@@ -75,7 +77,6 @@ rasterCVA <- function(x, y, tmf = NULL, nct = NULL,  ...) {
 		}
 	} else {
 		magfile <- if(!is.null(ellips$filename) && !doClamp) filename else rasterTmpFile()
-		print(magfile)
 		X   <- readStart(X)
 		out <- writeStart(out, filename = magfile, ...)
 		tr  <- blockSize(out)
@@ -89,17 +90,15 @@ rasterCVA <- function(x, y, tmf = NULL, nct = NULL,  ...) {
 	}
 	
 	if(doClamp) {
-		
 		if(!is.null(tmf)) {
 			ci <- which(cumsum(RStoolbox_rasterCVAEnv$medianTable) > sum(RStoolbox_rasterCVAEnv$medianTable) / 2)[1]
 			medianEstimate <- mean(medianBuckets[c(ci,ci+1)])
 			nct <- tmf * medianEstimate
 			rm(RStoolbox_rasterCVAEnv)
 		}
-		
 		out <- do.call(clamp, c(list(x = out, lower=nct, useValues = FALSE), ellips))
+		
 		names(out) <- c("angle", "magnitude")
-		if(inMemory(out) & !is.null(ellips$filename)) out <- do.call(writeRaster, c(list(x = out), ellips)) ## workaround for raster::clamp not writing to file if isTRUE(canProcessInMemory) 
 	}
 	
 	return(out)

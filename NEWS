@@ -3,6 +3,7 @@ RStoolbox 0.2.7
 New:
 * `rasterCVA` by default no longer enforces a minimal change magnitude (can still be accomplished with the `tmf` argument).
    Also a new argument `nct` allows to fix this threshold to a user selected value instead of deriving it based on the median of the observed change magnitudes. 
+* added support for `terra::SpatRast` objects throughout RStoolbox (as alternative to `raster` objects). Note: internal functionality is still based on `raster`.
 
 Fixes:
 * `rasterCVA` estimates median values now for entire rasters and not per chunk

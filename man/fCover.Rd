@@ -4,9 +4,20 @@
 \alias{fCover}
 \title{Fractional Cover Analysis}
 \usage{
-fCover(classImage, predImage, nSamples = 1000, classes = 1,
-  model = "rf", tuneLength = 3, method = "cv", maxNA = 0,
-  clamp = TRUE, filename = NULL, verbose, ...)
+fCover(
+  classImage,
+  predImage,
+  nSamples = 1000,
+  classes = 1,
+  model = "rf",
+  tuneLength = 3,
+  method = "cv",
+  maxNA = 0,
+  clamp = TRUE,
+  filename = NULL,
+  verbose,
+  ...
+)
 }
 \arguments{
 \item{classImage}{high resolution RasterLayer containing a landcover classification, e.g. as obtained by \link{superClass}.}
@@ -101,15 +112,15 @@ for(model in c("rf", "svmRadial")){
    
    ## How close is it to the truth?
    compare.rf <- trueCover - fc$map
-   plot(fc$map, main = paste("Fractional Cover: Class 1\\nModel:", model))
-   plot(compare.rf, main = "Diffence\\n true vs. predicted")
+   plot(fc$map, main = paste("Fractional Cover: Class 1\nModel:", model))
+   plot(compare.rf, main = "Diffence\n true vs. predicted")
    plot(trueCover[],fc$map[],  xlim = c(0,1), ylim =c(0,1),
            xlab = "True Cover", ylab = "Predicted Cover" )
    abline(coef=c(0,1))
    rmse <- sqrt(cellStats(compare.rf^2, sum))/ncell(compare.rf)
    r2 <- cor(trueCover[], fc$map[], "complete.obs")
    text(0.9,0.1,paste0(paste(c("RMSE:","R2:"),
-                           round(c(rmse, r2),3)),collapse="\\n"), adj=1)
+                           round(c(rmse, r2),3)),collapse="\n"), adj=1)
 }
 
 ## Reset par

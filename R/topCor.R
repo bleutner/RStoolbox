@@ -38,7 +38,11 @@
 #' lsat_C <- topCor(lsat, dem = srtm, solarAngles = c(1.081533, 0.7023922), method = "C")
 #' 
 topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg = NULL, nStrat = 5, illu, ...){
-    
+	img <- .toRaster(img)
+	if(!missing("dem")) dem <- .toRaster(dem)
+	if(!missing("illu")) illu <- .toRaster(illu)
+	
+	
     stopifnot(method %in% c("cos", "avgcos", "minnaert", "C", "stat", "illu"))
     ## TODO: improve performance
     ## Metadata 

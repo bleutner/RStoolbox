@@ -1,12 +1,11 @@
 context("fCover")
 
-
+set.seed(42)
 suppressPackageStartupMessages(library(raster))
 
 data(lsat)
 lc	  <- unsuperClass(lsat, nSamples = 50, nClass=3)$map
 modis <- aggregate(lsat, 9)
-
 
 for(cl in 1:2) {
     if (!identical(Sys.getenv("NOT_CRAN"), "true") && cl == 2) next
@@ -22,7 +21,6 @@ for(cl in 1:2) {
 								tuneLength=1
 						), c("RStoolbox", "fCover"))
 				expect_equal(nlayers(fc$map), cl)
-				
 			})
 
 }

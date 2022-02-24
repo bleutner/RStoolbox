@@ -65,6 +65,7 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
         clipValues  = "limits", quantiles = c(0.02,0.98), ggObj = TRUE, ggLayer = FALSE, 
         alpha = 1, coord_equal = TRUE, geom_raster = FALSE, nullValue = 0) { 
     
+	img <- .toRaster(img)
     ## TODO: handle single value rasters (e.g. masks)
     
     # RGB processing originally forked from raster::plotRGB (Author: Robert J. Hijmans) GPL3 

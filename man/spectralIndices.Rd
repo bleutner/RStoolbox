@@ -4,13 +4,28 @@
 \alias{spectralIndices}
 \title{Spectral Indices}
 \usage{
-spectralIndices(img, blue = NULL, green = NULL, red = NULL,
-  nir = NULL, redEdge1 = NULL, redEdge2 = NULL, redEdge3 = NULL,
-  swir1 = NULL, swir2 = NULL, swir3 = NULL, scaleFactor = 1,
-  skipRefCheck = FALSE, indices = NULL, index = NULL,
-  maskLayer = NULL, maskValue = 1, coefs = list(L = 0.5, G = 2.5,
-  L_evi = 1, C1 = 6, C2 = 7.5, s = 1, swir2ccc = NULL, swir2coc = NULL),
-  ...)
+spectralIndices(
+  img,
+  blue = NULL,
+  green = NULL,
+  red = NULL,
+  nir = NULL,
+  redEdge1 = NULL,
+  redEdge2 = NULL,
+  redEdge3 = NULL,
+  swir1 = NULL,
+  swir2 = NULL,
+  swir3 = NULL,
+  scaleFactor = 1,
+  skipRefCheck = FALSE,
+  indices = NULL,
+  index = NULL,
+  maskLayer = NULL,
+  maskValue = 1,
+  coefs = list(L = 0.5, G = 2.5, L_evi = 1, C1 = 6, C2 = 7.5, s = 1, swir2ccc = NULL,
+    swir2coc = NULL),
+  ...
+)
 }
 \arguments{
 \item{img}{Raster* object. Typically remote sensing imagery, which is to be classified.}

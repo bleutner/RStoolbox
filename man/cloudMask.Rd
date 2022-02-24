@@ -4,8 +4,15 @@
 \alias{cloudMask}
 \title{Simple Cloud Detection}
 \usage{
-cloudMask(x, threshold = 0.8, blue = "B1_sre", tir = "B6_sre",
-  buffer = NULL, plot = FALSE, verbose)
+cloudMask(
+  x,
+  threshold = 0.8,
+  blue = "B1_sre",
+  tir = "B6_sre",
+  buffer = NULL,
+  plot = FALSE,
+  verbose
+)
 }
 \arguments{
 \item{x}{RasterBrick or RasterStack with reflectance and brightness temperature OR the mask of a previous run of \code{cloudMask} with \code{returnDiffLayer=TRUE}.}
@@ -36,7 +43,7 @@ Before calculating the spectral cloud index (let's call it Normalized Difference
 provide DN, radiance or brightness temperature.
 
 This approach to cloud masking is very simplistic. And aims only at rough removal of potentially clouded areas. Nevertheless, it is able to provide satisfactory results. 
-More sophisticated approaches, including cloud cast shadow detection can be found elsewhere, e.g. \href{http://code.google.com/p/fmask}{fmask}.
+More sophisticated approaches, including cloud cast shadow detection can be found elsewhere, e.g. \href{https://code.google.com/p/fmask}{fmask}.
 
 It can make sense to find a suitable threshold on a cropped version of the scene. Also make sure you make use of the \code{returnDiffLayer} argument to save yourself one processing step.
 Buffering should be seen as final polishing, i.e. as long as the pure cloud centers are not detected properly, you might want to turn it off. since it takes some time to calculate.
@@ -63,7 +70,7 @@ cldmsk_final <- cloudMask(cldmsk, threshold = 0.1, buffer = 5)
 ## Plot cloudmask 
 \donttest{ggRGB(lsat, stretch = "lin") +
    ggR(cldmsk_final[[1]], ggLayer = TRUE, forceCat = TRUE, geom_raster = TRUE) +
-   scale_fill_manual(values = "red", na.value = NA)
+   scale_fill_manual(values = c("red"), na.value = NA)
 }
 #' ## Estimate cloud shadow displacement
 ## Interactively (click on cloud pixels and the corresponding shadow pixels)

@@ -44,7 +44,7 @@
 #' grid.arrange(plots[[1]],plots[[2]], plots[[3]], ncol=2)
 #' }
 rasterPCA <- function(img, nSamples = NULL, nComp = nlayers(img), spca = FALSE,  maskCheck = TRUE, ...){      
-    
+    img <- .toRaster(img)
     if(nlayers(img) <= 1) stop("Need at least two layers to calculate PCA.")   
     ellip <- list(...)
     

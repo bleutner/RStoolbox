@@ -42,6 +42,8 @@
 #' ggRGB(lowResImg_pan, stretch="lin") + ggtitle("Pansharpened (Brovey)")
 #'     
 panSharpen <- function(img, pan, r, g, b, pc = 1, method = "brovey", norm = TRUE) {
+	img <- .toRaster(img)
+	pan <- .toRaster(pan)
     ## TODO: add weighting
     stopifnot(inherits(img, "Raster") & inherits(pan, "Raster"))
     if(res(img)[1] <= res(pan)[1]) stop("Pan image must be of higher spatial resolution than img.")

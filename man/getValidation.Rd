@@ -24,7 +24,7 @@ Extract validation results from superClass objects
 }
 \examples{
 library(pls)
-## Fit classifier (splitting training into 70\\\% training data, 30\\\% validation data)
+## Fit classifier (splitting training into 70\\% training data, 30\\% validation data)
 train <- readRDS(system.file("external/trainingPoints.rds", package="RStoolbox"))
 SC   <- superClass(rlogo, trainData = train, responseCol = "class", 
                     model="pls", trainPartition = 0.7)

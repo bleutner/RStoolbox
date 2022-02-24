@@ -48,6 +48,8 @@
 #' }
 #' 
 #' @import raster sp 
+#' @importFrom terra rast
+#' @importFrom sf st_as_sf as_Spatial
 #' @importFrom rgdal readOGR
 #' @importFrom ggplot2 aes aes_string annotation_raster coord_equal fortify geom_raster geom_blank ggplot scale_fill_discrete scale_fill_gradientn scale_fill_identity facet_wrap
 #' @importFrom caret confusionMatrix train trainControl postResample  createDataPartition createFolds getTrainPerf

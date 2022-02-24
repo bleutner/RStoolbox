@@ -80,7 +80,8 @@
 #'                     hazeValues = hazeDN, hazeBands = 1:4)
 radCor <-    function(img, metaData, method = "apref", bandSet = "full", hazeValues, hazeBands, atmosphere, darkProp = 0.01, clamp = TRUE, verbose){
     # http://landsat.usgs.gov/Landsat8_Using_Product.php
-    if(!missing("verbose")) .initVerbose(verbose)
+    img <- .toRaster(img)
+	if(!missing("verbose")) .initVerbose(verbose)
     
     if(!method %in% c("rad", "apref", "dos", "costz", "sdos")) stop("method must be one of 'rad' 'apref', 'dos', 'costz' 'sdos'", call.=FALSE)
     

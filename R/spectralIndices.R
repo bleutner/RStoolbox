@@ -71,7 +71,9 @@ spectralIndices <- function(img,
     # TIR1  | thermal infra-red    |  8000  -   9500 nm
     # TIR2  | thermal infra-red    | 10000  - 140000 nm
     ##    
-    
+	img <- .toRaster(img)
+	if(!is.null(maskLayer)) maskLayer <- .toRaster(maskLayer)
+	
     if(!is.null(index)) indices <- index  ## argument translation for convenience
     if("LSWI" %in% toupper(indices)) stop("LSWI has been deprecated. Use NDWI2 instead; it is identical.")
     if(!is.null(swir1)) stop(paste0("Currently there is no spectral index requiring swir1.", 

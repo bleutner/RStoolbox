@@ -58,6 +58,9 @@
 #'   ggR(coreg$coregImg, sat = 1, hue = .5, alpha = 0.5, ggLayer=TRUE) 
 coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, nSamples = 1e5, reportStats = FALSE, verbose, nBins = 100, ...) {
     
+	slave <- .toRaster(slave)
+	master <- .toRaster(master)
+	
     ## TODO: allow user selected pseudo control points
     ## TODO: add computation of MI to docu
     #if(!swin%%2 | !mwin%%2) stop("swin and mwin must be odd numbers")

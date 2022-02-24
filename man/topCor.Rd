@@ -4,8 +4,17 @@
 \alias{topCor}
 \title{Topographic Illumination Correction}
 \usage{
-topCor(img, dem, metaData, solarAngles = c(), method = "C",
-  stratImg = NULL, nStrat = 5, illu, ...)
+topCor(
+  img,
+  dem,
+  metaData,
+  solarAngles = c(),
+  method = "C",
+  stratImg = NULL,
+  nStrat = 5,
+  illu,
+  ...
+)
 }
 \arguments{
 \item{img}{Raster*. Imagery to correct}

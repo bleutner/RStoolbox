@@ -4,8 +4,18 @@
 \alias{radCor}
 \title{Radiometric Calibration and Correction}
 \usage{
-radCor(img, metaData, method = "apref", bandSet = "full", hazeValues,
-  hazeBands, atmosphere, darkProp = 0.01, clamp = TRUE, verbose)
+radCor(
+  img,
+  metaData,
+  method = "apref",
+  bandSet = "full",
+  hazeValues,
+  hazeBands,
+  atmosphere,
+  darkProp = 0.01,
+  clamp = TRUE,
+  verbose
+)
 }
 \arguments{
 \item{img}{raster object}

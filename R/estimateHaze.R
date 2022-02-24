@@ -37,6 +37,8 @@
 #' haze$SHV
 estimateHaze <- function(x, hazeBands, darkProp = 0.01, maxSlope = TRUE, plot = FALSE, returnTables = FALSE) {
     
+	x <- .toRaster(x)
+	
     ## Initial or repeated run?
     if(inherits(x, "Raster")) {
         preCalc <- FALSE

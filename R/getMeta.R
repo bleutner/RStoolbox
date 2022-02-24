@@ -53,7 +53,6 @@
 #' getMeta(lsat, metaData = meta, what = "FILES")
 #' 
 getMeta <- function(img, metaData, what){
-   
         
     if(inherits(metaData, "character")) {
         metaData <- readMeta(metaData)
@@ -61,9 +60,9 @@ getMeta <- function(img, metaData, what){
         stop("metaData must be character or ImageMetaData")
     }
     
-       stopifnot(what %in% c(names(metaData$DATA), "CALREF", "CALRAD", "CALBT") & length(what) == 1)
+    stopifnot(what %in% c(names(metaData$DATA), "CALREF", "CALRAD", "CALBT") & length(what) == 1)
 
-    if(inherits(img, "Raster")){
+    if(inherits(img, "Raster") | inherits(img, "SpatRaster")){
         bds <- names(img) 
     } else if (inherits(img,"character")) {
         bds <- img

@@ -49,6 +49,8 @@
 #' lsat_tc
 #' plot(lsat_tc)
 tasseledCap <- function(img, sat, ...) {
+	img <- .toRaster(img)
+	
     sat <- tolower(sat)
     if(!sat %in% c("landsat4tm" , "landsat5tm" , "landsat7etm" ,"landsat8oli", "modis", "quickbird", "spot5", "rapideye")) stop("Sensor not implemented. See ?tasseledCap for options.")     
     

@@ -3,7 +3,6 @@
 \docType{package}
 \name{RStoolbox}
 \alias{RStoolbox}
-\alias{RStoolbox-package}
 \title{RStoolbox: A Collection of Remote Sensing Tools}
 \description{
 The RStoolbox package provides a set of functions which simplify performing standard remote sensing tasks in R.

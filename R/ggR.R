@@ -97,6 +97,8 @@
 #'    scale_fill_gradientn(colours = terrain.colors(100), name = "elevation")
 ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0, stretch = "none", quantiles = c(0.02,0.98), 
                 coord_equal = TRUE, ggLayer=FALSE, ggObj = TRUE, geom_raster = FALSE, forceCat = FALSE) {
+  
+  img   <- .toRaster(img)
   layer <- unlist(.numBand(img, layer))
   
   multLayers <- if (length(layer)>1) TRUE else FALSE

@@ -4,9 +4,17 @@
 \alias{unsuperClass}
 \title{Unsupervised Classification}
 \usage{
-unsuperClass(img, nSamples = 10000, nClasses = 5, nStarts = 25,
-  nIter = 100, norm = FALSE, clusterMap = TRUE,
-  algorithm = "Hartigan-Wong", ...)
+unsuperClass(
+  img,
+  nSamples = 10000,
+  nClasses = 5,
+  nStarts = 25,
+  nIter = 100,
+  norm = FALSE,
+  clusterMap = TRUE,
+  algorithm = "Hartigan-Wong",
+  ...
+)
 }
 \arguments{
 \item{img}{Raster* object.}

@@ -86,6 +86,12 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
     # TODO: check applicability of raster:::.intersectExtent 
     # TODO: check for empty factor levels
     # TODO: consider splitting large polygons if there are few polygons in total
+	
+	img <- .toRaster(img)
+	trainData <- .toSp(trainData)
+	if(!missing("valData")) valData <- .toSp(valData)
+	
+	
     if(!missing("verbose")) .initVerbose(verbose)
     verbose <- getOption("RStoolbox.verbose")
     ## Object types

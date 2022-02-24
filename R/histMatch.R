@@ -56,6 +56,8 @@ histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e5, inte
         forceInteger = FALSE, returnFunctions = FALSE, ...){
     nSamples <- min(ncell(ref), nSamples, ncell(ref))
     
+	x   <- .toRaster(x)
+	ref <- .toRaster(ref)
     ## Define intersecting extent if required. Returns NULL if FALSE
     ext <- if(paired | intersectOnly) intersect(extent(x), extent(ref)) 
     if(paired & is.null(ext)) {

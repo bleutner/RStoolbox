@@ -43,7 +43,8 @@
 #'                              classMapping = sc$classMapping)
 #' }
 validateMap <- function(map, valData, responseCol, nSamples = 500,  mode = "classification", classMapping = NULL){
-    
+	map <- .toRaster(map)
+	
     stopifnot(responseCol %in% names(valData), mode %in% c("classification", "regression"))
     
     valiSet  <- .samplePixels(SHAPE = valData, RASTER = map, responseCol = responseCol, nSamples = nSamples,  trainCells = NULL)

@@ -48,6 +48,7 @@
 #' 
 mesma <- function(img, em, method = "NNLS", iterate = 400, tolerance = 0.00000001, ..., verbose){
   
+  img <- .toRaster(img)
   ## messages
   if(!missing("verbose")) .initVerbose(verbose)
   verbose <- getOption("RStoolbox.verbose")

@@ -39,7 +39,9 @@
 #' ## Confidence levels
 #' qacs_conf <- classifyQA(img = qa, confLayers = TRUE)
 classifyQA <- function(img, type = c("background", "cloud", "cirrus","snow", "water"), confLayers = FALSE, sensor = "OLI", legacy = "collection1", ...){
-    
+  
+  img <- .toRaster(img)
+	
   ## Input checks
   if(legacy == "pre_collection" & !any(sensor %in% c("OLI", "TIRS"))) stop("For argument legacy = 'pre_collection', argument sensor can only be 'OLI' or 'TIRS'.", call.=FALSE)
   

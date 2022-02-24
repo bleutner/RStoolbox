@@ -4,8 +4,15 @@
 \alias{cloudShadowMask}
 \title{Cloud Shadow Masking for Flat Terrain}
 \usage{
-cloudShadowMask(img, cm, nc = 5, shiftEstimate = NULL,
-  preciseShift = NULL, quantile = 0.2, returnShift = FALSE)
+cloudShadowMask(
+  img,
+  cm,
+  nc = 5,
+  shiftEstimate = NULL,
+  preciseShift = NULL,
+  quantile = 0.2,
+  returnShift = FALSE
+)
 }
 \arguments{
 \item{img}{Raster* object containing the scene}
@@ -56,7 +63,7 @@ cldmsk_final <- cloudMask(cldmsk, threshold = 0.1, buffer = 5)
 ## Plot cloudmask 
 \donttest{ggRGB(lsat, stretch = "lin") +
    ggR(cldmsk_final[[1]], ggLayer = TRUE, forceCat = TRUE, geom_raster = TRUE) +
-   scale_fill_manual(values = "red", na.value = NA)
+   scale_fill_manual(values = c("red"), na.value = NA)
 }
 #' ## Estimate cloud shadow displacement
 ## Interactively (click on cloud pixels and the corresponding shadow pixels)

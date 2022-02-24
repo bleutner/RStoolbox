@@ -59,7 +59,11 @@
 #' summary(lsat_b_adj$models[[1]])
 #' }
 pifMatch <- function(img, ref, method = "cor", quantile = 0.95, returnPifMap = TRUE, returnSimMap = TRUE, returnModels = FALSE){
-    if(nlayers(img)!=nlayers(ref) | nlayers(img) <= 1) stop("Both images need at least two corresponding bands and must have the same number of bands.", call.=FALSE)
+    
+	img <- .toRaster(img)
+	ref <- .toRaster(ref)
+	
+	if(nlayers(img)!=nlayers(ref) | nlayers(img) <= 1) stop("Both images need at least two corresponding bands and must have the same number of bands.", call.=FALSE)
     
     imgfull <- img
     ## Get joint extent
