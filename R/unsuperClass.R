@@ -50,7 +50,7 @@
 #' ## Return the distance of each pixel to each class centroid
 #' unC <- unsuperClass(input, nSamples = 100, nClasses = 3, output = "distances")
 #' unC
-#' ggR(unC, 1:3, geom_raster = TRUE)
+#' ggR(unC$map, 1:3, geom_raster = TRUE)
 #' 
 #' par(olpar) # reset par
 unsuperClass <- function(img, nSamples = 10000, nClasses = 5, nStarts = 25, nIter = 100, norm = FALSE, 
