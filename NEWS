@@ -12,6 +12,7 @@ Fixes:
 * `cloudMask` now returns NA for non-clouds instead of NaN
 * `topCor` now works for tiny rasters as well (fixes #55, reported by @latenooker) 
 * `rasterPCA` now correctly considers the number observations in face of missing values (fixes #79, reported by @andliszmmu)
+* `superClass` now accepts different geometries for trainData and valData (fixes #73, suggested by @Silviculturalist)
 
 RStoolbox 0.2.6
 ====================================
