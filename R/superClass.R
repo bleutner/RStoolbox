@@ -120,8 +120,8 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
         stop(paste0("The column ", responseCol, " does not exist in trainData. \nAvailable columns are: ", paste0(colnames(trainData@data),collapse=", ")), call. = FALSE) 
     if(!is.null(valData) && !responseCol %in% colnames(valData@data)) 
         stop(paste0("The column ", responseCol, " does not exist in valData. \nAvailable columns are: ", paste0(colnames(valData@data),collapse=", ")), call. = FALSE) 
-    if(!is.null(valData) && !all.equal(class(trainData), class(valData)))
-        stop("trainData and valData must be of the same class. Either SpatialPointsDataFrame or SpatialPolygonsDataFrame.")
+    #if(!is.null(valData) && !all.equal(class(trainData), class(valData)))
+     #   stop("trainData and valData must be of the same class. Either SpatialPointsDataFrame or SpatialPolygonsDataFrame.")
     if(any(!mode %in% c("regression", "classification"))) 
         stop("unknown mode. must be 'regression' or 'classification'")
     
@@ -201,7 +201,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
             warning("trainData is missing projection information and thus cannot be buffered. minDist will be set to zero.", call. = FALSE) 
             minDist <- 0    
         }
-        if(trainDataType == "polygons" ){
+        if(inherits(valData, "SpatialPolygonsDataFrame")){
             ## Clip validation data to training data + 2 pixel buffer 
             trainBuff <- if(minDist > 0) .omniBuffer(trainData, minDist = minDist, img = img) else gUnionCascaded(trainData)
             clip      <- gDifference(valData, trainBuff, byid = TRUE)
