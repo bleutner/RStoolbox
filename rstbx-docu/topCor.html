@@ -9,13 +9,14 @@ group: navigation
 {% include JB/setup %}
  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Topographic Illumination Correction</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
 <link rel="stylesheet" type="text/css" href="R.css" />
 
                             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
                             <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
                             <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
                             <script>hljs.initHighlightingOnLoad();</script>
-                            </head><body>
+                            </head><body><div class="container">
 
 <h3>Description</h3>
 
@@ -26,8 +27,17 @@ group: navigation
 <h3>Usage</h3>
 
 <pre>
-topCor(img, dem, metaData, solarAngles = c(), method = "C",
-  stratImg = NULL, nStrat = 5, illu, ...)
+topCor(
+  img,
+  dem,
+  metaData,
+  solarAngles = c(),
+  method = "C",
+  stratImg = NULL,
+  nStrat = 5,
+  illu,
+  ...
+)
 </pre>
 
 
@@ -40,7 +50,7 @@ topCor(img, dem, metaData, solarAngles = c(), method = "C",
 </td></tr>
 <tr valign="top"><td><code class="r">dem</code></td>
 <td>
-<p>Raster*. Either a digital elevation model as a RasterLayer or a RasterStack/Brick with pre-calculated slope and aspect (see <a href="https://www.rdocumentation.org/packages/raster/topics/terrain">terrain</a>) in which case the layers must be named 'slope' and 'aspect'. 
+<p>Raster*. Either a digital elevation model as a RasterLayer or a RasterStack/Brick with pre-calculated slope and aspect (see <a href="https://www.rdocumentation.org/packages/raster/help/terrain">terrain</a>) in which case the layers must be named 'slope' and 'aspect'. 
 Must have the same dimensions as <code class="r">img</code>.</p>
 </td></tr>
 <tr valign="top"><td><code class="r">metaData</code></td>
@@ -69,7 +79,7 @@ Must have the same dimensions as <code class="r">img</code>.</p>
 </td></tr>
 <tr valign="top"><td><code class="r">...</code></td>
 <td>
-<p>arguments passed to <code class="r"><a href="https://www.rdocumentation.org/packages/raster/topics/writeRaster">writeRaster</a></code></p>
+<p>arguments passed to <code class="r"><a href="https://www.rdocumentation.org/packages/raster/help/writeRaster">writeRaster</a></code></p>
 </td></tr>
 </table>
 
@@ -106,5 +116,5 @@ lsat_C &lt;- topCor(lsat, dem = srtm, solarAngles = c(1.081533, 0.7023922), meth
 </code></pre>
 
 
-<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.2.6 <a href="index.html">Index</a>]</div>
-</body></html>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.2.7 <a href="index.html">Index</a>]</div>
+</div></body></html>

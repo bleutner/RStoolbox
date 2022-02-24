@@ -9,13 +9,14 @@ group: navigation
 {% include JB/setup %}
  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Map accuracy assessment</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
 <link rel="stylesheet" type="text/css" href="R.css" />
 
                             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
                             <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
                             <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
                             <script>hljs.initHighlightingOnLoad();</script>
-                            </head><body>
+                            </head><body><div class="container">
 
 <h3>Description</h3>
 
@@ -26,8 +27,14 @@ group: navigation
 <h3>Usage</h3>
 
 <pre>
-validateMap(map, valData, responseCol, nSamples = 500,
-  mode = "classification", classMapping = NULL)
+validateMap(
+  map,
+  valData,
+  responseCol,
+  nSamples = 500,
+  mode = "classification",
+  classMapping = NULL
+)
 </pre>
 
 
@@ -100,5 +107,5 @@ validateMap(map, valData, responseCol, nSamples = 500,
 </code></pre>
 
 
-<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.2.6 <a href="index.html">Index</a>]</div>
-</body></html>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.2.7 <a href="index.html">Index</a>]</div>
+</div></body></html>

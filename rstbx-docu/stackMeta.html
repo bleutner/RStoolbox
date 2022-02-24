@@ -9,13 +9,14 @@ group: navigation
 {% include JB/setup %}
  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Import separate Landsat files into single stack</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
 <link rel="stylesheet" type="text/css" href="R.css" />
 
                             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
                             <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
                             <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
                             <script>hljs.initHighlightingOnLoad();</script>
-                            </head><body>
+                            </head><body><div class="container">
 
 <h3>Description</h3>
 
@@ -27,8 +28,7 @@ Be aware that by default stackMeta() does NOT import panchromatic bands nor ther
 <h3>Usage</h3>
 
 <pre>
-stackMeta(file, quantity = "all", category = "image",
-  allResolutions = FALSE)
+stackMeta(file, quantity = "all", category = "image", allResolutions = FALSE)
 </pre>
 
 
@@ -84,7 +84,7 @@ summary(metaData)
 #&gt; Sensor:     TM 
 #&gt; Date:       1988-08-14 
 #&gt; Path/Row:   224/63 
-#&gt; Projection: +proj=utm +zone=22 +units=m +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0
+#&gt; Projection: +proj=utm +zone=22 +datum=WGS84 +units=m +no_defs
 #&gt; 
 #&gt; Data:
 #&gt;                              FILES QUANTITY CATEGORY
@@ -110,12 +110,12 @@ lsat
 #&gt; dimensions : 310, 287, 88970, 7  (nrow, ncol, ncell, nlayers)
 #&gt; resolution : 30, 30  (x, y)
 #&gt; extent     : 619395, 628005, -419505, -410205  (xmin, xmax, ymin, ymax)
-#&gt; crs        : +proj=utm +zone=22 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 
+#&gt; crs        : +proj=utm +zone=22 +datum=WGS84 +units=m +no_defs 
 #&gt; names      : B1_dn, B2_dn, B3_dn, B4_dn, B5_dn, B6_dn, B7_dn 
 #&gt; min values :    54,    18,    11,     4,     2,   131,     1 
 #&gt; max values :   185,    87,    92,   127,   148,   146,    79
 </code></pre>
 
 
-<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.2.6 <a href="index.html">Index</a>]</div>
-</body></html>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.2.7 <a href="index.html">Index</a>]</div>
+</div></body></html>
