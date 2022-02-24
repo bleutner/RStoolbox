@@ -13,6 +13,7 @@ unsuperClass(
   norm = FALSE,
   clusterMap = TRUE,
   algorithm = "Hartigan-Wong",
+  output = "classes",
   ...
 )
 }
@@ -33,7 +34,14 @@ unsuperClass(
 
 \item{algorithm}{Character. \link[stats]{kmeans} algorithm. One of c("Hartigan-Wong", "Lloyd", "MacQueen")}
 
+\item{output}{Character. Either 'classes' (kmeans class; default) or 'distances' (euclidean distance to each cluster center).}
+
 \item{...}{further arguments to be passed to \link[raster]{writeRaster}, e.g. filename}
+}
+\value{
+Returns an RStoolbox::unsuperClass object, which is a list containing the kmeans model ($model) and the raster map ($map).
+For output = "classes", $map contains a RasterLayer with discrete classes (kmeans clusters); for output = "distances" $map contains 
+a RasterBrick, with `nClasses` layers, where each layer maps the euclidean distance to the corresponding class centroid.
 }
 \description{
 Unsupervised clustering of Raster* data using kmeans clustering
@@ -67,6 +75,11 @@ colors <- rainbow(5)
 plot(unC$map, col = colors, legend = FALSE, axes = FALSE, box = FALSE)
 legend(1,1, legend = paste0("C",1:5), fill = colors,
        title = "Classes", horiz = TRUE,  bty = "n")
+
+## Return the distance of each pixel to each class centroid
+unC <- unsuperClass(input, nSamples = 100, nClasses = 3, output = "distances")
+unC
+ggR(unC, 1:3, geom_raster = TRUE)
 
 par(olpar) # reset par
 }

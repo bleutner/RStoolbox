@@ -184,7 +184,7 @@ topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg
     ## Following Lu 2008 sample pre selection
     set.seed(10)
     strat <- if(inherits(stratImg, "character")) NULL else {names(stratImg) <- "strat"; stratImg} 
-    sr       <- as.data.frame(sampleRandom(stack(img, illu, slope, strat), size = 10000))
+    sr       <- as.data.frame(sampleRandom(stack(img, illu, slope, strat), size = min(ncell(img), 10000)))
     
     if(method != "stat") sr  <- sr[sr$slope > 2*pi/180 & sr$illu >= 0,]
     if(method != "noStrat" & inherits(stratImg, "character")) {

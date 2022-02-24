@@ -25,8 +25,8 @@ oneHotCpp <- function(x, classes, bg, fg, na_rm) {
     .Call('_RStoolbox_oneHotCpp', PACKAGE = 'RStoolbox', x, classes, bg, fg, na_rm)
 }
 
-predKmeansCpp <- function(x, centers) {
-    .Call('_RStoolbox_predKmeansCpp', PACKAGE = 'RStoolbox', x, centers)
+predKmeansCpp <- function(x, centers, returnDistance = FALSE) {
+    .Call('_RStoolbox_predKmeansCpp', PACKAGE = 'RStoolbox', x, centers, returnDistance)
 }
 
 predictMlcCpp <- function(newdata, model, nclasses) {

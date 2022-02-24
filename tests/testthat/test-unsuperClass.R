@@ -29,18 +29,26 @@ test_that("terra inputs",{
 ## kmeans prediction function only
 mat <- matrix(1:20, by = TRUE, nrow = 5, ncol=4)
 cents <- mat[c(1,3),]
+dists <- apply(cents, 1, function(ce) { apply(mat, 1, function(x) {
+    sqrt(sum((x - ce)^2))
+} ) })
+
+
 test_that("kmeans predictions",{
-            expect_equal(predKmeansCpp(mat, cents), c(1,1,2,2,2))
-            mat[1] <- NA
-            expect_equal(predKmeansCpp(mat, cents), c(NA,1,2,2,2))
-        })
+    expect_equal(predKmeansCpp(mat, cents), matrix(c(1,1,2,2,2), ncol = 1))
+    expect_equal(predKmeansCpp(mat, cents,TRUE), dists)
+    mat[1] <- NA
+    dists[1,] <- NA
+    expect_equal(predKmeansCpp(mat, cents), matrix(c(NA,1,2,2,2), ncol = 1))
+    expect_equal(predKmeansCpp(mat, cents, TRUE), dists)
+})
 
 
 ## pretty print
 test_that("printing method", {
-            skip_on_cran()
-            expect_output(print(unsuperClass(lsat,  nClasses = 2)), "unsuperClass results")
-        })
+    skip_on_cran()
+    expect_output(print(unsuperClass(lsat,  nClasses = 2)), "unsuperClass results")
+})
 
 
 ## algortithm warning
@@ -57,6 +65,7 @@ test_that("predict.unSuperClass", {
     expect_s4_class(pred <- predict(uc, lsat), "RasterLayer")
     expect_equal(unique(uc$map - pred), 0)
     tmpFile <- tempfile(fileext = ".grd")
+    
     pred <- predict(uc, lsat, filename = tmpFile )
     expect_false(inMemory(pred))
     expect_equal(filename(pred), tmpFile)

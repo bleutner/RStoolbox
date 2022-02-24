@@ -17,9 +17,9 @@ pifMatch(
 \arguments{
 \item{img}{RasterStack or RasterBrick. Image to be adjusted.}
 
-\item{ref}{RasterStack or RasterBruck. Reference image.}
+\item{ref}{RasterStack or RasterBrick. Reference image.}
 
-\item{method}{Method to calculate pixel similariry. Options: euclidean distance ('ed'), spectral angle ('sam') or pearson correlation coefficient ('cor').}
+\item{method}{Method to calculate pixel similarity. Options: euclidean distance ('ed'), spectral angle ('sam') or pearson correlation coefficient ('cor').}
 
 \item{quantile}{Numeric. Threshold quantile used to identify PIFs}
 
