@@ -61,7 +61,9 @@ cloudMask <- function(x, threshold = 0.8,  blue = "B1_sre", tir = "B6_sre", buff
             w <- matrix(ncol = buffer, nrow = buffer, 1)
             w[c(1,buffer,1,buffer), c(1,1,buffer,buffer)] <- 0
             cmask <- focal(cmask, w, na.rm = TRUE )
-            cmask[!is.na(cmask)] <- 1L
+			nonfinite <- is.na(cmask)
+            cmask[!nonfinite] <- 1L
+			cmask[nonfinite] <- NA
         } else {
             buffer <- buffer * res(cmask)[1]
             cmask <- buffer(cmask, buffer, na.rm = TRUE )

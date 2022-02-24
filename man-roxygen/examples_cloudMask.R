@@ -18,7 +18,7 @@
 #' ## Plot cloudmask 
 #' \donttest{ggRGB(lsat, stretch = "lin") +
 #'    ggR(cldmsk_final[[1]], ggLayer = TRUE, forceCat = TRUE, geom_raster = TRUE) +
-#'    scale_fill_manual(values = "red", na.value = NA)
+#'    scale_fill_manual(values = c("red"), na.value = NA)
 #' }
 #' #' ## Estimate cloud shadow displacement
 #' ## Interactively (click on cloud pixels and the corresponding shadow pixels)

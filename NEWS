@@ -6,7 +6,7 @@ New:
 
 Fixes:
 * `rasterCVA` estimates median values now for entire rasters and not per chunk
-
+* `cloudMask` now returns NA for non-clouds instead of NaN
 
 RStoolbox 0.2.6
 ====================================
