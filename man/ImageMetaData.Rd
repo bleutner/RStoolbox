@@ -10,6 +10,8 @@ ImageMetaData(
   sat = NA,
   sen = NA,
   scene = NA,
+  colNum = NA,
+  colTier = NA,
   proj = NA,
   date = NA,
   pdate = NA,
@@ -44,6 +46,10 @@ ImageMetaData(
 
 \item{scene}{Character. Scene_ID}
 
+\item{colNum}{Character Collection number}
+
+\item{colTier}{Character Collection tier}
+
 \item{proj}{CRS. Projection.}
 
 \item{date}{POSIXct. Aquisition date.}
@@ -64,9 +70,9 @@ ImageMetaData(
 
 \item{bands}{Character vector. Band names}
 
-\item{quant}{Character vector. Quantity, one of c("dn", "tra", "tre", "sre", "bt", "idx")}
+\item{quant}{Character vector. Quantity, one of c("dn", "tra", "tre", "sre", "bt", "idx", "angle")}
 
-\item{cat}{Character vector. Category, e.g. c("image", "pan", "index", "qa")}
+\item{cat}{Character vector. Category, e.g. c("image", "pan", "index", "qa", "aux")}
 
 \item{na}{Numeric vector. No-data value per band}
 

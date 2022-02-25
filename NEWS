@@ -13,6 +13,7 @@ Fixes:
 * `topCor` now works for tiny rasters as well (fixes #55, reported by @latenooker) 
 * `rasterPCA` now correctly considers the number observations in face of missing values (fixes #79, reported by @andliszmmu)
 * `superClass` now accepts different geometries for trainData and valData (fixes #73, suggested by @Silviculturalist)
+* fix `readMeta` for MTL files delivered with Landsat collection data (fixes #71, reported by @jkoellin et al.)
 
 RStoolbox 0.2.6
 ====================================
