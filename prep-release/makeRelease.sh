@@ -69,7 +69,7 @@ Rscript -e "library(devtools); library(methods);  check_win_release(); check_win
 #Rscript -e "library(rhub); library(methods);  check(platform='debian-gcc-release', valgrind = TRUE)" &> ${HOME}/RHub_RStoolbox_check_with_valgrind.log
 Rscript -e "library(rhub); library(methods);  check(platform=c('debian-gcc-release', 'debian-gcc-devel', 'linux-x86_64-rocker-gcc-san'))" 
 ## Check on MAC
-Rscript -e "library(methods); library(rhub); check(platform='macos-elcapitan-release')"
+Rscript -e "library(methods); library(rhub); check(platform='macos-highsierra-release-cran')"
 
 Rscript -e "library(revdepcheck); revdep_check(num_workers = 4)"
 
