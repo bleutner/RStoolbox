@@ -5,23 +5,25 @@
 \title{Image to Image Co-Registration based on Mutual Information}
 \usage{
 coregisterImages(
-  slave,
-  master,
+  img,
+  ref,
   shift = 3,
   shiftInc = 1,
   nSamples = 1e+05,
   reportStats = FALSE,
   verbose,
   nBins = 100,
+  master = deprecated(),
+  slave = deprecated(),
   ...
 )
 }
 \arguments{
-\item{slave}{Raster* object. Slave image to shift to master. Slave and master must have equal numbers of bands.}
+\item{img}{Raster* or SpatRast object. Image to shift to match reference image. \code{img} and \code{ref} must have equal numbers of bands.}
 
-\item{master}{Raster* object. Reference image. Slave and master must have equal numbers of bands.}
+\item{ref}{Raster* or SpatRast object. Reference image. \code{img} and \code{ref} must have equal numbers of bands.}
 
-\item{shift}{Numeric or matrix. If numeric, then shift is the maximal absolute radius (in pixels of \code{slave} resolution) which \code{slave} is shifted (\code{seq(-shift, shift, by=shiftInc)}). 
+\item{shift}{Numeric or matrix. If numeric, then shift is the maximal absolute radius (in pixels of \code{img} resolution) which \code{img} is shifted (\code{seq(-shift, shift, by=shiftInc)}). 
 If shift is a matrix it must have two columns (x shift and y shift), then only these shift values will be tested.}
 
 \item{shiftInc}{Numeric. Shift increment (in pixels, but not restricted to integer). Ignored if \code{shift} is a matrix.}
@@ -34,15 +36,19 @@ If shift is a matrix it must have two columns (x shift and y shift), then only t
 
 \item{nBins}{Integer. Number of bins to calculate joint histogram.}
 
+\item{master}{`r lifecycle::badge("deprecated")` Argument was renamed. Please use \code{ref} from now on.}
+
+\item{slave}{`r lifecycle::badge("deprecated")` Argument was renamed. Please use \code{img} from now on.}
+
 \item{...}{further arguments passed to \code{\link[raster]{writeRaster}}.}
 }
 \value{
-\code{reportStats=FALSE} returns a Raster* object (x-y shifted slave image).  
+\code{reportStats=FALSE} returns a Raster* object (x-y shifted image).  
 \code{reportStats=TRUE} returns a list containing a data.frame with mutual information per shift ($MI), the shift of maximum MI ($bestShift),
 the joint histograms per shift in a list ($jointHist) and the shifted image ($coregImg).
 }
 \description{
-Shifts a slave image to match the reference image (master). Match is based on maximum
+Shifts an image to match a reference image. Matching is based on maximum
 mutual information.
 }
 \details{
@@ -67,7 +73,7 @@ p <- ggR(reference, sat = 1, alpha = .5)
 p + ggR(missreg, sat = 1, hue = .5, alpha = 0.5, ggLayer=TRUE) 
 
 ## Coregister images (and report statistics)
-coreg <- coregisterImages(missreg, master = reference,
+coreg <- coregisterImages(missreg, ref = reference,
                          nSamples = 500, reportStats = TRUE)
 
 ## Plot mutual information per shift

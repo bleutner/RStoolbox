@@ -1,11 +1,13 @@
 #' Image to Image Co-Registration based on Mutual Information
 #' 
-#' Shifts a slave image to match the reference image (master). Match is based on maximum
+#' Shifts an image to match a reference image. Matching is based on maximum
 #' mutual information. 
 #' 
-#' @param slave Raster* object. Slave image to shift to master. Slave and master must have equal numbers of bands.
-#' @param master Raster* object. Reference image. Slave and master must have equal numbers of bands.
-#' @param shift Numeric or matrix. If numeric, then shift is the maximal absolute radius (in pixels of \code{slave} resolution) which \code{slave} is shifted (\code{seq(-shift, shift, by=shiftInc)}). 
+#' @param img Raster* or SpatRast object. Image to shift to match reference image. \code{img} and \code{ref} must have equal numbers of bands.
+#' @param ref Raster* or SpatRast object. Reference image. \code{img} and \code{ref} must have equal numbers of bands.
+#' @param slave `r lifecycle::badge("deprecated")` Argument was renamed. Please use \code{img} from now on.
+#' @param master `r lifecycle::badge("deprecated")` Argument was renamed. Please use \code{ref} from now on.
+#' @param shift Numeric or matrix. If numeric, then shift is the maximal absolute radius (in pixels of \code{img} resolution) which \code{img} is shifted (\code{seq(-shift, shift, by=shiftInc)}). 
 #'  If shift is a matrix it must have two columns (x shift and y shift), then only these shift values will be tested.
 #' @param shiftInc Numeric. Shift increment (in pixels, but not restricted to integer). Ignored if \code{shift} is a matrix.
 #' @param nSamples Integer. Number of samples to calculate mutual information. 
@@ -21,7 +23,7 @@
 #' Roughly speaking, the higher the mutual information of two data-sets, the higher is their shared information content, i.e. their similarity.
 #' When two images are exactly co-registered their mutual information is maximal. By trying different image shifts, we aim to find the best overlap which maximises the mutual information.
 #' @return 
-#' \code{reportStats=FALSE} returns a Raster* object (x-y shifted slave image).  
+#' \code{reportStats=FALSE} returns a Raster* object (x-y shifted image).  
 #' \code{reportStats=TRUE} returns a list containing a data.frame with mutual information per shift ($MI), the shift of maximum MI ($bestShift),
 #' the joint histograms per shift in a list ($jointHist) and the shifted image ($coregImg). 
 #' @export 
@@ -39,7 +41,7 @@
 #'p + ggR(missreg, sat = 1, hue = .5, alpha = 0.5, ggLayer=TRUE) 
 #'
 #'## Coregister images (and report statistics)
-#'coreg <- coregisterImages(missreg, master = reference,
+#'coreg <- coregisterImages(missreg, ref = reference,
 #'                          nSamples = 500, reportStats = TRUE)
 #'
 #'## Plot mutual information per shift
@@ -56,46 +58,56 @@
 #'## Compare correction
 #'ggR(reference, sat = 1, alpha = .5) +
 #'   ggR(coreg$coregImg, sat = 1, hue = .5, alpha = 0.5, ggLayer=TRUE) 
-coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, nSamples = 1e5, reportStats = FALSE, verbose, nBins = 100, ...) {
+coregisterImages <- function(img, ref, shift = 3, shiftInc = 1, nSamples = 1e5, 
+        reportStats = FALSE, verbose, nBins = 100, 
+        master = deprecated(), slave = deprecated(),
+        ...) {
     
-	slave <- .toRaster(slave)
-	master <- .toRaster(master)
+    if(is_present(slave)){
+        deprecate_warn("0.3.0", "coregisterImages(slave)", "coregisterImages(img)")
+    }
+    if(is_present(master)){
+        deprecate_warn("0.3.0", "coregisterImages(master)", "coregisterImages(ref)")
+    }
+    
+	img <- .toRaster(img)
+	ref <- .toRaster(ref) 
 	
     ## TODO: allow user selected pseudo control points
     ## TODO: add computation of MI to docu
     #if(!swin%%2 | !mwin%%2) stop("swin and mwin must be odd numbers")
     if(!missing("verbose")) .initVerbose(verbose)
-    if(!compareCRS(master,  slave)) stop("Projection must be the same for master and slave")
-    nSamples <- min(nSamples, ncell(slave))
+    if(!compareCRS(ref,  img)) stop("Projection must be the same for ref and img")
+    nSamples <- min(nSamples, ncell(img))
     
     if(inherits(shift, "matrix") && ncol(shift)  == 2) { 
-        shifts <- shift * res(slave) 
+        shifts <- shift * res(img) 
     } else {
         shift <-  seq(0, shift, shiftInc)
         shift <- c(-rev(shift), shift[-1]) ## always include zero shift
-        shifts <- expand.grid(shift * res(slave)[1], shift * res(slave)[2])
+        shifts <- expand.grid(shift * res(img)[1], shift * res(img)[2])
     } 
     names(shifts) <- c("x", "y")        
     
     ran   <- apply(shifts, 2, range)
-    minex <- extent(shift(slave, ran[1,1], ran[1,2]))
-    maxex <- extent(shift(slave, ran[2,1], ran[2,2]))   
+    minex <- extent(shift(img, ran[1,1], ran[1,2]))
+    maxex <- extent(shift(img, ran[2,1], ran[2,2]))   
     
-    XYslaves <- sampleRandom(master, size = nSamples, ext = .getExtentOverlap(minex, maxex)*0.9, xy = TRUE)
-    xy <- XYslaves[,c(1,2)]
-    me <- XYslaves[,-c(1,2)]     
-    mmin <- min(minValue(master))
-    mmax <- max(maxValue(master))
-    smin <- min(minValue(slave))
-    smax <- max(maxValue(slave))
+    XYimgs <- sampleRandom(ref, size = nSamples, ext = .getExtentOverlap(minex, maxex)*0.9, xy = TRUE)
+    xy <- XYimgs[,c(1,2)]
+    me <- XYimgs[,-c(1,2)]      
+    mmin <- min(minValue(ref))
+    mmax <- max(maxValue(ref))
+    smin <- min(minValue(img))
+    smax <- max(maxValue(img))
     
     mbreax <- seq(mmin, mmax, by = (mmax - mmin)/nBins)
     sbreax <- seq(smin, smax, by = (smax - smin)/nBins)
     me       <- cut(me, breaks = mbreax, labels = FALSE, include.lowest = TRUE)
     
-    nsl <- nlayers(slave)
-    nml <- nlayers(master)
-    if(nsl !=  nml)  stop("Currently slave and master must have the same number of layers")         
+    nsl <- nlayers(img)
+    nml <- nlayers(ref)
+    if(nsl !=  nml)  stop("Currently img and ref must have the same number of layers")         
     
     shiftPts <- function(o, x, y) {
         o[,"x"] <- o[,"x"] + x
@@ -105,11 +117,11 @@ coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, nSamples = 
     
     spts <- .parXapply(X = 1:nrow(shifts), XFUN = "lapply", FUN = function(i){
                 xt <- shiftPts(xy, x = -shifts[i,1], y = -shifts[i,2])
-                cellFromXY(slave, xt)
+                cellFromXY(img, xt)
             }, envir=environment())
     
     ucells <- sort(unique(unlist(spts)))
-    lut <- as.matrix(slave[ucells])
+    lut <- as.matrix(img[ucells])
     rownames(lut) <- ucells
     spts <- lapply(spts, as.character)
     
@@ -145,7 +157,7 @@ coregisterImages <- function(slave, master, shift = 3, shiftInc = 1, nSamples = 
     ## Find best shift and shift if doShift
     moveIt <- shifts[which.max(mi),]
     .vMessage("Identified shift in map units (x/y): ", paste(moveIt, collapse="/"))
-    moved <- shift(slave, moveIt[1], moveIt[2], ...)
+    moved <- shift(img, moveIt[1], moveIt[2], ...)
     if(reportStats) {
         return(list(MI = data.frame(shifts, mi=mi), jointHist = jh, bestShift = moveIt, coregImg = moved))
     } else {
