@@ -11,7 +11,7 @@ Authors@R: c(
 Description: Toolbox for remote sensing image processing and analysis such as
     calculating spectral indices, principal component transformation, unsupervised
     and supervised classification or fractional cover analyses.
-URL: https://bleutner.github.io/RStoolbox, https://github.com/bleutner/RStoolbox
+URL: https://bleutner.github.io/RStoolbox/, https://github.com/bleutner/RStoolbox
 BugReports: https://github.com/bleutner/RStoolbox/issues
 Encoding: UTF-8
 Depends:

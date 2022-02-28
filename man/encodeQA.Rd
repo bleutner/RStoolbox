@@ -62,5 +62,5 @@ Only currently populated bits are available as arguments.
 encodeQA(snow = "low", cirrus = c("med", "high"), cloud = "high")
 }
 \references{
-\url{https://www.usgs.gov/land-resources/nli/landsat/landsat-collection-1-level-1-quality-assessment-band} for Collection 1 quality designations (\code{legacy = "collection1"})
+\url{https://www.usgs.gov/landsat-missions/landsat-collection-1-level-1-quality-assessment-band} for Collection 1 quality designations (\code{legacy = "collection1"})
 }

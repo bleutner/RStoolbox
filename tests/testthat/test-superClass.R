@@ -5,10 +5,13 @@ suppressPackageStartupMessages(library(raster))
 suppressPackageStartupMessages(library(pls))
 suppressPackageStartupMessages(library(randomForest))
 suppressPackageStartupMessages(library(caret))
+suppressPackageStartupMessages(library(rgdal))
+
+rgdal::set_thin_PROJ6_warnings(FALSE)
+rgdal::set_rgdal_show_exportToProj4_warnings(FALSE)
 
 data(lsat)
 lsat <- lsat[[1:4]]
-
 ## Set-up test data
 set.seed(1)
 poly     <- readRDS(system.file("external/trainingPolygons.rds", package="RStoolbox"))
@@ -174,4 +177,3 @@ if (identical(Sys.getenv("NOT_CRAN"), "true") ) {
 	)
 	
 }
-

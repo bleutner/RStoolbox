@@ -1,42 +1,35 @@
-REVISION: Cut-down on example execution times which failed to pass CRAN submission pre-check.
-
-NOTE: The maintainer email address has been changed from benjamin.leutner@uni-wuerzburg.de to rstoolboxpackage@gmail.com which is futureproof. As requested by CRAN policy, I have sent a confirmation email for this change from the previous email address.
-
-This release restores compatibility with the raster package (Email from CRAN/Hornik, 11.07.19).
-Plus other minor fixes and new functionality (see Changelog below).
-
+This release fixes test results as requested by CRAN(Ripley/10.2.2022).
+Plus additional functional changes and fixes.
 
 ### R CMD checks
 ### Test environments
-* Ubuntu 19.04 64bit (release)
-* Travis-CI Ubuntu 14.04 (devel)
+* Ubuntu 20.04 64bit (release)
 * winbuilder (devel, release, oldrel)
 * macos r-hub
 
 ### R CMD check results
-There is one NOTE: change in maintainer email address
 There were no ERRORs, WARNINGs
 
 ### Downstream dependencies
-moveVis OK
+fieldRS OK
+foster OK
+rtsVis OK
+PlanetNICFI OK
+spatialEco OK
 
 ### Changelog:
-RStoolbox 0.2.6
+RStoolbox 0.2.7
 New:
-* added several Sentinel-2 optimized spectral indices relying on red-edge bands: 
-   - red-edge inflection point (REIP),
-   - normalized difference red-edge indices (NDREI1, NDREI2),
-   - green-band chlorophyll index (CLG), red-edge chlorophyll index (CLRE)
-   - Modified Chlorophyll Absorption Ratio Index (MCARI) 
-   - MERIS Terrestrial Chlorophyll Index (MTCI)
+* `rasterCVA` by default no longer enforces a minimal change magnitude (can still be accomplished with the `tmf` argument).
+   Also a new argument `nct` allows to fix this threshold to a user selected value instead of deriving it based on the median of the observed change magnitudes. 
+* `unsuperClass` has a new argument `output` which allows to return the distances to all cluster centers as raster layers, instead of the class itself 
+* added spectral index kNDVI in spectralIndices as suggested by Camps-Valls et al (2021)
+* added support for `terra::SpatRast` objects throughout RStoolbox (as alternative to `raster` objects). Note: internal functionality is still based on `raster`.
 
-Fixes: 
-* `readSLI` and `writeSLI` now handle endian of binary spectral libraries correctly (#47, fix contributed by @aloboa)
-* fix calculation of prediction probabilities in `superClass`(reported by Benson Kemboi)
-* adapt to raster 2.9.5 API changes
-* fix order of thermal calibration coefficients for Landsat 8 L1 MTL metadata in `readMeta` (reported by Xiaoma Li)
-* fixed an issue where `readSLI` did not find header files with dots in pathnames (#51, reported by @aloboa)
-
-Changes:
-* modified readSLI label parsing. Internal white space is now converted to underscores (#52)
-
+Fixes:
+* `rasterCVA` estimates median values now for entire rasters and not per chunk
+* `cloudMask` now returns NA for non-clouds instead of NaN
+* `topCor` now works for tiny rasters as well (fixes #55, reported by @latenooker) 
+* `rasterPCA` now correctly considers the number observations in face of missing values (fixes #79, reported by @andliszmmu)
+* `superClass` now accepts different geometries for trainData and valData (fixes #73, suggested by @Silviculturalist)
+* fix `readMeta` for MTL files delivered with Landsat collection data (fixes #71, reported by @jkoellin et al.)
