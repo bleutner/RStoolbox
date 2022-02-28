@@ -41,7 +41,7 @@ readEE <- function(x) {
                 df <- df[,allLScats[inter]]
                 df[,allLScats[!inter]] <- NA
                 df <- df[, allLScats]
-                df$Date <- as.POSIXct(df$Date.Acquired, "%Y/%m/%d")
+                df$Date <- as.POSIXct(df$Date.Acquired, format = "%Y/%m/%d")
                 df$Doy  <- as.numeric(format(df$Date, format = "%j"))
                 df$Year <- as.numeric(format(df$Date, format = "%Y"))
                 df$Satellite <- paste0("LS", substr(df$Landsat.Scene.Identifier, 3, 3))
