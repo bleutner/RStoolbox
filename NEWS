@@ -6,7 +6,7 @@ New:
 * `unsuperClass` has a new argument `output` which allows to return the distances to all cluster centers as raster layers, instead of the class itself 
 * added spectral index kNDVI in spectralIndices as suggested by Camps-Valls et al (2021)
 * added support for `terra::SpatRast` objects throughout RStoolbox (as alternative to `raster` objects). Note: internal functionality is still based on `raster`.
-* arguments `master` and `slave` in `coregisterImage()` were deprecated in favor of `ref` and `img`, respectively (closes #63, suggested by @MatthiasSiewert)
+* arguments `master` and `slave` in `coregisterImages()` were deprecated in favor of `ref` and `img`, respectively (closes #63, suggested by @MatthiasSiewert)
 
 Fixes:
 * `rasterCVA` estimates median values now for entire rasters and not per chunk
