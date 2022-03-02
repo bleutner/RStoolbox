@@ -36,9 +36,9 @@ If shift is a matrix it must have two columns (x shift and y shift), then only t
 
 \item{nBins}{Integer. Number of bins to calculate joint histogram.}
 
-\item{master}{`r lifecycle::badge("deprecated")` Argument was renamed. Please use \code{ref} from now on.}
+\item{master}{DEPRECATED! Argument was renamed. Please use \code{ref} from now on.}
 
-\item{slave}{`r lifecycle::badge("deprecated")` Argument was renamed. Please use \code{img} from now on.}
+\item{slave}{DEPRECATED! Argument was renamed. Please use \code{img} from now on.}
 
 \item{...}{further arguments passed to \code{\link[raster]{writeRaster}}.}
 }

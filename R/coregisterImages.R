@@ -5,8 +5,6 @@
 #' 
 #' @param img Raster* or SpatRast object. Image to shift to match reference image. \code{img} and \code{ref} must have equal numbers of bands.
 #' @param ref Raster* or SpatRast object. Reference image. \code{img} and \code{ref} must have equal numbers of bands.
-#' @param slave `r lifecycle::badge("deprecated")` Argument was renamed. Please use \code{img} from now on.
-#' @param master `r lifecycle::badge("deprecated")` Argument was renamed. Please use \code{ref} from now on.
 #' @param shift Numeric or matrix. If numeric, then shift is the maximal absolute radius (in pixels of \code{img} resolution) which \code{img} is shifted (\code{seq(-shift, shift, by=shiftInc)}). 
 #'  If shift is a matrix it must have two columns (x shift and y shift), then only these shift values will be tested.
 #' @param shiftInc Numeric. Shift increment (in pixels, but not restricted to integer). Ignored if \code{shift} is a matrix.
@@ -15,6 +13,8 @@
 #' @param reportStats Logical. If \code{FALSE} it will return only the shifted images. Otherwise it will return the shifted image in a list containing stats such as mutual information per shift and joint histograms.
 #' @param verbose Logical. Print status messages. Overrides global RStoolbox.verbose option.
 #' @param ... further arguments passed to \code{\link[raster]{writeRaster}}.
+#' @param slave DEPRECATED! Argument was renamed. Please use \code{img} from now on.
+#' @param master DEPRECATED! Argument was renamed. Please use \code{ref} from now on.
 #' @details 
 #' Currently only a simple linear x - y shift is considered and tested. No higher order shifts (e.g. rotation, non-linear transformation) are performed. This means that your imagery
 #' should already be properly geometrically corrected.
