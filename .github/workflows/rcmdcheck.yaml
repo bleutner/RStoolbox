@@ -45,7 +45,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck, randomForest=?ignore-before-r=4.1.0
+          extra-packages: any::rcmdcheck, cran/randomForest@4.6-14
           needs: check
 
       - uses: r-lib/actions/check-r-package@v2
