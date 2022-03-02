@@ -7,7 +7,7 @@ set.seed(1)
 poly     <- readRDS(system.file("external/trainingPolygons.rds", package="RStoolbox"))
 poly$classNum <- as.numeric(poly$class)
 
-sc <- superClass(lsat, trainData = poly, nSample = 50, responseCol = "class", model = "mlc", trainPartition = 0.7, predict = TRUE)
+sc <- superClass(lsat, trainData = poly, nSamples = 50, responseCol = "class", model = "mlc", trainPartition = 0.7, predict = TRUE)
 
 test_that("classification, without class mapping",{
             val <- validateMap(sc$map, valData = poly, nSample =50, responseCol = "classNum", classMapping = NULL)
@@ -27,12 +27,11 @@ test_that("classification, with class mapping",{
 
 test_that("regression",{
             skip_on_cran()
-            val <- validateMap(sc$map, valData = poly, nSample = 50, mode = "regression", responseCol = "classNum", classMapping)
+            val <- validateMap(sc$map, valData = poly, nSample = 50, mode = "regression", responseCol = "classNum")
             expect_is(val, "mapValidation")
             expect_equal(lapply(val, "class"), list(performance="numeric",validationSet = "data.frame"))
             expect_equal(colnames(val$validationSet), c("reference", "prediction", "cell"))
             expect_equal(names(val$performance)[1:2], c("RMSE", "Rsquared"))
-            print(val)
         }) 
 
 

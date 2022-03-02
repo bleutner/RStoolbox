@@ -10,6 +10,7 @@ superClass(
   valData = NULL,
   responseCol = NULL,
   nSamples = 1000,
+  nSamplesV = 1000,
   polygonBasedCV = FALSE,
   trainPartition = NULL,
   model = "rf",
@@ -26,15 +27,17 @@ superClass(
 )
 }
 \arguments{
-\item{img}{Raster* object. Typically remote sensing imagery, which is to be classified.}
+\item{img}{terra::SpatRast or raster::Raster* object. Typically remote sensing imagery, which is to be classified.}
 
-\item{trainData}{SpatialPolygonsDataFrame or SpatialPointsDataFrame containing the training locations.}
+\item{trainData}{sf or sp spatial vector data containing the training locations (POINTs,or POLYGONs).}
 
-\item{valData}{SpatialPolygonsDataFrame or SpatialPointsDataFrame containing the validation locations (optional).}
+\item{valData}{Ssf or sp spatial vector data containing the validation locations (POINTs,or POLYGONs) (optional).}
 
 \item{responseCol}{Character or integer giving the column in \code{trainData}, which contains the response variable. Can be omitted, when \code{trainData} has only one column.}
 
-\item{nSamples}{Integer. Number of samples per land cover class.}
+\item{nSamples}{Integer. Number of samples per land cover class. If \code{NULL} all pixels covered by training polygons are used (memory intensive!). Ignored if trainData consists of POINTs.}
+
+\item{nSamplesV}{Integer. Number of validation samples per land cover class. If \code{NULL} all pixels covered by validation polygons are used (memory intensive!). Ignored if valData consists of POINTs.}
 
 \item{polygonBasedCV}{Logical. If \code{TRUE} model tuning during cross-validation is conducted on a per-polygon basis. Use this to deal with overfitting issues. Does not affect training data supplied as SpatialPointsDataFrames.}
 
@@ -65,7 +68,20 @@ Requires all data to carry valid projection information.}
 \item{...}{further arguments to be passed to \code{\link[caret]{train}}}
 }
 \value{
-A list containing [[1]] the model, [[2]] the predicted raster and [[3]] the class mapping
+A superClass object (effectively a list) containing:
+\enumerate{
+\item $model: the fitted model
+\item $modelFit: model fit statistics
+\item $training: indexes of samples used for training
+\item $validation: list of
+    \enumerate{
+       \item $performance: performance estimates based on independent validation (confusion matrix etc.)
+       \item $validationSamples: actual pixel coordinates plus reference and predicted values used for validation
+       \item $validationGeometry: validation polygpns (clipped with mindist to training geometries)
+    }
+\item $map: the predicted raster
+\item $classMapping: a data.frame containing an integer <-> label mapping
+}
 }
 \description{
 Supervised classification both for classification and regression mode based on vector training data (points or polygons).
@@ -77,7 +93,7 @@ SuperClass performs the following steps:
 \item Ensure non-overlap between training and validation data. This is neccesary to avoid biased performance estimates.
  A minimum distance (\code{minDist}) in pixels can be provided to enforce a given distance between training and validation data.
 
-\item Sample training coordinates. If \code{trainData} (and \code{valData} if present) are SpatialPolygonsDataFrames \code{superClass} will calculate the area per polygon and sample
+\item Sample training coordinates. If \code{trainData} (and \code{valData} if present) are polygons \code{superClass} will calculate the area per polygon and sample
 \code{nSamples} locations per class within these polygons. The number of samples per individual polygon scales with the polygon area, i.e. the bigger the polygon, the more samples.
 
 \item Split training/validation      

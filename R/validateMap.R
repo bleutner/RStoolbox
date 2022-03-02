@@ -4,13 +4,11 @@
 #' validate a map from a classification or regression model. This can be useful to update the accuracy assessment after filtering, e.g. for a minimum mapping unit.
 #'  
 #' @param map RasterLayer. The classified map.
-#' @param valData SpatialPolygonsDataFrame or SpatialPointsDataFrame with validation data.
-#' @param nSamples Integer. Number of pixels to sample for validation (only applies to polygons).
+#' @param valData sf or sp object with validation data (POLYGONs or POINTs).
+#' @param nSamplesV Integer. Number of pixels to sample for validation (only applies to polygons).
 #' @param responseCol Character. Column containing the validation data in attribute table of \code{valData}.
 #' @param mode Character. Either 'classification' or 'regression'.
 #' @param classMapping optional data.frame with columns \code{'class'} and \code{'classID'} defining the mapping from raster integers to class names. 
-#' @note 
-#' Polygons, which are smaller than the map resolution will only be considered if they overlap with a pixel center coordinate, otherwise they will be ignored.
 #' 
 #' @export 
 #' @examples 
@@ -42,12 +40,14 @@
 #' val1 <- validateMap(polishedMap, valData = val, responseCol = "class",
 #'                              classMapping = sc$classMapping)
 #' }
-validateMap <- function(map, valData, responseCol, nSamples = 500,  mode = "classification", classMapping = NULL){
+validateMap <- function(map, valData, responseCol, nSamplesV = 500,  mode = "classification", classMapping = NULL){
 	map <- .toRaster(map)
+    valData <- .toSf(valData)
 	
     stopifnot(responseCol %in% names(valData), mode %in% c("classification", "regression"))
     
-    valiSet  <- .samplePixels(SHAPE = valData, RASTER = map, responseCol = responseCol, nSamples = nSamples,  trainCells = NULL)
+    valiSet  <- .samplePixels(v = valData, r = map, responseCol = responseCol, 
+            nSamples = nSamplesV,  trainCells = NULL, classMapping = classMapping)
     colnames(valiSet[[1]]) <- c("reference", "prediction") 
     if(mode=="classification") {  
         if(!is.null(classMapping)) {

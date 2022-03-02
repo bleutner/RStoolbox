@@ -44,6 +44,21 @@
 	}
 }
 
+.toSf <- function(x) {
+    if (inherits(x, "Spatial")) {
+        return(st_as_sf(x))
+    } else {
+        return(x)
+    }
+}
+
+.toTerra <- function(x) {
+    if (inherits(x, "Raster")) {
+        return(rast(x))
+    } else {
+        return(x)
+    }
+}
 
 #' Extract numbers from strings
 #' 
@@ -134,6 +149,13 @@
         cl <- raster::getCluster()
         registerDoParallel(cl)
     }
+}
+
+.getNCores <- function(){
+    if(isTRUE(getOption('rasterCluster'))) {
+        return (length(raster::getCluster()))
+    }
+    return(1)
 }
 
 #' Get file extension for writeRaster
@@ -261,28 +283,28 @@
     }
 }
 
-#' Subdivide polygons into smaller polygons
-#' @param polygons SpatialPolygonsDataFrame
-#' @param res Numeric. Spatial resolution of subdivition grid
-#' @noRd 
-#' @keywords internal
-.subdividePolys <- function(polygons, res = 1) {
-    pl <- lapply(seq_along(polygons), function(i){
-                ex      <- raster(polygons[i,])
-                res(ex) <- res
-                pgrid   <- rasterToPolygons(ex)
-                pgrid$layer <- 1
-                pp    <- gIntersection(pgrid, polygons[i,], byid=TRUE, drop_lower_td = TRUE)
-                pp    <- as(pp, "SpatialPolygonsDataFrame")
-                data  <- polygons@data[i,]
-                pp@data <- data.frame(data, rn = paste0(rownames(data),"_", seq_along(pp)), row.names = "rn")
-                pp <- spChFIDs(pp, rownames(pp@data))
-                pp
-            })
-    plo <- do.call("rbind", pl)
-    projection(plo) <- projection(polygons)
-    return(plo)
-}
+##' Subdivide polygons into smaller polygons
+##' @param polygons SpatialPolygonsDataFrame
+##' @param res Numeric. Spatial resolution of subdivition grid
+##' @noRd 
+##' @keywords internal
+#.subdividePolys <- function(polygons, res = 1) {
+#    pl <- lapply(seq_along(polygons), function(i){
+#                ex      <- raster(polygons[i,])
+#                res(ex) <- res
+#                pgrid   <- rasterToPolygons(ex)
+#                pgrid$layer <- 1
+#                pp    <- gIntersection(pgrid, polygons[i,], byid=TRUE, drop_lower_td = TRUE)
+#                pp    <- as(pp, "SpatialPolygonsDataFrame")
+#                data  <- polygons@data[i,]
+#                pp@data <- data.frame(data, rn = paste0(rownames(data),"_", seq_along(pp)), row.names = "rn")
+#                pp <- spChFIDs(pp, rownames(pp@data))
+#                pp
+#            })
+#    plo <- do.call("rbind", pl)
+#    projection(plo) <- projection(polygons)
+#    return(plo)
+#}
 
 
 #' RMSE
