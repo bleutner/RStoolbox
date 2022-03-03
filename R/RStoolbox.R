@@ -51,7 +51,6 @@
 #' @importFrom terra rast vect project
 #' @importFrom exactextractr exact_extract
 #' @importFrom lifecycle is_present deprecate_warn deprecated
-#' @importFrom rgdal readOGR
 #' @importFrom ggplot2 aes aes_string annotation_raster coord_equal fortify geom_raster geom_blank ggplot scale_fill_discrete scale_fill_gradientn scale_fill_identity facet_wrap
 #' @importFrom caret confusionMatrix train trainControl postResample  createDataPartition createFolds getTrainPerf
 #' @importFrom reshape2 melt
