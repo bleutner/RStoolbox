@@ -4,9 +4,9 @@ library(raster)
 
 
 test_that(".paraRasterFun is equal to predict, calc, overlay, Both single and multicore.", {
-            #skip_on_cran() # hadley says its risky to test paralell code on cran :-)
+            #skip_on_cran() # hadley says its risky to test parallel code on cran :-)
             for (clusterType in c('PSOCK', 'FORK')){
-                if(Sys.info()[["sysname"]] != "Linux") next
+                if(Sys.info()[["sysname"]] != "Linux" && clusterType == "FORK") next
                 r <- raster(ncol=10,nrow=10, vals=1:100)
                 r <- stack(r, r^2)
                 names(r) <- c("red", "nir")  
@@ -29,8 +29,8 @@ test_that(".paraRasterFun is equal to predict, calc, overlay, Both single and mu
 test_that(".parXapply family returns identical results to ?pply family. Both single and multicore.", {
             #skip_on_cran()
             for (clusterType in c('PSOCK', 'FORK')){
-                if(Sys.info()[["sysname"]] != "Linux") next
-                lis <- lapply(1:5, rnorm)
+              if(Sys.info()[["sysname"]] != "Linux" && clusterType == "FORK") next
+              lis <- lapply(1:5, rnorm)
                 mat <- matrix(1:100,10,10)
                 beginCluster(2, type = clusterType)
                 cluster <- "multicore"

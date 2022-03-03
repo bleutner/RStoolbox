@@ -22,6 +22,7 @@ Imports:
     sp,
     sf,
     terra,
+    rgdal,
     XML,
     dplyr,
     ggplot2,
