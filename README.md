@@ -1,5 +1,5 @@
  # RStoolbox
-[![R CMD check](https://github.com/bleutner/RStoolbox/actions/workflows/rcmdcheck.yaml/badge.svg)](https://github.com/bleutner/RStoolbox/actions/workflows/rcmdcheck.yaml)
+[![CI](https://github.com/bleutner/RStoolbox/actions/workflows/rcmdcheck.yaml/badge.svg)](https://github.com/bleutner/RStoolbox/actions/workflows/rcmdcheck.yaml)
 [![CRAN version](https://www.r-pkg.org/badges/version/RStoolbox)](https://CRAN.R-project.org/package=RStoolbox)
 [![codecov](https://codecov.io/gh/bleutner/RStoolbox/branch/master/graph/badge.svg)](https://app.codecov.io/gh/bleutner/RStoolbox)
 

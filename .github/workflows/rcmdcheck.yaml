@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [main, master]
 
-name: rcmdcheck
+name: CI
 
 jobs:
   rcmdcheck:
