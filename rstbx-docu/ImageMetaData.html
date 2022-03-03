@@ -28,6 +28,8 @@ ImageMetaData(
   sat = NA,
   sen = NA,
   scene = NA,
+  colNum = NA,
+  colTier = NA,
   proj = NA,
   date = NA,
   pdate = NA,
@@ -76,6 +78,14 @@ ImageMetaData(
 <td>
 <p>Character. Scene_ID</p>
 </td></tr>
+<tr valign="top"><td><code class="r">colNum</code></td>
+<td>
+<p>Character Collection number</p>
+</td></tr>
+<tr valign="top"><td><code class="r">colTier</code></td>
+<td>
+<p>Character Collection tier</p>
+</td></tr>
 <tr valign="top"><td><code class="r">proj</code></td>
 <td>
 <p>CRS. Projection.</p>
@@ -118,11 +128,11 @@ ImageMetaData(
 </td></tr>
 <tr valign="top"><td><code class="r">quant</code></td>
 <td>
-<p>Character vector. Quantity, one of c(&quot;dn&quot;, &quot;tra&quot;, &quot;tre&quot;, &quot;sre&quot;, &quot;bt&quot;, &quot;idx&quot;)</p>
+<p>Character vector. Quantity, one of c(&quot;dn&quot;, &quot;tra&quot;, &quot;tre&quot;, &quot;sre&quot;, &quot;bt&quot;, &quot;idx&quot;, &quot;angle&quot;)</p>
 </td></tr>
 <tr valign="top"><td><code class="r">cat</code></td>
 <td>
-<p>Character vector. Category, e.g. c(&quot;image&quot;, &quot;pan&quot;, &quot;index&quot;, &quot;qa&quot;)</p>
+<p>Character vector. Category, e.g. c(&quot;image&quot;, &quot;pan&quot;, &quot;index&quot;, &quot;qa&quot;, &quot;aux&quot;)</p>
 </td></tr>
 <tr valign="top"><td><code class="r">na</code></td>
 <td>
@@ -162,5 +172,5 @@ ImageMetaData(
 </td></tr>
 </table>
 
-<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.2.7 <a href="index.html">Index</a>]</div>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.3.0 <a href="index.html">Index</a>]</div>
 </div></body></html>

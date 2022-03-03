@@ -31,7 +31,7 @@ validateMap(
   map,
   valData,
   responseCol,
-  nSamples = 500,
+  nSamplesV = 500,
   mode = "classification",
   classMapping = NULL
 )
@@ -47,13 +47,13 @@ validateMap(
 </td></tr>
 <tr valign="top"><td><code class="r">valData</code></td>
 <td>
-<p>SpatialPolygonsDataFrame or SpatialPointsDataFrame with validation data.</p>
+<p>sf or sp object with validation data (POLYGONs or POINTs).</p>
 </td></tr>
 <tr valign="top"><td><code class="r">responseCol</code></td>
 <td>
 <p>Character. Column containing the validation data in attribute table of <code class="r">valData</code>.</p>
 </td></tr>
-<tr valign="top"><td><code class="r">nSamples</code></td>
+<tr valign="top"><td><code class="r">nSamplesV</code></td>
 <td>
 <p>Integer. Number of pixels to sample for validation (only applies to polygons).</p>
 </td></tr>
@@ -66,12 +66,6 @@ validateMap(
 <p>optional data.frame with columns <code class="r">'class'</code> and <code class="r">'classID'</code> defining the mapping from raster integers to class names.</p>
 </td></tr>
 </table>
-
-
-<h3>Note</h3>
-
-<p>Polygons, which are smaller than the map resolution will only be considered if they overlap with a pixel center coordinate, otherwise they will be ignored.
-</p>
 
 
 <h3>Examples</h3>
@@ -107,5 +101,5 @@ validateMap(
 </code></pre>
 
 
-<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.2.7 <a href="index.html">Index</a>]</div>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.3.0 <a href="index.html">Index</a>]</div>
 </div></body></html>

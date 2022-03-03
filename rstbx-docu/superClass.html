@@ -33,6 +33,7 @@ superClass(
   valData = NULL,
   responseCol = NULL,
   nSamples = 1000,
+  nSamplesV = 1000,
   polygonBasedCV = FALSE,
   trainPartition = NULL,
   model = "rf",
@@ -55,15 +56,15 @@ superClass(
 <table summary="R argblock">
 <tr valign="top"><td><code class="r">img</code></td>
 <td>
-<p>Raster* object. Typically remote sensing imagery, which is to be classified.</p>
+<p>terra::SpatRast or raster::Raster* object. Typically remote sensing imagery, which is to be classified.</p>
 </td></tr>
 <tr valign="top"><td><code class="r">trainData</code></td>
 <td>
-<p>SpatialPolygonsDataFrame or SpatialPointsDataFrame containing the training locations.</p>
+<p>sf or sp spatial vector data containing the training locations (POINTs,or POLYGONs).</p>
 </td></tr>
 <tr valign="top"><td><code class="r">valData</code></td>
 <td>
-<p>SpatialPolygonsDataFrame or SpatialPointsDataFrame containing the validation locations (optional).</p>
+<p>Ssf or sp spatial vector data containing the validation locations (POINTs,or POLYGONs) (optional).</p>
 </td></tr>
 <tr valign="top"><td><code class="r">responseCol</code></td>
 <td>
@@ -71,7 +72,11 @@ superClass(
 </td></tr>
 <tr valign="top"><td><code class="r">nSamples</code></td>
 <td>
-<p>Integer. Number of samples per land cover class.</p>
+<p>Integer. Number of samples per land cover class. If <code class="r">NULL</code> all pixels covered by training polygons are used (memory intensive!). Ignored if trainData consists of POINTs.</p>
+</td></tr>
+<tr valign="top"><td><code class="r">nSamplesV</code></td>
+<td>
+<p>Integer. Number of validation samples per land cover class. If <code class="r">NULL</code> all pixels covered by validation polygons are used (memory intensive!). Ignored if valData consists of POINTs.</p>
 </td></tr>
 <tr valign="top"><td><code class="r">polygonBasedCV</code></td>
 <td>
@@ -140,7 +145,7 @@ Requires all data to carry valid projection information.</p>
 A minimum distance (<code class="r">minDist</code>) in pixels can be provided to enforce a given distance between training and validation data.
 </p>
 </li>
-<li><p> Sample training coordinates. If <code class="r">trainData</code> (and <code class="r">valData</code> if present) are SpatialPolygonsDataFrames <code class="r">superClass</code> will calculate the area per polygon and sample
+<li><p> Sample training coordinates. If <code class="r">trainData</code> (and <code class="r">valData</code> if present) are polygons <code class="r">superClass</code> will calculate the area per polygon and sample
 <code class="r">nSamples</code> locations per class within these polygons. The number of samples per individual polygon scales with the polygon area, i.e. the bigger the polygon, the more samples.
 </p>
 </li>
@@ -169,8 +174,41 @@ otherwise it will be performed on a per-pixel basis.
 
 <h3>Value</h3>
 
-<p>A list containing [[1]] the model, [[2]] the predicted raster and [[3]] the class mapping
+<p>A superClass object (effectively a list) containing:
 </p>
+
+<ol>
+<li><p> $model: the fitted model
+</p>
+</li>
+<li><p> $modelFit: model fit statistics
+</p>
+</li>
+<li><p> $training: indexes of samples used for training
+</p>
+</li>
+<li><p> $validation: list of
+</p>
+
+<ol>
+<li><p> $performance: performance estimates based on independent validation (confusion matrix etc.)
+</p>
+</li>
+<li><p> $validationSamples: actual pixel coordinates plus reference and predicted values used for validation
+</p>
+</li>
+<li><p> $validationGeometry: validation polygpns (clipped with mindist to training geometries)
+</p>
+</li></ol>
+
+</li>
+<li><p> $map: the predicted raster
+</p>
+</li>
+<li><p> $classMapping: a data.frame containing an integer &lt;-&gt; label mapping
+</p>
+</li></ol>
+
 
 
 <h3>See Also</h3>
@@ -264,5 +302,5 @@ horiz = TRUE,  bty = &quot;n&quot;)
 </code></pre>
 
 
-<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.2.7 <a href="index.html">Index</a>]</div>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.3.0 <a href="index.html">Index</a>]</div>
 </div></body></html>

@@ -88,7 +88,7 @@ Before calculating the spectral cloud index (let's call it Normalized Difference
 provide DN, radiance or brightness temperature.
 </p>
 <p>This approach to cloud masking is very simplistic. And aims only at rough removal of potentially clouded areas. Nevertheless, it is able to provide satisfactory results. 
-More sophisticated approaches, including cloud cast shadow detection can be found elsewhere, e.g. <a href="https://code.google.com/p/fmask">fmask</a>.
+More sophisticated approaches, including cloud cast shadow detection can be found elsewhere, e.g. <a href="https://code.google.com/archive/p/fmask">fmask</a>.
 </p>
 <p>It can make sense to find a suitable threshold on a cropped version of the scene. Also make sure you make use of the <code class="r">returnDiffLayer</code> argument to save yourself one processing step.
 Buffering should be seen as final polishing, i.e. as long as the pure cloud centers are not detected properly, you might want to turn it off. since it takes some time to calculate.
@@ -172,5 +172,5 @@ ggRGB(lsat, stretch = &quot;lin&quot;) +
 </code></pre>
 
 
-<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.2.7 <a href="index.html">Index</a>]</div>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.3.0 <a href="index.html">Index</a>]</div>
 </div></body></html>
