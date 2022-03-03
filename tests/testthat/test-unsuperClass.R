@@ -58,16 +58,22 @@ test_that("kmeans fail detection", {
             expect_warning(unsuperClass(lsat, nSamples = ncell(lsat), nStarts = 1, nClasses = 20), "doesn't converge properly")
         })
 
+## Helper for symlink-proof filename checking
+## Added to fix CI on gh-actions
+slp_bn <- function(path, tmp = basename(tempdir())) {
+    tail(strsplit(path, tmp)[[1]],1)
+}
+
 ## Predict S3 method
 test_that("predict.unSuperClass", {
     skip_on_cran()
     uc <- unsuperClass(lsat, nSamples = ncell(lsat), nClasses = 2)
     expect_s4_class(pred <- predict(uc, lsat), "RasterLayer")
     expect_equal(unique(uc$map - pred), 0)
-    tmpFile <- tempfile(fileext = ".grd")
     
+    tmpFile <- tempfile(fileext = ".grd")    
     pred <- predict(uc, lsat, filename = tmpFile )
     expect_false(inMemory(pred))
-    expect_equal(filename(pred), tmpFile)
+    expect_equal(slp_bn(filename(pred)), slp_bn(tmpFile))
     file.remove(tmpFile, gsub("grd", "gri", tmpFile))
   })
