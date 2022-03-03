@@ -60,7 +60,7 @@ jobs:
           needs: check
           
       - name: Install RF
-        if: ${{ matrix.config.r }} != 'oldrel-1'
+        if: ${{ matrix.config.r != 'oldrel-1' }}
         run: install.packages("randomForest")
         shell: Rscript {0}
           
