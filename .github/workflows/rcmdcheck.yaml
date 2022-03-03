@@ -43,6 +43,7 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
+          Ncpus: '2'
 
       - name: Install dependencies (Win) 
         if: runner.os == 'windows'
@@ -59,7 +60,7 @@ jobs:
           needs: check
           
       - name: Install RF
-        if: runner.r != 'oldrel-1'
+        if: ${{ matrix.config.r }} != 'oldrel-1'
         run: install.packages("randomForest")
         shell: Rscript {0}
           
