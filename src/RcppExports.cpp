@@ -156,7 +156,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // spectralIndicesCpp
-NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices, const int redBand, const int blueBand, const int greenBand, const int nirBand, const int redEdge1Band, const int redEdge2Band, const int redEdge3Band, const int swir1Band, const int swir2Band, const int swir3Band, size_t maskLayer, const int maskValue, const double L, const double s, const double G, const double C1, const double C2, double Levi, const double swir2ccc, const double swir2cdiff, const double sf);
+NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices, const int redBand, const int blueBand, const int greenBand, const int nirBand, const int redEdge1Band, const int redEdge2Band, const int redEdge3Band, const int swir1Band, const int swir2Band, const int swir3Band, int maskLayer, const int maskValue, const double L, const double s, const double G, const double C1, const double C2, double Levi, const double swir2ccc, const double swir2cdiff, const double sf);
 RcppExport SEXP _RStoolbox_spectralIndicesCpp(SEXP xSEXP, SEXP indicesSEXP, SEXP redBandSEXP, SEXP blueBandSEXP, SEXP greenBandSEXP, SEXP nirBandSEXP, SEXP redEdge1BandSEXP, SEXP redEdge2BandSEXP, SEXP redEdge3BandSEXP, SEXP swir1BandSEXP, SEXP swir2BandSEXP, SEXP swir3BandSEXP, SEXP maskLayerSEXP, SEXP maskValueSEXP, SEXP LSEXP, SEXP sSEXP, SEXP GSEXP, SEXP C1SEXP, SEXP C2SEXP, SEXP LeviSEXP, SEXP swir2cccSEXP, SEXP swir2cdiffSEXP, SEXP sfSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -173,7 +173,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const int >::type swir1Band(swir1BandSEXP);
     Rcpp::traits::input_parameter< const int >::type swir2Band(swir2BandSEXP);
     Rcpp::traits::input_parameter< const int >::type swir3Band(swir3BandSEXP);
-    Rcpp::traits::input_parameter< size_t >::type maskLayer(maskLayerSEXP);
+    Rcpp::traits::input_parameter< int >::type maskLayer(maskLayerSEXP);
     Rcpp::traits::input_parameter< const int >::type maskValue(maskValueSEXP);
     Rcpp::traits::input_parameter< const double >::type L(LSEXP);
     Rcpp::traits::input_parameter< const double >::type s(sSEXP);

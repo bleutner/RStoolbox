@@ -7,36 +7,35 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 		const int redBand,  const int blueBand, const int greenBand, const int nirBand,
 		const int redEdge1Band, const int redEdge2Band,  const int redEdge3Band,
 		const int swir1Band, const int swir2Band, const int swir3Band,
-		size_t maskLayer, const int maskValue,
+		int maskLayer, const int maskValue,
 		const double L,  const double s, const double G, const double C1,
 		const double C2, double Levi, const double swir2ccc, const double swir2cdiff, const double sf) {
 
-	const size_t nind = indices.size();
-	const size_t nsamp = x.nrow();
-	const size_t nc = x.ncol();
+	const int nind = indices.size();
+	const int nsamp = x.nrow();
+	const int nc = x.ncol();
 
 	NumericMatrix out(nsamp, nind);
 	NumericVector blue, green, red, redEdge1, redEdge2, redEdge3, nir, swir1, swir2, swir3;
-
+		
 	// Apply mask layer
-	if((int)maskLayer != NA_INTEGER){
+	if(!IntegerVector::is_na(maskLayer)){
 		maskLayer-=1 ;
-
 		std::vector<int> m;
 		m.reserve(nsamp);
 		if(IntegerVector::is_na(maskValue)){
-			for(size_t i = 0; i < nsamp; i++) {
+			for(int i = 0; i < nsamp; i++) {
 				if (ISNAN(x(i, maskLayer))) m.push_back(i);
 			}
 		} else {
-			for(size_t i = 0; i < nsamp; i++) {
+			for(int i = 0; i < nsamp; i++) {
 				if (x(i, maskLayer) == maskValue) m.push_back(i);
 			}
 		}
 
-		for(size_t j = 0; j < nc; j++) {
+		for(int j = 0; j < nc; j++) {
 			if (j == maskLayer) continue;
-			for(size_t i = 0; i < m.size(); i++) {
+			for(int i = 0; i < (int)m.size(); i++) {
 				x(m[i],j) = NA_REAL;
 			}
 		}
@@ -53,9 +52,7 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 	if(swir2Band != NA_INTEGER)    swir2 = x(_,swir2Band - 1) / sf;
 	if(swir3Band != NA_INTEGER)    swir3 = x(_,swir3Band - 1) / sf;
 
-
-
-	for(size_t j = 0; j < nind; ++j) {
+	for(int j = 0; j < nind; ++j) {
 
 		if(indices[j] == "DVI") {
 			// Difference vegetation index
