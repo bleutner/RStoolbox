@@ -1,3 +1,38 @@
+#' nlayers from raster::Raster* or terra::SpatRaster objects
+#' 
+#' Convenience function for handling both raster::Raster* objects and terra::SpatRaster objects with the same codebase
+#' @param x RasterLayer, RasterBrick, RasterStack, SpatRaster
+#' @returns int
+#' @noRd
+#' @keywords internal
+.nlyr <- function(x) {
+  if(inherits(x, "Raster")) {
+    return(raster::nlayers(x))
+  } else {
+    return(terra::nlyr(x))
+  }
+}
+
+#' stack for raster::Raster* OR terra objects
+#' 
+#' Convenience function for handling both raster::Raster* objects and terra::SpatRaster objects with the same codebase
+#' @param x raster::Raster* or terra::SpatRaster
+#' @param ... raster::Raster* or terra::SpatRaster
+#' @returns RasterStack or SpatRaster (same as input)
+#' @noRd
+#' @keywords internal
+.stack <- function(x, ...) {
+  l <- c(list(x),...)
+  stopifnot(length(unique(sapply(l,inherits, "SpatRaster"))) == 1)
+  if(inherits(x, "Raster")) {
+    return(do.call(raster::stack, l))
+  } else {
+    return(do.call(c, l))
+  }
+}
+
+
+
 #' Retrieves Average Earth-Sun distance (in AU) for a given date 
 #' 
 #' based on 1970-2070 per-DOY average of NASA JPL HORIZONS calculations 
@@ -27,7 +62,7 @@
 	}
 }
 
-#' Convert sf objects to sp objects
+#' Convert sf objects to sp::Spatial* objects
 #' 
 #' This is a temporary function used to add sf support to RStoolbox, while RStoolbox internals 
 #' are still implemented based on sp functionality. In the long run it is
@@ -44,6 +79,11 @@
 	}
 }
 
+#' Convert sp to sf::sf*
+#' 
+#' @describeIn .toSp convert sp to sf
+#' @keywords internal
+#' @noRd
 .toSf <- function(x) {
     if (inherits(x, "Spatial")) {
         return(st_as_sf(x))
@@ -52,6 +92,11 @@
     }
 }
 
+#' Convert raster::Raster* to terra::SpatRast
+#' 
+#' @describeIn .toRaster convert terra to raster
+#' @keywords internal
+#' @noRd
 .toTerra <- function(x) {
     if (inherits(x, "Raster")) {
         return(rast(x))

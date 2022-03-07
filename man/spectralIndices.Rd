@@ -65,7 +65,7 @@ If there are invalid reflectances, e.g. clouds with reflectance > 1 this check w
 
 \item{coefs}{List of coefficients (see Details).}
 
-\item{...}{further arguments such as filename etc. passed to \link[raster]{writeRaster}}
+\item{...}{further arguments such as filename etc. passed to \link[terra]{writeRaster}}
 }
 \value{
 RasterBrick or a RasterLayer if length(indices) == 1
