@@ -5,6 +5,7 @@
 \alias{fortify.RasterLayer}
 \alias{fortify.RasterBrick}
 \alias{fortify.RasterStack}
+\alias{fortify.SpatRaster}
 \title{Fortify method for classes from the raster package.}
 \usage{
 \method{fortify}{RasterLayer}(x, maxpixels = 50000)
@@ -12,6 +13,8 @@
 \method{fortify}{RasterBrick}(...)
 
 \method{fortify}{RasterStack}(...)
+
+\method{fortify}{SpatRaster}(...)
 }
 \arguments{
 \item{x}{\code{Raster*} object to convert into a dataframe.}

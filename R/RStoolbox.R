@@ -48,7 +48,7 @@
 #' }
 #' 
 #' @import raster sp sf 
-#' @importFrom terra rast vect project nlyr setMinMax minmax app
+#' @importFrom terra rast vect project nlyr setMinMax minmax app spatSample ext
 #' @importFrom rgdal set_thin_PROJ6_warnings
 #' @importFrom exactextractr exact_extract
 #' @importFrom lifecycle is_present deprecate_warn deprecated

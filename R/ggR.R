@@ -5,6 +5,7 @@
 #' @param img raster
 #' @param layer Character or numeric. Layername or number. Can be more than one layer, in which case each layer is plotted in a subplot.
 #' @param maxpixels Integer. Maximal number of pixels to sample.
+#' @param ext Extent object to crop the image
 #' @param alpha Numeric. Transparency (0-1).
 #' @param hue Numeric. Hue value for color calculation [0,1] (see \[grDevices]{hsv}). Change if you need anything else than greyscale. Only effective if \code{sat > 0}.
 #' @param sat Numeric. Saturation value for color calculation [0,1] (see \[grDevices]{hsv}). Change if you need anything else than greyscale.
@@ -95,10 +96,9 @@
 #' ggR(hill) + 
 #'    ggR(srtm, geom_raster = TRUE, ggLayer = TRUE, alpha = 0.3) +
 #'    scale_fill_gradientn(colours = terrain.colors(100), name = "elevation")
-ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0, stretch = "none", quantiles = c(0.02,0.98), 
+ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0, stretch = "none", quantiles = c(0.02,0.98), ext = NULL,
                 coord_equal = TRUE, ggLayer=FALSE, ggObj = TRUE, geom_raster = FALSE, forceCat = FALSE) {
   
-  img   <- .toRaster(img)
   layer <- unlist(.numBand(img, layer))
   
   multLayers <- if (length(layer)>1) TRUE else FALSE
@@ -112,8 +112,14 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0
   }
   annotation <- !geom_raster
   
-  xfort <- sampleRegular(img[[layer]], maxpixels, asRaster = TRUE)
-  ex <- extent(xfort)
+  if(inherits(img, "Raster")) {
+      xfort <- sampleRegular(img[[layer]], maxpixels, ext = .toRaster(ext), asRaster = TRUE)
+      ex <- as.vector(extent(xfort))
+  } else {
+      xfort <- spatSample(img[[layer]], maxpixels, ext = .toTerra(ext), method = "regular", as.raster = TRUE)
+      ex <- as.vector(ext(xfort))
+  }
+  
   dimImg <- dim(xfort)
   df <- lapply(names(xfort), function(layer) {
     df    <- data.frame(as.data.frame(xfort[[layer]],  xy = TRUE), 

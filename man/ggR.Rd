@@ -13,6 +13,7 @@ ggR(
   sat = 0,
   stretch = "none",
   quantiles = c(0.02, 0.98),
+  ext = NULL,
   coord_equal = TRUE,
   ggLayer = FALSE,
   ggObj = TRUE,
@@ -36,6 +37,8 @@ ggR(
 \item{stretch}{Character. Either 'none', 'lin', 'hist', 'sqrt' or 'log' for no stretch, linear, histogram, square-root or logarithmic stretch.}
 
 \item{quantiles}{Numeric vector with two elements. Min and max quantiles to stretch to. Defaults to 2\% stretch, i.e. c(0.02,0.98).}
+
+\item{ext}{Extent object to crop the image}
 
 \item{coord_equal}{Logical. Force addition of coord_equal, i.e. aspect ratio of 1:1. Typically useful for remote sensing data (depending on your projection), hence it defaults to TRUE.
 Note however, that this does not apply if (\code{ggLayer=FALSE}).}

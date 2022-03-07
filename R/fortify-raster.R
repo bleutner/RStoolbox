@@ -17,9 +17,15 @@ NULL
 #' @export
 #' @method fortify RasterLayer
 fortify.RasterLayer <- function(x, maxpixels = 50000){
-	x <- .toRaster(x)
-    raster <- sampleRegular(x, maxpixels, asRaster = TRUE)
-    if(nlayers(x) == 1 && is.factor(x)) raster <- stack(raster,raster)  ## workaround raster bug #6043
+    
+    if(inherits(x, "Raster")) {
+      raster <- sampleRegular(x, maxpixels, asRaster = TRUE)
+    } else {
+      raster <- spatSample(x, maxpixels,  method = "regular", as.raster = TRUE)
+    }
+    
+    
+    if(inherits(x, "Raster") && .nlyr(x) == 1 && is.factor(x)) raster <- stack(raster,raster)  ## workaround raster bug #6043
     as.data.frame(raster, xy = TRUE)
         
 }
@@ -39,3 +45,9 @@ fortify.RasterStack <- function(...){
     fortify.RasterLayer(...)    
 }
 
+#' @rdname fortify.raster
+#' @export
+#' @method fortify SpatRaster
+fortify.SpatRaster <- function(...){
+  fortify.RasterLayer(...)    
+}

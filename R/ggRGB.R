@@ -12,7 +12,7 @@
 #' @param scale Numeric. Maximum possible pixel value (optional). Defaults to 255 or to the maximum value of x if that is larger than 255
 #' @param maxpixels Integer. Maximal number of pixels used for plotting.
 #' @param stretch Character. Either 'none', 'lin', 'hist', 'sqrt' or 'log' for no stretch, linear, histogram, square-root or logarithmic stretch.
-#' @param ext Extent object to crop the image
+#' @param ext Extent or SpatExtent object to crop the image
 #' @param limits Vector or matrix. Can be used to reduce the range of values. Either a vector of two values for all bands (c(min, max))
 #'  or a 3x2 matrix with min and max values (columns) for each layer (rows).
 #' @param quantiles Numeric vector with two elements. Min and max quantiles to stretch. Defaults to 2\% stretch, i.e. c(0.02,0.98). 
@@ -65,7 +65,6 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
         clipValues  = "limits", quantiles = c(0.02,0.98), ggObj = TRUE, ggLayer = FALSE, 
         alpha = 1, coord_equal = TRUE, geom_raster = FALSE, nullValue = 0) { 
     
-	img <- .toRaster(img)
     ## TODO: handle single value rasters (e.g. masks)
     
     # RGB processing originally forked from raster::plotRGB (Author: Robert J. Hijmans) GPL3 
@@ -75,9 +74,18 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
     rgb <- unlist(.numBand(raster=img,r,g,b))
     nComps <- length(rgb)
     if(inherits(img, "RasterLayer")) img <- brick(img)
-    rr     <- sampleRegular(img[[rgb]], maxpixels, ext=ext, asRaster=TRUE)
-    RGB    <- getValues(rr)
-    if(!is.matrix(RGB)) RGB <- as.matrix(RGB)
+    
+    if(inherits(img, "Raster")) {
+      rr <- sampleRegular(img[[rgb]], maxpixels, ext = .toRaster(ext), asRaster = TRUE)
+      ex <- as.vector(extent(rr))
+    } else {
+      rr <- spatSample(img[[rgb]], maxpixels, ext = .toTerra(ext), method = "regular", as.raster = TRUE)
+      ex <- as.vector(ext(rr))
+    }
+    
+    RGB    <- as.data.frame(rr, xy = TRUE)
+    xy <- RGB[,c("x", "y")]
+    RGB <- as.matrix(RGB[,-c(1:2)])
     
     ## Clip to limits
     if (!is.null(limits)) {
@@ -147,20 +155,19 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
     } else {
         z <- rgb(RGB[,1], RGB[,2], RGB[,3], max = scale, alpha = alpha*scale)
     }
-    df_raster <- data.frame(coordinates(rr), fill = z, stringsAsFactors = FALSE)
+    df_raster <- data.frame(xy, fill = z, stringsAsFactors = FALSE)
     
     x <- y <- fill <- NULL ## workaround for a R CMD check 'note' about non-visible global variable in call to ggplot (variables are column names created earlier within 'data' and hence not visible to check). This does not in any way affect ggRGB,
     if(ggObj){ 
         
         ## We need to set up ggplot with at least the minimum aestetics x and y
-        exe <- as.vector(extent(rr))
-        df <- data.frame(x=exe[1:2],y=exe[3:4])
+        df <- data.frame(x=ex[1:2],y=ex[3:4])
         
         ## Set-up plot       
         ## I prefer annotate_raster instead of geom_raster or tile to keep the fill scale free for additional rasters        
         if(annotation) {           
             dz <- matrix(z, nrow=nrow(rr), ncol=ncol(rr), byrow = TRUE)  
-            p <- annotation_raster(raster = dz, xmin = exe[1], xmax = exe[2], ymin = exe[3], ymax = exe[4], interpolate = FALSE)
+            p <- annotation_raster(raster = dz, xmin = ex[1], xmax = ex[2], ymin = ex[3], ymax = ex[4], interpolate = FALSE)
             if(!ggLayer) {
                 p <- ggplot() + p + geom_blank(data = df, aes(x = x,y = y))
             }

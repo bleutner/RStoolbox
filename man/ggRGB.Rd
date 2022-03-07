@@ -39,7 +39,7 @@ ggRGB(
 
 \item{stretch}{Character. Either 'none', 'lin', 'hist', 'sqrt' or 'log' for no stretch, linear, histogram, square-root or logarithmic stretch.}
 
-\item{ext}{Extent object to crop the image}
+\item{ext}{Extent or SpatExtent object to crop the image}
 
 \item{limits}{Vector or matrix. Can be used to reduce the range of values. Either a vector of two values for all bands (c(min, max))
 or a 3x2 matrix with min and max values (columns) for each layer (rows).}
