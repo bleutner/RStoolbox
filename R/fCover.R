@@ -57,14 +57,14 @@
 #' data(rlogo)
 #' lsat <- rast(rlogo)
 #' agg.level <- 9
-#' modis <- aggregate(lsat, agg.level)
+#' modis <- terra::aggregate(lsat, agg.level)
 #' 
 #' ## Perform an exemplary classification
 #' lc      <- unsuperClass(lsat, nClass=2)
 #' 
 #' ## Calculate the true cover, which is of course only possible in this example, 
 #' ## because the fake corse resolution imagery is exactly res(lsat)*9
-#' trueCover <- aggregate(lc$map, agg.level, fun = function(x, ...){sum(x == 1, ...)/sum(!is.na(x))})
+#' trueCover <- terra::aggregate(lc$map, agg.level, fun = function(x, ...){sum(x == 1, ...)/sum(!is.na(x))})
 #' 
 #' ## Run with randomForest and support vector machine (radial basis kernel)
 #' ## Of course the SVM is handicapped in this example due to poor tuning (tuneLength)
@@ -100,6 +100,10 @@ fCover <- function(classImage, predImage,
                   nSamples = 1000, classes = 1,maxNA = 0,clamp = TRUE,
                   model = "rf", tuneLength = 3, trControl = trainControl(method = "cv"), method = deprecated(),  
                   filename = NULL, overwrite = FALSE, verbose, ...){
+  
+  if(is_present(method)){
+    deprecate_warn("0.4.0", "fCover(method)", "fCover(trControl=trainControl(method,...))")
+  }
   
   predImage <- .toTerra(predImage)
   classImage <- .toTerra(classImage)
@@ -196,7 +200,7 @@ fCover <- function(classImage, predImage,
 
 
 
-.iterativeRandomSample <- function(x, nSamples = 100, maxIterations = 5, ext = NULL) {
+.iterativeRandomSample <- function(x, nSamples = 100, maxIterations = 5, ext = NULL, xy = TRUE) {
   
   if(!is.null(ext)) {
     x <- terra::crop(x, ext, snap = "in")
@@ -210,8 +214,8 @@ fCover <- function(classImage, predImage,
   valsList <- list()
   while(maxIterations) {
     samples  <- sample(cells, nSamples, replace = FALSE)
-    vals  <- terra::extract(x, y = samples, xy = TRUE)
-    if(!"x" %in% colnames(vals)) {  ## TODO: report bug in terra::extract -> is not returning xy
+    vals  <- terra::extract(x, y = samples, xy = xy)
+    if(xy && !"x" %in% colnames(vals)) {  ## TODO: report bug in terra::extract -> is not returning xy
       vals <- data.frame(xyFromCell(x, samples), vals)
     }
     valsList[[length(valsList) + 1]]  <-  vals[complete.cases(vals),]

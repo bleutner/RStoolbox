@@ -11,7 +11,7 @@
 #' @param clusterMap Logical. Fit kmeans model to a random subset of the img (see Details).
 #' @param algorithm Character. \link[stats]{kmeans} algorithm. One of c("Hartigan-Wong", "Lloyd", "MacQueen")
 #' @param output Character. Either 'classes' (kmeans class; default) or 'distances' (euclidean distance to each cluster center).
-#' @param ... further arguments to be passed to \link[raster]{writeRaster}, e.g. filename
+#' @param ... further arguments to be passed to \link[terra]{writeRaster}, e.g. filename
 #' @details 
 #' Clustering is done using \code{\link[stats]{kmeans}}. This can be done for all pixels of the image (\code{clusterMap=FALSE}), however this can be slow and is
 #' not memory safe. Therefore if you have large raster data (> memory), as is typically the case with remote sensing imagery it is advisable to choose clusterMap=TRUE (the default).
@@ -28,8 +28,9 @@
 #'
 #' @export
 #' @examples 
-#' library(raster)
-#' input <- brick(system.file("external/rlogo.grd", package="raster"))
+#' library(terra)
+#' data(rlogo)
+#' input <- rast(rlogo)
 #' 
 #' ## Plot 
 #' olpar <- par(no.readonly = TRUE) # back-up par
@@ -56,10 +57,9 @@
 unsuperClass <- function(img, nSamples = 10000, nClasses = 5, nStarts = 25, nIter = 100, norm = FALSE, 
                          clusterMap = TRUE, algorithm = "Hartigan-Wong", output  = "classes", ...){      
   ## TODO: check outermost prediction (cpp)
-   img <- .toRaster(img)
+  img <- .toTerra(img)
   if(atMax <- nSamples > ncell(img)) nSamples <- ncell(img)
-  wrArgs <- list(...)
-  if(norm) img <- normImage(img)
+  if(norm) img <- terra::scale(img, TRUE, TRUE)
   
   if(!output[1] %in% c("classes", "distances")) {
     stop("`output` must be either 'classes' or 'distances'")
@@ -79,7 +79,7 @@ unsuperClass <- function(img, nSamples = 10000, nClasses = 5, nStarts = 25, nIte
   } else {
     if(!clusterMap) warning("Raster size is > memory. Resetting clusterMap to TRUE")
     .vMessage("Starting random sampling")
-    trainData <- sampleRandom(img, size = nSamples, na.rm = TRUE)
+    trainData <- .iterativeRandomSample(img, nSamples, xy = FALSE)
   }
   
   .vMessage("Starting kmeans fitting")
@@ -95,18 +95,14 @@ unsuperClass <- function(img, nSamples = 10000, nClasses = 5, nStarts = 25, nIte
   
   .vMessage("Starting spatial prediction")
   if(FULL && !returnDistances){
-    out       <- raster(img)
-    out[]     <- NA
+    out           <- rast(img, vals = NA, nlyrs = 1)
     out[complete] <- model$cluster      
-    names(out) <- "class"
-    if("filename" %in% names(wrArgs)) out <- writeRaster(out, ...)
+    names(out)    <- "class"
+    if("filename" %in% list(...)) out <- terra::writeRaster(out, ...)
   } else {
-    out       <- .paraRasterFun(img, rasterFun=raster::calc, args = list(fun=function(x, kmeans=force(model)){
-      if(!is.matrix(x)) x <- as.matrix(x)
-      predKmeansCpp(x, centers=kmeans$centers, returnDistances)},
-      forcefun=TRUE), wrArgs = wrArgs)
+    out   <- app(img, fun = function(x, kmeans= model){
+      predKmeansCpp(x, centers=kmeans$centers, returnDistances)}, ...)
     names(out) <- if(returnDistances) paste0("dist_c", 1:nClasses) else "class"
-    
   }
   
   model$cluster <- NULL
@@ -137,6 +133,7 @@ unsuperClass <- function(img, nSamples = 10000, nClasses = 5, nStarts = 25, nIte
 #' ## Apply the model to another raster
 #' map <- predict(uc, rlogo)
 predict.unsuperClass <- function(object, img,  output  = "classes", ...){
+  img <- .toTerra(img)
   stopifnot(inherits(object, c("RStoolbox", "unsuperClass")))
   if(!output[1] %in% c("classes", "distances")) {
     stop("`output` must be either 'classes' or 'distances'")
@@ -146,12 +143,9 @@ predict.unsuperClass <- function(object, img,  output  = "classes", ...){
     returnDistances <- TRUE
   }
   
-  model <- object$model
-  wrArgs <- list(...)
-  out   <- .paraRasterFun(img, rasterFun=raster::calc, args = list(fun=function(x, kmeans=force(model)){
-    if(!is.matrix(x)) x <- as.matrix(x)
-    predKmeansCpp(x, centers=kmeans$centers, returnDistances)}, forcefun=TRUE), wrArgs = wrArgs)
-  
+  out <- app(img, fun = function(x, kmeans= object$model){
+    predKmeansCpp(x, centers=kmeans$centers, returnDistances)}, ...)
+  names(out) <- if(returnDistances) paste0("dist_c", 1:nlyr(out)) else "class"
   return(out)
 }
 

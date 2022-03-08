@@ -93,14 +93,14 @@ library(caret)
 data(rlogo)
 lsat <- rast(rlogo)
 agg.level <- 9
-modis <- aggregate(lsat, agg.level)
+modis <- terra::aggregate(lsat, agg.level)
 
 ## Perform an exemplary classification
 lc      <- unsuperClass(lsat, nClass=2)
 
 ## Calculate the true cover, which is of course only possible in this example, 
 ## because the fake corse resolution imagery is exactly res(lsat)*9
-trueCover <- aggregate(lc$map, agg.level, fun = function(x, ...){sum(x == 1, ...)/sum(!is.na(x))})
+trueCover <- terra::aggregate(lc$map, agg.level, fun = function(x, ...){sum(x == 1, ...)/sum(!is.na(x))})
 
 ## Run with randomForest and support vector machine (radial basis kernel)
 ## Of course the SVM is handicapped in this example due to poor tuning (tuneLength)

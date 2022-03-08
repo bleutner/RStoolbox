@@ -36,7 +36,7 @@ unsuperClass(
 
 \item{output}{Character. Either 'classes' (kmeans class; default) or 'distances' (euclidean distance to each cluster center).}
 
-\item{...}{further arguments to be passed to \link[raster]{writeRaster}, e.g. filename}
+\item{...}{further arguments to be passed to \link[terra]{writeRaster}, e.g. filename}
 }
 \value{
 Returns an RStoolbox::unsuperClass object, which is a list containing the kmeans model ($model) and the raster map ($map).
@@ -57,8 +57,9 @@ Therefore, kmeans is usually run with multiple random starting configurations in
 The \code{nStarts} argument allows to specify how many random starts are conducted.
 }
 \examples{
-library(raster)
-input <- brick(system.file("external/rlogo.grd", package="raster"))
+library(terra)
+data(rlogo)
+input <- rast(rlogo)
 
 ## Plot 
 olpar <- par(no.readonly = TRUE) # back-up par

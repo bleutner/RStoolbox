@@ -11,7 +11,7 @@ normImage(img, norm = TRUE, ...)
 
 \item{norm}{Logical. Perform normalization (scaling) in addition to centering, i.e. divide by standard deviation.}
 
-\item{...}{further arguments passed to \link[raster]{writeRaster}.}
+\item{...}{further arguments passed to \link[terra]{writeRaster}.}
 }
 \value{
 Returns a Raster* with the same number layers as input layers with each layer being centered and optionally normalized.
