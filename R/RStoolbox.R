@@ -55,13 +55,14 @@
 #' @importFrom ggplot2 aes aes_string annotation_raster coord_equal fortify geom_raster geom_blank ggplot scale_fill_discrete scale_fill_gradientn scale_fill_identity facet_wrap
 #' @importFrom caret confusionMatrix train trainControl postResample  createDataPartition createFolds getTrainPerf
 #' @importFrom reshape2 melt
-#' @importFrom dplyr mutate group_by
+#' @importFrom tidyr pivot_wider complete
+#' @importFrom dplyr mutate group_by summarize filter 
 #' @importFrom foreach getDoParRegistered 
 #' @importFrom doParallel registerDoParallel
 #' @importFrom codetools findGlobals
 #' @importFrom parallel parLapply parSapply parApply clusterExport makeCluster
 #' @importFrom XML xmlParse xmlToList
-#' @importFrom stats coefficients lm ecdf median approxfun knots kmeans na.omit complete.cases loadings princomp cov filter cor setNames
+#' @importFrom stats coefficients lm ecdf median approxfun knots kmeans na.omit complete.cases loadings princomp cov cor setNames
 #' @importFrom graphics par abline
 #' @importFrom methods as
 #' @importFrom utils read.csv read.delim read.table str write.table data capture.output

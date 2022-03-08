@@ -104,7 +104,7 @@ estimateHaze <- function(x, hazeBands, darkProp = 0.01, maxSlope = TRUE, plot = 
                 if(maxSlope & idx > 1){                   
                     ## Moving average smoother 
                     n <- 2*floor((idx/10)/2) + 1  # next odd integer                  
-                    tsmo  <- filter(tf[1:idx, 2], rep(1/n, n), sides=2)
+                    tsmo  <- stats::filter(tf[1:idx, 2], rep(1/n, n), sides=2)
                     SHV   <- tf[min(which.max(diff(tsmo, 2))+1,idx),1]
                 } else {
                     SHV <- tf[idx,1]               
