@@ -1,7 +1,7 @@
 context("fCover")
 
 set.seed(42)
-suppressPackageStartupMessages(library(raster))
+suppressPackageStartupMessages(library(terra))
 
 data(lsat)
 lc	  <- unsuperClass(lsat, nSamples = 50, nClass=3)$map
@@ -16,11 +16,11 @@ for(cl in 1:2) {
 								predImage = modis,
 								classes=1:cl,
 								model="lm",
+								trControl = trainControl(method = "cv", number = 2),
 								nSample = 30,
-								number = 5,
 								tuneLength=1
 						), c("RStoolbox", "fCover"))
-				expect_equal(nlayers(fc$map), cl)
+				expect_equal(.nlyr(fc$map), cl)
 			})
 
 }
@@ -32,7 +32,6 @@ expect_error(fCover(
 		classes = 4,
 		model="rf",
 		nSample = 50,
-		number = 5,
 		tuneLength=1
 ),"One or more classes are not represented in the sampled pixels")
 })

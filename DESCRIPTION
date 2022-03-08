@@ -26,6 +26,7 @@ Imports:
     XML,
     dplyr,
     ggplot2,
+    tidyr,
     reshape2,
     codetools,
     lifecycle,
@@ -34,7 +35,8 @@ Imports:
     doParallel,
     foreach,
     Rcpp,
-    methods
+    methods,
+    magrittr
 Suggests:
     randomForest,
     kernlab,
