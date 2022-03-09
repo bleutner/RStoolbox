@@ -12,3 +12,11 @@ sf <- st_as_sf(sp)
 test_that(".toSp conversion", {
 			expect_is(.toSp(sf), c("SpatialPolygonsDataFrame"))            
 		})
+
+
+test_that(".canProcInMem says no", {
+  expect_true(.canProcInMem(terra,1))
+  expect_false(.canProcInMem(terra,1e20))
+  expect_true(.canProcInMem(ra,1))
+  expect_false(.canProcInMem(ra,1e20))
+})

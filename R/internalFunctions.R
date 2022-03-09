@@ -1,3 +1,18 @@
+#' Test if raster or terra object be processed in memory
+#' 
+#' @param x raster::Raster* or terra::SpatRaster
+#' @param n int. Number of copies to hold in memory.
+#' @returns boolean
+#' @noRd
+#' @keywords internal
+.canProcInMem <- function (x, n = 1) {
+  if(inherits(x, "SpatRaster")) {
+    x <- brick(nrows=nrow(x), ncols=ncol(x), nl = nlyr(x) )
+  } 
+  return(raster::canProcessInMemory(x, n))
+}
+
+
 #' nlayers from raster::Raster* or terra::SpatRaster objects
 #' 
 #' Convenience function for handling both raster::Raster* objects and terra::SpatRaster objects with the same codebase

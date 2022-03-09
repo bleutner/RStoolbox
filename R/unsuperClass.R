@@ -69,7 +69,7 @@ unsuperClass <- function(img, nSamples = 10000, nClasses = 5, nStarts = 25, nIte
     returnDistances <- TRUE
   }
   
-  FULL <- !clusterMap | atMax && canProcessInMemory(img, n = 4)
+  FULL <- !clusterMap | atMax && .canProcInMem(img, n = 4)
   
   if(FULL){
     if(!inMemory(img)).vMessage("Loading full raster into memory")
