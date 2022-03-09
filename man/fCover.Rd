@@ -100,10 +100,12 @@ lc      <- unsuperClass(lsat, nClass=2)
 
 ## Calculate the true cover, which is of course only possible in this example, 
 ## because the fake corse resolution imagery is exactly res(lsat)*9
-trueCover <- terra::aggregate(lc$map, agg.level, fun = function(x, ...){sum(x == 1, ...)/sum(!is.na(x))})
+trueCover <- terra::aggregate(lc$map, agg.level, 
+                   fun = function(x, ...){sum(x == 1, ...)/sum(!is.na(x))})
 
 ## Run with randomForest and support vector machine (radial basis kernel)
-## Of course the SVM is handicapped in this example due to poor tuning (tuneLength)
+## Of course the SVM is handicapped in this example,
+## due to poor tuning (tuneLength)
 par(mfrow=c(2,3))
 for(model in c("rf", "svmRadial")){
    fc <- fCover(
@@ -123,10 +125,10 @@ for(model in c("rf", "svmRadial")){
    plot(trueCover[],fc$map[],  xlim = c(0,1), ylim =c(0,1),
            xlab = "True Cover", ylab = "Predicted Cover" )
    abline(coef=c(0,1))
-   rmse <- sqrt(cellStats(compare.rf^2, sum))/ncell(compare.rf)
+   rmse <- sqrt(global(compare.rf^2, "sum", na.rm = T))/ncell(compare.rf)
    r2 <- cor(trueCover[], fc$map[], "complete.obs")
-   text(0.9,0.1,paste0(paste(c("RMSE:","R2:"),
-                           round(c(rmse, r2),3)),collapse="\n"), adj=1)
+   text(0.9,0.1, adj=1, labels = 
+        paste(c("RMSE:","\nR2:"), round(unlist(c(rmse, r2)),3), collapse=""))
 }
 
 ## Reset par
