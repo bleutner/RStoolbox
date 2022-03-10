@@ -27,8 +27,6 @@ Pixels matching the class of interest are set to 1, backround values by default 
 Splits a categorical raster layer (or a vector) into a multilayer raster (or matrix).
 }
 \examples{
-library(raster)
-
 ## example data
 data(rlogo)
 sc <- unsuperClass(rlogo, nClasses = 3)
