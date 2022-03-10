@@ -49,18 +49,18 @@
 #' lsat_tc
 #' plot(lsat_tc)
 tasseledCap <- function(img, sat, ...) {
-	img <- .toRaster(img)
+	img <- .toTerra(img)
 	
     sat <- tolower(sat)
     if(!sat %in% c("landsat4tm" , "landsat5tm" , "landsat7etm" ,"landsat8oli", "modis", "quickbird", "spot5", "rapideye")) stop("Sensor not implemented. See ?tasseledCap for options.")     
     
-    if(nlayers(img) != nrow(.TCcoefs[[sat]])) stop("Number of layers does not match required number of layers")
+    if(nlyr(img) != nrow(.TCcoefs[[sat]])) stop("Number of layers does not match required number of layers")
     
     tct <- function(x, cof = .TCcoefs[[sat]]) {
         x %*% cof 
     }
     
-	out <- .paraRasterFun(img, rasterFun = calc, args = list(fun = tct, forcefun = TRUE), wrArgs = list(...))
+	out <- app(img, fun = tct, ...)
 	out <- .updateLayerNames(out, colnames(.TCcoefs[[sat]]))
 	out
 }
