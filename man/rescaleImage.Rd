@@ -4,12 +4,12 @@
 \alias{rescaleImage}
 \title{Linear Image Rescaling}
 \usage{
-rescaleImage(x, y, xmin, xmax, ymin, ymax, forceMinMax = FALSE)
+rescaleImage(x, y, xmin, xmax, ymin, ymax, forceMinMax = FALSE, ...)
 }
 \arguments{
-\item{x}{Raster* object. Image to normalise.}
+\item{x}{SpatRaster or Raster* object or numeric vector. Image to normalise.}
 
-\item{y}{Raster* object. Reference image. Optional. Used to extract min and max values if ymin or ymax are missing.}
+\item{y}{SpatRaster or Raster* object or numeric vector. Reference image. Optional. Used to extract min and max values if ymin or ymax are missing.}
 
 \item{xmin}{Numeric. Min value of x. Either a single value or one value per layer in x. If xmin is not provided it will be extracted from x.}
 
@@ -20,17 +20,21 @@ rescaleImage(x, y, xmin, xmax, ymin, ymax, forceMinMax = FALSE)
 \item{ymax}{Numeric. Max value of y. Either a single value or one value per layer in x. If ymax is not provided it will be extracted from y.}
 
 \item{forceMinMax}{Logical. Forces update of min and max data slots in x or y.}
+
+\item{...}{additional arguments passed to \code{\link[terra:writeRaster]{terra::writeRaster()}}}
 }
 \value{
-Returns a Raster* object of the same dimensions as the input raster \code{x} but shifted and stretched to the new limits.
+Returns a SpatRaster object of the same dimensions as the input raster \code{x} but shifted and stretched to the new limits.
 }
 \description{
-performs linear shifts of value ranges either to match min and max of another image (\code{y})
+performs linear shifts of value ranges either to match min/max of another image (\code{y})
 or to any other min and max value (\code{ymin} and \code{ymax}).
 }
 \details{
-Providing xmin and xmax values manually can be useful if the raster contains a variable of a known, fixed value range, e.g. NDVI from -1 to 1 but the actual pixel values don't 
-encompass this entire range. By providing xmin = -1 and xmax = 1 the values can be rescaled to any other range, e.g. 1 to 100 while comparability to other rescaled NDVI scenes is retained.
+Providing \code{xmin} and \code{xmax} values manually can be useful if the raster contains a variable of a known, fixed value range,
+e.g. NDVI from -1 to 1 but the actual pixel values don't encompass this entire range.
+By providing \code{xmin = -1} and \code{xmax = 1} the values can be rescaled to any other range,
+e.g. 1 to 100 while comparability to other rescaled NDVI scenes is retained.
 }
 \examples{
 ## Create example data
@@ -47,5 +51,5 @@ lsat2_unity <- rescaleImage(lsat2, ymin = 0, ymax = 1)
 lsat2_unity
 }
 \seealso{
-\link{histMatch}
+\link[=histMatch]{histMatch}
 }
