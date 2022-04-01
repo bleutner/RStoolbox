@@ -21,7 +21,10 @@
 #' @noRd 
 .toRaster <- function(x) {
 	if (inherits(x, "SpatRaster")) {
-		return(stack(x))
+	  p <- crs(x)
+		s <- stack(x)
+		crs(s) <- p
+		return(s)
 	} else {
 		return(x)
 	}

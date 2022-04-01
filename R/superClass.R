@@ -372,12 +372,19 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 }
 
 #' Check overlap between vector and raster data
+#' Note CRS equality is assumed and not tested anymore (tested earlier)
+#' this was introduced to avoid spurious CRS mismatches  
+#' 
 #' @param img Raster* or any other geometry which returns a st_bbox
 #' @param vect sf 
 #' @keywords internal
 #' @noRd 
 .selectIntersecting <- function(img,vect) {
-    overlap <- st_intersects(st_as_sfc(st_bbox(img)), vect, sparse = FALSE)
+  
+    ext <- st_as_sfc(st_bbox(extent(img)))
+    st_crs(ext) <- st_crs(vect)
+  
+    overlap <- as.vector(st_intersects(ext, vect, sparse = FALSE))
     so <- sum(!overlap)
     if (so)
         warning(sprintf("Some trainData (%s/%s) do not overlap with img", so, length(overlap)), call. = FALSE)
@@ -399,8 +406,9 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
     nSampsCol <- NULL
     if (!is.null(nSamples)) {
         v$area <- st_area(v)
-        v <- mutate(group_by(v, class), 
-                nSamps = max(as.integer(ceiling(area/sum(area) * nSamples)),1))
+        v <- v %>% group_by( group = get(responseCol)) %>%
+                  mutate( nSamps = max(as.integer(ceiling(area/sum(area) * nSamples)),1)) %>%
+                    dplyr::select(-group)
         nSampsCol <- "nSamps"
     } 
     
