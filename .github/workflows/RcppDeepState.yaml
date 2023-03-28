@@ -17,6 +17,7 @@ jobs:
       - uses: FabrizioSandri/RcppDeepState-action@main
         with:
           fail_ci_if_error: true
+          additional_dependencies: libudunits2-dev
           location: /
           seed: -1
           max_seconds_per_function: 2
