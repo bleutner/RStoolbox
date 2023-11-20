@@ -1,53 +1,3 @@
-#' Test if raster or terra object be processed in memory
-#' 
-#' @param x raster::Raster* or terra::SpatRaster
-#' @param n int. Number of copies to hold in memory.
-#' @returns boolean
-#' @noRd
-#' @keywords internal
-.canProcInMem <- function (x, n = 1) {
-  if(inherits(x, "SpatRaster")) {
-    x <- brick(nrows=nrow(x), ncols=ncol(x), nl = nlyr(x) )
-  } 
-  return(raster::canProcessInMemory(x, n))
-}
-
-
-#' nlayers from raster::Raster* or terra::SpatRaster objects
-#' 
-#' Convenience function for handling both raster::Raster* objects and terra::SpatRaster objects with the same codebase
-#' @param x RasterLayer, RasterBrick, RasterStack, SpatRaster
-#' @returns int
-#' @noRd
-#' @keywords internal
-.nlyr <- function(x) {
-  if(inherits(x, "Raster")) {
-    return(raster::nlayers(x))
-  } else {
-    return(terra::nlyr(x))
-  }
-}
-
-#' stack for raster::Raster* OR terra objects
-#' 
-#' Convenience function for handling both raster::Raster* objects and terra::SpatRaster objects with the same codebase
-#' @param x raster::Raster* or terra::SpatRaster
-#' @param ... raster::Raster* or terra::SpatRaster
-#' @returns RasterStack or SpatRaster (same as input)
-#' @noRd
-#' @keywords internal
-.stack <- function(x, ...) {
-  l <- c(list(x),...)
-  stopifnot(length(unique(sapply(l,inherits, "SpatRaster"))) == 1)
-  if(inherits(x, "Raster")) {
-    return(do.call(raster::stack, l))
-  } else {
-    return(do.call(c, l))
-  }
-}
-
-
-
 #' Retrieves Average Earth-Sun distance (in AU) for a given date 
 #' 
 #' based on 1970-2070 per-DOY average of NASA JPL HORIZONS calculations 
@@ -56,11 +6,11 @@
 #' @keywords internal
 #' @noRd 
 .ESdist <- function(date){    
-  doy <- as.numeric(format(as.POSIXct(date), "%j"))
-  .ESdistance[doy]
+	doy <- as.numeric(format(as.POSIXct(date), "%j"))
+	.ESdistance[doy]
 }
 
-#' Convert terra to raster objects
+#' Convert terra::SpatRaster to raster::RasterStack
 #' 
 #' This is a temporary function used to add terra support to RStoolbox, while RStoolbox internals 
 #' are still implemented based on raster functionality. In the long run it is
@@ -70,31 +20,17 @@
 #' @keywords internal
 #' @noRd 
 .toRaster <- function(x) {
-  if (inherits(x, "SpatRaster")) {
-    return(stack(x))
-  } else if (inherits(x, "SpatExtent")) {
-    return (raster::extent(as.vector(x)))
-  } else {
-    return(x)
-  }
+	if (inherits(x, "SpatRaster")) {
+	  p <- crs(x)
+		s <- stack(x)
+		crs(s) <- p
+		return(s)
+	} else {
+		return(x)
+	}
 }
 
-#' Convert raster to terra objects
-#' 
-#' @describeIn .toRaster convert terra to raster
-#' @keywords internal
-#' @noRd
-.toTerra <- function(x) {
-  if (inherits(x, "Raster")) {
-    return(terra::rast(x))
-  } else if (inherits(x, "Extent")) {
-    return(terra::ext(x))
-  } else {
-    return(x)
-  }
-}
-
-#' Convert sf objects to sp::Spatial* objects
+#' Convert sf objects to sp objects
 #' 
 #' This is a temporary function used to add sf support to RStoolbox, while RStoolbox internals 
 #' are still implemented based on sp functionality. In the long run it is
@@ -104,26 +40,28 @@
 #' @keywords internal
 #' @noRd 
 .toSp <- function(x) {
-  if (inherits(x, "sf")) {
-    return(as_Spatial(x))
-  } else {
-    return(x)
-  }
+	if (inherits(x, "sf")) {
+		return(as_Spatial(x))
+	} else {
+		return(x)
+	}
 }
 
-#' Convert sp to sf::sf*
-#' 
-#' @describeIn .toSp convert sp to sf
-#' @keywords internal
-#' @noRd
 .toSf <- function(x) {
-  if (inherits(x, "Spatial")) {
-    return(st_as_sf(x))
-  } else {
-    return(x)
-  }
+    if (inherits(x, "Spatial")) {
+        return(st_as_sf(x))
+    } else {
+        return(x)
+    }
 }
 
+.toTerra <- function(x) {
+    if (inherits(x, "Raster")) {
+        return(rast(x))
+    } else {
+        return(x)
+    }
+}
 
 #' Extract numbers from strings
 #' 
@@ -133,12 +71,12 @@
 #' @keywords internal
 #' @noRd 
 .getNumeric <- function(x, returnNumeric = TRUE) {
-  vapply(x, function(xi){
-    d <- strsplit(xi, "[^[:digit:]]")[[1]]
-    d <- if(returnNumeric) as.numeric(d[d!=""]) else d[d!=""]
-    if(length(d)==0) d <- NA_real_
-    d[1]
-  }, numeric(1))
+    vapply(x, function(xi){
+                d <- strsplit(xi, "[^[:digit:]]")[[1]]
+                d <- if(returnNumeric) as.numeric(d[d!=""]) else d[d!=""]
+                if(length(d)==0) d <- NA_real_
+                d[1]
+            }, numeric(1))
 }
 
 #' Run raster functions in parallel if possible
@@ -149,11 +87,11 @@
 #' @keywords internal
 #' @noRd 
 .paraRasterFun <- function(raster, rasterFun, args = list(), wrArgs = list()){
-  if (isTRUE( getOption('rasterCluster'))) {
-    do.call("clusterR", args = c(list(x = raster, fun = rasterFun, args=args), wrArgs))
-  } else {
-    do.call("rasterFun", args=c(raster, args, wrArgs))
-  }
+    if (isTRUE( getOption('rasterCluster'))) {
+        do.call("clusterR", args = c(list(x = raster, fun = rasterFun, args=args), wrArgs))
+    } else {
+        do.call("rasterFun", args=c(raster, args, wrArgs))
+    }
 }
 
 #' Run functions of ?apply family in parallel if possible
@@ -177,30 +115,30 @@
 #'  }
 #' }
 .parXapply <- function(X, XFUN, MARGIN, FUN, envir, ...){   
-  
-  call <- quote(f(cl = cl, X = X, FUN = FUN, MARGIN = MARGIN, ...))
-  
-  if(isTRUE( getOption('rasterCluster'))) {
-    cl <- getCluster()  
-    on.exit(returnCluster()) 
-    f  <- c(lapply=parLapply, sapply=parSapply, apply=parApply)[[XFUN]]
-    if(!is.primitive(FUN)){
-      g  <- findGlobals(FUN)
-      gg <- lapply(g, get, envir = envir) 
-      names(gg) <- g
+    
+    call <- quote(f(cl = cl, X = X, FUN = FUN, MARGIN = MARGIN, ...))
+    
+    if(isTRUE( getOption('rasterCluster'))) {
+        cl <- getCluster()  
+        on.exit(returnCluster()) 
+        f  <- c(lapply=parLapply, sapply=parSapply, apply=parApply)[[XFUN]]
+        if(!is.primitive(FUN)){
+            g  <- findGlobals(FUN)
+            gg <- lapply(g, get, envir = envir) 
+            names(gg) <- g
+        } else {
+            gg<-NULL
+        }
+        l  <- c(list(...),gg)
+        clusterExport(cl=cl, names(l), envir = envir)
+        if(XFUN == "lapply") names(call)[names(call)=="FUN"] <- "fun"
     } else {
-      gg<-NULL
-    }
-    l  <- c(list(...),gg)
-    clusterExport(cl=cl, names(l), envir = envir)
-    if(XFUN == "lapply") names(call)[names(call)=="FUN"] <- "fun"
-  } else {
-    f <- get(XFUN)
-    call[["cl"]] <- NULL
-  }    
-  if(XFUN != "apply") call[["MARGIN"]] <- NULL
-  eval(call)
-  
+        f <- get(XFUN)
+        call[["cl"]] <- NULL
+    }    
+    if(XFUN != "apply") call[["MARGIN"]] <- NULL
+    eval(call)
+    
 }
 
 #' Set-up doParallel backend when beginCluster has been called
@@ -210,17 +148,17 @@
 #' @keywords internal
 #' @noRd 
 .registerDoParallel <- function(){
-  if(isTRUE(getOption('rasterCluster')) && !getDoParRegistered()) {
-    cl <- raster::getCluster()
-    registerDoParallel(cl)
-  }
+    if(isTRUE(getOption('rasterCluster')) && !getDoParRegistered()) {
+        cl <- raster::getCluster()
+        registerDoParallel(cl)
+    }
 }
 
 .getNCores <- function(){
-  if(isTRUE(getOption('rasterCluster'))) {
-    return (length(raster::getCluster()))
-  }
-  return(1)
+    if(isTRUE(getOption('rasterCluster'))) {
+        return (length(raster::getCluster()))
+    }
+    return(1)
 }
 
 #' Get file extension for writeRaster
@@ -228,12 +166,12 @@
 #' @keywords internal
 #' @noRd 
 .rasterExtension <- function(x){ 
-  fdb <- c(RASTER = ".grd", GTIFF = ".tif", CDF = ".nc", KML = ".kml", KMZ = ".kmz", BIG.MATRIX = ".big",
-           BIL = ".bil", BSQ = ".bsq", BIP = ".bip",ASCII = ".asc", RST = ".rst",ILWIS = ".mpr", 
-           SAGA = ".sdat",BMP = ".bmp", ADRG = ".gen", BT = ".bt", EHDR = ".bil",ENVI = ".envi",
-           ERS = ".ers", GSBG = ".grd",HFA =  ".img", IDA =  ".img", RMF = ".rsw")
-  ext <- fdb[toupper(x)]
-  if(is.na(ext)) ".grd" else ext
+    fdb <- c(RASTER = ".grd", GTIFF = ".tif", CDF = ".nc", KML = ".kml", KMZ = ".kmz", BIG.MATRIX = ".big",
+            BIL = ".bil", BSQ = ".bsq", BIP = ".bip",ASCII = ".asc", RST = ".rst",ILWIS = ".mpr", 
+            SAGA = ".sdat",BMP = ".bmp", ADRG = ".gen", BT = ".bt", EHDR = ".bil",ENVI = ".envi",
+            ERS = ".ers", GSBG = ".grd",HFA =  ".img", IDA =  ".img", RMF = ".rsw")
+    ext <- fdb[toupper(x)]
+    if(is.na(ext)) ".grd" else ext
 }
 
 #' Expand any filepath to the full path
@@ -247,21 +185,21 @@
 #' .fullPath("/tmp/test.grd")
 #' @noRd 
 .fullPath <- function(x){
-  ## TODO: add single dot / current directory treatment
-  x <- path.expand(x)   
-  x <- gsub("\\\\", "/", x) ## anti-win
-  x <- gsub("//", "/", x)   ## anti-win
-  
-  if(basename(x) == x | grepl("^[.][.]/", x))    x   <- file.path(getwd(),x)
-  if(grepl("[.][.]", x)){
-    xs  <- strsplit(x, "/")[[1]]
-    ups <- grep("[.][.]", xs)  
-    rem <- c(ups, ups-length(ups))
-    rem <- rem[rem > 1]
-    xs  <-  xs[-rem]
-    x   <- paste0(xs,collapse="/")      
-  }
-  x           
+    ## TODO: add single dot / current directory treatment
+    x <- path.expand(x)   
+    x <- gsub("\\\\", "/", x) ## anti-win
+    x <- gsub("//", "/", x)   ## anti-win
+    
+    if(basename(x) == x | grepl("^[.][.]/", x))    x   <- file.path(getwd(),x)
+    if(grepl("[.][.]", x)){
+        xs  <- strsplit(x, "/")[[1]]
+        ups <- grep("[.][.]", xs)  
+        rem <- c(ups, ups-length(ups))
+        rem <- rem[rem > 1]
+        xs  <-  xs[-rem]
+        x   <- paste0(xs,collapse="/")      
+    }
+    x           
 }   
 
 #' Update layer names after calc/overlay/predict etc.
@@ -273,13 +211,13 @@
 #' @keywords internal
 #' @noRd 
 .updateLayerNames<-function(x, n){
-  if(!identical(names(x),n)){
-    names(x) <- n
-    if(!inMemory(x) && extension(filename(x)) == ".grd") {
-      hdr(x, format = "RASTER")
+    if(!identical(names(x),n)){
+        names(x) <- n
+        if(!inMemory(x) && extension(filename(x)) == ".grd") {
+            hdr(x, format = "RASTER")
+        }
     }
-  }
-  x
+    x
 }
 
 #' Print data.frame in roxygen2 table format
@@ -288,9 +226,9 @@
 #' @keywords internal
 #' @noRd 
 .df2tab <- function(x, align){
-  c(paste0("\\tabular{", align, "}{"),
-    paste(paste("\\strong{", colnames(x), "}", collapse = " \\tab "), "\\cr" ),
-    paste(apply(x, 1, paste, collapse = " \\tab "), c(rep("\\cr", nrow(x)-1), "}")))
+    c(paste0("\\tabular{", align, "}{"),
+            paste(paste("\\strong{", colnames(x), "}", collapse = " \\tab "), "\\cr" ),
+            paste(apply(x, 1, paste, collapse = " \\tab "), c(rep("\\cr", nrow(x)-1), "}")))
 }
 
 #' Convert character to numric band
@@ -299,15 +237,15 @@
 #' @keywords internal
 #' @noRd 
 .numBand <- function(raster, ...){
-  bands <- list(...)
-  lapply(bands, function(band) if(is.character(band)) which(names(raster) == band) else band ) 
+    bands <- list(...)
+    lapply(bands, function(band) if(is.character(band)) which(names(raster) == band) else band ) 
 }
 
 #' Print message if global RStoolbox.verbose option is TRUE
 #' @keywords internal
 #' @noRd 
 .vMessage <- function(...){    
-  if(getOption("RStoolbox.verbose")){message(format(Sys.time(), "%H:%M:%S | "), ...)}
+    if(getOption("RStoolbox.verbose")){message(format(Sys.time(), "%H:%M:%S | "), ...)}
 }
 
 
@@ -320,10 +258,10 @@
 #' @return Extent object
 #' @noRd 
 .getExtentOverlap <- function(...){
-  el <- list(...)
-  if(any(!vapply(el, inherits, what = "Extent", logical(1)))) stop("You can only supply Extent objects to getExtentOverlap")
-  em <- do.call("rbind", lapply(el, as.vector))
-  extent(c(max(em[,1]), min(em[,2]), max(em[,3]), min(em[,4])))    
+    el <- list(...)
+    if(any(!vapply(el, inherits, what = "Extent", logical(1)))) stop("You can only supply Extent objects to getExtentOverlap")
+    em <- do.call("rbind", lapply(el, as.vector))
+    extent(c(max(em[,1]), min(em[,2]), max(em[,3]), min(em[,4])))    
 }
 
 #' Get center coordinates of Extent object or any object from which an extent can be derived
@@ -331,7 +269,7 @@
 #' @return Vector of length two with center coordinate
 #' @noRd 
 .extentCenter <- function(x){
-  c(xmax(x) + xmin(x), ymax(x) + ymin(x))/2 
+    c(xmax(x) + xmin(x), ymax(x) + ymin(x))/2 
 }
 
 
@@ -341,11 +279,11 @@
 #' @noRd 
 #' @keywords internal
 .hasMinMax <- function(x) {
-  if(inherits(x, c("RasterLayer", "RasterBrick"))) {
-    return(x@data@haveminmax)
-  } else {
-    return(vapply(1:nlayers(x), function(xi) {x[[xi]]@data@haveminmax}, logical(1)))
-  }
+    if(inherits(x, c("RasterLayer", "RasterBrick"))) {
+        return(x@data@haveminmax)
+    } else {
+        return(vapply(1:nlayers(x), function(xi) {x[[xi]]@data@haveminmax}, logical(1)))
+    }
 }
 
 ##' Subdivide polygons into smaller polygons
@@ -378,7 +316,7 @@
 #' @noRd 
 #' @keywords internal
 .rmse <- function (pred, obs) {
-  sqrt(mean((pred - obs)^2, na.rm = T))
+    sqrt(mean((pred - obs)^2, na.rm = T))
 }
 
 
@@ -386,7 +324,7 @@
 #' On package startup
 #' @noRd 
 .onLoad <- function(libname, pkgname){
-  if(is.null(getOption("RStoolbox.verbose")))  options(RStoolbox.verbose = FALSE)
+    if(is.null(getOption("RStoolbox.verbose")))  options(RStoolbox.verbose = FALSE)
 }
 
 #' Init verbosity within functions 
@@ -396,17 +334,17 @@
 #' @keywords internal
 #' @noRd 
 .initVerbose <- function(verbose){
-  verbold <- force(getOption("RStoolbox.verbose"))
-  do.call("on.exit", list(substitute(options(RStoolbox.verbose = verbold))), envir=parent.frame())
-  options(RStoolbox.verbose = verbose)
+    verbold <- force(getOption("RStoolbox.verbose"))
+    do.call("on.exit", list(substitute(options(RStoolbox.verbose = verbold))), envir=parent.frame())
+    options(RStoolbox.verbose = verbose)
 }
 
-
-
+ 
+ 
 #' Clean up on package unload
 #' @noRd 
 .onUnload <- function (libpath) {
-  library.dynam.unload("RStoolbox", libpath)
+    library.dynam.unload("RStoolbox", libpath)
 }
 
 

@@ -16,3 +16,4 @@ pkg-build.sh
 revdep
 ^\.github$
 ^logo\.png$
+^CRAN-SUBMISSION$
