@@ -49,7 +49,6 @@
 #' 
 #' @import raster sp sf 
 #' @importFrom terra rast vect project nlyr setMinMax minmax app spatSample ext
-#' @importFrom rgdal set_thin_PROJ6_warnings
 #' @importFrom exactextractr exact_extract
 #' @importFrom lifecycle is_present deprecate_warn deprecated
 #' @importFrom ggplot2 aes aes_string annotation_raster coord_equal fortify geom_raster geom_blank ggplot scale_fill_discrete scale_fill_gradientn scale_fill_identity facet_wrap

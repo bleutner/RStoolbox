@@ -29,11 +29,11 @@ file. Useful to archive the fitted models.
 }
 \section{Functions}{
 \itemize{
-\item \code{saveRSTBX}: Save RStoolbox object to file
+\item \code{saveRSTBX()}: Save RStoolbox object to file
 
-\item \code{readRSTBX}: Read files saved with saveRSTBX
+\item \code{readRSTBX()}: Read files saved with saveRSTBX
+
 }}
-
 \note{
 All files must be kept in the same directory to read the full object back into R
 by means of readRSTBX. You can move them to another location but you'll have to move *all* of them 

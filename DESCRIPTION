@@ -17,12 +17,11 @@ Encoding: UTF-8
 Depends:
     R (>= 3.5.0)
 Imports:
-    raster (>= 2.3-40),
     caret (>= 6.0-79),
+    raster,
     sp,
     sf,
     terra,
-    rgdal,
     XML,
     dplyr,
     ggplot2,
@@ -36,7 +35,8 @@ Imports:
     foreach,
     Rcpp,
     methods,
-    magrittr
+    magrittr,
+    tidyverse
 Suggests:
     randomForest,
     kernlab,
@@ -48,4 +48,4 @@ LinkingTo: Rcpp,
     RcppArmadillo
 License: GPL (>=3)
 LazyData: true
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3

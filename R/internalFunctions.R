@@ -21,7 +21,7 @@
 #' @noRd 
 .toRaster <- function(x) {
 	if (inherits(x, "SpatRaster")) {
-	  p <- crs(x)
+	    p <- crs(x)
 		s <- stack(x)
 		crs(s) <- p
 		return(s)
@@ -261,7 +261,15 @@
     el <- list(...)
     if(any(!vapply(el, inherits, what = "Extent", logical(1)))) stop("You can only supply Extent objects to getExtentOverlap")
     em <- do.call("rbind", lapply(el, as.vector))
-    extent(c(max(em[,1]), min(em[,2]), max(em[,3]), min(em[,4])))    
+    extent(c(max(em[,1]), min(em[,2]), max(em[,3]), min(em[,4])))
+}
+
+.getExtentOverlap_t <- function(...){
+    el <- list(...)
+    if(any(!vapply(el, inherits, what = "SpatExtent", logical(1)))) stop("You can only supply Extent objects to getExtentOverlap")
+    em <- do.call("rbind", lapply(el, as.vector))
+    print(em)
+    ext(c(max(em[,1]), min(em[,2]), max(em[,3]), min(em[,4])))
 }
 
 #' Get center coordinates of Extent object or any object from which an extent can be derived

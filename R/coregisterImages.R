@@ -71,39 +71,63 @@ coregisterImages <- function(img, ref, shift = 3, shiftInc = 1, nSamples = 1e5,
     }
     
 	img <- .toRaster(img)
-	ref <- .toRaster(ref) 
+	ref <- .toRaster(ref)
+
+    img_t <- .toTerra(img)
+	ref_t <- .toTerra(ref)
 	
     ## TODO: allow user selected pseudo control points
     ## TODO: add computation of MI to docu
     #if(!swin%%2 | !mwin%%2) stop("swin and mwin must be odd numbers")
     if(!missing("verbose")) .initVerbose(verbose)
-    if(!compareCRS(ref,  img)) stop("Projection must be the same for ref and img")
+    if(!compareCRS(ref, img)) stop("Projection must be the same for ref and img")
+    if(!crs(img_t) == crs(ref_t)) stop("Projection must be the same for ref and img")
     nSamples <- min(nSamples, ncell(img))
     
-    if(inherits(shift, "matrix") && ncol(shift)  == 2) { 
-        shifts <- shift * res(img) 
+    if(inherits(shift, "matrix") && ncol(shift) == 2) {
+        shifts <- shift * res(img)
+        shifts_t <- shift_t * res(img_t)
     } else {
-        shift <-  seq(0, shift, shiftInc)
+        shift <- seq(0, shift, shiftInc)
         shift <- c(-rev(shift), shift[-1]) ## always include zero shift
+        shift_t <- c(-rev(shift), shift[-1])
         shifts <- expand.grid(shift * res(img)[1], shift * res(img)[2])
-    } 
+        shifts_t <- expand.grid(shift_t * res(img_t)[1], shift_t * res(img_t)[2])
+    }
     names(shifts) <- c("x", "y")        
-    
+    names(shifts_t) <- c("x", "y")
+
     ran   <- apply(shifts, 2, range)
+    ran_t   <- apply(shifts_t, 2, range)
     minex <- extent(shift(img, ran[1,1], ran[1,2]))
-    maxex <- extent(shift(img, ran[2,1], ran[2,2]))   
-    
-    XYimgs <- sampleRandom(ref, size = nSamples, ext = .getExtentOverlap(minex, maxex)*0.9, xy = TRUE)
-    xy <- XYimgs[,c(1,2)]
-    me <- XYimgs[,-c(1,2)]      
-    mmin <- min(minValue(ref))
-    mmax <- max(maxValue(ref))
-    smin <- min(minValue(img))
-    smax <- max(maxValue(img))
+    maxex <- extent(shift(img, ran[2,1], ran[2,2]))
+    minex_t <- ext(shift(img_t, ran_t[1,1], ran_t[1,2]))
+    maxex_t <- ext(shift(img_t, ran_t[2,1], ran_t[2,2]))
+
+    XYimgs <- sampleRandom(ref, size = nSamples,
+                            ext = .getExtentOverlap(minex, maxex)*0.9, xy = TRUE)
+
+    XYimgs_t <- st_sample(st_as_sf(as.points(ref_t)), size = nSamples, type = "random")
+    XYimgs_t <- as.data.frame(st_cast(XYimgs_t,"POINT"))
+
+    XYimgs_t <- (XYimgs_t %>%
+        mutate(x = unlist(map(XYimgs_t$geometry,1)),
+               y = unlist(map(XYimgs_t$geometry,2))))[c("x", "y")]
+
+    XYimgs_t <- extract(ref_t, XYimgs_t, xy = TRUE, cells = TRUE)
+
+    xy <- XYimgs_t[,c("x", "y")]
+    me <- XYimgs_t[, -which(names(XYimgs_t) %in% c("x", "y"))]
+
+    #TODO: Continue minValue no terra
+    mmin <- min(minValue(ref_t))
+    mmax <- max(maxValue(ref_t))
+    smin <- min(minValue(img_t))
+    smax <- max(maxValue(img_t))
     
     mbreax <- seq(mmin, mmax, by = (mmax - mmin)/nBins)
     sbreax <- seq(smin, smax, by = (smax - smin)/nBins)
-    me       <- cut(me, breaks = mbreax, labels = FALSE, include.lowest = TRUE)
+    me <- cut(me, breaks = mbreax, labels = FALSE, include.lowest = TRUE)
     
     nsl <- nlayers(img)
     nml <- nlayers(ref)
@@ -167,7 +191,10 @@ coregisterImages <- function(img, ref, shift = 3, shiftInc = 1, nSamples = 1e5,
 }
 
 
-
+my_test2 <- function(){
+    devtools::load_all()
+    coregisterImages(lsat, lsat)
+}
 
 
 

@@ -27,11 +27,11 @@
 #' @seealso 
 #' \code{\link{cloudShadowMask}}
 #' @template examples_cloudMask
-cloudMask <- function(x, threshold = 0.8,  blue = "B1_sre", tir = "B6_sre", buffer = NULL, plot = FALSE, verbose){
-    
+cloudMask <- function(x, threshold = 0.2,  blue = "B1_sre", tir = "B6_sre", buffer = NULL, plot = FALSE, verbose){
     if(!missing("verbose")) .initVerbose(verbose)
-	x <- .toRaster(x)
-	
+
+	x <- .toTerra(x)
+
     ## Set-up graphics device 
     op <- par(mfrow = c(2+is.null(buffer),1))
     on.exit(par(op), add = TRUE)
@@ -42,45 +42,50 @@ cloudMask <- function(x, threshold = 0.8,  blue = "B1_sre", tir = "B6_sre", buff
         ndtci <- x[["NDTCI"]]
     } else {
         tirn <- rescaleImage(x[[tir]], x[[blue]])
-        ndtci <- overlay(stack(tirn, x[[blue]]), fun = function(high, low) (high - low) / (high + low))
+        ndtci <- (x[[blue]] - tirn) / (x[[blue]] + tirn)
         names(ndtci) <- "NDTCI" 
     }
     if(plot) plot(ndtci, main = "Normalized difference thermal cloud index")
     
     ## Thresholding
     .vMessage("Begin thresholding")
-    cmask <- ndtci < threshold
-    cmask <- mask(cmask, cmask, maskvalue = 0)
-    
-    if(plot) plot(cmask, main = paste0("Cloud mask\nThreshold: ", threshold))
+    cmask <- ndtci
+    cmask[cmask >= threshold] <- 1
+    cmask[cmask < threshold] <- NA
+
+    if(plot) plot(cmask, main = paste0("Cloud mask threshold: ", threshold))
     
     ## Buffer cloud centers (we could also do a circular buffer, but for now this should suffice)
     if(!is.null(buffer)){  
-        .vMessage("Begin region-growing")
-        bufferMethod <- 1
-        if(bufferMethod){
-            # TODO: Check buffer vs. focal  performance
-            w <- matrix(ncol = buffer, nrow = buffer, 1)
-            w[c(1,buffer,1,buffer), c(1,1,buffer,buffer)] <- 0
-            cmask <- focal(cmask, w, na.rm = TRUE )
-			nonfinite <- is.na(cmask)
-            cmask[!nonfinite] <- 1L
-			cmask[nonfinite] <- NA
-        } else {
-            buffer <- buffer * res(cmask)[1]
-            cmask <- buffer(cmask, buffer, na.rm = TRUE )
+        if(buffer %% 2 != 0){
+            .vMessage("Begin region-growing")
+            bufferMethod <- 1
+            if(bufferMethod){
+                # TODO: Check buffer vs. focal  performance
+                w <- matrix(ncol = buffer, nrow = buffer, 1)
+                w[c(1,buffer,1,buffer), c(1,1,buffer,buffer)] <- 0
+                cmask <- focal(cmask, w, na.rm = TRUE )
+                nonfinite <- is.na(cmask)
+                cmask[!nonfinite] <- 1L
+                cmask[nonfinite] <- NA
+            } else {
+                buffer <- buffer * res(cmask)[1]
+                cmask <- buffer(cmask, buffer, na.rm = TRUE )
+            }
             if(plot) plot(cmask, main = "Region-grown cloud mask")
+        }else{
+            stop("buffer must be odd for a focal buffering")
         }
     }
     
     if(plot){
         plotRGB(x, 1, 2, 3, stretch = "lin")
-        plot(cmask,  legend = FALSE, add = T, col = "yellow")
+        plot(cmask, na.action = NA, legend = F, add = T, col = "yellow")
     }
     
     ## Return
     names(cmask) <- "CMASK"
-    return(stack(cmask, ndtci))
+    return(c(cmask, ndtci))
 }
 
 
@@ -107,17 +112,16 @@ cloudMask <- function(x, threshold = 0.8,  blue = "B1_sre", tir = "B6_sre", buff
 #' @export
 #' @template examples_cloudMask
 cloudShadowMask <- function (img, cm, nc = 5, shiftEstimate = NULL, preciseShift = NULL, quantile = 0.2, returnShift = FALSE) {
-    
+
     stopifnot(quantile > 0 & quantile < 1) 
-	img <- .toRaster(img)
-	cm <- .toRaster(cm)
+	img <- .toTerra(img)
+	cm <- .toTerra(cm)
 	
-    if(is.null(preciseShift)){ 
-        
+    if(is.null(preciseShift)){
         csind <- sum(img)
-        csindm <- csind < quantile(csind, quantile)
+        csindm <- csind < quantile(values(csind), quantile)
         uvals <- unique(csindm)
-        if(length(uvals)==1){
+        if(nrow(uvals)==1){
             if(uvals == 0) stop("Argument 'quantiles' is too low.", call. = FALSE)
             if(uvals == 1) stop("Argument 'quantiles' is too high.", call. = FALSE)
         } 
@@ -145,8 +149,13 @@ cloudShadowMask <- function (img, cm, nc = 5, shiftEstimate = NULL, preciseShift
         cms <- shift(cm[[1]], preciseShift[1], preciseShift[2])
     }
     cms <- resample(cms, cm, method = "ngb")
-    if(returnShift) return(list(shift = shiftPar, shadowMap = cms)) else return(cms)
+    #if(returnShift) return(list(shift = shiftPar, shadowMap = cms)) else return(cms)
     
 }
 
 
+my_test <- function(){
+    devtools::load_all()
+    cldmsk_final <- cloudMask(lsat, threshold = 0.1, blue = 1, tir = 6, plot = T, buffer = 5)
+    cloudShadowMask(lsat, cldmsk_final, shiftEstimate = c(-16,-6))
+}
