@@ -256,19 +256,11 @@
 #' 
 #' @param ... Extent objects to combine
 #' @return Extent object
-#' @noRd 
+#' @noRd
 .getExtentOverlap <- function(...){
-    el <- list(...)
-    if(any(!vapply(el, inherits, what = "Extent", logical(1)))) stop("You can only supply Extent objects to getExtentOverlap")
-    em <- do.call("rbind", lapply(el, as.vector))
-    extent(c(max(em[,1]), min(em[,2]), max(em[,3]), min(em[,4])))
-}
-
-.getExtentOverlap_t <- function(...){
     el <- list(...)
     if(any(!vapply(el, inherits, what = "SpatExtent", logical(1)))) stop("You can only supply Extent objects to getExtentOverlap")
     em <- do.call("rbind", lapply(el, as.vector))
-    print(em)
     ext(c(max(em[,1]), min(em[,2]), max(em[,3]), min(em[,4])))
 }
 
@@ -356,6 +348,8 @@
 }
 
 
-
-
-
+#' Returns the amount of layers for a terra raster
+#' @noRd
+.nlyr <- function (terra_raster) {
+    dim(terra_raster)[3]
+}

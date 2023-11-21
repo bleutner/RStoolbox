@@ -9,19 +9,19 @@ modis <- aggregate(lsat, 9)
 
 for(cl in 1:2) {
     if (!identical(Sys.getenv("NOT_CRAN"), "true") && cl == 2) next
-    
+
 	test_that(sprintf("works for %s classes(s)",cl), {
-				expect_is(fc <- fCover(
-								classImage = lc ,
-								predImage = modis,
-								classes=1:cl,
-								model="lm",
-								trControl = trainControl(method = "cv", number = 2),
-								nSample = 30,
-								tuneLength=1
-						), c("RStoolbox", "fCover"))
-				expect_equal(.nlyr(fc$map), cl)
-			})
+		expect_is(fc <- fCover(
+						classImage = lc ,
+						predImage = modis,
+						classes=1:cl,
+						model="lm",
+						trControl = trainControl(method = "cv", number = 2),
+						nSample = 30,
+						tuneLength=1
+				), c("fCover", "RStoolbox"))
+		expect_equal(.nlyr(fc$map), cl)
+	})
 
 }
 

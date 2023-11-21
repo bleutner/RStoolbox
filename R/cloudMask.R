@@ -141,21 +141,19 @@ cloudShadowMask <- function (img, cm, nc = 5, shiftEstimate = NULL, preciseShift
         cma <- is.na(cm[[1]])
         shifts <- matrix(shiftEstimate + rep(seq(-3,3,0.5), each = 2), ncol=2, byrow=TRUE)
         colnames(shifts) <- c("x", "y")
-        cms <- coregisterImages(cma, csindm, shift = shifts, nBins = 2, nSamples = ncell(cma), reportStats = TRUE)
+        cms <- coregisterImages(cma, csindm, shift = shifts, nBins = 2, nSamples = ncell(cma) / 4, reportStats = TRUE)
         shiftPar <- cms$bestShift
         cms <- cms$coregImg
         cms[cms == 1] <- NA
     } else {
         cms <- shift(cm[[1]], preciseShift[1], preciseShift[2])
     }
-    cms <- resample(cms, cm, method = "ngb")
-    #if(returnShift) return(list(shift = shiftPar, shadowMap = cms)) else return(cms)
+    cms <- resample(cms, cm, method = "near")
+    if(returnShift) return(list(shift = shiftPar, shadowMap = cms)) else return(cms)
     
 }
 
 
 my_test <- function(){
-    devtools::load_all()
-    cldmsk_final <- cloudMask(lsat, threshold = 0.1, blue = 1, tir = 6, plot = T, buffer = 5)
-    cloudShadowMask(lsat, cldmsk_final, shiftEstimate = c(-16,-6))
+    class(c(last, last))
 }

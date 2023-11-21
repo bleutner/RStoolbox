@@ -24,10 +24,10 @@
 #' plot(sc_oneHot)
 oneHotEncode <- function(img, classes, background = 0, foreground = 1, na.rm = FALSE, ...) {
 	img <- .toTerra(img)
-    stopifnot(inherits(img, c("SpatRaster", "integer", "numeric")))
+    stopifnot(inherits(img, c("SpatRaster", "integer", "numeric", "matrix")))
     if(inherits(img, "SpatRaster")) {
         if(nlyr(img)>1) {
-          warning(paste0("oneHotEncode() currently works on single layers only, but `img` has ", nlyr(img), " layers.",
+          warning(paste0("oneHotEncode() currently works on single layers only, but `img` has ", .nlyr(img), " layers.",
                          "\nDefaulting to first layer.",
                          "\nSubmit a feature request at <https://github.com/bleutner/RStoolbox/issues> if you need it for more layers."),
                   call. = FALSE)
