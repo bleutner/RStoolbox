@@ -40,23 +40,24 @@
 #' qacs_conf <- classifyQA(img = qa, confLayers = TRUE)
 classifyQA <- function(img, type = c("background", "cloud", "cirrus","snow", "water"), confLayers = FALSE, sensor = "OLI", legacy = "collection1", ...){
   
-  img <- .toRaster(img)
+  img <- .toTerra(img)
 	
   ## Input checks
   if(legacy == "pre_collection" & !any(sensor %in% c("OLI", "TIRS"))) stop("For argument legacy = 'pre_collection', argument sensor can only be 'OLI' or 'TIRS'.", call.=FALSE)
   
   if(any(!type %in% c("background", "cloud", "cirrus","snow", "water")) | !length(type)) stop("type must be element of c('background', 'cloud', 'cirrus','snow', 'water')")
-  if(nlayers(img) != 1) stop("img should be a single RasterLayer")   
-  
+  if(.nlyr(img) != 1) stop("img should be a single layered SpatRaster")
+
   if(!confLayers){
     rclx <- rbind(
-      if("background" %in% type) cbind(is = encodeQA(fill = "yes", sensor = sensor, legacy = legacy),    becomes = 1L),
-      if("cloud" %in% type)  cbind(is = encodeQA(cloud = "high", sensor = sensor, legacy = legacy),  becomes = 2L),
-      if("cirrus" %in% type) cbind(is = encodeQA(cirrus = "high", sensor = sensor, legacy = legacy), becomes = 3L),
-      if("snow" %in% type)   cbind(is = encodeQA(snow = "high", sensor = sensor, legacy = legacy),   becomes = 4L),
-      if("water" %in% type)  cbind(is = encodeQA(water = "high", sensor = sensor, legacy = legacy),  becomes = 5L))
+      if("background" %in% type) cbind(is = encodeQA(fill = "yes", sensor = sensor, legacy = legacy), becomes = 1L),
+      if("cloud" %in% type)  cbind(is = encodeQA(cloud = "high", sensor = sensor, legacy = legacy),   becomes = 2L),
+      if("cirrus" %in% type) cbind(is = encodeQA(cirrus = "high", sensor = sensor, legacy = legacy),  becomes = 3L),
+      if("snow" %in% type)   cbind(is = encodeQA(snow = "high", sensor = sensor, legacy = legacy),    becomes = 4L),
+      if("water" %in% type)  cbind(is = encodeQA(water = "high", sensor = sensor, legacy = legacy),   becomes = 5L)
+    )
     
-    out <- .paraRasterFun(img, rasterFun = calc, args = list(fun = function(xi, na.rm = FALSE) classQA(x = xi, rcl = rclx), forcefun = TRUE), wrArgs = list(...))
+    out <- .paraRasterFun(img, rasterFun = app, args = list(fun = function(xi, na.rm = FALSE) classQA(x = xi, rcl = rclx), forcefun = TRUE), wrArgs = list(...))
     names(out) <- "QAclass"
     return(out)
   } else {
@@ -93,4 +94,9 @@ classifyQA <- function(img, type = c("background", "cloud", "cirrus","snow", "wa
     
 }
 
+
+test <- function(){
+  devtools::load_all()
+  classifyQA(img = rast(ncol = 128, nrow=128, val = 1:2^14))
+}
 

@@ -87,11 +87,12 @@
 #' @keywords internal
 #' @noRd 
 .paraRasterFun <- function(raster, rasterFun, args = list(), wrArgs = list()){
-    if (isTRUE( getOption('rasterCluster'))) {
-        do.call("clusterR", args = c(list(x = raster, fun = rasterFun, args=args), wrArgs))
-    } else {
-        do.call("rasterFun", args=c(raster, args, wrArgs))
-    }
+    do.call("rasterFun", args=list(raster, args, wrArgs))
+    #if (isTRUE(getOption('rasterCluster'))) {
+    #    do.call("clusterR", args = c(list(x = raster, fun = rasterFun, args=args), wrArgs))
+    #} else {
+    #    do.call("rasterFun", args=c(raster, args, wrArgs))
+    #}
 }
 
 #' Run functions of ?apply family in parallel if possible
