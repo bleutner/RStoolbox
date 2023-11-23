@@ -3,8 +3,8 @@
 #' Performs image to image contrast adjustments based on histogram matching using empirical cumulative
 #'  distribution functions from both images.
 #' 
-#' @param x Raster*. Source raster which is to be modified.
-#' @param ref Raster*. Reference raster, to which x will be matched.  
+#' @param x terra SpatRaster. Source raster which is to be modified.
+#' @param ref terra SpatRaster. Reference raster, to which x will be matched.
 #' @param xmask RasterLayer. Mask layer for \code{x} to exclude pixels which might distort the histogram, i.e. are not present in \code{ref}. Any NA pixel in \code{xmask} will be ignored (\code{maskvalue = NA}). 
 #' @param refmask RasterLayer. Mask layer for \code{ref}. Any NA pixel in \code{refmask} will be ignored (\code{maskvalue = NA}). 
 #' @param nSamples Integer. Number of random samples from each image to build the histograms.
@@ -52,86 +52,91 @@
 #' hist(redLayers) 
 #' ## Reset par 
 #' par(opar)
-histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e5, intersectOnly = TRUE, paired = TRUE, 
-        forceInteger = FALSE, returnFunctions = FALSE, ...){
-    nSamples <- min(ncell(ref), nSamples, ncell(ref))
-    
-	x   <- .toRaster(x)
-	ref <- .toRaster(ref)
-    ## Define intersecting extent if required. Returns NULL if FALSE
-    ext <- if(paired | intersectOnly) intersect(extent(x), extent(ref)) 
-    if(paired & is.null(ext)) {
-        paired <- FALSE
-        warning("Rasters do not overlap. Precise sampling disabled.", call. = FALSE)
-    }
-    if(nlayers(x) != nlayers(ref)) stop("x and ref must have the same number of layers.")
-    
-    if(!is.null(xmask)) {
-        .vMessage("Apply xmask")
-        xfull <- x
-        x <- mask(x, xmask)
-     }
-    if(!is.null(refmask)){
-     .vMessage("Apply refmask")
-        ref <- stack(ref, refmask)
-    }
-    ## Sample histogram data  
-    .vMessage("Extract samples")
+histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e5, intersectOnly = TRUE, paired = TRUE,
+                      forceInteger = FALSE, returnFunctions = FALSE, ...) {
+  nSamples <- min(ncell(ref), nSamples, ncell(ref))
 
-    ref.sample  <- as.matrix(sampleRandom(ref, size = nSamples, na.rm = TRUE, ext = ext, xy = paired))
-    if(!is.null(refmask)) ref.sample <- ref.sample[,-ncol(ref.sample), drop = FALSE]
-    
-    if(paired) {
-        x.sample   <- extract(x, ref.sample[,c("x","y")])
-        if(is.vector(x.sample)) x.sample <- as.matrix(x.sample)
-        valid <- complete.cases(x.sample)
-        ref.sample <- ref.sample[valid, -c(1:2), drop = FALSE] 
-        x.sample      <- x.sample[valid, , drop = FALSE]
-    } else {
-        x.sample     <- as.matrix(sampleRandom(x, size = nSamples, na.rm = T, ext = ext))
+  x <- .toTerra(x)
+  ref <- .toTerra(ref)
+  ## Define intersecting extent if required. Returns NULL if FALSE
+  ext <- if (paired | intersectOnly) intersect(ext(x), ext(ref))
+  if (paired & is.null(ext)) {
+    paired <- FALSE
+    warning("Rasters do not overlap. Precise sampling disabled.", call. = FALSE)
+  }
+  if (.nlyr(x) != .nlyr(ref)) stop("x and ref must have the same number of layers.")
+
+  if (!is.null(xmask)) {
+    .vMessage("Apply xmask")
+    xfull <- x
+    x <- mask(x, xmask)
+  }
+  if (!is.null(refmask)) {
+    .vMessage("Apply refmask")
+    ref <- c(ref, refmask)
+  }
+  ## Sample histogram data
+  .vMessage("Extract samples")
+
+  ref.sample <- as.matrix(spatSample(ref, size = nSamples, na.rm = TRUE, ext = ext, xy = paired))
+  if (!is.null(refmask)) ref.sample <- ref.sample[, -ncol(ref.sample), drop = FALSE]
+
+  if (paired) {
+    x.sample <- extract(x, ref.sample[, c("x", "y")])
+    if (is.vector(x.sample)) x.sample <- as.matrix(x.sample)
+    valid <- complete.cases(x.sample)
+    ref.sample <- ref.sample[valid, -c(1:2), drop = FALSE]
+    x.sample <- x.sample[valid, , drop = FALSE]
+  } else {
+    x.sample <- as.matrix(spatSample(x, size = nSamples, na.rm = T, ext = ext))
+  }
+
+  .vMessage("Calculate empirical cumulative histograms")
+  layerFun <- lapply(1:ncol(x.sample), function(i) {
+    ## Estimate source empirical cumulative distribution function
+    source.ecdf <- ecdf(x.sample[, i])
+
+    ## Estimate and invert reference ecdf
+    ecdf.ref <- ecdf(ref.sample[, i])
+    kn <- knots(ecdf.ref)
+    y <- ecdf.ref(kn)
+    minmax <- c(min(values(ref)[i]), max(values(ref)[i]))
+    limits <- if (is.na(minmax[1]) || is.na(minmax[2])) {
+      range(ref.sample)
+    }else{
+      minmax
     }
-    
-    .vMessage("Calculate empirical cumulative histograms")
-    layerFun <- lapply(1:ncol(x.sample), function(i) {
-                ## Estimate source empirical cumulative distribution function
-                source.ecdf <- ecdf(x.sample[,i])
-                
-                ## Estimate and invert reference ecdf
-                ecdf.ref <- ecdf(ref.sample[,i])
-                kn          <- knots(ecdf.ref)
-                y         <- ecdf.ref(kn) 
-                limits   <- if(.hasMinMax(ref[[i]])) c(minValue(ref)[i], maxValue(ref)[i]) else range(ref.sample)
-                inverse.ref.ecdf <- approxfun(y, kn, method = "linear", yleft = limits[1] , yright = limits[2], ties = "ordered")
-                
-                ## Function definition
-                histMatchFun <- if(grepl("INT", dataType(ref)[i]) | forceInteger)
-                            function(values, na.rm = FALSE){round( inverse.ref.ecdf( source.ecdf(values)))}
-                        else {
-                            function(values, na.rm = FALSE){       inverse.ref.ecdf( source.ecdf(values))}
-                        }
-                histMatchFun    
-            })
-    
-    totalFun <- function(xvals, f = layerFun) {
-        if(is.vector(xvals)) xvals <- as.matrix(xvals)
-        app <- lapply(1:ncol(xvals), function(i) {
-            f[[i]](xvals[,i])       
-        })
-        do.call("cbind", app)
+    inverse.ref.ecdf <- approxfun(y, kn, method = "linear", yleft = limits[1], yright = limits[2], ties = "ordered")
+
+    ## Function definition
+    histMatchFun <- if (grepl("INT", datatype(ref)[i]) | forceInteger)
+      function(values, na.rm = FALSE) { round(inverse.ref.ecdf(source.ecdf(values))) }
+    else {
+      function(values, na.rm = FALSE) { inverse.ref.ecdf(source.ecdf(values)) }
     }
-    
-    ## Return LUT functions
-    if(returnFunctions) {
-        names(layerFun) <- names(x)
-        return(layerFun)
-    }
-    ## Apply histMatch to raster 
-    .vMessage("Apply histogram match functions")
-    
-    out <- raster::calc(x, fun = totalFun, forcefun = TRUE, ...)
-    
-    if(!is.null(xmask)) out <- merge(xfull, out, ..., overwrite = TRUE)
-    names(out) <- names(x)
-    
-    out
+    histMatchFun
+  })
+
+  totalFun <- function(xvals, f = layerFun) {
+    if (is.vector(xvals)) xvals <- as.matrix(xvals)
+    app <- lapply(1:ncol(xvals), function(i) {
+      f[[i]](xvals[, i])
+    })
+    do.call("cbind", app)
+  }
+
+  ## Return LUT functions
+  if (returnFunctions) {
+    names(layerFun) <- names(x)
+    return(layerFun)
+  }
+  ## Apply histMatch to raster
+  .vMessage("Apply histogram match functions")
+
+  out <- terra::app(x, fun = totalFun, ...)
+
+  if (!is.null(xmask)) out <- merge(xfull, out, ..., overwrite = TRUE)
+  names(out) <- names(x)
+
+  out
 }

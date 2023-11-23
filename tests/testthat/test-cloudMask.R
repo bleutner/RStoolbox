@@ -1,6 +1,6 @@
 context("cloudMask and cloudShadowMask" )
 
-library(raster)
+library(terra)
 data(lsat) 
 
 test_that("cloud and shadow masking works", {

@@ -39,9 +39,8 @@
 #' ## Confidence levels
 #' qacs_conf <- classifyQA(img = qa, confLayers = TRUE)
 classifyQA <- function(img, type = c("background", "cloud", "cirrus","snow", "water"), confLayers = FALSE, sensor = "OLI", legacy = "collection1", ...){
-  
   img <- .toTerra(img)
-	
+
   ## Input checks
   if(legacy == "pre_collection" & !any(sensor %in% c("OLI", "TIRS"))) stop("For argument legacy = 'pre_collection', argument sensor can only be 'OLI' or 'TIRS'.", call.=FALSE)
   
@@ -56,8 +55,16 @@ classifyQA <- function(img, type = c("background", "cloud", "cirrus","snow", "wa
       if("snow" %in% type)   cbind(is = encodeQA(snow = "high", sensor = sensor, legacy = legacy),    becomes = 4L),
       if("water" %in% type)  cbind(is = encodeQA(water = "high", sensor = sensor, legacy = legacy),   becomes = 5L)
     )
-    
-    out <- .paraRasterFun(img, rasterFun = app, args = list(fun = function(xi, na.rm = FALSE) classQA(x = xi, rcl = rclx), forcefun = TRUE), wrArgs = list(...))
+
+    out <- .paraRasterFun(
+      img,
+      rasterFun = app,
+      args = list(
+        fun = function(xi, na.rm = FALSE) classQA(x = xi, rcl = rclx)
+      ),
+      wrArgs = list(...)
+    )
+
     names(out) <- "QAclass"
     return(out)
   } else {
@@ -82,21 +89,20 @@ classifyQA <- function(img, type = c("background", "cloud", "cirrus","snow", "wa
         cbind(is = encodeQA(water = "low", sensor = sensor, legacy = legacy),  becomes = 1L),
         cbind(is = encodeQA(water = "med", sensor = sensor, legacy = legacy),  becomes = 2L),
         cbind(is = encodeQA(water = "high", sensor = sensor, legacy = legacy),  becomes = 3L)))
-    
-    out <- lapply(type[type != "background"], function(i){ 
-      .paraRasterFun(img, rasterFun = calc, args = list(fun = function(xi, na.rm = FALSE) classQA(x = xi, rcl = rclxList[[i]]), forcefun = TRUE))
+
+    out <- lapply(type[type != "background"], function(i){
+      .paraRasterFun(
+        img,
+        rasterFun = app,
+        args = list(
+          fun = function(xi, na.rm = FALSE) classQA(x = xi, rcl = rclxList[[i]])
+        )
+      )
     })
-    
-    out <- stack(out)
+
     names(out) <- type[type != "background"]
     return(out)
   }
     
-}
-
-
-test <- function(){
-  devtools::load_all()
-  classifyQA(img = rast(ncol = 128, nrow=128, val = 1:2^14))
 }
 

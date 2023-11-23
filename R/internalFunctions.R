@@ -56,11 +56,13 @@
 }
 
 .toTerra <- function(x) {
-    if (inherits(x, "Raster")) {
-        return(rast(x))
-    } else {
-        return(x)
-    }
+  if (inherits(x, "Raster")) {
+    return(terra::rast(x))
+  } else if (inherits(x, "Extent")) {
+    return(terra::ext(x))
+  } else {
+    return(x)
+  }
 }
 
 #' Extract numbers from strings
@@ -87,12 +89,12 @@
 #' @keywords internal
 #' @noRd 
 .paraRasterFun <- function(raster, rasterFun, args = list(), wrArgs = list()){
-    do.call("rasterFun", args=list(raster, args, wrArgs))
-    #if (isTRUE(getOption('rasterCluster'))) {
-    #    do.call("clusterR", args = c(list(x = raster, fun = rasterFun, args=args), wrArgs))
-    #} else {
-    #    do.call("rasterFun", args=c(raster, args, wrArgs))
-    #}
+    if (isTRUE(getOption('rasterCluster'))) {
+        do.call("clusterR", args = c(list(x = raster, fun = rasterFun, args=args), wrArgs))
+    } else {
+        #do.call("rasterFun", args=c(x = raster, args), wrArgs)
+        do.call("rasterFun", c(list(raster), args, wrArgs))
+    }
 }
 
 #' Run functions of ?apply family in parallel if possible
@@ -276,14 +278,15 @@
 
 
 #' Check haveminmax slot
-#' @param x Raster*
+#' @param x SpatRaster
 #' @noRd 
 #' @keywords internal
 .hasMinMax <- function(x) {
-    if(inherits(x, c("RasterLayer", "RasterBrick"))) {
+    if(inherits(x, "SpatRaster")) {
+        print(x)
         return(x@data@haveminmax)
     } else {
-        return(vapply(1:nlayers(x), function(xi) {x[[xi]]@data@haveminmax}, logical(1)))
+        return(vapply(1:.nlyr(x), function(xi) {x[[xi]]@data@haveminmax}, logical(1)))
     }
 }
 

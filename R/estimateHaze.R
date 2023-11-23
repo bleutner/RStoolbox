@@ -2,7 +2,7 @@
 #' 
 #' estimates the digital number (DN) pixel value of *dark* objects for the visible wavelength range.
 #' 
-#' @param x Raster* object or a previous result from \code{estimateHaze} with \code{returnTables = TRUE} from which to estimate haze
+#' @param x terra SpatRaster or a previous result from \code{estimateHaze} with \code{returnTables = TRUE} from which to estimate haze
 #' @param hazeBands Integer or Character. Band number or bandname from which to estimate atmospheric haze (optional if x contains only one layer)
 #' @param darkProp Numeric. Proportion of pixels estimated to be dark.
 #' @param maxSlope Logical. Use \code{darkProp} only as an upper boundary and search for the DN of maximum slope in the histogram below this value.
@@ -37,23 +37,23 @@
 #' haze$SHV
 estimateHaze <- function(x, hazeBands, darkProp = 0.01, maxSlope = TRUE, plot = FALSE, returnTables = FALSE) {
     
-	x <- .toRaster(x)
+	x <- .toTerra(x)
 	
     ## Initial or repeated run?
-    if(inherits(x, "Raster")) {
+    if(inherits(x, "SpatRaster")) {
         preCalc <- FALSE
     } else {
         if(is.list(x) & "table" %in% names(x)) {
             preCalc <- TRUE
             returnTables <- TRUE
         } else {
-            stop("x must be a Raster* object or the result of a previous run of estimateHaze(Raster*, ) with argument 'returnTables = TRUE'", call. = FALSE)
+            stop("x must be a SpatRaster* object or the result of a previous run of estimateHaze(SpatRaster*, ) with argument 'returnTables = TRUE'", call. = FALSE)
         }    
     }
     
     if(!preCalc){
         if(missing(hazeBands)){ 
-            if(nlayers(x) == 1) {
+            if(.nlyr(x) == 1) {
                 hazeBands <- names(x)        
             } else {
                 stop("Please specify the band from which you want to estimate the haze dn")
@@ -86,7 +86,7 @@ estimateHaze <- function(x, hazeBands, darkProp = 0.01, maxSlope = TRUE, plot = 
     ## Run estimation for each band separately
     out   <- lapply(hazeBands, function(bi) {
                 if(!preCalc) {
-                    tf <- freq(x[[bi]], useNA = "no") 
+                    tf <- freq(na.omit(x[[bi]]))
                     tf <- tf[order(tf[,1]),]
                 } else {
                     tf <- x$table[[bi]]
@@ -133,4 +133,13 @@ estimateHaze <- function(x, hazeBands, darkProp = 0.01, maxSlope = TRUE, plot = 
         table <- x$table
     }
     return( if(!returnTables) SHV else list(SHV=SHV, table = table))
+}
+
+
+test <- function(){
+  devtools::load_all()
+  vals <- unlist(Map(rep, 1:20, c(1:20)^2))
+  tera <- rast(vals = vals, ncol = 1, nrow = length(vals))
+  vals[1] <- NA
+  estimateHaze(tera, hazeBands = 1, darkProp = .02, maxSlope = FALSE, plot = FALSE)
 }
