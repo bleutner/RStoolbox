@@ -1,5 +1,4 @@
 context("rescaleImage")
-library(raster)
 library(terra)
 data(lsat)
 lsat <- rast(lsat)
@@ -9,13 +8,13 @@ lsat2u <- rescaleImage(lsat2, ymin = 0.5, ymax = 1.6)
 
 mm <- matrix(c(0.5, 1.6), ncol= nlyr(lsat), nrow = 2)
 colnames(mm) <- names(lsat)
+rownames(mm) <- c("min", "max")
 
 test_that("rescales to proper limits", {
             skip_on_cran()
             expect_equal(lsat[], lsat2r[], values = TRUE)
             expect_equal(minmax(lsat2u), mm)
-            expect_equal(lsat2u[[1]][], rescaleImage(lsat[[1]], ymin = 0.5, ymax = 1.6)[],
-                                      values = TRUE) ## RasterLayer vs. RasterBrick/Stack            
+            expect_equal(lsat2u[[1]][], rescaleImage(lsat[[1]], ymin = 0.5, ymax = 1.6)[], values = TRUE)
         })
 
 

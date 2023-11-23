@@ -112,7 +112,8 @@ spectralIndices <- function(img,
     if(!skipRefCheck && any(c("EVI","EVI2") %in% canCalc)){
         img[[red]] <- setMinMax(img[[red]])
         mm <- minmax(img[[red]])
-        if(mm[2,1]/scaleFactor > 1.5 || mm[1,1]/scaleFactor < -.5){
+
+        if(is.nan(mm[2,1]) || is.nan(mm[1,1]) || mm[2,1]/scaleFactor > 1.5 || mm[1,1]/scaleFactor < -0.5){
             ## checking for range [0,1] +/- .5 to allow for artifacts in reflectance.
             warning("EVI/EVI2 parameters L_evi, G, C1 and C2 are defined for reflectance [0,1] but img values are outside of this range.\n",
                     "  If you are using scaled reflectance values please provide the scaleFactor argument.\n", 
@@ -198,7 +199,6 @@ spectralIndices <- function(img,
     
     return(indexMagic)
 }
-
 
 ## NOT USED FOR CALCULATIONS ONLY FOR DOCUMENTATION
 ## SEE /src/spectraIndices.cpp for calculations
