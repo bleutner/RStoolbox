@@ -1,7 +1,7 @@
 context("panSharpen")
 
 data(lsat)
-library(raster)
+library(terra)
 
 agg     <- aggregate(lsat,10)
 pan     <- sum(lsat[[1:3]])
@@ -11,7 +11,7 @@ nlayers <- c(3,3,7)
 names(nlayers) <- names(panList) <- meth
 
 test_that("panSharpen methods",	{
-			for(m in meth) expect_is(panList[[m]], "RasterBrick", info = m)
+			for(m in meth) expect_is(panList[[m]], "SpatRaster", info = m)
 			for(m in meth) expect_equal(names(panList[[m]]), paste0(names(agg)[1:nlayers[m]], "_pan"), info = m)  # tests inmplicitly for correct number of layers
 			for(m in meth) expect_equal(res(panList[[m]]), res(pan), info = m)
 		})

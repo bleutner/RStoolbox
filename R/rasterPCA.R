@@ -14,7 +14,7 @@
 #' Standardised PCA (SPCA) can be useful if imagery or bands of different dynamic ranges are combined. SPC uses the correlation matrix instead of the covariance matrix, which
 #' has the same effect as using normalised bands of unit variance. 
 #' 
-#' @param img RasterBrick or RasterStack.
+#' @param img terra SpatRaster.
 #' @param nSamples Integer or NULL. Number of pixels to sample for PCA fitting. If NULL, all pixels will be used.
 #' @param nComp Integer. Number of PCA components to return.
 #' @param spca Logical. If \code{TRUE}, perform standardized PCA. Corresponds to centered and scaled input image. This is usually beneficial for equal weighting of all layers. (\code{FALSE} by default)
@@ -43,9 +43,10 @@
 #' plots <- lapply(1:3, function(x) ggR(rpc$map, x, geom_raster = TRUE))
 #' grid.arrange(plots[[1]],plots[[2]], plots[[3]], ncol=2)
 #' }
-rasterPCA <- function(img, nSamples = NULL, nComp = nlayers(img), spca = FALSE,  maskCheck = TRUE, ...){      
-    img <- .toRaster(img)
-    if(nlayers(img) <= 1) stop("Need at least two layers to calculate PCA.")   
+rasterPCA <- function(img, nSamples = NULL, nComp = .nlyr(img), spca = FALSE,  maskCheck = TRUE, ...){
+    img <- .toTerra(img)
+
+    if(.nlyr(img) <= 1) stop("Need at least two layers to calculate PCA.")
     ellip <- list(...)
     
     ## Deprecate norm, as it has the same effect as spca
@@ -54,22 +55,30 @@ rasterPCA <- function(img, nSamples = NULL, nComp = nlayers(img), spca = FALSE, 
         ellip[["norm"]] <- NULL
     }
     
-    if(nComp > nlayers(img)) nComp <- nlayers(img)
+    if(nComp > .nlyr(img)) nComp <- .nlyr(img)
     
     if(!is.null(nSamples)){    
-        trainData <- sampleRandom(img, size = nSamples, na.rm = TRUE)
-        if(nrow(trainData) < nlayers(img)) stop("nSamples too small or img contains a layer with NAs only")
+        trainData <- spatSample(img, size = nSamples, na.rm = TRUE)
+        if(nrow(trainData) < .nlyr(img)) stop("nSamples too small or img contains a layer with NAs only")
         model <- princomp(trainData, scores = FALSE, cor = spca)
     } else {
         if(maskCheck) {
-            totalMask <- !sum(calc(img, is.na))
-            if(cellStats(totalMask, sum) == 0) stop("img contains either a layer with NAs only or no single pixel with valid values across all layers")
-            img <- mask(img, totalMask , maskvalue = 0) ## NA areas must be masked from all layers, otherwise the covariance matrix is not non-negative definite   
+            totalMask <- !sum(app(img, is.na))
+
+            if(sum(values(totalMask)) == 0) stop("img contains either a layer with NAs only or no single pixel with valid values across all layers")
+            img <- mask(img, totalMask , maskvalue = 0) ## NA areas must be masked from all layers, otherwise the covariance matrix is not non-negative definite
         }
-        covMat <- layerStats(img, stat = "cov", na.rm = TRUE)
-        model  <- princomp(covmat = covMat[[1]], cor=spca)
+        covMatCov <- cov(values(na.omit(img)))
+        covMatMean <- t(global(img, "mean", na.rm=TRUE))
+
+        covMat <- list(covariance = covMatCov, mean = covMatMean)
+
+        model  <- princomp(covmat = covMat$covariance, cor=spca)
         model$center <- covMat$mean
-        model$n.obs  <- cellStats(!any(is.na(img)), sum)
+        model$n.obs  <- ncell(!any(is.na(img)))
+
+        print(model$n.obs)
+
         if(spca) {    
             ## Calculate scale as population sd like in in princomp
             S <- diag(covMat$covariance)
@@ -77,11 +86,9 @@ rasterPCA <- function(img, nSamples = NULL, nComp = nlayers(img), spca = FALSE, 
         }
     }
     ## Predict
-    out   <- .paraRasterFun(img, rasterFun=raster::predict, args = list(model = model, na.rm = TRUE, index = 1:nComp), wrArgs = ellip)  
+    out   <- .paraRasterFun(img, rasterFun=terra::predict, args = list(model = model, na.rm = TRUE, index = 1:nComp), wrArgs = ellip)
     names(out) <- paste0("PC", 1:nComp)
     structure(list(call = match.call(), model = model, map = out), class = c("rasterPCA", "RStoolbox"))  
-    
+
 }
-
-
 

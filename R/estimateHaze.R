@@ -134,12 +134,3 @@ estimateHaze <- function(x, hazeBands, darkProp = 0.01, maxSlope = TRUE, plot = 
     }
     return( if(!returnTables) SHV else list(SHV=SHV, table = table))
 }
-
-
-test <- function(){
-  devtools::load_all()
-  vals <- unlist(Map(rep, 1:20, c(1:20)^2))
-  tera <- rast(vals = vals, ncol = 1, nrow = length(vals))
-  vals[1] <- NA
-  estimateHaze(tera, hazeBands = 1, darkProp = .02, maxSlope = FALSE, plot = FALSE)
-}

@@ -172,24 +172,8 @@ coregisterImages <- function(img, ref, shift = 3, shiftInc = 1, nSamples = 100,
     } else {
         return(moved)
     }
-    
+
 }
-
-
-my_test2 <- function(){
-    devtools::load_all()
-    coregisterImages(lsat, lsat)
-}
-
-
-
-
-
-
-
-
-
-
 
 #    if(method == "areaCor"){
 #        mwin = 11, swin = 3, regbands = 3, 

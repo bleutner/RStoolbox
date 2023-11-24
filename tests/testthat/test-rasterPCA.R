@@ -3,7 +3,7 @@ context("rasterPCA")
 library(raster)
 
 data(lsat)
-lsat <- crop(lsat,extent(lsat)*.2)
+lsat <- crop(lsat, extent(lsat)*.2)
 ld   <- as.data.frame(lsat)
 
 for(spc in c(FALSE, TRUE)) {

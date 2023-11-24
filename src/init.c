@@ -20,6 +20,7 @@ extern SEXP _RStoolbox_pwSimilarityCpp(SEXP, SEXP, SEXP);
 extern SEXP _RStoolbox_rescaleImageCpp(SEXP, SEXP, SEXP, SEXP);
 extern SEXP _RStoolbox_specSimC(SEXP, SEXP);
 extern SEXP _RStoolbox_spectralIndicesCpp(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP _RStoolbox_availableRAMCpp(SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
     {"_RStoolbox_classQA",            (DL_FUNC) &_RStoolbox_classQA,             2},
@@ -34,6 +35,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_RStoolbox_rescaleImageCpp",    (DL_FUNC) &_RStoolbox_rescaleImageCpp,     4},
     {"_RStoolbox_specSimC",           (DL_FUNC) &_RStoolbox_specSimC,            2},
     {"_RStoolbox_spectralIndicesCpp", (DL_FUNC) &_RStoolbox_spectralIndicesCpp, 23},
+    {"_RStoolbox_availableRAMCpp", (DL_FUNC) &_RStoolbox_availableRAMCpp, 1},
     {NULL, NULL, 0}
 };
 

@@ -357,3 +357,112 @@
 .nlyr <- function (terra_raster) {
     dim(terra_raster)[3]
 }
+
+
+#' Can process in memory. Copied from raster package
+#' @noRd
+.canProcInMem <- function(x, n = 4, verbose = FALSE) {
+  nc <- ncell(x)
+  n <- n * .nlyr(x)
+  memneed <- nc * n * 8
+  if (memneed < .minmemory()) {
+    if (verbose) {
+      gb <- 1.07374e+09
+      cat("            GB")
+      cat(paste("\n   needed :", round(memneed / gb, 2)))
+      cat("below minmemory threshold")
+    }
+    return(TRUE)
+  }
+  maxmem <- .maxmemory()
+  memavail <- availableRAMCpp(maxmem)
+  if (verbose) {
+    gb <- 1.07374e+09
+    cat("            GB")
+    cat(paste("\navailable :", round(memavail / gb, 2)))
+    cat(paste0("\n      ", round(100 * .memfrac()), "% : ", round(.memfrac() * memavail / gb, 2)))
+    cat(paste("\n   needed :", round(memneed / gb, 2)))
+    cat(paste("\n  allowed :", round(maxmem / gb, 2), " (if available)\n"))
+  }
+  if (nc > (2 ^ 31 - 1)) return(FALSE)
+  memavail <- .memfrac() * memavail
+  memavail <- min(memavail, maxmem)
+  if (memneed > memavail) {
+    options(rasterChunk = min(.chunksize(), memavail * 0.25))
+    return(FALSE)
+  } else {
+    return(TRUE)
+  }
+}
+
+.maxmemory <- function() {
+	default <- 5e+9
+	d <- getOption('rasterMaxMemory')
+	if (is.null(d)) {
+		return( default )
+	}
+	d <- round(as.numeric(d[1]))
+	if (is.na(d) | d < 1e+6) {
+		d <- 1e+6
+	}
+	return(d)
+}
+
+.minmemory <- function() {
+	default <- 8e+6
+	d <- getOption('rasterMinMemory')
+	if (is.null(d)) {
+		return( default )
+	}
+	d <- round(as.numeric(d[1]))
+	if (is.na(d) | d < 10000) {
+		d <- 8e+6
+	}
+	return(d)
+}
+
+
+.toDisk <- function(..., todisk) {
+	if (missing(todisk)) {
+		todisk <- getOption('rasterToDisk')
+		if (is.null(todisk)) {
+			return(FALSE)  # the default
+		} else {
+			try (todisk <- as.logical(todisk))
+			if (is.logical(todisk)) {
+				return(todisk)
+			} else {
+				return(FALSE)
+			}
+		}
+	} else {
+		if (is.logical(todisk)) {
+			return(todisk)
+		} else {
+			return(FALSE)
+		}
+	}
+}
+
+.chunksize <- function(){
+	default <- 10^8
+	d <- getOption('rasterChunkSize')
+	if (is.null(d)) {
+		return( default )
+	}
+	d <- round(as.numeric(d[1]))
+	if (is.na(d) | d < 10000) {
+		d <- default
+	}
+	return(d)
+}
+
+.memfrac <- function() {
+	default <- 0.6
+	d <- getOption('rasterMemfrac')
+	if (is.null(d)) {
+		return( default )
+	} else {
+		return(d)
+	}
+}
