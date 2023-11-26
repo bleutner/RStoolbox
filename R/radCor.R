@@ -78,13 +78,12 @@
 #' hazeDN    <- estimateHaze(lsat, hazeBands = 1:4, darkProp = 0.01, plot = TRUE)
 #' lsat_sref <- radCor(lsat, metaData = metaData, method = "sdos", 
 #'                     hazeValues = hazeDN, hazeBands = 1:4)
-radCor <-    function(img, metaData, method = "apref", bandSet = "full", hazeValues, hazeBands, atmosphere, darkProp = 0.01, clamp = TRUE, verbose){
+radCor <- function(img, metaData, method = "apref", bandSet = "full", hazeValues, hazeBands, atmosphere, darkProp = 0.01, clamp = TRUE, verbose){
     # http://landsat.usgs.gov/Landsat8_Using_Product.php
-    img <- .toRaster(img)
+    img <- .toTerra(img)
 	if(!missing("verbose")) .initVerbose(verbose)
     
     if(!method %in% c("rad", "apref", "dos", "costz", "sdos")) stop("method must be one of 'rad' 'apref', 'dos', 'costz' 'sdos'", call.=FALSE)
-    
     
     ## Read metadata from file
     if(is.character(metaData)) {    
@@ -144,7 +143,7 @@ radCor <-    function(img, metaData, method = "apref", bandSet = "full", hazeVal
         K2       <- metaData$CALBT[tirBands, "K2"]
         GAIN    <- metaData$CALRAD[tirBands,"gain"]
         OFFSET  <- metaData$CALRAD[tirBands,"offset"]           
-        xtir <- .paraRasterFun(raster = img[[tirBands]], rasterFun = calc, args = list(fun = function(x) {
+        xtir <- .paraRasterFun(raster = img[[tirBands]], rasterFun = app, args = list(fun = function(x) {
                             if(length(GAIN) > 1) {
                                 for(i in seq_along(GAIN)){
                                     suppressWarnings(x[,i] <- K2[i] / log(K1[i] / (GAIN[i] * x[,i] + OFFSET[i]) +1))
@@ -153,7 +152,7 @@ radCor <-    function(img, metaData, method = "apref", bandSet = "full", hazeVal
                             } else {
                                 return(suppressWarnings(K2 / log(K1 / (GAIN * x + OFFSET) + 1)))
                             }
-                        }, forcefun = TRUE))
+                        }))
         names(xtir) <- gsub("dn", "bt", tirBands)
     } else {
         xtir <- NULL
@@ -223,7 +222,7 @@ radCor <-    function(img, metaData, method = "apref", bandSet = "full", hazeVal
         
         
         if(method %in% c("dos", "costz")) {    
-            if(Lhaze[1] < 0) stop("Estimated Lhaze is < 0. DOS-based approaches don't make sense in this case.")
+            if(Lhaze[1] < 0) warning("Estimated Lhaze is < 0. DOS-based approaches don't make sense in this case.")
             
             ## Pick atmoshpere type
             if(missing(atmosphere)) {
@@ -275,15 +274,15 @@ radCor <-    function(img, metaData, method = "apref", bandSet = "full", hazeVal
     if(clamp & method != "rad") CLAMP <- c(TRUE,TRUE)
     
     if(length(bandSet) > 1){
-        xref <- .paraRasterFun(img[[bandSet]], rasterFun = calc, args = list(fun = function(x) {gainOffsetRescale(x,GAIN,OFFSET,CLAMP)}, forcefun=TRUE))
+        xref <- .paraRasterFun(img[[bandSet]], rasterFun = app, args = list(fun = function(x) {gainOffsetRescale(x,GAIN,OFFSET,CLAMP)}))
     } else {
-        xref <- .paraRasterFun(img[[bandSet]], rasterFun = calc, args = list(fun = function(x) {gainOffsetRescale(as.matrix(x),GAIN,OFFSET,CLAMP)}, forcefun=TRUE))
+        xref <- .paraRasterFun(img[[bandSet]], rasterFun = app, args = list(fun = function(x) {gainOffsetRescale(as.matrix(x),GAIN,OFFSET,CLAMP)}))
     } 
     
     names(xref) <- layernames   
     
     ## Re-combine thermal, solar and excluded imagery
-    out <- stack(xref, xtir, excl)
+    out <- c(xref, xtir, excl)
     
     bandOrder <- match(origBands, c(bandSet, tirBands))
     out <- out[[na.omit(bandOrder)]]
@@ -292,4 +291,9 @@ radCor <-    function(img, metaData, method = "apref", bandSet = "full", hazeVal
 }
 
 
-
+test <- function(){
+    devtools::load_all()
+    mtlFile <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package = "RStoolbox")
+    method <- "dos"
+    radCor(lsat, metaData = mtlFile, method = method, hazeBands = c(1, 2))
+}

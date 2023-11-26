@@ -57,7 +57,7 @@ rasterPCA <- function(img, nSamples = NULL, nComp = .nlyr(img), spca = FALSE,  m
     
     if(nComp > .nlyr(img)) nComp <- .nlyr(img)
     
-    if(!is.null(nSamples)){    
+    if(!is.null(nSamples)){
         trainData <- spatSample(img, size = nSamples, na.rm = TRUE)
         if(nrow(trainData) < .nlyr(img)) stop("nSamples too small or img contains a layer with NAs only")
         model <- princomp(trainData, scores = FALSE, cor = spca)
@@ -68,16 +68,10 @@ rasterPCA <- function(img, nSamples = NULL, nComp = .nlyr(img), spca = FALSE,  m
             if(sum(values(totalMask)) == 0) stop("img contains either a layer with NAs only or no single pixel with valid values across all layers")
             img <- mask(img, totalMask , maskvalue = 0) ## NA areas must be masked from all layers, otherwise the covariance matrix is not non-negative definite
         }
-        covMatCov <- cov(values(na.omit(img)))
-        covMatMean <- t(global(img, "mean", na.rm=TRUE))
-
-        covMat <- list(covariance = covMatCov, mean = covMatMean)
-
-        model  <- princomp(covmat = covMat$covariance, cor=spca)
+        covMat <- layerCor(img, "cov", na.rm = TRUE)
+        model  <- princomp(covmat = covMat$covariance, cor = spca)
         model$center <- covMat$mean
         model$n.obs  <- ncell(!any(is.na(img)))
-
-        print(model$n.obs)
 
         if(spca) {    
             ## Calculate scale as population sd like in in princomp
@@ -91,4 +85,3 @@ rasterPCA <- function(img, nSamples = NULL, nComp = .nlyr(img), spca = FALSE,  m
     structure(list(call = match.call(), model = model, map = out), class = c("rasterPCA", "RStoolbox"))  
 
 }
-

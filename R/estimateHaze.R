@@ -8,37 +8,37 @@
 #' @param maxSlope Logical. Use \code{darkProp} only as an upper boundary and search for the DN of maximum slope in the histogram below this value.
 #' @param plot Logical. Option to display histograms and haze values
 #' @param returnTables Logical. Option to return the frequency table per layer. Only takes effect if x is a Raster* object. If x is a result of estimateHaze tables will always be returned.
-#' @details 
-#' It is assumed that any radiation originating from *dark* pixels is due to atmospheric haze and 
+#' @details
+#' It is assumed that any radiation originating from *dark* pixels is due to atmospheric haze and
 #' not the reflectance of the surface itself (the surface is dark, i.e. it has a reflectance close to zero).
 #' Hence, the haze values are estimates of path radiance, which can be subtracted in a dark object subtraction (DOS) procedure (see \code{\link{radCor}})
-#' 
+#'
 #' Atmospheric haze affects almost exclusively the visible wavelength range. Therefore, typically, you'd only want to estimate haze in blue, green and red bands, occasionally also in the nir band.
-#' 
-#' @return 
+#'
+#' @return
 #' If returnTables is FALSE (default). Then a vector of length(hazeBands) containing the estimated haze DNs will be returned.
-#' If returnTables is TRUE a list with two components will be returned. The list element 'SHV' contains the haze values, while 'table' 
-#' contains another list with the sampled frequency tables. The latter can be re-used to try different darkProp thresholds without having to sample 
+#' If returnTables is TRUE a list with two components will be returned. The list element 'SHV' contains the haze values, while 'table'
+#' contains another list with the sampled frequency tables. The latter can be re-used to try different darkProp thresholds without having to sample
 #' the raster again.
-#' @export 
+#' @export
 #' @examples
 #' data(lsat)
-#' 
+#'
 #' ## Estimate haze for blue, green and red band
 #' haze <- estimateHaze(lsat, hazeBands = 1:3, plot = TRUE)
 #' haze
-#' 
+#'
 #' ## Find threshold interactively
-#' #### Return the frequency tables for re-use 
+#' #### Return the frequency tables for re-use
 #' #### avoids having to sample the Raster again and again
 #' haze <- estimateHaze(lsat, hazeBands = 1:3, returnTables = TRUE)
-#' ## Use frequency table instead of lsat and fiddle with 
+#' ## Use frequency table instead of lsat and fiddle with
 #' haze <- estimateHaze(haze, hazeBands = 1:3, darkProp = .1, plot = TRUE)
 #' haze$SHV
 estimateHaze <- function(x, hazeBands, darkProp = 0.01, maxSlope = TRUE, plot = FALSE, returnTables = FALSE) {
-    
+
 	x <- .toTerra(x)
-	
+
     ## Initial or repeated run?
     if(inherits(x, "SpatRaster")) {
         preCalc <- FALSE
@@ -48,62 +48,62 @@ estimateHaze <- function(x, hazeBands, darkProp = 0.01, maxSlope = TRUE, plot = 
             returnTables <- TRUE
         } else {
             stop("x must be a SpatRaster* object or the result of a previous run of estimateHaze(SpatRaster*, ) with argument 'returnTables = TRUE'", call. = FALSE)
-        }    
+        }
     }
-    
+
     if(!preCalc){
-        if(missing(hazeBands)){ 
+        if(missing(hazeBands)){
             if(.nlyr(x) == 1) {
-                hazeBands <- names(x)        
+                hazeBands <- names(x)
             } else {
                 stop("Please specify the band from which you want to estimate the haze dn")
-            }    
+            }
         }
         if(is.numeric(hazeBands)) hazeBands <- names(x)[hazeBands]
-        
+
     } else {
-        
+
         if(is.numeric(hazeBands)) hazeBands <- names(x$table)[hazeBands]
         preCalcAvail <- hazeBands %in% names(x$table)
         if(!any(preCalcAvail))     stop("Cannot estimate SHV because tables are missing for all specified bands", call. = FALSE)
-        
+
         if(any(!preCalcAvail)) {
             warning(paste0("Cannot estimate SHV for >> ", hazeBands[!preCalcAvail], " << because tables are missing."), call. = FALSE)
-            hazeBands <- hazeBands[preCalcAvail]                 
-        }    
+            hazeBands <- hazeBands[preCalcAvail]
+        }
     }
-    
+
     ## Prepare plot device
     if(plot){
         olpar <- par(no.readonly = TRUE)
         on.exit(par(olpar))
         if(length(hazeBands) > 1){
-            par(mfrow = c(2, ceiling(length(hazeBands)/2))) 
+            par(mfrow = c(2, ceiling(length(hazeBands)/2)))
         }
     }
-    
-    
+
+
     ## Run estimation for each band separately
     out   <- lapply(hazeBands, function(bi) {
                 if(!preCalc) {
-                    tf <- freq(na.omit(x[[bi]]))
+                    tf <- freq(x[[bi]])
                     tf <- tf[order(tf[,1]),]
                 } else {
                     tf <- x$table[[bi]]
                 }
-                
-                tf <- tf[tf[,1] > 0,]            
+
+                tf <- tf[tf[,1] > 0,]
                 tf[,2] <- tf[,2]/sum(tf[,2])
-                
+
                 ## Get darkProp quantile
-                kusu <- cumsum(tf[,2]) 
+                kusu <- cumsum(tf[,2])
                 idx  <- tail(which(kusu < darkProp), 1)
-                if(length(idx) == 0) idx <- 1           
-                
+                if(length(idx) == 0) idx <- 1
+
                 ## Select SHV
-                if(maxSlope & idx > 1){                   
-                    ## Moving average smoother 
-                    n <- 2*floor((idx/10)/2) + 1  # next odd integer                  
+                if(maxSlope & idx > 1){
+                    ## Moving average smoother
+                    n <- 2*floor((idx/10)/2) + 1  # next odd integer
                     tsmo  <- stats::filter(tf[1:idx, 2], rep(1/n, n), sides=2)
                     SHV   <- tf[min(which.max(diff(tsmo, 2))+1,idx),1]
                 } else {
