@@ -1,17 +1,17 @@
 context("normImage")
 
-library(raster)
+library(terra)
 data(lsat)
 
 for(mem in c(TRUE, FALSE)){
   rasterOptions(todisk = mem)
   test_that("normImage for single or multiple layers", {
     ## Multiple layers 	
-    expect_is(nlsat <- normImage(lsat, norm = TRUE), "RasterBrick")		
+    expect_is(nlsat <- normImage(lsat, norm = TRUE), "SpatRaster")
     expect_true(all(round(colMeans(nlsat[]), 5)==0))
     
     ## Single layer
-    expect_is(nlsat <- normImage(lsat[[1]], norm = TRUE), "RasterLayer")
+    expect_is(nlsat <- normImage(lsat[[1]], norm = TRUE), "SpatRaster")
     expect_equal(round(mean(nlsat[]), 5),0)
   }
   )
@@ -25,7 +25,7 @@ test_that("terra inputs work", {
 lsat[1,1] <- NA
 lsat[[2]][2] <- NA
 test_that("normImage with NAs",{
-  expect_is(nlsat <- normImage(lsat, norm = TRUE), "RasterBrick")
+  expect_is(nlsat <- normImage(lsat, norm = TRUE), "SpatRaster")
   expect_true(all(is.na(nlsat[1])))
   expect_equal(as.vector(is.na(nlsat[2])), c(F,T,rep(F,5)))
 }

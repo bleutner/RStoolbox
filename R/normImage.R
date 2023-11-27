@@ -20,21 +20,32 @@
 #' ## Centering
 #' rlogo_center <- normImage(rlogo, norm = FALSE)
 normImage <- function(img, norm = TRUE, ...) {
+  img <- .toTerra(img)
+
   if(inherits(img, "SpatRaster")) {
     out <- scale(img, TRUE, norm)
     if("filename" %in% names(list(...))) out <- terra::writeRaster(out, ...)
-  } else if(canProcessInMemory(img)) {
+  } else if(.canProcInMem(img)) {
     out   <- img
-    out[] <- scale(img[], center = TRUE, scale = norm)     
-    if("filename" %in% names(list(...))) out <- raster::writeRaster(out, ...)
-  } else {    
-    means <- cellStats(img, "mean")   
-    sds   <- if(norm) cellStats(img, "sd") else rep(1, nlayers(img))
+    out[] <- scale(img[], center = TRUE, scale = norm)
+    if("filename" %in% names(list(...))) out <- terra::writeRaster(out, ...)
+  } else {
+    means <- as.numeric(t(global(img, "mean")))
+    names(means) <- names(img)
+    sds <- if(norm){
+      as.numeric(t(global(img, "mean")))
+      names(means) <- names(img)
+    }else {
+      rep(1, nlyr(img))
+    }
+
+    stop()
+
     sds[sds == 0] <- 1
-    if(nlayers(img) == 1) {
-      out <- calc(img, function(x) {(x - means)/sds}, forcefun = TRUE, ...) 
+    if(nlyr(img) == 1) {
+      out <- app(img, function(x) {(x - means)/sds}, ...)
     } else {
-      out <- calc(img, function(x) normImageCpp(x, M = means, S = sds), forcefun = TRUE, ...)
+      out <- app(img, function(x) normImageCpp(x, M = means, S = sds), ...)
     }
   }
   return(out) 

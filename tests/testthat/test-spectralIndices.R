@@ -56,10 +56,10 @@ test_that("returned classes", {
   expect_equal(vi[[1]], vi[[3]], info = "numeric vs. character band indexes")
 
   ## Check layer numbers and names
-  expect_equal(.nlyr(vi[[1]]), 1)
+  expect_equal(nlyr(vi[[1]]), 1)
   expect_identical(names(vi[[1]]), "NDVI")
-  expect_identical(.nlyr(suppressWarnings(spectralIndices(r, red = 1, nir = 2, indices = c("NDVI", "EVI")))), 1)
-  expect_identical(.nlyr(vi[[4]]), 3, info = "nlayers: 3 indices NDVI, MSAVI2, DVI")
+  expect_identical(nlyr(suppressWarnings(spectralIndices(r, red = 1, nir = 2, indices = c("NDVI", "EVI")))), 1)
+  expect_identical(nlyr(vi[[4]]), 3, info = "nlayers: 3 indices NDVI, MSAVI2, DVI")
   expect_identical(names(vi[[4]]), c("NDVI", "DVI", "MSAVI2"), info = "names: 3 indices NDVI, MSAVI2, DVI")
 
   ## Check index values
@@ -71,7 +71,7 @@ test_that("returned classes", {
 test_that("excercise all indices", {
   expect_is(sp <- spectralIndices(lsat, blue = 1, green=2, redEdge1=1, redEdge2=2, redEdge3=3, red=3, nir=4, swir2=5, swir3=7,
                                   coefs = list(L=0.4,s=0.3,swir2ccc=30,swir2coc=140), scaleFactor=255), "SpatRaster")
-  expect_equal(.nlyr(sp), length(.IDXdb))
+  expect_equal(nlyr(sp), length(.IDXdb))
 })
   
 

@@ -59,46 +59,55 @@
 #' summary(lsat_b_adj$models[[1]])
 #' }
 pifMatch <- function(img, ref, method = "cor", quantile = 0.95, returnPifMap = TRUE, returnSimMap = TRUE, returnModels = FALSE){
-    
-	img <- .toRaster(img)
-	ref <- .toRaster(ref)
-	
-	if(nlayers(img)!=nlayers(ref) | nlayers(img) <= 1) stop("Both images need at least two corresponding bands and must have the same number of bands.", call.=FALSE)
-    
+    img <- .toTerra(img)
+	ref <- .toTerra(ref)
+
+     if(nlyr(img)!=nlyr(ref) | nlyr(img) <= 1)
+      stop("Both images need at least two corresponding bands and must have the same number of bands.", call.=FALSE)
+
     imgfull <- img
     ## Get joint extent
-    if(!extent(img)==extent(ref)) { 
+    if(!ext(img)==ext(ref)) {
         img <- crop(img, ref)
         ref <- crop(ref, img)
     }
     
     ## Calculate pixelwise similarity
-    if(!method %in% c("ed", "sam", "cor")) stop("method must be one of 'ed', 'cor' or 'sam'", call. = FALSE)
-    nmeth <- c(ed=1, sam=2, cor=3)[method]    
-    pifield <- overlay(img, ref, fun = function(x,y) {pwSimilarityCpp(x,y,nmeth)})
+    if(!method %in% c("ed", "sam", "cor"))
+      stop("method must be one of 'ed', 'cor' or 'sam'", call. = FALSE)
+
+    nmeth <- c(ed=1, sam=2, cor=3)[method]
+
+    pifield_values <- pwSimilarityCpp(img[], ref[] ,nmeth)
+    pifield <- img[[1]]
+    values(pifield) <- pifield_values
+    names(pifield) <- "layer"
+
     names(pifield) <- method
+
     ## Similarity quantile threshold
-    thresh  <- quantile(pifield, p = quantile)
+    thresh  <- quantile(values(pifield), p = quantile)
     pi      <- pifield > thresh
+
     names(pi) <- "pifMap"
-    
+
     ## Fit linear models
-    models <- lapply(1:nlayers(img), function(i){
-                df <- data.frame(img = img[[i]][pi], ref = ref[[i]][pi])
-                mod <- lm(ref~img, data = df)
-            })
-    
+    models <- lapply(1:nlyr(img), function(i){
+        df <- data.frame(img = img[[i]][pi], ref = ref[[i]][pi])
+        colnames(df) <- c("img", "ref")
+        mod <- lm(ref ~ img, data = df)
+    })
+
     ## Predict linear models for whole raster
     correct <- lapply(seq_along(models), function(i){
-                corLayer <- imgfull[[i]]
-                mod <- models[[i]]
-                names(corLayer) <- "img"
-                predict(corLayer, mod)
-            })
+        corLayer <- imgfull[[i]]
+        mod <- models[[i]]
+        names(corLayer) <- "img"
+        predict(corLayer, mod)
+    })
     
     ## Assemble and return output
     names(models) <- names(img)
-    correct <- stack(correct)
     names(correct) <- names(imgfull)
     
     out <- list( img = correct, simMap = pifield, pifMap = pi, models = models )
@@ -109,10 +118,4 @@ pifMatch <- function(img, ref, method = "cor", quantile = 0.95, returnPifMap = T
     )
     out[!names(out) %in% ret] <- NULL
     return(out)
-} 
-
-
-
-
-
-
+}

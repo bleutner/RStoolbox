@@ -8,7 +8,7 @@ result_without_na_bgNA[result_without_na_bgNA == 0] <- NA
 
 test_that("oneHotEncode raster input", {
     expect_is(oh <- oneHotEncode(r, classes = c(1,2), na.rm = TRUE), "SpatRaster", info = "check class is SpatRaster")
-    expect_equal(.nlyr(oh), 2, info = "check number of layers")
+    expect_equal(nlyr(oh), 2, info = "check number of layers")
     expect_equal(oh[], result_without_na, info = "check return values")
     expect_equal(oneHotEncode(r[], classes = c(1,2), na.rm = FALSE), result_with_na, info = "with na.rm=TRUE")
     expect_equal(as.numeric(oneHotEncode(r[], classes = 1, na.rm = TRUE)), result_without_na[,1], info = "for one class only")

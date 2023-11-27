@@ -20,7 +20,7 @@ for(cl in 1:2) {
 						nSample = 30,
 						tuneLength=1
 				), c("fCover", "RStoolbox"))
-		expect_equal(.nlyr(fc$map), cl)
+		expect_equal(nlyr(fc$map), cl)
 	})
 
 }

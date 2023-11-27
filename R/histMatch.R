@@ -64,7 +64,7 @@ histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e5, inte
     paired <- FALSE
     warning("Rasters do not overlap. Precise sampling disabled.", call. = FALSE)
   }
-  if (.nlyr(x) != .nlyr(ref)) stop("x and ref must have the same number of layers.")
+  if (nlyr(x) != nlyr(ref)) stop("x and ref must have the same number of layers.")
 
   if (!is.null(xmask)) {
     .vMessage("Apply xmask")

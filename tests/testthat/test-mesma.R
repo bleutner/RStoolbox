@@ -16,9 +16,8 @@ test_that("solver output class", {
 })
 
 test_that("mesma call using NNLS", {
-  expect_is(solved <- mesma(lsat, em, method = "NNLS"), "RasterBrick")
-  expect_is(solved <- mesma(lsat, data.frame(em), method = "NNLS"), "RasterBrick")
-  expect_is(solved <- mesma(stack(lsat), em, method = "NNLS"), "RasterBrick")
+  expect_is(solved <- mesma(lsat, em, method = "NNLS"), "SpatRaster")
+  expect_is(solved <- mesma(lsat, data.frame(em), method = "NNLS"), "SpatRaster")
 })
 
 test_that("mesma method error", {
@@ -30,7 +29,7 @@ v[c(1,10,100,400,200),c(3,4,5,2,7)] <- NA
 lsatNA <- setValues(lsat, v)
 
 test_that("mesma img NA handling", {
-  expect_is(solved <- mesma(lsatNA, em), "RasterBrick")
+  expect_is(solved <- mesma(lsatNA, em), "SpatRaster")
 })
 
 emNA <- em

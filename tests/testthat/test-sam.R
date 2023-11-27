@@ -26,10 +26,10 @@ sem_df  <- as.data.frame(endmembers)
 
 test_that("endmember class", {
             expect_is(ls <- sam(lsat, sem_mat, angles = TRUE), "SpatRaster")
-            expect_equal(.nlyr(ls), 1)
+            expect_equal(nlyr(ls), 1)
             expect_is(ls <- sam(lsat, sem_vec, angles = TRUE), "SpatRaster")
             expect_is(ls <- sam(lsat, sem_df, angles = TRUE), "SpatRaster")
-            expect_equal(.nlyr(ls), 2)
+            expect_equal(nlyr(ls), 2)
             expect_is(ls <- sam(lsat, sem_df, angles = FALSE), "SpatRaster")
             expect_error(ls <- sam(lsat, sem_vec, angles = FALSE), "only one class")
         })

@@ -43,10 +43,10 @@
 #' plots <- lapply(1:3, function(x) ggR(rpc$map, x, geom_raster = TRUE))
 #' grid.arrange(plots[[1]],plots[[2]], plots[[3]], ncol=2)
 #' }
-rasterPCA <- function(img, nSamples = NULL, nComp = .nlyr(img), spca = FALSE,  maskCheck = TRUE, ...){
+rasterPCA <- function(img, nSamples = NULL, nComp = nlyr(img), spca = FALSE,  maskCheck = TRUE, ...){
     img <- .toTerra(img)
 
-    if(.nlyr(img) <= 1) stop("Need at least two layers to calculate PCA.")
+    if(nlyr(img) <= 1) stop("Need at least two layers to calculate PCA.")
     ellip <- list(...)
     
     ## Deprecate norm, as it has the same effect as spca
@@ -55,11 +55,11 @@ rasterPCA <- function(img, nSamples = NULL, nComp = .nlyr(img), spca = FALSE,  m
         ellip[["norm"]] <- NULL
     }
     
-    if(nComp > .nlyr(img)) nComp <- .nlyr(img)
+    if(nComp > nlyr(img)) nComp <- nlyr(img)
     
     if(!is.null(nSamples)){
         trainData <- spatSample(img, size = nSamples, na.rm = TRUE)
-        if(nrow(trainData) < .nlyr(img)) stop("nSamples too small or img contains a layer with NAs only")
+        if(nrow(trainData) < nlyr(img)) stop("nSamples too small or img contains a layer with NAs only")
         model <- princomp(trainData, scores = FALSE, cor = spca)
     } else {
         if(maskCheck) {

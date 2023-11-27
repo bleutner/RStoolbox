@@ -48,36 +48,53 @@
 #' 
 mesma <- function(img, em, method = "NNLS", iterate = 400, tolerance = 0.00000001, ..., verbose){
   
-  img <- .toRaster(img)
+  img <- .toTerra(img)
   ## messages
   if(!missing("verbose")) .initVerbose(verbose)
   verbose <- getOption("RStoolbox.verbose")
   
   ## breaking pre-checks
   .vMessage("Checking user inputs...")
-  if(!inherits(img, c("RasterStack","RasterBrick"))){stop("'img' needs to be a 'RasterBrick' or 'RasterStack' object.")}
-  if(!inherits(em, c("matrix", "data.frame"))){stop("'em' needs to be a 'matrix' or 'data.frame' class object.")}
-  if(inherits(em, "data.frame")){em <- as.matrix(em)}
-  if(anyNA(em)){stop("'em' is not allowed to contain NA values. Spectra must be consistent.")}
+  if(!inherits(img, "SpatRaster")){
+    stop("'img' needs to be a 'SpatRaster' object.")
+  }
+  if(!inherits(em, c("matrix", "data.frame"))){
+    stop("'em' needs to be a 'matrix' or 'data.frame' class object.")
+  }
+  if(inherits(em, "data.frame")){
+    em <- as.matrix(em)
+  }
+  if(anyNA(em)){
+    stop("'em' is not allowed to contain NA values. Spectra must be consistent.")
+  }
   
   method <- toupper(method) 
   meth_avail <- c("NNLS") #available methods
-  if(!inherits(method, "character")){stop("'method' needs to be a 'character' class object.")} 
-  if(!method %in% meth_avail){stop(paste0("Unknown 'method': '", method, "'"))}
-  if(length(em[,1]) < 2){stop("'em' must contain at least two endmembers (number of rows in 'em').")}
-  if(length(em[1,]) != nlayers(img)){stop("'em' and 'img' have different numbers of spectral features (number of columns in 'em'). Both need to represent the same number of spectral bands for equal spectral resolutions/ranges.")}
+
+  if(!inherits(method, "character")){
+    stop("'method' needs to be a 'character' class object.")
+  }
+  if(!method %in% meth_avail){
+    stop(paste0("Unknown 'method': '", method, "'"))
+  }
+  if(length(em[,1]) < 2){
+    stop("'em' must contain at least two endmembers (number of rows in 'em').")
+  }
+  if(length(em[1,]) != nlyr(img)){
+    stop("'em' and 'img' have different numbers of spectral features (number of columns in 'em'). Both need to represent the same number of spectral bands for equal spectral resolutions/ranges.")
+  }
   
   ## hand over to C++ nnls_solver
   .vMessage(paste0("Unmixing imagery using '", method, "'..."))
   if(method == "NNLS"){
-    probs <- .paraRasterFun(img, rasterFun = calc, args = list(fun = function(xi, na.rm = FALSE) nnls_solver(x = xi, A = em, iterate = iterate, tolerance = tolerance), forcefun = TRUE), wrArgs = list(...))
+    probs <- .paraRasterFun(img, rasterFun = app, args = list(fun = function(xi, na.rm = FALSE) nnls_solver(x = xi, A = em, iterate = iterate, tolerance = tolerance)), wrArgs = list(...))
   }
   
   ## assign band names
   if(length(rownames(em)) != 0){
-    names(probs)[1:(nlayers(probs)-1)] <- rownames(em)
+    names(probs)[1:(nlyr(probs)-1)] <- rownames(em)
   }
-  names(probs)[nlayers(probs)] <- "RMSE"
+  names(probs)[nlyr(probs)] <- "RMSE"
   
   ## return brick
   return(probs)

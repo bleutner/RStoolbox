@@ -53,7 +53,7 @@ estimateHaze <- function(x, hazeBands, darkProp = 0.01, maxSlope = TRUE, plot = 
 
     if(!preCalc){
         if(missing(hazeBands)){
-            if(.nlyr(x) == 1) {
+            if(nlyr(x) == 1) {
                 hazeBands <- names(x)
             } else {
                 stop("Please specify the band from which you want to estimate the haze dn")

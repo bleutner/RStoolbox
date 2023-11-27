@@ -45,7 +45,7 @@ classifyQA <- function(img, type = c("background", "cloud", "cirrus","snow", "wa
   if(legacy == "pre_collection" & !any(sensor %in% c("OLI", "TIRS"))) stop("For argument legacy = 'pre_collection', argument sensor can only be 'OLI' or 'TIRS'.", call.=FALSE)
   
   if(any(!type %in% c("background", "cloud", "cirrus","snow", "water")) | !length(type)) stop("type must be element of c('background', 'cloud', 'cirrus','snow', 'water')")
-  if(.nlyr(img) != 1) stop("img should be a single layered SpatRaster")
+  if(nlyr(img) != 1) stop("img should be a single layered SpatRaster")
 
   if(!confLayers){
     rclx <- rbind(

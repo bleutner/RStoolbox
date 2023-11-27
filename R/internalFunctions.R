@@ -286,7 +286,7 @@
         print(x)
         return(x@data@haveminmax)
     } else {
-        return(vapply(1:.nlyr(x), function(xi) {x[[xi]]@data@haveminmax}, logical(1)))
+        return(vapply(1:nlyr(x), function(xi) {x[[xi]]@data@haveminmax}, logical(1)))
     }
 }
 
@@ -351,13 +351,11 @@
     library.dynam.unload("RStoolbox", libpath)
 }
 
-
-#' Returns the amount of layers for a terra raster
+#' @deprecated
 #' @noRd
-.nlyr <- function (terra_raster) {
-    dim(terra_raster)[3]
+.nlyr <- function (r) {
+    return(dim(r)[3])
 }
-
 
 #' Can process in memory. Copied from raster package
 #' @noRd

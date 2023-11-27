@@ -4,10 +4,9 @@ meta <- readMeta(mtlFile)
 lsat <- stackMeta(mtlFile)
 
 test_that("Get integer scale factors",{
-            
     ## Vectors        
     expect_is(gm <- getMeta(lsat, metaData = meta, what = "SCALE_FACTOR"), "numeric")
-    expect_equal(length(gm), nlayers(lsat))
+    expect_equal(length(gm), nlyr(lsat))
     expect_is(gm <- getMeta(lsat, metaData = meta, what = "FILES"), "character")
     expect_is(gm <- getMeta(lsat, metaData = meta, what = "QUANTITY"), "character")
     expect_true(all(gm == "dn"))

@@ -27,7 +27,7 @@
 #' ## Load rasters based on metadata file
 #' lsat     <- stackMeta(mtlFile)
 #' lsat
-stackMeta <- function(file,  quantity = "all", category = "image", allResolutions = FALSE, returnTerra = FALSE){ 
+stackMeta <- function(file,  quantity = "all", category = "image", allResolutions = FALSE, returnTerra = TRUE){
     
     stopifnot( !any(!category %in%  c("pan", "image", "index", "qa", "all")), !any(!quantity %in% c("all", "dn", "tra", "tre", "sre", "bt", "index")))
     
@@ -89,15 +89,19 @@ stackMeta <- function(file,  quantity = "all", category = "image", allResolution
     
     ## Stack
     LS     <- lapply(returnRes, function(x){
-                s <- do.call(c, rl[resL == x])
-                names(s)     <- meta$DATA$BANDS[resL == x]
-                s <- s[[ which(names(s) %in% select)]]
-                if(!returnTerra) {
-                  return(.toRaster(s))
-                }
-                return(s)
-            })
-    LS[lapply(LS, .nlyr) == 0] <- NULL
+        s <- do.call(c, rl[resL == x])
+        names(s)     <- meta$DATA$BANDS[resL == x]
+        s <- s[[ which(names(s) %in% select)]]
+        if(!returnTerra) {
+          return(.toRaster(s))
+        }
+        return(s)
+    })
+    if(!returnTerra){
+      LS[lapply(LS, nlayers) == 0] <- NULL
+    }else{
+      LS[lapply(LS, nlyr) == 0] <- NULL
+    }
     names(LS) <- paste0("spatRes_",returnRes,"m")
     if(!allResolutions) LS <- LS[[1]]
     
