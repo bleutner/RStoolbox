@@ -31,9 +31,11 @@
 #' cva
 #' plot(cva)
 rasterCVA <- function(x, y, tmf = NULL, nct = NULL,  ...) {
-	x <- .toRaster(x)
-	y <- .toRaster(y)
-	if(nlayers(x) != 2 | nlayers(y) != 2) stop("need two rasters with two layers each")
+	x <- .toTerra(x)
+	y <- .toTerra(y)
+
+	if(nlyr(x) != 2 | nlyr(y) != 2)
+		stop("need two rasters with two layers each")
 	
 	doClamp <- !is.null(tmf) || !is.null(nct) 
 	
@@ -42,36 +44,36 @@ rasterCVA <- function(x, y, tmf = NULL, nct = NULL,  ...) {
 	}
 	
 	if(!is.null(tmf)) {
-		maxMag <- sqrt(sum((maxValue(x) - maxValue(y) )^2))*2 
+		maxMag <- sqrt(sum((as.numeric(t(global(x, "max", na.rm=T))) - as.numeric(t(global(y, "max", na.rm=T))) )^2))*2
 		medianBuckets <- seq(1e-10, maxMag, length.out = 2e5)
-		RStoolbox_rasterCVAEnv <- new.env() 
+		RStoolbox_rasterCVAEnv <- new.env()
 		RStoolbox_rasterCVAEnv$medianTable <- 0
 	}
-	
 	anglefun <- function(values,tmf,...) {
 		dif <- values[,3:4] - values[,1:2]
-		magnitude <- sqrt(rowSums(dif^2))	
-		
+		magnitude <- sqrt(rowSums(dif^2))
+
 		if(!is.null(tmf)) {
 			RStoolbox_rasterCVAEnv$medianTable <- RStoolbox_rasterCVAEnv$medianTable + table(cut(magnitude, medianBuckets), useNA = "no")
 		}
-		
+
 		angle  <- rep(0, length(magnitude))
 		sel    <- !is.na(magnitude)
 		angle[sel]  <- atan2(dif[sel,1],dif[sel,2]) / pi * 180
 		negang <- angle < 0
-		angle[negang] <- 360 + angle[negang] 
+		angle[negang] <- 360 + angle[negang]
 		angle[!sel] <- NA
 		cbind(angle, magnitude)
 	}
-	
-	X    <- stack(x,y)
-	out  <- brick(x, 2, values = FALSE)
+
+	X    <- c(x,y)
+	out <- rast(x, 2)
+
 	names(out) <- c("angle", "magnitude")
 	ellips <- list(...)
 	
-	if(canProcessInMemory(X, 2) ) {
-		out[] <- anglefun(getValues(X), tmf)
+	if(.canProcInMem(X, 2) ) {
+		out[] <- anglefun(values(X), tmf)
 		if(!doClamp && !is.null(ellips$filename)){
 			out <- writeRaster(out, ...)
 		}
@@ -79,9 +81,9 @@ rasterCVA <- function(x, y, tmf = NULL, nct = NULL,  ...) {
 		magfile <- if(!is.null(ellips$filename) && !doClamp) filename else rasterTmpFile()
 		X   <- readStart(X)
 		out <- writeStart(out, filename = magfile, ...)
-		tr  <- blockSize(out)
+		tr  <- blocks(out)
 		for (i in 1:tr$n) {
-			vo <- getValues(X, row=tr$row[i], nrows=tr$nrows[i])
+			vo <- values(X, row=tr$row[i], nrows=tr$nrows[i])
 			vo <- anglefun(vo, tmf)
 			out <- writeValues(out, vo, tr$row[i])
 		}
@@ -96,12 +98,10 @@ rasterCVA <- function(x, y, tmf = NULL, nct = NULL,  ...) {
 			nct <- tmf * medianEstimate
 			rm(RStoolbox_rasterCVAEnv)
 		}
-		out <- do.call(clamp, c(list(x = out, lower=nct, useValues = FALSE), ellips))
+		out <- do.call(clamp, c(list(x = out, lower=nct), ellips))
 		
 		names(out) <- c("angle", "magnitude")
 	}
 	
 	return(out)
-}	
-
-
+}
