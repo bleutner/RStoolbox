@@ -102,9 +102,11 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
     if(!missing("verbose")) .initVerbose(verbose)
     verbose <- getOption("RStoolbox.verbose") 
     
-    if(!inherits(img, 'Raster') && !inherits(img,"SpatRaster")) stop("img must be a raster object (RasterLayer,RasterBrick or RasterStack)", call.=FALSE)
-    img <- .toRaster(img)
-    
+    if(!inherits(img, 'Raster') && !inherits(img,"SpatRaster"))
+      stop("img must be a raster object (RasterLayer,RasterBrick or RasterStack)", call.=FALSE)
+
+    img <- .toTerra(img)
+
     trainData <- .toSf(trainData)
     if(!missing("valData")) valData <- .toSf(valData)
     
@@ -139,31 +141,33 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
         stop("unknown mode. must be 'regression' or 'classification'")
     
     ## Check projections
-    if(st_crs(img) != st_crs(trainData) | (!is.null(valData) && st_crs(img) != st_crs(valData)) ) 
+    if(st_crs(img) != st_crs(trainData) | (!is.null(valData) && st_crs(img) != st_crs(valData)) )
         stop("img, trainData and valData (if provided) must have the same projection")
-    
-    ## Check overlap of vector and raster data    
+
+    ## Check overlap of vector and raster data
     trainData <- .selectIntersecting(img, trainData)
-    if(!is.null(valData)) valData <- .selectIntersecting(img, valData)
+    if(!is.null(valData)) {
+        valData <- .selectIntersecting(img, valData)
+    }
+    valData <- valData
+    trainPartition <- trainPartition
     
     ## Make sure classification is run with factors
-    if(mode == "classification") {  
-        
+    if(mode == "classification") {
         if(!is.null(valData) && (class(trainData[[responseCol]]) != class(valData[[responseCol]]))) {
             stop("response columns in trainData and valData must be of the same type, i.e. both integer, character or factor")
-        } 
-        
+        }
+
         if(!is.factor(trainData[[responseCol]])) {
-            trainData[[responseCol]] <- as.factor(trainData[[responseCol]])       
-            if(!is.null(valData)) { 
+            trainData[[responseCol]] <- as.factor(trainData[[responseCol]])
+            if(!is.null(valData)) {
                 valData[[responseCol]] <- factor(valData[[responseCol]], levels = levels(trainData[[responseCol]]))
             }
-        }  
+        }
         
         ## Unique classes
         classes      <- sort(unique(trainData[[responseCol]]))
-        classMapping <- data.frame(classID = as.numeric(classes), class = 
-                        classes, stringsAsFactors = FALSE)
+        classMapping <- data.frame(classID = as.numeric(classes), class = classes, stringsAsFactors = FALSE)
         classMapping <- classMapping[order(classMapping$classID),]
         rownames(classMapping) <- NULL
     } else {
@@ -171,21 +175,21 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
     }
     
     ## Spit ellipsis into caret::trainControl and raster::writeRaster
-#    frmls_train <- names(formals(raster::writeRaster))
+#    frmlsrain <- names(formals(raster::writeRaster))
 #    args  <- c(list(...), method = method)
-#    args_trainControl  <- args[names(args) %in% frmls_train]
-#    args_writeRaster   <- args[!names(args) %in% frmls_train]
+#    argsrainControl  <- args[names(args) %in% frmlsrain]
+#    args_writeRaster   <- args[!names(args) %in% frmlsrain]
 #    args_writeRaster$filename <- if(length(classes) == 1) filename else NULL ## write raster here already during predict if only one layer is output
     
     ## Split into training and validation data (polygon basis)
     if(is.null(valData) & !is.null(trainPartition)){
-        training  <- createDataPartition(trainData[[responseCol]], p = trainPartition)[[1]] ## this works for polygons as well because every polygon has only one entry in the attribnute table 
+        training  <- createDataPartition(trainData[[responseCol]], p = trainPartition)[[1]] ## this works for polygons as well because every polygon has only one entry in the attribnute table
         hint <- paste0("\n   You could either ",
                 "\n    * provide more (often smaller) polygons for the concerned classes instead of few large ones (recommended)",
                 "\n    * provide pre-defined validation polygons via the valData argument",
                 "\n    * decrease trainPartition",
                 "\n    * run without independent validation.")
-        if(length(training) == nrow(trainData)) 
+        if(length(training) == nrow(trainData))
             stop(paste0("There are not enough polygons/points to split into training and validation partitions. \n  You could either ",
                             hint))
         if(mode == "classification"){
@@ -198,106 +202,111 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
         valData   <- trainData[-training,]
         trainData <- trainData[ training,]
     } else {
-        training <- 1:NROW(trainData)
+        training <- seq_len(NROW(trainData))
     }
-    
+
     if(identical(trainData, valData))
-        stop("trainData is the same as valData")    
-    
+        stop("trainData is the same as valData")
+
     if(!is.null(valData)){
-        if(is.na(projection(trainData)) & minDist > 0) {
-            warning("trainData is missing projection information and thus cannot be buffered. minDist will be set to zero.", call. = FALSE) 
-            minDist <- 0    
+        if(is.na(st_crs(trainData)) & minDist > 0) {
+            warning("trainData is missing projection information and thus cannot be buffered. minDist will be set to zero.", call. = FALSE)
+            minDist <- 0
         }
-        
-        ## Clip validation data to training data + 2 pixel buffer 
+
+        ## Clip validation data to training data + 2 pixel buffer
         trainBuff <- if(minDist > 0) st_buffer(trainData, minDist*max(res(img)))  else trainData
         st_agr(valData) <- "constant"
-        valData      <- st_difference(valData, st_geometry(st_union(trainBuff)))
-        
+        valData <- st_difference(valData, st_geometry(st_union(trainBuff)))
+
         if(!nrow(valData)){
             stop(paste0("After applying a buffer of ",minDist," pixels (minDist) no validation points remained.",
                             "\nPossible solutions:",
                             "\n * split datasets yourself, i.e. provide valData instead of trainPartition",
                             "\n * reduce minDist (may cause optimistic bias in validation!)",
-                            "\n * provide more trainingPoints which are well spread across the scene"        
+                            "\n * provide more trainingPoints which are well spread across the scene"
                     ), call. = FALSE)
         }
-        
+
         if(mode == "classification" && !all(classMapping$class %in% valData[[responseCol]])){
             stop(paste0("After applying a buffer of ",minDist," pixels (minDist) validation not all classes are represented in the validation set.",
                             "\nPossible solutions:",
                             "\n * split datasets yourself, i.e. provide valData instead of trainPartition",
                             "\n * reduce minDist (may cause optimistic bias in validation!)",
-                            "\n * provide more trainingPoints which are well spread across the scene"        
+                            "\n * provide more trainingPoints which are well spread across the scene"
                     ), call. = FALSE)
         }
-        
-        
+
+
     }
-    
+
     ## Create hold out indices on polygon level
-    
+
     if(trainDataType == "POLYGON" && polygonBasedCV){
         foldCol      <- "excludeFromFold"
         trainData <- do.call(rbind, lapply(classes, function(ci) {
-                            sub          <- trainData[trainData[[responseCol]] == ci,]  
-                            folds        <- createFolds(sub[[responseCol]], k = kfold)
-                            names(folds) <- NULL
-                            folds        <- melt(folds) 
-                            sub[[foldCol]] <- folds[order(folds$value),"L1"]
-                            sub
-                        }))
+            sub          <- trainData[trainData[[responseCol]] == ci,]
+            folds        <- createFolds(sub[[responseCol]], k = kfold)
+            names(folds) <- NULL
+            folds        <- melt(folds)
+            sub[[foldCol]] <- folds[order(folds$value),"L1"]
+            sub
+        }))
     } else {
         foldCol <- NULL
         polygonBasedCV <- FALSE
     }
-    
+
     ## Calculate area weighted number of samples per polygon
     ## we'll end up with n > nSamples, but make sure to sample each polygon at least once
     .vMessage("Begin sampling training data")
     dataList  <- .samplePixels(trainData, img, responseCol = responseCol, nSamples = nSamples, foldCol = foldCol)
-    dataSet   <- dataList[[1]]
+
+    dataSet <- dataList[[1]]
     if(trainDataType == "POLYGON" && polygonBasedCV) {
         indexOut <- dataList[[2]][[foldCol]]
     }
     
     ## Meaningless predictors
     uniqueVals  <- apply(dataSet, 2, function(x){length(unique(x))}) == 1
+
     if(uniqueVals[1]) stop("Response (responseCol in trainData) contains only one value. Classification doesn't make sense in this case.")
+
     if(any(uniqueVals)) {
         warning( "Samples from ", paste0(colnames(dataSet)[uniqueVals], collapse = ", "), " contain only one value. The variable will be omitted from model training.")
         dataSet <- dataSet[, !uniqueVals, drop=FALSE]
     }
-    
+
     ## TRAIN ######################### 
     .vMessage("Starting to fit model")   
     .registerDoParallel()
-    indexIn <- if(polygonBasedCV) lapply(1:kfold, function(x) which(x != indexOut)) 
-    if(model == "mlc") model <- mlcCaret
-    caretModel     <- train(response ~ ., data = dataSet, method = model, tuneLength = tuneLength, 
-            trControl = trainControl(method = "cv", classProbs = {predType=="prob"}, 
-                    number = kfold, index = indexIn, savePredictions = "final"), ...)   
+    indexIn <- if(polygonBasedCV) lapply(1:kfold, function(x) which(x != indexOut))
+
+    if(model == "mlc")
+      model <- mlcCaret
+
+    caretModel     <- train(response ~ ., data = dataSet, method = model, tuneLength = tuneLength,
+            trControl = trainControl(method = "cv", classProbs = {predType=="prob"},
+                    number = kfold, index = indexIn, savePredictions = "final"), ...)
     modelFit <- getTrainPerf(caretModel)
     
-    dataType <- NULL  
+    dataType <- NULL
     if(mode == "classification") {
         dataType <- "INT2S"
-        modelFit <- list(modelFit, confusionMatrix(caretModel, norm = "average"))     
-    } 
+        modelFit <- list(modelFit, confusionMatrix(caretModel, norm = "average"))
+    }
     
     ## PREDICT ######################### 
     if(predict){
         .vMessage("Starting spatial predict")
-        
-        
+
         if(predType == "prob") {
             ddd     <- predict(caretModel, dataSet[1:2,-1, drop = FALSE], type="prob")
             probInd <- 1:ncol(ddd)
         } else {
             probInd <- 1
-        } 
-        
+        }
+
         ## Use this, once terra is mature enough        
         # nc <- .getNCores()
         # progress <- if(verbose)  2 else 1
@@ -305,13 +314,14 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
         # wrArgs   <- list(progress = progress, datatype = dataType)
         # spatPred <- terra::predict(img, model=caretModel, type = predType, index = probInd, cpkgs = c("caret"),
         # filename = filename , overwrite = overwrite, cores = nc,  wopt = wrArgs)
-        
+
         progress <- if(verbose) "text" else "none"
-        wrArgs          <- list(filename = filename, progress = progress, datatype = dataType, overwrite = overwrite)
+        wrArgs <- list(filename = filename, progress = progress, datatype = dataType, overwrite = overwrite)
         wrArgs$filename <- filename ## remove filename from args if is.null(filename) --> standard writeRaster handling applies
-        spatPred        <- .paraRasterFun(img, rasterFun=raster::predict, args = list(model=caretModel, type = predType, index = probInd), wrArgs = wrArgs)
-        if(predType != "prob") names(spatPred) <- responseCol
-        
+        spatPred <- .paraRasterFun(img, rasterFun=terra::predict, args = list(model=caretModel, type = predType, index = probInd), wrArgs = wrArgs)
+        if(predType != "prob")
+          names(spatPred) <- responseCol
+
     } else {
         spatPred <- "No map was produced (predict = FALSE)."
     }
@@ -321,8 +331,8 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
         .vMessage("Begin validation")
         if(predict & (predType == "raw")){
             ## We have a predicted raster already, so we can extract predictions directly
-            valiSet  <- .samplePixels(valData, spatPred, responseCol = responseCol, nSamples = nSamplesV,  
-                    trainCells = dataList[[2]][,"cell"], withXY = TRUE, classMapping = classMapping)    
+            valiSet  <- .samplePixels(valData, spatPred, responseCol = responseCol, nSamples = nSamplesV,
+                    trainCells = dataList[[2]][,"cell"], withXY = TRUE, classMapping = classMapping)
             colnames(valiSet[[1]]) <- c("reference", "prediction")
             valiSet     <- data.frame(valiSet[[1]], valiSet[[2]])
         } else {
@@ -332,29 +342,29 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
             pred    <- predict(caretModel, val[[1]][,-1,drop=FALSE])
             valiSet <- data.frame(reference = val[[1]][,1], prediction = pred, val[[2]])
         }
-        
+
         if(mode == "classification"){
             if(!is.factor(valiSet$reference))  valiSet$reference  <- factor(valiSet$reference, levels = levels(classes))
             if(is.numeric(valiSet$prediction)) {
                 if(predict){ ## temporary workaround for raster grd/INT1U/NA bug
                     pr <- valiSet$prediction
-                    if(!"0" %in% levels(classes)) pr[pr==0] <- NA  
+                    if(!"0" %in% levels(classes)) pr[pr==0] <- NA
                 }
                 valiSet$prediction <- factor(levels(classes)[pr], levels = levels(classes))
             }
-            validation <- confusionMatrix(data = as.factor(valiSet$prediction), reference = as.factor(valiSet$reference))              
+            validation <- confusionMatrix(data = as.factor(valiSet$prediction), reference = as.factor(valiSet$reference))
         } else {
             valiSet$residuals <- valiSet$reference - valiSet$prediction
-            validation <-  data.frame(RMSE = .rmse(valiSet$prediction, valiSet$reference), 
-                    Rsquared = cor(valiSet$prediction, valiSet$reference, use = "complete.obs")^2)   
+            validation <-  data.frame(RMSE = .rmse(valiSet$prediction, valiSet$reference),
+                    Rsquared = cor(valiSet$prediction, valiSet$reference, use = "complete.obs")^2)
         }
         valiSet <- st_as_sf(valiSet, coords = c("x", "y"), crs = st_crs(valData))
-        validation <- list(performance = validation, 
+        validation <- list(performance = validation,
                 validationSamples = valiSet, validationGeometry = valData )
     } else {
         validation <- "No independent validation was performed!"
     }
-    
+
     ## Print summary stats
     if(verbose){
         message(paste0(paste0(rep("*",20), collapse = "")," Model summary " , paste0(rep("*",20), collapse = "")))
@@ -362,12 +372,11 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
         print(modelFit)
         message(paste0(paste0(rep("*",20), collapse = "")," Validation summary " , paste0(rep("*",20), collapse = "")))
         print(validation[[1]])
-    } 
+    }
     
-    
-    out <- list(model = caretModel, modelFit = modelFit, training = list(trainingDataPartition=training), validation = validation, map = spatPred)
-    
-    if(mode == "classification") out$classMapping <- classMapping 
+    out <- list(model = caretModel, modelFit = modelFit, training = list(trainingPartition=training), validation = validation, map = spatPred)
+
+    if(mode == "classification") out$classMapping <- classMapping
     structure(out, class = c("superClass", "RStoolbox"))
 }
 
@@ -380,7 +389,6 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 #' @keywords internal
 #' @noRd 
 .selectIntersecting <- function(img,vect) {
-  
     ext <- st_as_sfc(st_bbox(extent(img)))
     st_crs(ext) <- st_crs(vect)
   
@@ -392,11 +400,22 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
         stop("img and trainData do not overlap", call. = FALSE)
     return(vect[overlap,])
 }
+.selectIntersecting <- function(img,vect) {
+    ext <- st_as_sfc(st_bbox(ext(img)))
+    st_crs(ext) <- st_crs(vect)
 
-.samplePixels <- function(v, r, responseCol, trainCells = NULL, nSamples = NULL,
-        maxnpix = FALSE, withXY = FALSE, foldCol = NULL, classMapping = NULL){
+    overlap <- as.vector(st_intersects(ext, vect, sparse = FALSE))
+    so <- sum(!overlap)
+    if (so)
+        warning(sprintf("Some trainData (%s/%s) do not overlap with img", so, length(overlap)), call. = FALSE)
+    if(!sum(overlap))
+        stop("img and trainData do not overlap", call. = FALSE)
+    return(vect[overlap,])
+}
+
+.samplePixels <- function(v, r, responseCol, trainCells = NULL, nSamples = NULL, maxnpix = FALSE, withXY = FALSE, foldCol = NULL, classMapping = NULL){
     
-    isPoint <- st_geometry_type(v, by_geometry = FALSE) == "POINT"
+    isPoint <- st_geometryype(v, by_geometry = FALSE) == "POINT"
     if(isPoint)
         nSamples <- NULL
     ## exactextractr cannot handle point data. Therefore we convert to polygons, and pick the pixel with the highest coverage.
@@ -441,6 +460,56 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
     if(!is.null(classMapping) && is.numeric(dataSet[[responseCol]]) ) {
         m <- match(dataSet[[responseCol]], classMapping$classID)
         dataSet[[responseCol]] <- classMapping[m,"class"]  
+    }
+    list(dataSet[,!s], cells = dataSet[, s, drop=FALSE])
+}
+.samplePixels <- function(v, r, responseCol, trainCells = NULL, nSamples = NULL, maxnpix = FALSE, withXY = FALSE, foldCol = NULL, classMapping = NULL){
+
+    isPoint <- st_geometry_type(v, by_geometry = FALSE) == "POINT"
+    if(isPoint)
+        nSamples <- NULL
+    ## exactextractr cannot handle point data. Therefore we convert to polygons, and pick the pixel with the highest coverage.
+    ## This is a workaround, but still faster than other extract methods.
+    v <- st_buffer(v,xres(r)*0.1,nQuadSegs=1)
+
+    nSampsCol <- NULL
+    if (!is.null(nSamples)) {
+        v$area <- st_area(v)
+        v <- v %>% group_by( group = get(responseCol)) %>%
+                  mutate( nSamps = max(as.integer(ceiling(area/sum(area) * nSamples)),1)) %>%
+                    dplyr::select(-group)
+        nSampsCol <- "nSamps"
+    }
+
+    cols <- c(responseCol, if(nlyr(r)>1) names(r) else "value", "cell", "x"[withXY], "y"[withXY])
+    dataSet <- exact_extract(r,v, fun = function(vals, ...) {
+
+                ## Filter
+                if(isPoint) vals <- vals[which.max(vals$coverage_fraction),] ## POINT extraction workaround
+                cc  <- complete.cases(vals)
+                cc2 <- if(!is.null(trainCells)) !vals[,"cell"] %in% trainCells else TRUE
+                cc3 <- if(!isPoint) vals$coverage_fraction == 1 else TRUE
+                vals <- vals[cc & cc2 & cc3, ]
+
+                if (is.null(nSamples)|| nrow(vals) <= 1) {
+                    return(vals[,cols])
+                }
+
+                ## Random Sample
+                vals[sample(1:nrow(vals), min(v$nSamps[1], nrow(vals))), cols]
+            },
+            summarize_df = TRUE, force_df = TRUE, include_cell = TRUE,
+            include_cols = c(responseCol, nSampsCol), include_xy = withXY, progress = FALSE)
+
+    ## Discard duplicate cells (possible from two polygons over the same pixel)
+    dataSet <- dataSet[!duplicated(dataSet[,"cell"]),]
+    s <- colnames(dataSet) %in% c( "cell","x","y", foldCol)
+    colnames(dataSet)[!s] <- c("response", names(r))
+
+    ## Convert int to factors
+    if(!is.null(classMapping) && is.numeric(dataSet[[responseCol]]) ) {
+        m <- match(dataSet[[responseCol]], classMapping$classID)
+        dataSet[[responseCol]] <- classMapping[m,"class"]
     }
     list(dataSet[,!s], cells = dataSet[, s, drop=FALSE])
 }
@@ -526,6 +595,31 @@ predict.superClass <- function(object, img, predType = "raw", filename = NULL, d
     wrArgs$filename <- filename ## remove filename from args if is.null(filename) --> standard writeRaster handling applies
     .paraRasterFun(img, rasterFun=raster::predict, args = list(model=model, type = predType, index = probInd), wrArgs = wrArgs) 
     
+}
+predict.superClass <- function(object, img, predType = "raw", filename = NULL, datatype = "INT2U", ...){
+    stopifnot(inherits(object, c("RStoolbox", "superClass")))
+
+    ## extract model (avoid copying entire object to SOCK clusters in .paraRasterFun - I think / not validated)
+    model <- object$model
+    img <- .toTerra(img)
+    if(predType == "prob") {
+        py<-img[1:2]
+        py[]<-1
+        ddd <- predict(model, py, type="prob")
+        probInd <- 1:ncol(ddd)
+    } else {
+        probInd <- 1
+    }
+
+    ## Still waiting for terra to mature
+    #    wrArgs   <- c(list(...), list( datatype = datatype))
+    #    spatPred <- terra::predict(img, model=caretModel, type = predType, index = probInd, cpkgs = c("caret"),
+    #            filename = filename , overwrite = overwrite, cores = nc,  wopt = wrArgs)
+
+    wrArgs          <- c(list(...), list(filename = filename, datatype = datatype))
+    wrArgs$filename <- filename ## remove filename from args if is.null(filename) --> standard writeRaster handling applies
+    .paraRasterFun(img, rasterFun=terra::predict, args = list(model=model, type = predType, index = probInd), wrArgs = wrArgs)
+
 }
 
 

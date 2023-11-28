@@ -289,11 +289,3 @@ radCor <- function(img, metaData, method = "apref", bandSet = "full", hazeValues
     
     return(out)
 }
-
-
-test <- function(){
-    devtools::load_all()
-    mtlFile <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package = "RStoolbox")
-    method <- "dos"
-    radCor(lsat, metaData = mtlFile, method = method, hazeBands = c(1, 2))
-}

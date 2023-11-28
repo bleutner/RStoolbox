@@ -23,11 +23,10 @@ g <- function(x){as.character(st_geometry_type(x,F))}
 
 ## Maximum likelihood custom model
 test_that("maximum likelihood model",
-        expect_is(superClass(lsat, trainData = poly, responseCol = "class", model = "mlc", tuneLength = 1, trainPartition = 0.7, predict = FALSE), "superClass")
+    expect_is(superClass(lsat, trainData = poly, responseCol = "class", model = "mlc", tuneLength = 1, trainPartition = 0.7, predict = FALSE), "superClass")
 ) 
 
 for(type in c("polygons", "points")){
-    
     if (!identical(Sys.getenv("NOT_CRAN"), "true") ) {
         if( type == "points") break
     }
@@ -67,7 +66,7 @@ for(type in c("polygons", "points")){
             }) 
     
     test_that("numeric vs. factor predictors", {                        
-                expect_equal(cellStats(sc2$map - sc3$map, sum), 0, info = info)
+                expect_equal(sum(values(sc2$map - sc3$map)), 0, info = info)
             })
     
     test_that("validation sample coords and geometries are returned", {                        
@@ -83,16 +82,16 @@ for(type in c("polygons", "points")){
             })
     
     test_that("predict.superClass map is identical to superClass$map",{
-                expect_true(compareRaster(sc2$map, predict(sc2, img), values = TRUE), info = info)                      
+                expect_equal(sum(values(sc2$map) - values(predict(sc2, img))), 0)
             })
     
     test_that("prediction of probability layers", {   
                 expect_is(sc4  <- superClass(img, trainData = train, nSamples = 50, ntree = 100, responseCol = "class", model = "rf",
                                 predType = "prob", tuneLength = 1, predict = TRUE),  "superClass", info = info)
-                expect_is(scp <- predict(sc4, img, predType = "prob"), "RasterBrick")
-                expect_identical(dim(sc4$map)[3], 4L, info=info)
-                expect_true(compareRaster(sc4$map, scp, values = TRUE), info = info) 
-                expect_equal(unique(round(sum(sc4$map))) , 1, info = info)            
+                expect_is(scp <- predict(sc4, img, predType = "prob"), "SpatRaster")
+                expect_identical(dim(sc4$map)[3], 4, info=info)
+                expect_equal(sum(values(sc4$map) - values(scp)), 0)
+                expect_equal(as.numeric(unique(values(round(sum(sc4$map))))), 1)
             })
     
     test_that("external valData instead of trainPartition",{
@@ -124,7 +123,7 @@ for(type in c("polygons", "points")){
     
     st_crs(train) <- NA
     nimg <- img
-    projection(nimg) <- NA
+    crs(nimg) <- NA
     test_that("missing projection info", {
                 expect_warning(superClass(nimg, trainData = train, minDist = 1, nSamples = 50, responseCol = "class", model = "pls", 
                                 tuneGrid = data.frame(ncomp = 3), tuneLength = 1, trainPartition = 0.7, predict = FALSE), "missing projection")

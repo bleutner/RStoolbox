@@ -92,7 +92,6 @@
     if (isTRUE(getOption('rasterCluster'))) {
         do.call("clusterR", args = c(list(x = raster, fun = rasterFun, args=args), wrArgs))
     } else {
-        #do.call("rasterFun", args=c(x = raster, args), wrArgs)
         do.call("rasterFun", c(list(raster), args, wrArgs))
     }
 }
@@ -193,7 +192,10 @@
     x <- gsub("\\\\", "/", x) ## anti-win
     x <- gsub("//", "/", x)   ## anti-win
     
-    if(basename(x) == x | grepl("^[.][.]/", x))    x   <- file.path(getwd(),x)
+    if(basename(x) == x | grepl("^[.][.]/", x)){
+      x   <- file.path(getwd(),x)
+    }
+
     if(grepl("[.][.]", x)){
         xs  <- strsplit(x, "/")[[1]]
         ups <- grep("[.][.]", xs)  

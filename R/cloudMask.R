@@ -152,8 +152,3 @@ cloudShadowMask <- function (img, cm, nc = 5, shiftEstimate = NULL, preciseShift
     if(returnShift) return(list(shift = shiftPar, shadowMap = cms)) else return(cms)
     
 }
-
-
-my_test <- function(){
-    class(c(last, last))
-}
