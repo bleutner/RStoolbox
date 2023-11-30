@@ -41,7 +41,7 @@
 #'                              classMapping = sc$classMapping)
 #' }
 validateMap <- function(map, valData, responseCol, nSamplesV = 500,  mode = "classification", classMapping = NULL){
-	map <- .toRaster(map)
+	map <- .toTerra(map)
     valData <- .toSf(valData)
 	
     stopifnot(responseCol %in% names(valData), mode %in% c("classification", "regression"))

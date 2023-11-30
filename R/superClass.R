@@ -387,19 +387,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 #' @param img Raster* or any other geometry which returns a st_bbox
 #' @param vect sf 
 #' @keywords internal
-#' @noRd 
-.selectIntersecting <- function(img,vect) {
-    ext <- st_as_sfc(st_bbox(extent(img)))
-    st_crs(ext) <- st_crs(vect)
-  
-    overlap <- as.vector(st_intersects(ext, vect, sparse = FALSE))
-    so <- sum(!overlap)
-    if (so)
-        warning(sprintf("Some trainData (%s/%s) do not overlap with img", so, length(overlap)), call. = FALSE)
-    if(!sum(overlap)) 
-        stop("img and trainData do not overlap", call. = FALSE)
-    return(vect[overlap,])
-}
+#' @noRd
 .selectIntersecting <- function(img,vect) {
     ext <- st_as_sfc(st_bbox(ext(img)))
     st_crs(ext) <- st_crs(vect)
@@ -414,57 +402,6 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 }
 
 .samplePixels <- function(v, r, responseCol, trainCells = NULL, nSamples = NULL, maxnpix = FALSE, withXY = FALSE, foldCol = NULL, classMapping = NULL){
-    
-    isPoint <- st_geometryype(v, by_geometry = FALSE) == "POINT"
-    if(isPoint)
-        nSamples <- NULL
-    ## exactextractr cannot handle point data. Therefore we convert to polygons, and pick the pixel with the highest coverage.
-    ## This is a workaround, but still faster than other extract methods.
-    v <- st_buffer(v,xres(r)*0.1,nQuadSegs=1)
-    
-    nSampsCol <- NULL
-    if (!is.null(nSamples)) {
-        v$area <- st_area(v)
-        v <- v %>% group_by( group = get(responseCol)) %>%
-                  mutate( nSamps = max(as.integer(ceiling(area/sum(area) * nSamples)),1)) %>%
-                    dplyr::select(-group)
-        nSampsCol <- "nSamps"
-    } 
-    
-    cols <- c(responseCol, if(nlayers(r)>1) names(r) else "value", "cell", "x"[withXY], "y"[withXY])
-    dataSet <- exact_extract(r,v, fun = function(vals, ...) {
-                
-                ## Filter 
-                if(isPoint) vals <- vals[which.max(vals$coverage_fraction),] ## POINT extraction workaround
-                cc  <- complete.cases(vals)
-                cc2 <- if(!is.null(trainCells)) !vals[,"cell"] %in% trainCells else TRUE
-                cc3 <- if(!isPoint) vals$coverage_fraction == 1 else TRUE
-                vals <- vals[cc & cc2 & cc3, ]
-                
-                if (is.null(nSamples)|| nrow(vals) <= 1) {
-                    return(vals[,cols])
-                }
-                
-                ## Random Sample
-                vals[sample(1:nrow(vals), min(v$nSamps[1], nrow(vals))), cols]
-            }, 
-            summarize_df = TRUE, force_df = TRUE, include_cell = TRUE, 
-            include_cols = c(responseCol, nSampsCol), include_xy = withXY, progress = FALSE)
-    
-    ## Discard duplicate cells (possible from two polygons over the same pixel)
-    dataSet <- dataSet[!duplicated(dataSet[,"cell"]),]   
-    s <- colnames(dataSet) %in% c( "cell","x","y", foldCol)
-    colnames(dataSet)[!s] <- c("response", names(r))
-    
-    ## Convert int to factors
-    if(!is.null(classMapping) && is.numeric(dataSet[[responseCol]]) ) {
-        m <- match(dataSet[[responseCol]], classMapping$classID)
-        dataSet[[responseCol]] <- classMapping[m,"class"]  
-    }
-    list(dataSet[,!s], cells = dataSet[, s, drop=FALSE])
-}
-.samplePixels <- function(v, r, responseCol, trainCells = NULL, nSamples = NULL, maxnpix = FALSE, withXY = FALSE, foldCol = NULL, classMapping = NULL){
-
     isPoint <- st_geometry_type(v, by_geometry = FALSE) == "POINT"
     if(isPoint)
         nSamples <- NULL
