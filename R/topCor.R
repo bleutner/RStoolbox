@@ -39,8 +39,11 @@
 #' 
 topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg = NULL, nStrat = 5, illu, ...){
 	img <- .toRaster(img)
+    img_t <- .toTerra(img)
 	if(!missing("dem")) dem <- .toRaster(dem)
 	if(!missing("illu")) illu <- .toRaster(illu)
+    if(!missing("dem")) dem_t <- .toTerra(dem)
+	if(!missing("illu")) illu_t <- .toTerra(illu)
 	
 	
     stopifnot(method %in% c("cos", "avgcos", "minnaert", "C", "stat", "illu"))
@@ -62,21 +65,31 @@ topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg
         compareRaster(img, dem)
         .vMessage("Calculate slope and aspect")
         topo <- terrain(dem, c("slope", "aspect"))
+        topo_t <- terrain(dem_t, c("slope", "aspect"))
     } else {
         compareRaster(img, dem)
         topo <- dem
+        topo_t <- dem_t
         .vMessage("Using pre-calculated slope and aspect")
     }
     slope <- topo[["slope"]]
     aspect <- topo[["aspect"]]
-    
+    slope_t <- topo_t[["slope"]]
+    aspect_t <- topo_t[["aspect"]]
+
     ## Illumination
     if(missing(illu)){
         .vMessage("Calculate illumination map")
         illu  <- raster::overlay(topo, fun = function(slope, aspect, sazimuth = sa, szenith = sz){
-                    cos(szenith) * cos(slope) + sin(szenith) * sin(slope) * cos(sazimuth - aspect)
-                })
+            cos(szenith) * cos(slope) + sin(szenith) * sin(slope) * cos(sazimuth - aspect)
+        })
+        print(topo)
+        print(topo_t)
+        illu_t  <- terra::app(topo_t, fun = function(slope, aspect, sazimuth = sa, szenith = sz){
+            cos(szenith) * cos(slope) + sin(szenith) * sin(slope) * cos(sazimuth - aspect)
+        })
         names(illu) <- "illu"
+        names(illu_t) <- "illu"
     } else {
         .vMessage("Using pre-calculated illumination map")
     }
@@ -246,3 +259,13 @@ topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg
     return(list(groups = groups, k = kl))
 }
 
+test <- function(){
+    devtools::load_all()
+
+    metaData <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
+    metaData <- readMeta(metaData)
+    lsat     <- stackMeta(metaData)
+    data(srtm)
+
+    topCor(lsat, dem = srtm, metaData = metaData, method = "cos")
+}

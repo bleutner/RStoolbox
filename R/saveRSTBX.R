@@ -87,15 +87,3 @@ readRSTBX <- function(filename){
     }
     x
 }
-
-test <- function(){
-    devtools::load_all()
-
-    train <- readRDS(system.file("external/trainingPoints.rds", package="RStoolbox"))
-    sc <- superClass(rlogo, train, tuneLength = 1, resp="class")
-
-    ## Save and re-import
-    outbase <- paste0(tempdir(),"/test-RSTOOLBOX-sc")
-    saveRSTBX(sc, outbase , overwrite = TRUE)
-    readRSTBX(paste0(outbase, ".rds"))
-}
