@@ -56,12 +56,13 @@ saveRSTBX <- function(x, filename, format = "raster", ...){
     f <- terra::sources(x$map)
 
     if(inMemory(x$map)){
-        x$map <- writeRaster(x$map, filename = rastFile, ...)
+        x$map <- wrap(writeRaster(x$map, filename = rastFile, ...))
     } else {
-        if(f!=rastFile){
-            x$map <- writeRaster(x$map, filename = rastFile, ...)
+        if(f != rastFile){
+            x$map <- wrap(writeRaster(x$map, filename = rastFile, ...))
         }
     }
+
     base::saveRDS(x, rdsFile)
 }
 
@@ -71,22 +72,18 @@ readRSTBX <- function(filename){
     rdsFile <- rastFile <- .fullPath(filename)
 
     x <- readRDS(rdsFile)
-    print(x)
+
+    try(x$map <- unwrap(x$map), silent = FALSE)
 
     if(!inherits(x, "RStoolbox"))
       stop(filename, "is not a RStoolbox object.", call. = FALSE)
-
-    namesBU <- names(x$map) ## backup names (might get lost between file formats)
 
     if(inherits(x$map, "SpatRaster")){
         rastFile <- paste0(rastFile, sources(x$map))
         if(!file.exists(rastFile)) {
             warning("Corresponding raster file ", rastFile, " cannot be found.  \nThe *.rds and the raster file must be located in the same directory.")
             x$map <- "Raster map not found"
-        } else {
-            x$map <- rast(rastFile)
-        }          
-        names(x$map) <- namesBU
+        }
     }
     x
 }
@@ -100,5 +97,5 @@ test <- function(){
     ## Save and re-import
     outbase <- paste0(tempdir(),"/test-RSTOOLBOX-sc")
     saveRSTBX(sc, outbase , overwrite = TRUE)
-    sc_re <- readRSTBX(paste0(outbase, ".rds"))
+    readRSTBX(paste0(outbase, ".rds"))
 }
