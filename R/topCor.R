@@ -1,4 +1,4 @@
-#' Topographic Illumination Correction
+de#' Topographic Illumination Correction
 #' 
 #' account and correct for changes in illumination due to terrain elevation.
 #' 
@@ -65,13 +65,14 @@ topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg
         compareRaster(img, dem)
         .vMessage("Calculate slope and aspect")
         topo <- terrain(dem, c("slope", "aspect"))
-        topo_t <- terrain(dem_t, c("slope", "aspect"))
+        topo_t <- terrain(dem_t, c("slope", "aspect"), unit = "radians")
     } else {
         compareRaster(img, dem)
         topo <- dem
         topo_t <- dem_t
         .vMessage("Using pre-calculated slope and aspect")
     }
+
     slope <- topo[["slope"]]
     aspect <- topo[["aspect"]]
     slope_t <- topo_t[["slope"]]
@@ -80,14 +81,14 @@ topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg
     ## Illumination
     if(missing(illu)){
         .vMessage("Calculate illumination map")
-        illu  <- raster::overlay(topo, fun = function(slope, aspect, sazimuth = sa, szenith = sz){
+        illu <- raster::overlay(topo, fun = function(slope, aspect, sazimuth = sa, szenith = sz){
             cos(szenith) * cos(slope) + sin(szenith) * sin(slope) * cos(sazimuth - aspect)
         })
-        print(topo)
-        print(topo_t)
-        illu_t  <- terra::app(topo_t, fun = function(slope, aspect, sazimuth = sa, szenith = sz){
+        illu_t_func <- function(slope, aspect, sazimuth = sa, szenith = sz){
             cos(szenith) * cos(slope) + sin(szenith) * sin(slope) * cos(sazimuth - aspect)
-        })
+        }
+        illu_t <- illu_t_func(topo_t$slope, topo_t$aspect)
+
         names(illu) <- "illu"
         names(illu_t) <- "illu"
     } else {
@@ -101,12 +102,17 @@ topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg
         ## Eq 3 in Riano2003
         ## Lambertian assumption              
         Lh <- raster::overlay(img, illu, fun= function(x,y){x * (cos(sz) / y)}, forcefun = TRUE, ...)      
+        Lh_t_func <- function(x,y){x * (cos(sz) / y)}
+        Lh_t <- Lh_t_func(img_t, illu_t)
     }
     if (method == "avgcos") {
         ## Eq 4 in Riano2003
         ## Lambertian assumption
         avgillu <- cellStats(illu, mean)
+        avgillu_t <- t(global(illu_t, "mean"))
         Lh <- overlay(img, illu, fun= function(x,y){ x + x * (avgillu-y) / avgillu}, forcefun = TRUE, ...)  
+        Lh_t_func <- function(x,y){ x + x * (avgillu-y) / avgillu}
+        Lh_t <- Lh_t_func(img_t, illu_t)
     }
     if(method =="minnaert") {
         ## Eq 5 in Riano2003
@@ -253,6 +259,73 @@ topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg
                             select <- assoc == g
                             mod <- lm(y[select] ~ x[select])
                             k <- coefficients(mod)                            
+                        })
+                do.call("rbind", k)
+            })
+    return(list(groups = groups, k = kl))
+}
+.kestimate <- function(img, illu, slope, stratImg = "slope", method = "noStrat", n = 5, minN = 50, sz) {
+
+    stopifnot(method %in% c("stat", "noStrat", "stratEqualBins", "stratQuantiles"))
+    ## Following Lu 2008 sample pre selection
+    set.seed(10)
+    strat <- if(inherits(stratImg, "character")) NULL else {names(stratImg) <- "strat"; stratImg}
+    sr       <- as.data.frame(spatSample(stack(img, illu, slope, strat), size = min(ncell(img), 10000)))
+
+    if(method != "stat") sr  <- sr[sr$slope > 2*pi/180 & sr$illu >= 0,]
+    if(method != "noStrat" & inherits(stratImg, "character")) {
+        sr$strat <- sr[,stratImg]
+        stratImg <- slope
+    }
+
+    if(method %in% c("stat","noStrat")){
+        groups <- 0:1
+        assoc <- rep(1, length(nrow(sr)))
+    } else {
+        .vMessage("Begin strafification")
+        if(method == "stratQuantiles") {
+            ## Quantile method
+            groups <- quantile(stratImg, probs = 0:n/n)
+        }
+        if(method == "stratEqualBins") {
+            ## Equal method
+            mi <- min(values(stratImg))
+            ma <- max(values(stratImg))
+            groups <- seq(mi, ma, by = (ma - mi)/n)
+        }
+        assoc  <- cut(sr$strat, breaks = groups, labels = FALSE, include.lowest = TRUE)
+        gMax   <- tail(groups, 1)
+        gMin   <- groups[1]
+        tab    <- tabulate(assoc, nbins = (length(groups)-1))
+        tooFew <- which(tab < minN) + 1
+        while(length(tooFew)){
+            tooFew[tooFew == 1] <- 2
+            tooFew[tooFew == length(groups)] <- length(groups) -1
+            groups <- groups[-tooFew]
+            groups <- unique(c(gMin, groups, gMax))
+            assoc  <- cut(sr$strat, breaks = groups, labels = FALSE, include.lowest = TRUE)
+            tab    <- tabulate(assoc, nbins = (length(groups)-1))
+            tooFew <- which(tab < minN) + 1
+        }
+    }
+    .vMessage("Estimate coefficients")
+    x     <- if(method == "stat") sr$illu else log(sr$illu/cos(sz))
+    kl <- lapply(1:nlyr(img), function(i){
+                if(method == "stat") {
+                    y <- sr[,i]
+                } else {
+                    stz <- sr[,i] < 0
+                    if(any(stz)) {
+                        warning("Resetting negative reflectances to zero!", call.=FALSE)
+                        sr[stz,i] <- 1e-32
+                    }
+                    sr[sr[,i] == 0,i] <- 1e-32
+                    y <- log(sr[,i])
+                }
+                k <- lapply(1:(length(groups)-1), function(g){
+                            select <- assoc == g
+                            mod <- lm(y[select] ~ x[select])
+                            k <- coefficients(mod)
                         })
                 do.call("rbind", k)
             })
