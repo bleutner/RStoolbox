@@ -1,4 +1,4 @@
-de#' Topographic Illumination Correction
+#' Topographic Illumination Correction
 #' 
 #' account and correct for changes in illumination due to terrain elevation.
 #' 
@@ -120,18 +120,45 @@ topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg
         ## Non-lambertian if 0 <= k < 1   
         stratMethod <- if(is.null(stratImg)) {stratImg <- "slope"; "noStrat"} else "stratEqualBins"
         ks <- .kestimate(img, illu, slope, method = stratMethod, stratImg = stratImg, n = nStrat, sz=sz)
-        
+        ks_t <- .kestimate_t(img_t, illu_t, slope_t, method = stratMethod, stratImg = stratImg, n = nStrat, sz=sz)
+
         ks$k <- lapply(ks$k, function(x){
-                    x[x[,2] < 0, 2] <- 0
-                    x[x[,2] > 1, 2] <- 1
-                    x
-                })
-        Lh <- lapply(1:nlayers(img), function(layer){ overlay(stack(img[[layer]], illu, slope), fun = function(img, illu, strat, groups = ks$groups, k = ks$k) {
-                                sc <- cut(strat, breaks = groups, labels = FALSE)
-                                k <- k[[layer]][sc,2]       
-                                Lh <- img * c(cos(sz)/ illu)^k 
-                            })
-                })
+            x[x[,2] < 0, 2] <- 0
+            x[x[,2] > 1, 2] <- 1
+            x
+        })
+        ks_t$k <- lapply(ks_t$k, function(x){
+            x[x[,2] < 0, 2] <- 0
+            x[x[,2] > 1, 2] <- 1
+            x
+        })
+
+        Lh <- lapply(1:nlayers(img), function(i){
+            overlay(stack(img[[i]], illu, slope), fun = function(img, illu, strat, groups = ks$groups, k = ks$k) {
+                sc <- base::cut(strat, breaks = groups, labels = FALSE)
+                k <- k[[i]][sc,2]
+                return(img * cos(sz)/ illu^k)
+            })
+        })
+
+        suppressWarnings({
+            Lh_t <- lapply(1:nlyr(img_t), function(i){
+                Lh_t_func <- function(img, illu, strat, groups = ks_t$groups, k = ks_t$k) {
+                    sc <- base::cut(as.numeric(values(strat)), breaks = groups, labels = FALSE)
+                    k <- k[[i]][sc,2]
+                    return(as.numeric(values(img)) * cos(sz)/ as.numeric(values(illu))^k)
+                }
+                Lh_t_vals <- Lh_t_func(img_t[[i]], illu_t, slope_t)
+                Lh_t_img <- img_t[[i]]
+                values(Lh_t_img) <- Lh_t_vals
+                return(Lh_t_img)
+            })
+        })
+
+        print(Lh_t)
+
+        stop()
+
         Lh <- stack(Lh)  
         ellip <- list(...)
         if ('filename' %in% names(ellip) && !is.null(ellip[["filename"]])) {
@@ -192,19 +219,16 @@ topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg
         
 }
 
-
-
 #' Parameter estimation
 #' @noRd 
 #' @keywords internal
 .kestimate <- function(img, illu, slope, stratImg = "slope", method = "noStrat", n = 5, minN = 50, sz) {
-    
     stopifnot(method %in% c("stat", "noStrat", "stratEqualBins", "stratQuantiles"))
     ## Following Lu 2008 sample pre selection
     set.seed(10)
     strat <- if(inherits(stratImg, "character")) NULL else {names(stratImg) <- "strat"; stratImg} 
     sr       <- as.data.frame(sampleRandom(stack(img, illu, slope, strat), size = min(ncell(img), 10000)))
-    
+
     if(method != "stat") sr  <- sr[sr$slope > 2*pi/180 & sr$illu >= 0,]
     if(method != "noStrat" & inherits(stratImg, "character")) {
         sr$strat <- sr[,stratImg]
@@ -248,6 +272,7 @@ topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg
                     y <- sr[,i] 
                 } else {
                     stz <- sr[,i] < 0
+
                     if(any(stz)) {
                         warning("Resetting negative reflectances to zero!", call.=FALSE)
                         sr[stz,i] <- 1e-32
@@ -264,13 +289,13 @@ topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg
             })
     return(list(groups = groups, k = kl))
 }
-.kestimate <- function(img, illu, slope, stratImg = "slope", method = "noStrat", n = 5, minN = 50, sz) {
-
-    stopifnot(method %in% c("stat", "noStrat", "stratEqualBins", "stratQuantiles"))
+.kestimate_t <- function(img, illu, slope, stratImg = "slope", method = "noStrat", n = 5, minN = 50, sz) {
+    suppressWarnings({
+        stopifnot(method %in% c("stat", "noStrat", "stratEqualBins", "stratQuantiles"))
     ## Following Lu 2008 sample pre selection
     set.seed(10)
     strat <- if(inherits(stratImg, "character")) NULL else {names(stratImg) <- "strat"; stratImg}
-    sr       <- as.data.frame(spatSample(stack(img, illu, slope, strat), size = min(ncell(img), 10000)))
+    sr       <- as.data.frame(spatSample(c(img, illu, slope, strat), size = min(ncell(img), 10000), na.rm=TRUE))
 
     if(method != "stat") sr  <- sr[sr$slope > 2*pi/180 & sr$illu >= 0,]
     if(method != "noStrat" & inherits(stratImg, "character")) {
@@ -315,6 +340,7 @@ topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg
                     y <- sr[,i]
                 } else {
                     stz <- sr[,i] < 0
+
                     if(any(stz)) {
                         warning("Resetting negative reflectances to zero!", call.=FALSE)
                         sr[stz,i] <- 1e-32
@@ -329,7 +355,8 @@ topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg
                         })
                 do.call("rbind", k)
             })
-    return(list(groups = groups, k = kl))
+        return(list(groups = groups, k = kl))
+    })
 }
 
 test <- function(){
@@ -340,5 +367,5 @@ test <- function(){
     lsat     <- stackMeta(metaData)
     data(srtm)
 
-    topCor(lsat, dem = srtm, metaData = metaData, method = "cos")
+    topCor(lsat, dem = srtm, metaData = metaData, method = "minnaert")
 }
