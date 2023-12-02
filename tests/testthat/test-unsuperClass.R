@@ -1,5 +1,5 @@
 context("unsuperClass")
-library(raster)
+library(terra)
 library(terra)
 
 

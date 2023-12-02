@@ -1,5 +1,5 @@
 context("ggplot: ggR, ggRGB & fortify")
-library(raster)
+library(terra)
 data(rlogo)
 data(lsat)
 
@@ -39,7 +39,7 @@ for(lib in c("raster", "terra")) {
   })
   
   test_that("ggR works with single valued rasters", {
-    r <- raster(vals = 1, ncol = 2, nrow = 1)[[c(1,1,1)]]
+    r <- rast(vals = 1, ncol = 2, nrow = 1)[[c(1,1,1)]]
     suppressWarnings(r[[1]][]<- NA)
     r[[2]][]<- 17
     r[[3]][]<- c(NA,2)
