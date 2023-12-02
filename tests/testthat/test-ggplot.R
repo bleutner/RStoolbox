@@ -44,8 +44,12 @@ for(lib in c("raster", "terra")) {
     r[[2]][]<- 17
     r[[3]][]<- c(NA,2)
     
-    for(i in 1:3) expect_is(ggR(r,i), c("gg", "ggplot2"))
-    for(i in 1:3) expect_is(ggR(r,i,geom_raster = TRUE), c("gg", "ggplot2"))
+    for(i in 1:3) {
+      expect_is(ggR(r,i), c("gg", "ggplot2"))
+    }
+    for(i in 1:3) {
+      expect_is(ggR(r,i,geom_raster = TRUE), c("gg", "ggplot2"))
+    }
     
     ## All NAs
     expect_equal(sum(is.na(ggR(r,1, ggObj = FALSE)[,c("value", "fill")])), 4)  ## all na

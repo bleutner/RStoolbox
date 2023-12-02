@@ -98,10 +98,15 @@
 #'    scale_fill_gradientn(colours = terrain.colors(100), name = "elevation")
 ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0, stretch = "none", quantiles = c(0.02,0.98), ext = NULL,
                 coord_equal = TRUE, ggLayer=FALSE, ggObj = TRUE, geom_raster = FALSE, forceCat = FALSE) {
-  
+
+  img <- .toRaster(img)
+  img_t <- .toTerra(img)
+
   layer <- unlist(.numBand(img, layer))
-  
+  layer_t <- unlist(.numBand(img_t, layer))
+
   multLayers <- if (length(layer)>1) TRUE else FALSE
+  multLayers_t <- if (length(layer_t)>1) TRUE else FALSE
   if(multLayers & !geom_raster & ggObj) {
     warning("You asked for multiple layers but geom_raster is FALSE.",
             "\ngeom_raster will be reset to TRUE", 
@@ -110,15 +115,29 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0
             call. = FALSE)
     geom_raster <- TRUE
   }
-  annotation <- !geom_raster
-  
-  if(inherits(img, "Raster")) {
-      xfort <- sampleRegular(img[[layer]], maxpixels, ext = .toRaster(ext), asRaster = TRUE)
-      ex <- as.vector(extent(xfort))
-  } else {
-      xfort <- spatSample(img[[layer]], maxpixels, ext = .toTerra(ext), method = "regular", as.raster = TRUE)
-      ex <- as.vector(ext(xfort))
+  if(multLayers_t & !geom_raster & ggObj) {
+    warning("You asked for multiple layers but geom_raster is FALSE.",
+            "\ngeom_raster will be reset to TRUE",
+            "\nHint: in case you're looking for a grayscale and facetted plot, use:",
+            "\nggR(img, ..., geom_raster=TRUE)+scale_fill_gradientn(colors = grey.colors(100))",
+            call. = FALSE)
+    geom_raster <- TRUE
   }
+  annotation <- !geom_raster
+
+  ex <- extent(img)
+  ex_t <- ext(img_t)
+
+  xfort <- sampleRegular(img[[layer]], maxpixels, ext = ex, asRaster = TRUE)
+  ex <- as.vector(extent(xfort))
+
+  xfort_t <- spatSample(img_t[[layer]], maxpixels, ext = ex_t, method = "regular", as.raster = TRUE)
+  ex_t <- as.vector(ext(xfort_t))
+
+  print(xfort)
+  print(xfort_t)
+
+  stop()
   
   dimImg <- dim(xfort)
   df <- lapply(names(xfort), function(layer) {
@@ -197,4 +216,17 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0
     return(df)
   }
   
+}
+
+
+test <- function(){
+  devtools::load_all()
+
+  i <- 2
+  r <- rast(vals = 1, ncol = 2, nrow = 1)[[c(1,1,1)]]
+  suppressWarnings(r[[1]][]<- NA)
+  r[[2]][]<- 17
+  r[[3]][]<- c(NA,2)
+
+  ggR(r, i)
 }
