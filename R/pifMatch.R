@@ -2,8 +2,8 @@
 #' 
 #' Match one scene to another based on linear regression of pseudo-invariant features (PIF).
 #' 
-#' @param img RasterStack or RasterBrick. Image to be adjusted.
-#' @param ref RasterStack or RasterBrick. Reference image.
+#' @param img RasterStack or RasterBrick or SpatRaster. Image to be adjusted.
+#' @param ref RasterStack or RasterBrick or SpatRaster. Reference image.
 #' @param method Method to calculate pixel similarity. Options: euclidean distance ('ed'), spectral angle ('sam') or pearson correlation coefficient ('cor').
 #' @param quantile Numeric. Threshold quantile used to identify PIFs
 #' @param returnPifMap Logical. Return a binary raster map ot pixels which were identified as pesudo-invariant features.
@@ -30,7 +30,7 @@
 #' }
 #' @export 
 #' @examples 
-#' library(raster)
+#' library(terra)
 #' 
 #' ## Import Landsat example data
 #' data(lsat)

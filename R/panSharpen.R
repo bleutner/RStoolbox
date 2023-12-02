@@ -3,8 +3,8 @@
 #' provides different methods for pan sharpening a coarse resolution (typically multispectral) image with 
 #' a higher reolution panchromatic image. Values of the pan-chromatic and multispectral images must be of the same scale, (e.g. from 0:1, or all DNs from 0:255)
 #' 
-#' @param img terra SpatRaster. Coarse resolution multispectral image
-#' @param pan SpatRaster. High resolution image, typically panchromatic.
+#' @param img RasterLayer or SpatRaster. Coarse resolution multispectral image
+#' @param pan RasterLayer or SpatRaster. High resolution image, typically panchromatic.
 #' @param method Character. Choose method from c("pca", "ihs", "brovey").
 #' @param r Character or Integer. Red band in \code{img}. Only relevant if \code{method!='pca'}
 #' @param g Character or Integer. Green band in \code{img}. Only relevant if \code{method!='pca'}
@@ -18,6 +18,7 @@
 #'  \item{\code{method='ihs'}: Performs a color space transform to Intensity-Hue-Saturation space, swaps intensity for the histogram matched pan and does the backwards transformation.}
 #'     \item{\code{method='brovey'}: Performs Brovey reweighting. Pan and img must be at the same value scale (e.g. 0:1, or 0:255) otherwise you'll end up with psychodelic colors.}
 #' }
+#' @returns pan-sharpened SpatRaster
 #' @export
 #' @examples 
 #' library(terra)

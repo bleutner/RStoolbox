@@ -10,7 +10,7 @@
 #' @param returnTerra Logical. If \code{TRUE} returns an object of class terra::SpatRaster. If \code{FALSE} returns a raster::RasterStack object (default). 
 #' This argument was introduced to maintain backward compatibility and will be switched to TRUE in an upcoming release. Please base all new code on terra. 
 #' @return 
-#' Returns one single RasterStack comprising all requested bands. 
+#' Returns one single SpatRaster comprising all requested bands.
 #' If \code{allResolutions = TRUE} *and* there are different resolution layers (e.g. a 15m panchromatic band along wit 30m imagery) a list of RasterStacks will be returned.
 #' @note 
 #' Be aware that by default stackMeta() does NOT import panchromatic bands nor thermal bands with resolutions != 30m. Use the allResolutions argument to import all layers.

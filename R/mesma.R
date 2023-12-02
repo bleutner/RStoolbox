@@ -2,7 +2,7 @@
 #' 
 #' \code{mesma} performs a multiple endmember spectral mixture analysis on a multiband raster image.
 #' 
-#' @param img RasterBrick or RasterStack. Remote sensing imagery (usually hyperspectral).
+#' @param img RasterLayer or RasterBrick or SpatRaster. Remote sensing imagery (usually hyperspectral).
 #' @param em Matrix or data.frame with spectral endmembers. Rows represent a single endmember of a class, columns represent the spectral bands (i.e. columns correspond to number of bands in \code{img}). Number of rows needs to be > 1.
 #' @param method Character. Select an unmixing method. Currently, only "NNLS" is implemented. Default is "NNLS".
 #' \itemize{
@@ -13,7 +13,7 @@
 #' @param verbose Logical. Prints progress messages during execution.
 #' @param ... further arguments passed to \link[raster]{writeRaster}.
 #' 
-#' @return RasterBrick. The object will contain one band per endmember, with each value representing the estimated presence probability of the endmember per pixel (0 to 1), and an RMSE band.
+#' @return SpatRaster. The object will contain one band per endmember, with each value representing the estimated presence probability of the endmember per pixel (0 to 1), and an RMSE band.
 #' 
 #' @note Depending on \code{iterate} and \code{tolerance} settings, the sum of estimated presence probabilites per pixel varies around 1.
 #' 
@@ -23,7 +23,7 @@
 #' @examples
 #' 
 #' #load packages
-#' library(raster)
+#' library(terra)
 #' library(RStoolbox)
 #' 
 #' #load an example dataset

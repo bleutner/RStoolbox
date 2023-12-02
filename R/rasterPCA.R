@@ -14,14 +14,14 @@
 #' Standardised PCA (SPCA) can be useful if imagery or bands of different dynamic ranges are combined. SPC uses the correlation matrix instead of the covariance matrix, which
 #' has the same effect as using normalised bands of unit variance. 
 #' 
-#' @param img terra SpatRaster.
+#' @param img RasterLayer or SpatRaster.
 #' @param nSamples Integer or NULL. Number of pixels to sample for PCA fitting. If NULL, all pixels will be used.
 #' @param nComp Integer. Number of PCA components to return.
 #' @param spca Logical. If \code{TRUE}, perform standardized PCA. Corresponds to centered and scaled input image. This is usually beneficial for equal weighting of all layers. (\code{FALSE} by default)
 #' @param maskCheck Logical. Masks all pixels which have at least one NA (default TRUE is reccomended but introduces a slow-down, see Details when it is wise to disable maskCheck). 
 #' Takes effect only if nSamples is NULL.
 #' @param ... further arguments to be passed to \link[raster]{writeRaster}, e.g. filename.
-#' @return Returns a named list containing the PCA model object ($model) and the RasterBrick with the principal component layers ($object).
+#' @return Returns a named list containing the PCA model object ($model) and a SpatRaster with the principal component layers ($object).
 #' @export 
 #' @examples 
 #' library(ggplot2)

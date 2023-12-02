@@ -2,13 +2,13 @@
 #' 
 #' Splits a categorical raster layer (or a vector) into a multilayer raster (or matrix).
 #' 
-#' @param img RasterLayer, SpatRaster or integer/numeric vector containing multiple classes
+#' @param img RasterLayer or SpatRaster or integer/numeric vector containing multiple classes
 #' @param classes integer: vector of classes which should be extracted
 #' @param background integer: background value (default = 0)
 #' @param foreground integer: foreground value (default = 1)
 #' @param na.rm logical: if \code{TRUE}, \code{NA}s will be coerced to the \code{background} value.
 #' @param ... further arguments passed to \link[terra]{writeRaster}. Ignored if img is not a RasterLayer, but a numeric/integer vector
-#' @return A RasterBrick with as many layers as there are classes. 
+#' @return A SpatRaster with as many layers as there are classes.
 #' Pixels matching the class of interest are set to 1, backround values by default are set to 0 (see background argument)
 #' @export 
 #' @examples 

@@ -14,7 +14,7 @@ validateMap(
 )
 }
 \arguments{
-\item{map}{RasterLayer. The classified map.}
+\item{map}{RasterLayer or SpatRaster. The classified map.}
 
 \item{valData}{sf or sp object with validation data (POLYGONs or POINTs).}
 
@@ -32,7 +32,7 @@ validate a map from a classification or regression model. This can be useful to 
 \examples{
 \dontrun{
 library(caret)
-library(raster)
+library(terra)
 
 ## Training data
 data(lsat)

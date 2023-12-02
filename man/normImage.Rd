@@ -7,20 +7,20 @@
 normImage(img, norm = TRUE, ...)
 }
 \arguments{
-\item{img}{Raster* object. Image to transform. Transformation will be performed separately for each layer.}
+\item{img}{Raster* object or SpatRaster. Image to transform. Transformation will be performed separately for each layer.}
 
 \item{norm}{Logical. Perform normalization (scaling) in addition to centering, i.e. divide by standard deviation.}
 
 \item{...}{further arguments passed to \link[terra]{writeRaster}.}
 }
 \value{
-Returns a Raster* with the same number layers as input layers with each layer being centered and optionally normalized.
+Returns a SpatRaster with the same number layers as input layers with each layer being centered and optionally normalized.
 }
 \description{
 For each pixel subtracts the mean of the raster layer and optionally divide by its standard deviation.
 }
 \examples{
-library(raster)
+library(terra)
 ## Load example data
 data(rlogo)
 

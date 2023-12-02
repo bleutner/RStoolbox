@@ -15,9 +15,9 @@ pifMatch(
 )
 }
 \arguments{
-\item{img}{RasterStack or RasterBrick. Image to be adjusted.}
+\item{img}{RasterStack or RasterBrick or SpatRaster. Image to be adjusted.}
 
-\item{ref}{RasterStack or RasterBrick. Reference image.}
+\item{ref}{RasterStack or RasterBrick or SpatRaster. Reference image.}
 
 \item{method}{Method to calculate pixel similarity. Options: euclidean distance ('ed'), spectral angle ('sam') or pearson correlation coefficient ('cor').}
 
@@ -54,7 +54,7 @@ The threshold is defined as a similarity quantile. Setting \code{quantile=0.95} 
 Model fitting is performed with simple linear models (\code{\link[stats]{lm}}); fitting one model per layer.
 }
 \examples{
-library(raster)
+library(terra)
 
 ## Import Landsat example data
 data(lsat)

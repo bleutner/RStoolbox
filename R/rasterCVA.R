@@ -3,8 +3,8 @@
 #' Calculates angle and magnitude of change vectors. 
 #' Dimensionality is limited to two bands per image. 
 #' 
-#' @param x RasterBrick or RasterStack with two layers. This will be the reference/origin for the change calculations. Both rasters (y and y) need to correspond to each other, i.e. same resolution, extent and origin.
-#' @param y RasterBrick or RasterStack with two layers. Both rasters (y and y) need to correspond to each other, i.e. same resolution, extent and origin.
+#' @param x RasterBrick or RasterStack or SpatRaster with two layers. This will be the reference/origin for the change calculations. Both rasters (y and y) need to correspond to each other, i.e. same resolution, extent and origin.
+#' @param y RasterBrick or RasterStack or SpatRaster with two layers. Both rasters (y and y) need to correspond to each other, i.e. same resolution, extent and origin.
 #' @param tmf Numeric. Threshold median factor (optional). Used to calculate a threshold magnitude for which pixels are considered stable, i.e. no change. Calculated as \code{tmf * mean(magnitude[magnitude > 0])}.
 #' @param nct Numeric. No-change threshold (optional). Alternative to \code{tmf}. Sets an absolute threshold. Change magnitudes below \code{nct} are considered stable and set to NA.
 #' @param ... further arguments passed to writeRaster
@@ -18,10 +18,10 @@
 #' 
 #'
 #' @return 
-#' Returns a RasterBrick with two layers: change vector angle and change vector magnitude
+#' Returns a SpatRaster with two layers: change vector angle and change vector magnitude
 #' @export 
 #' @examples 
-#' library(raster)
+#' library(terra)
 #' ## Create example data
 #' data(lsat)
 #' pca <- rasterPCA(lsat)$map

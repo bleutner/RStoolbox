@@ -27,7 +27,7 @@ superClass(
 )
 }
 \arguments{
-\item{img}{terra::SpatRast or raster::Raster* object. Typically remote sensing imagery, which is to be classified.}
+\item{img}{Raster* object or SpatRaster. Typically remote sensing imagery, which is to be classified.}
 
 \item{trainData}{sf or sp spatial vector data containing the training locations (POINTs,or POLYGONs).}
 
@@ -116,7 +116,7 @@ otherwise it will be performed on a per-pixel basis.
 library(caret)
 library(randomForest)
 library(e1071)
-library(raster)
+library(terra)
 data(rlogo)
 train <- readRDS(system.file("external/trainingPoints.rds", package="RStoolbox"))
 

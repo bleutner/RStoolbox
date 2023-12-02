@@ -7,9 +7,9 @@
 rescaleImage(x, y, xmin, xmax, ymin, ymax, forceMinMax = FALSE, ...)
 }
 \arguments{
-\item{x}{SpatRaster or Raster* object or numeric vector. Image to normalise.}
+\item{x}{Raster* object or SpatRaster or numeric vector. Image to normalise.}
 
-\item{y}{SpatRaster or Raster* object or numeric vector. Reference image. Optional. Used to extract min and max values if ymin or ymax are missing.}
+\item{y}{Raster* object or SpatRaster or numeric vector. Reference image. Optional. Used to extract min and max values if ymin or ymax are missing.}
 
 \item{xmin}{Numeric. Min value of x. Either a single value or one value per layer in x. If xmin is not provided it will be extracted from x.}
 
@@ -24,7 +24,7 @@ rescaleImage(x, y, xmin, xmax, ymin, ymax, forceMinMax = FALSE, ...)
 \item{...}{additional arguments passed to \code{\link[terra:writeRaster]{terra::writeRaster()}}}
 }
 \value{
-Returns a SpatRaster object of the same dimensions as the input raster \code{x} but shifted and stretched to the new limits.
+Returns a SpatRaster of the same dimensions as the input raster \code{x} but shifted and stretched to the new limits.
 }
 \description{
 performs linear shifts of value ranges either to match min/max of another image (\code{y})

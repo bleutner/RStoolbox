@@ -2,7 +2,7 @@
 #' 
 #' Unsupervised clustering of Raster* data using kmeans clustering
 #' 
-#' @param img Raster* object. 
+#' @param img Raster* object or SpatRaster.
 #' @param nSamples Integer. Number of random samples to draw to fit cluster map. Only relevant if clusterMap = TRUE.
 #' @param nClasses Integer. Number of classes.
 #' @param nStarts  Integer. Number of random starts for kmeans algorithm.
@@ -23,8 +23,8 @@
 #' The \code{nStarts} argument allows to specify how many random starts are conducted.   
 #' @return 
 #' Returns an RStoolbox::unsuperClass object, which is a list containing the kmeans model ($model) and the raster map ($map).
-#' For output = "classes", $map contains a RasterLayer with discrete classes (kmeans clusters); for output = "distances" $map contains 
-#' a RasterBrick, with `nClasses` layers, where each layer maps the euclidean distance to the corresponding class centroid.
+#' For output = "classes", $map contains a SpatRaster with discrete classes (kmeans clusters); for output = "distances" $map contains
+#' a SpatRaster, with `nClasses` layers, where each layer maps the euclidean distance to the corresponding class centroid.
 #'
 #' @export
 #' @examples 

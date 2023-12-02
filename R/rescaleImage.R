@@ -8,8 +8,8 @@
 #' By providing `xmin = -1` and `xmax = 1` the values can be rescaled to any other range,
 #' e.g. 1 to 100 while comparability to other rescaled NDVI scenes is retained. 
 #' 
-#' @param x SpatRaster or Raster* object or numeric vector. Image to normalise.
-#' @param y SpatRaster or Raster* object or numeric vector. Reference image. Optional. Used to extract min and max values if ymin or ymax are missing. 
+#' @param x Raster* object or SpatRaster or numeric vector. Image to normalise.
+#' @param y Raster* object or SpatRaster or numeric vector. Reference image. Optional. Used to extract min and max values if ymin or ymax are missing.
 #' @param xmin Numeric. Min value of x. Either a single value or one value per layer in x. If xmin is not provided it will be extracted from x.
 #' @param xmax Numeric. Max value of x. Either a single value or one value per layer in x. If xmax is not provided it will be extracted from x.
 #' @param ymin Numeric. Min value of y. Either a single value or one value per layer in x. If ymin is not provided it will be extracted from y.
@@ -17,7 +17,7 @@
 #' @param forceMinMax Logical. Forces update of min and max data slots in x or y.
 #' @param ... additional arguments passed to [terra::writeRaster()] 
 #' @return 
-#' Returns a SpatRaster object of the same dimensions as the input raster \code{x} but shifted and stretched to the new limits.
+#' Returns a SpatRaster of the same dimensions as the input raster \code{x} but shifted and stretched to the new limits.
 #' @seealso [histMatch][histMatch()]
 #' @export
 #' @md

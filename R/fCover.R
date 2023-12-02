@@ -3,8 +3,8 @@
 #' fCover takes a classified high resolution image, e.g. vegetation and non-vegetation based on Landsat and calculates cover fractions for
 #' pixels of a coarser resolution, e.g. MODIS.
 #' 
-#' @param classImage high resolution RasterLayer containing a landcover classification, e.g. as obtained by \link{superClass}.
-#' @param predImage coarse resolution RasterLayer for which fractional cover will be estimated.
+#' @param classImage high resolution RasterLayer or SpatRaster containing a landcover classification, e.g. as obtained by \link{superClass}.
+#' @param predImage coarse resolution RasterLayer or SpatRaster for which fractional cover will be estimated.
 #' @param nSamples Integer. Number of pixels to sample from predImage to train the regression model
 #' @param classes Integer. Classes for which fractional cover should be estimated (one or more). 
 #' @param model Character. Which model to fit for image regression. See \link[caret]{train} for options. Defaults to randomForest ('rf')
@@ -46,7 +46,7 @@
 #' 
 #' @return 
 #' Returns a list with two elements: models contains the fitted models evaluated in tenfold cross-validation (caret train objects); 
-#' fCover contains a RasterStack with a fractional cover layer for each requested class.
+#' fCover contains a SpatRaster with a fractional cover layer for each requested class.
 #' @export 
 #' @seealso \link{superClass}
 #' @examples

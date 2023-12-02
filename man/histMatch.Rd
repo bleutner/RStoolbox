@@ -18,13 +18,13 @@ histMatch(
 )
 }
 \arguments{
-\item{x}{Raster*. Source raster which is to be modified.}
+\item{x}{RasterLayer or SpatRaster. Source raster which is to be modified.}
 
-\item{ref}{Raster*. Reference raster, to which x will be matched.}
+\item{ref}{RasterLayer or SpatRaster. Reference raster, to which x will be matched.}
 
-\item{xmask}{RasterLayer. Mask layer for \code{x} to exclude pixels which might distort the histogram, i.e. are not present in \code{ref}. Any NA pixel in \code{xmask} will be ignored (\code{maskvalue = NA}).}
+\item{xmask}{RasterLayer or SpatRaster. Mask layer for \code{x} to exclude pixels which might distort the histogram, i.e. are not present in \code{ref}. Any NA pixel in \code{xmask} will be ignored (\code{maskvalue = NA}).}
 
-\item{refmask}{RasterLayer. Mask layer for \code{ref}. Any NA pixel in \code{refmask} will be ignored (\code{maskvalue = NA}).}
+\item{refmask}{RasterLayer or SpatRaster. Mask layer for \code{ref}. Any NA pixel in \code{refmask} will be ignored (\code{maskvalue = NA}).}
 
 \item{nSamples}{Integer. Number of random samples from each image to build the histograms.}
 
@@ -39,7 +39,7 @@ histMatch(
 \item{...}{Further arguments to be passed to \link[raster]{writeRaster}.}
 }
 \value{
-A Raster* object of \code{x} adjusted to the histogram of \code{ref}. If \code{returnFunctions  = TRUE} a list of functions (one for each layer) will be returned instead.
+A SpatRaster of \code{x} adjusted to the histogram of \code{ref}. If \code{returnFunctions  = TRUE} a list of functions (one for each layer) will be returned instead.
 }
 \description{
 Performs image to image contrast adjustments based on histogram matching using empirical cumulative
@@ -50,7 +50,7 @@ Performs image to image contrast adjustments based on histogram matching using e
 }
 \examples{
 library(ggplot2)
-library(raster)
+library(terra)
 data(rlogo)
 ## Original image a (+1 to prevent log(0))
 img_a <-  rlogo + 1 

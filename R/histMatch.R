@@ -3,10 +3,10 @@
 #' Performs image to image contrast adjustments based on histogram matching using empirical cumulative
 #'  distribution functions from both images.
 #' 
-#' @param x terra SpatRaster. Source raster which is to be modified.
-#' @param ref terra SpatRaster. Reference raster, to which x will be matched.
-#' @param xmask RasterLayer. Mask layer for \code{x} to exclude pixels which might distort the histogram, i.e. are not present in \code{ref}. Any NA pixel in \code{xmask} will be ignored (\code{maskvalue = NA}). 
-#' @param refmask RasterLayer. Mask layer for \code{ref}. Any NA pixel in \code{refmask} will be ignored (\code{maskvalue = NA}). 
+#' @param x RasterLayer or SpatRaster. Source raster which is to be modified.
+#' @param ref RasterLayer or SpatRaster. Reference raster, to which x will be matched.
+#' @param xmask RasterLayer or SpatRaster. Mask layer for \code{x} to exclude pixels which might distort the histogram, i.e. are not present in \code{ref}. Any NA pixel in \code{xmask} will be ignored (\code{maskvalue = NA}).
+#' @param refmask RasterLayer or SpatRaster. Mask layer for \code{ref}. Any NA pixel in \code{refmask} will be ignored (\code{maskvalue = NA}).
 #' @param nSamples Integer. Number of random samples from each image to build the histograms.
 #' @param intersectOnly Logical. If \code{TRUE} sampling will only take place in the overlap extent of the two rasters. Otherwise the full rasters will be used for sampling.
 #' @param paired Logical. If \code{TRUE} the corresponding pixels will be used in the overlap.
@@ -14,12 +14,12 @@
 #' @param ... Further arguments to be passed to \link[raster]{writeRaster}.
 #' @param forceInteger Logical. Force integer output.
 #' @note \code{x} and \code{ref} must have the same number of layers.
-#' @return A Raster* object of \code{x} adjusted to the histogram of \code{ref}. If \code{returnFunctions  = TRUE} a list of functions (one for each layer) will be returned instead. 
+#' @return A SpatRaster of \code{x} adjusted to the histogram of \code{ref}. If \code{returnFunctions  = TRUE} a list of functions (one for each layer) will be returned instead.
 #' @references Richards and Jia: Remote Sensing Digital Image Analysis. Springer, Berlin, Heidelberg, Germany, 439pp.
 #' @export
 #' @examples 
 #' library(ggplot2)
-#' library(raster)
+#' library(terra)
 #' data(rlogo)
 #' ## Original image a (+1 to prevent log(0))
 #' img_a <-  rlogo + 1 

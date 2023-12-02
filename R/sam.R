@@ -2,7 +2,7 @@
 #' 
 #' Calculates the angle in spectral space between pixels and a set of reference spectra (endmembers) for image classification based on spectral similarity.
 #' 
-#' @param img SpatRaster, RasterBrick or RasterStack. Remote sensing imagery.
+#' @param img RasterBrick or RasterStack or SpatRaster. Remote sensing imagery.
 #' @param em Matrix or data.frame with endmembers. Each row should contain the endmember spectrum of a class, i.e. columns correspond to bands in \code{img}. It is reccomended to set the rownames to class names.
 #' @param angles Logical. If \code{TRUE} a RasterBrick containing each one layer per endmember will be returned containing the spectral angles.
 #' @param ... further arguments to be passed to \code{\link[terra]{writeRaster}}
@@ -14,7 +14,7 @@
 #' @return SpatRaster
 #' If \code{angles = FALSE} a single Layer will be returned in which each pixel is assigned to the closest endmember class (integer pixel values correspond to row order of \code{em}. 
 #' @examples 
-#' library(raster)
+#' library(terra)
 #' library(ggplot2)
 #' ## Load example data-set
 #' data(lsat) 

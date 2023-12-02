@@ -7,7 +7,7 @@
 sam(img, em, angles = FALSE, ...)
 }
 \arguments{
-\item{img}{SpatRaster, RasterBrick or RasterStack. Remote sensing imagery.}
+\item{img}{RasterBrick or RasterStack or SpatRaster. Remote sensing imagery.}
 
 \item{em}{Matrix or data.frame with endmembers. Each row should contain the endmember spectrum of a class, i.e. columns correspond to bands in \code{img}. It is reccomended to set the rownames to class names.}
 
@@ -28,7 +28,7 @@ one raster layer for each endmember containing the spectral angle. The smaller t
 In a second step one can the go ahead an enforce thresholds of maximum angles or simply classify each pixel to the most similar endmember.
 }
 \examples{
-library(raster)
+library(terra)
 library(ggplot2)
 ## Load example data-set
 data(lsat) 

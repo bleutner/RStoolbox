@@ -2,7 +2,7 @@
 #' 
 #' estimates the digital number (DN) pixel value of *dark* objects for the visible wavelength range.
 #' 
-#' @param x terra SpatRaster or a previous result from \code{estimateHaze} with \code{returnTables = TRUE} from which to estimate haze
+#' @param x RasterLayer or SpatRaster or a previous result from \code{estimateHaze} with \code{returnTables = TRUE} from which to estimate haze
 #' @param hazeBands Integer or Character. Band number or bandname from which to estimate atmospheric haze (optional if x contains only one layer)
 #' @param darkProp Numeric. Proportion of pixels estimated to be dark.
 #' @param maxSlope Logical. Use \code{darkProp} only as an upper boundary and search for the DN of maximum slope in the histogram below this value.

@@ -14,7 +14,7 @@ estimateHaze(
 )
 }
 \arguments{
-\item{x}{Raster* object or a previous result from \code{estimateHaze} with \code{returnTables = TRUE} from which to estimate haze}
+\item{x}{RasterLayer or SpatRaster or a previous result from \code{estimateHaze} with \code{returnTables = TRUE} from which to estimate haze}
 
 \item{hazeBands}{Integer or Character. Band number or bandname from which to estimate atmospheric haze (optional if x contains only one layer)}
 
@@ -28,15 +28,15 @@ estimateHaze(
 }
 \value{
 If returnTables is FALSE (default). Then a vector of length(hazeBands) containing the estimated haze DNs will be returned.
-If returnTables is TRUE a list with two components will be returned. The list element 'SHV' contains the haze values, while 'table' 
-contains another list with the sampled frequency tables. The latter can be re-used to try different darkProp thresholds without having to sample 
+If returnTables is TRUE a list with two components will be returned. The list element 'SHV' contains the haze values, while 'table'
+contains another list with the sampled frequency tables. The latter can be re-used to try different darkProp thresholds without having to sample
 the raster again.
 }
 \description{
 estimates the digital number (DN) pixel value of *dark* objects for the visible wavelength range.
 }
 \details{
-It is assumed that any radiation originating from *dark* pixels is due to atmospheric haze and 
+It is assumed that any radiation originating from *dark* pixels is due to atmospheric haze and
 not the reflectance of the surface itself (the surface is dark, i.e. it has a reflectance close to zero).
 Hence, the haze values are estimates of path radiance, which can be subtracted in a dark object subtraction (DOS) procedure (see \code{\link{radCor}})
 
@@ -50,10 +50,10 @@ haze <- estimateHaze(lsat, hazeBands = 1:3, plot = TRUE)
 haze
 
 ## Find threshold interactively
-#### Return the frequency tables for re-use 
+#### Return the frequency tables for re-use
 #### avoids having to sample the Raster again and again
 haze <- estimateHaze(lsat, hazeBands = 1:3, returnTables = TRUE)
-## Use frequency table instead of lsat and fiddle with 
+## Use frequency table instead of lsat and fiddle with
 haze <- estimateHaze(haze, hazeBands = 1:3, darkProp = .1, plot = TRUE)
 haze$SHV
 }

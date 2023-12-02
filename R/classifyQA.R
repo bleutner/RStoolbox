@@ -2,7 +2,7 @@
 #' 
 #' extracts five classes from QA band: background, cloud, cirrus, snow and water.
 #' 
-#' @param img RasterLayer. Landsat 8 OLI QA band. 
+#' @param img RasterLayer or SpatRaster. Landsat 8 OLI QA band.
 #' @param type Character. Classes which should be returned. One or more of c("background", "cloud", "cirrus","snow", "water").
 #' @param confLayers Logical. Return one layer per class classified by confidence levels, i.e. cloud:low, cloud:med, cloud:high.
 #' @param ... further arguments passed to \link[raster]{writeRaster}
@@ -12,7 +12,7 @@
 #' @details 
 #' By default each class is queried for *high* confidence. See \link{encodeQA} for details. To return the different confidence levels per condition use \code{confLayers=TRUE}.
 #' This approach corresponds to the way LandsatLook Quality Images are produced by the USGS.
-#' @return Returns a RasterLayer with maximal five classes:
+#' @return Returns a SpatRaster with maximal five classes:
 #' \tabular{rr}{
 #' class \tab value \cr
 #' background \tab 1L \cr 
@@ -31,7 +31,7 @@
 #' }
 #' @export 
 #' @examples
-#' library(raster)
+#' library(terra)
 #' qa <- raster(ncol = 100, nrow=100, val = sample(1:2^14,  10000))
 #' 
 #' ## QA classes

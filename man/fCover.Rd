@@ -22,9 +22,9 @@ fCover(
 )
 }
 \arguments{
-\item{classImage}{high resolution RasterLayer containing a landcover classification, e.g. as obtained by \link{superClass}.}
+\item{classImage}{high resolution RasterLayer or SpatRaster containing a landcover classification, e.g. as obtained by \link{superClass}.}
 
-\item{predImage}{coarse resolution RasterLayer for which fractional cover will be estimated.}
+\item{predImage}{coarse resolution RasterLayer or SpatRaster for which fractional cover will be estimated.}
 
 \item{nSamples}{Integer. Number of pixels to sample from predImage to train the regression model}
 
@@ -52,7 +52,7 @@ fCover(
 }
 \value{
 Returns a list with two elements: models contains the fitted models evaluated in tenfold cross-validation (caret train objects); 
-fCover contains a RasterStack with a fractional cover layer for each requested class.
+fCover contains a SpatRaster with a fractional cover layer for each requested class.
 }
 \description{
 fCover takes a classified high resolution image, e.g. vegetation and non-vegetation based on Landsat and calculates cover fractions for

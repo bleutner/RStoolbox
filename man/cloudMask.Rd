@@ -6,7 +6,7 @@
 \usage{
 cloudMask(
   x,
-  threshold = 0.8,
+  threshold = 0.2,
   blue = "B1_sre",
   tir = "B6_sre",
   buffer = NULL,
@@ -15,7 +15,7 @@ cloudMask(
 )
 }
 \arguments{
-\item{x}{RasterBrick or RasterStack with reflectance and brightness temperature OR the mask of a previous run of \code{cloudMask} with \code{returnDiffLayer=TRUE}.}
+\item{x}{RasterBrick or RasterStack or SpatRaster with reflectance and brightness temperature OR the mask of a previous run of \code{cloudMask} with \code{returnDiffLayer=TRUE}.}
 
 \item{threshold}{Numeric. cloud detection threshold. If not provided it will be guessed. Everything *below* this threshold will be considered a cloud pixel (unless it is removed by filtering afterwards).}
 
@@ -30,7 +30,7 @@ cloudMask(
 \item{verbose}{Logical. Print messages or suppress.}
 }
 \value{
-Returns a RasterStack with two layers: CMASK contains the binary cloud mask (1 = cloud, NA = not-cloud) and NDTCI contains the cloud index.
+Returns a SpatRaster with two layers: CMASK contains the binary cloud mask (1 = cloud, NA = not-cloud) and NDTCI contains the cloud index.
 }
 \description{
 Developed for use with Landsat data \code{cloudMask} relies on the distinctive difference between the blue (or any other short-wave band) 

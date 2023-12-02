@@ -17,9 +17,9 @@ topCor(
 )
 }
 \arguments{
-\item{img}{Raster*. Imagery to correct}
+\item{img}{Raster* object or SpatRaster. Imagery to correct}
 
-\item{dem}{Raster*. Either a digital elevation model as a RasterLayer or a RasterStack/Brick with pre-calculated slope and aspect (see \link[raster]{terrain}) in which case the layers must be named 'slope' and 'aspect'. 
+\item{dem}{Raster* object or SpatRaster. Either a digital elevation model as a RasterLayer or a RasterStack/Brick with pre-calculated slope and aspect (see \link[raster]{terrain}) in which case the layers must be named 'slope' and 'aspect'.
 Must have the same dimensions as \code{img}.}
 
 \item{metaData}{Character, ImageMetaData. Either a path to a Landsat meta-data file (MTL) or an ImageMetaData object (see \link{readMeta})}
@@ -28,13 +28,16 @@ Must have the same dimensions as \code{img}.}
 
 \item{method}{Character. One of c("cos", "avgcos", "minnaert", "C", "stat", "illu"). Choosing 'illu' will return only the local illumination map.}
 
-\item{stratImg}{RasterLayer to define strata, e.g. NDVI. Or the string 'slope' in which case stratification will be on \code{nStrat} slope classes. Only relevant if \code{method = 'minnaert'}.}
+\item{stratImg}{RasterLayer or SpatRaster to define strata, e.g. NDVI. Or the string 'slope' in which case stratification will be on \code{nStrat} slope classes. Only relevant if \code{method = 'minnaert'}.}
 
 \item{nStrat}{Integer. Number of bins or quantiles to stratify by. If a bin has less than 50 samples it will be merged with the next bin. Only relevant if \code{method = 'minnaert'}.}
 
-\item{illu}{Raster*. Optional pre-calculated ilumination map. Run topCor with method="illu" to calculate an ilumination map}
+\item{illu}{Raster* object or SpatRaster. Optional pre-calculated ilumination map. Run topCor with method="illu" to calculate an ilumination map}
 
 \item{...}{arguments passed to \code{\link[raster]{writeRaster}}}
+}
+\value{
+SpatRaster
 }
 \description{
 account and correct for changes in illumination due to terrain elevation.

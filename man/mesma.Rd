@@ -7,7 +7,7 @@
 mesma(img, em, method = "NNLS", iterate = 400, tolerance = 1e-08, ..., verbose)
 }
 \arguments{
-\item{img}{RasterBrick or RasterStack. Remote sensing imagery (usually hyperspectral).}
+\item{img}{RasterLayer or RasterBrick or SpatRaster. Remote sensing imagery (usually hyperspectral).}
 
 \item{em}{Matrix or data.frame with spectral endmembers. Rows represent a single endmember of a class, columns represent the spectral bands (i.e. columns correspond to number of bands in \code{img}). Number of rows needs to be > 1.}
 
@@ -25,7 +25,7 @@ mesma(img, em, method = "NNLS", iterate = 400, tolerance = 1e-08, ..., verbose)
 \item{verbose}{Logical. Prints progress messages during execution.}
 }
 \value{
-RasterBrick. The object will contain one band per endmember, with each value representing the estimated presence probability of the endmember per pixel (0 to 1), and an RMSE band.
+SpatRaster. The object will contain one band per endmember, with each value representing the estimated presence probability of the endmember per pixel (0 to 1), and an RMSE band.
 }
 \description{
 \code{mesma} performs a multiple endmember spectral mixture analysis on a multiband raster image.
@@ -36,7 +36,7 @@ Depending on \code{iterate} and \code{tolerance} settings, the sum of estimated 
 \examples{
 
 #load packages
-library(raster)
+library(terra)
 library(RStoolbox)
 
 #load an example dataset

@@ -2,7 +2,7 @@
 #' 
 #' Calculate a suite of multispectral indices such as NDVI, SAVI etc. in an efficient way.
 #' 
-#' @param img Raster* object. Typically remote sensing imagery, which is to be classified.
+#' @param img Raster* object or SpatRaster. Typically remote sensing imagery, which is to be classified.
 #' @param blue Character or integer. Blue band. 
 #' @param green Character or integer. Green band. 
 #' @param red Character or integer. Red band. 
@@ -15,19 +15,19 @@
 #' @param swir3 Character or integer. Short-wave-infrared band (2000-2500nm). 
 #' @param indices Character. One or more spectral indices to calculate (see Details). By default (NULL) all implemented indices given the spectral bands which are provided will be calculated.
 #' @param index Character. Alias for \code{indices}.
-#' @param maskLayer RasterLayer containing a mask, e.g. clouds, for which pixels are set to NA. Alternatively a layername or -number can be provided if the mask is part of \code{img}. 
+#' @param maskLayer RasterLayer or SpatRaster containing a mask, e.g. clouds, for which pixels are set to NA. Alternatively a layername or -number can be provided if the mask is part of \code{img}.
 #' @param maskValue Integer. Pixel value in \code{maskLayer} which should be masked in output, i.e. will be set to \code{NA} in all calculated indices.
 #' @param scaleFactor Numeric. Scale factor for the conversion of scaled reflectances to [0,1] value range (applied as reflectance/scaleFactor) Neccesary for calculating EVI/EVI2 with scaled reflectance values.
 #' @param skipRefCheck Logical. When EVI/EVI2 is to be calculated there is a rough heuristic check, whether the data are inside [0,1]+/-0.5 (after applying a potential \code{scaleFactor}).
 #'  If there are invalid reflectances, e.g. clouds with reflectance > 1 this check will result in a false positive and skip EVI calculation. Use this argument to skip this check in such cases *iff* you are sure the data and scaleFactor are valid. 
 #' @param coefs List of coefficients (see Details).  
 #' @param ... further arguments such as filename etc. passed to \link[terra]{writeRaster}
-#' @return  RasterBrick or a RasterLayer if length(indices) == 1
+#' @return  SpatRaster
 #' @template spectralIndices_table 
 #' @export
 #' @examples
 #' library(ggplot2)
-#' library(raster)
+#' library(terra)
 #' data(lsat)
 #' 
 #' ## Calculate NDVI

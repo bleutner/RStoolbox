@@ -18,7 +18,7 @@ radCor(
 )
 }
 \arguments{
-\item{img}{raster object}
+\item{img}{Raster* object or SpatRaster}
 
 \item{metaData}{object of class ImageMetaData or a path to the meta data (MTL) file.}
 
@@ -42,7 +42,7 @@ Argument only applies to methods 'sdos', 'dos' and 'costz'.}
 \item{verbose}{Logical. Print status information.}
 }
 \value{
-RasterStack with top-of-atmosphere radiance (\eqn{W/(m^2 * srad * \mu m)}), at-satellite brightness temperature (K),
+SpatRaster with top-of-atmosphere radiance (\eqn{W/(m^2 * srad * \mu m)}), at-satellite brightness temperature (K),
 top-of-atmosphere reflectance (unitless) corrected for the sun angle or at-surface reflectance (unitless).
 }
 \description{
@@ -86,7 +86,7 @@ The implemented sun-earth distances neglect the earth's eccentricity. Instead we
 This was originally a fork of randcorr() function in the landsat package. This version works on Raster* objects and hence is suitable for large rasters.
 }
 \examples{
-library(raster)
+library(terra)
 ## Import meta-data and bands based on MTL file
 mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", 
                                 package="RStoolbox")

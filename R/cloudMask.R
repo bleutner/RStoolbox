@@ -4,7 +4,7 @@
 #' and thermal band for semi-automated creation of a cloud mask. Since it relies on thermal information it doesn't work well for sensors without
 #' thermal bands. 
 #' 
-#' @param x RasterBrick or RasterStack with reflectance and brightness temperature OR the mask of a previous run of \code{cloudMask} with \code{returnDiffLayer=TRUE}. 
+#' @param x RasterBrick or RasterStack or SpatRaster with reflectance and brightness temperature OR the mask of a previous run of \code{cloudMask} with \code{returnDiffLayer=TRUE}.
 #' @param threshold Numeric. cloud detection threshold. If not provided it will be guessed. Everything *below* this threshold will be considered a cloud pixel (unless it is removed by filtering afterwards).
 #' @param blue Character or integer. Bandname or number for the blue band
 #' @param tir Character or integer. Bandname or number for the thermal band
@@ -23,7 +23,7 @@
 #' Once your mask detects obvious cloud pixels properly re-enable buffering for fine tuning if desired. Finally, once a suitable threshold is established re-run cloudMask on the whole scene with this threshold and go get a coffee.
 #' @export
 #' @return
-#' Returns a RasterStack with two layers: CMASK contains the binary cloud mask (1 = cloud, NA = not-cloud) and NDTCI contains the cloud index.
+#' Returns a SpatRaster with two layers: CMASK contains the binary cloud mask (1 = cloud, NA = not-cloud) and NDTCI contains the cloud index.
 #' @seealso 
 #' \code{\link{cloudShadowMask}}
 #' @template examples_cloudMask

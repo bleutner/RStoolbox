@@ -7,7 +7,7 @@
 oneHotEncode(img, classes, background = 0, foreground = 1, na.rm = FALSE, ...)
 }
 \arguments{
-\item{img}{RasterLayer, SpatRaster or integer/numeric vector containing multiple classes}
+\item{img}{RasterLayer or SpatRaster or integer/numeric vector containing multiple classes}
 
 \item{classes}{integer: vector of classes which should be extracted}
 
@@ -20,7 +20,7 @@ oneHotEncode(img, classes, background = 0, foreground = 1, na.rm = FALSE, ...)
 \item{...}{further arguments passed to \link[terra]{writeRaster}. Ignored if img is not a RasterLayer, but a numeric/integer vector}
 }
 \value{
-A RasterBrick with as many layers as there are classes. 
+A SpatRaster with as many layers as there are classes.
 Pixels matching the class of interest are set to 1, backround values by default are set to 0 (see background argument)
 }
 \description{

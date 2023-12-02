@@ -9,7 +9,7 @@ stackMeta(
   quantity = "all",
   category = "image",
   allResolutions = FALSE,
-  returnTerra = FALSE
+  returnTerra = TRUE
 )
 }
 \arguments{
@@ -25,7 +25,7 @@ stackMeta(
 This argument was introduced to maintain backward compatibility and will be switched to TRUE in an upcoming release. Please base all new code on terra.}
 }
 \value{
-Returns one single RasterStack comprising all requested bands. 
+Returns one single SpatRaster comprising all requested bands.
 If \code{allResolutions = TRUE} *and* there are different resolution layers (e.g. a 15m panchromatic band along wit 30m imagery) a list of RasterStacks will be returned.
 }
 \description{

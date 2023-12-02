@@ -4,7 +4,7 @@
 #' You can either specify a metadata file, or supply all neccesary values manually. 
 #' With proper parametrization apref and sdos should work for other sensors as well.
 #' 
-#' @param img raster object
+#' @param img Raster* object or SpatRaster
 #' @param metaData object of class ImageMetaData or a path to the meta data (MTL) file. 
 #' @param method Radiometric conversion/correction method to be used. There are currently four methods available (see Details):
 #' "rad", "apref", "sdos", "dos", "costz".
@@ -19,7 +19,7 @@
 #' @param verbose Logical. Print status information. 
 #' @note This was originally a fork of randcorr() function in the landsat package. This version works on Raster* objects and hence is suitable for large rasters.
 #' @return 
-#' RasterStack with top-of-atmosphere radiance (\eqn{W/(m^2 * srad * \mu m)}), at-satellite brightness temperature (K),
+#' SpatRaster with top-of-atmosphere radiance (\eqn{W/(m^2 * srad * \mu m)}), at-satellite brightness temperature (K),
 #' top-of-atmosphere reflectance (unitless) corrected for the sun angle or at-surface reflectance (unitless).
 #' @details 
 #' The atmospheric correction methods (sdos, dos and costz) apply to the optical (solar) region of the spectrum and do not affect the thermal band.
@@ -58,7 +58,7 @@
 #' G. Thuillier et al. (2003)  THE SOLAR SPECTRAL IRRADIANCE FROM 200 TO 2400 nm AS MEASURED BY THE SOLSPEC SPECTROMETER FROM THE ATLAS AND EURECA MISSIONS. Solar Physics 214(1): 1-22 (
 #' @export
 #' @examples 
-#' library(raster)
+#' library(terra)
 #' ## Import meta-data and bands based on MTL file
 #' mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", 
 #'                                 package="RStoolbox")

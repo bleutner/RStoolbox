@@ -78,7 +78,7 @@ map a value to their fill colour. For more details on the theory behind aestetic
 }
 \examples{
 library(ggplot2)
-library(raster)
+library(terra)
 data(rlogo); data(lsat); data(srtm)
 
 ## Simple grey scale annotation

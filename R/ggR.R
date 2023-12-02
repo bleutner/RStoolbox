@@ -42,7 +42,7 @@
 #' @export 
 #' @examples
 #' library(ggplot2)
-#' library(raster)
+#' library(terra)
 #' data(rlogo); data(lsat); data(srtm)
 #' 
 #' ## Simple grey scale annotation

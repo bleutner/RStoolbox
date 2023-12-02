@@ -7,9 +7,9 @@
 panSharpen(img, pan, r, g, b, pc = 1, method = "brovey", norm = TRUE)
 }
 \arguments{
-\item{img}{Raster* object. Coarse resolution multispectral image}
+\item{img}{RasterLayer or SpatRaster. Coarse resolution multispectral image}
 
-\item{pan}{RasterLayer. High resolution image, typically panchromatic.}
+\item{pan}{RasterLayer or SpatRaster. High resolution image, typically panchromatic.}
 
 \item{r}{Character or Integer. Red band in \code{img}. Only relevant if \code{method!='pca'}}
 
@@ -22,6 +22,9 @@ panSharpen(img, pan, r, g, b, pc = 1, method = "brovey", norm = TRUE)
 \item{method}{Character. Choose method from c("pca", "ihs", "brovey").}
 
 \item{norm}{Logical.  Rescale pan image to match the 1st PC component. Only relevant if \code{method = 'pca'}. If \code{TRUE} only min and max are matched to the 1st PC. If \code{FALSE} pan will be histogram matched to the 1st PC.}
+}
+\value{
+pan-sharpened SpatRaster
 }
 \description{
 provides different methods for pan sharpening a coarse resolution (typically multispectral) image with 
@@ -36,7 +39,7 @@ Pan sharpening options:
 }
 }
 \examples{
-library(raster)
+library(terra)
 library(ggplot2)
 
 ## Load example data
