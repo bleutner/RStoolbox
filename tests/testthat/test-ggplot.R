@@ -1,41 +1,36 @@
 context("ggplot: ggR, ggRGB & fortify")
 library(terra)
-data(rlogo)
-data(lsat)
 
-for(lib in c("raster", "terra")) {
-  
-  if(lib == "terra") {
-    skip_on_cran()
-    rlogo <- rast(rlogo)
-    lsat <- rast(lsat)
-  }
-  
+data(lsat)
+data(rlogo)
+
+for(lib in c("terra", "raster")) {
   test_that("ggR returns proper ggplot2 classes or data.frames", {
-    
-    tests  <- expand.grid(forceCat = c(TRUE, FALSE), anno = c(TRUE, FALSE), ggLayer = c(TRUE, FALSE), ggObj = c(TRUE,FALSE))
-    builds <- lapply(1:nrow(tests), function(i) ggR(rlogo, forceCat = tests$forceCat[i], ggObj = tests$ggObj[i], geom_raster = !tests$anno[i], ggLayer = tests$ggLayer[i]))            
-    tinfo  <- paste0("forceCat=", tests[,1], ", anno=", tests[,2], ", ggLayer=", tests[,3], ", ggObj=", tests[,4])
-    
-    ## Annotation vs geom_raster    
-    for(s in which(with(tests, ggObj & !ggLayer))) expect_is(builds[[s]], c("gg", "ggplot"), info = tinfo[s])
-    
-    ## ggLayers
-    if(!inherits(builds[[which(with(tests, ggObj & ggLayer))[1]]], "ggproto")){
-      ## Current ggplot2 release version
-      for(s in which(with(tests, ggObj & ggLayer))) expect_is(builds[[s]], c("proto"), info = tinfo[s])
-      for(s in which(with(tests, ggObj & ggLayer & anno)))  expect_equal(builds[[s]]$geom$objname, "raster_ann", info = tinfo[s])
-      for(s in which(with(tests, ggObj & ggLayer & !anno))) expect_equal(builds[[s]]$geom$objname, "raster", info = tinfo[s])                       
-    } else {
-      ## Upcoming ggplot2 version (>=1.0.1.9002)
-      for(s in which(with(tests, ggObj & ggLayer & anno)))  expect_is(builds[[s]]$geom, "GeomRasterAnn", info = tinfo[s])
-      for(s in which(with(tests, ggObj & ggLayer & !anno))) expect_is(builds[[s]]$geom, "GeomRaster", info = tinfo[s])                                      
-    }
-    ## Data.frames
-    for(s in  which(with(tests, !ggObj))) expect_is(builds[[s]], "data.frame", info = tinfo[s])
-    for(s in  which(with(tests, !ggObj & forceCat))) expect_is(builds[[s]][,3], "factor", info = tinfo[s])
-    for(s in  which(with(tests, !ggObj ))) expect_is(builds[[s]]$fill, "character", info = tinfo[s])
-    
+    suppressWarnings({
+      tests  <- expand.grid(forceCat = c(TRUE, FALSE), anno = c(TRUE, FALSE), ggLayer = c(TRUE, FALSE), ggObj = c(TRUE,FALSE))
+      builds <- lapply(1:nrow(tests), function(i) ggR(rlogo, forceCat = tests$forceCat[i], ggObj = tests$ggObj[i], geom_raster = !tests$anno[i], ggLayer = tests$ggLayer[i]))
+      tinfo  <- paste0("forceCat=", tests[,1], ", anno=", tests[,2], ", ggLayer=", tests[,3], ", ggObj=", tests[,4])
+
+      ## Annotation vs geom_raster
+      for(s in which(with(tests, ggObj & !ggLayer))) expect_is(builds[[s]], c("gg", "ggplot"), info = tinfo[s])
+
+      ## ggLayers
+      if(!inherits(builds[[which(with(tests, ggObj & ggLayer))[1]]], "ggproto")){
+        ## Current ggplot2 release version
+        for(s in which(with(tests, ggObj & ggLayer))) expect_is(builds[[s]], c("proto"), info = tinfo[s])
+        for(s in which(with(tests, ggObj & ggLayer & anno)))  expect_equal(builds[[s]]$geom$objname, "raster_ann", info = tinfo[s])
+        for(s in which(with(tests, ggObj & ggLayer & !anno))) expect_equal(builds[[s]]$geom$objname, "raster", info = tinfo[s])
+      } else {
+        ## Upcoming ggplot2 version (>=1.0.1.9002)
+        for(s in which(with(tests, ggObj & ggLayer & anno)))  expect_is(builds[[s]]$geom, "GeomRasterAnn", info = tinfo[s])
+        for(s in which(with(tests, ggObj & ggLayer & !anno))) expect_is(builds[[s]]$geom, "GeomRaster", info = tinfo[s])
+      }
+      ## Data.frames
+      for(s in  which(with(tests, !ggObj))) expect_is(builds[[s]], "data.frame", info = tinfo[s])
+      for(s in  which(with(tests, !ggObj & forceCat))) expect_is(builds[[s]][,3], "factor", info = tinfo[s])
+      for(s in  which(with(tests, !ggObj ))) expect_is(builds[[s]]$fill, "character", info = tinfo[s])
+
+    })
   })
   
   test_that("ggR works with single valued rasters", {
@@ -45,14 +40,14 @@ for(lib in c("raster", "terra")) {
     r[[3]][]<- c(NA,2)
     
     for(i in 1:3) {
-      expect_is(ggR(r,i), c("gg", "ggplot2"))
+      expect_is(ggR(r,i), c("gg", "ggplot"))
     }
     for(i in 1:3) {
-      expect_is(ggR(r,i,geom_raster = TRUE), c("gg", "ggplot2"))
+      expect_is(ggR(r,i,geom_raster = TRUE), c("gg", "ggplot"))
     }
     
     ## All NAs
-    expect_equal(sum(is.na(ggR(r,1, ggObj = FALSE)[,c("value", "fill")])), 4)  ## all na
+    expect_equal(sum(is.na(ggR(r,1, ggObj = FALSE)[,c("value", "fill")])), 4)
     
     ## Single value
     gp <- ggR(r, 2, ggObj = FALSE)

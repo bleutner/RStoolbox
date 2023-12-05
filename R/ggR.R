@@ -64,8 +64,8 @@
 #' \donttest{
 #' ggR(lsat, 1:6, geom_raster=TRUE, stretch = "lin") +
 #'     scale_fill_gradientn(colors=grey.colors(100), guide = FALSE) +
-#'     theme(axis.text = element_text(size=5), 
-#'           axis.text.y = element_text(angle=90),
+#'     theme(axis.text = elementext(size=5), 
+#'           axis.text.y = elementext(angle=90),
 #'           axis.title=element_blank())
 #' 
 #' ## Don't plot, just return a data.frame
@@ -99,14 +99,13 @@
 ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0, stretch = "none", quantiles = c(0.02,0.98), ext = NULL,
                 coord_equal = TRUE, ggLayer=FALSE, ggObj = TRUE, geom_raster = FALSE, forceCat = FALSE) {
 
-  img <- .toRaster(img)
-  img_t <- .toTerra(img)
+  img <- .toTerra(img)
 
   layer <- unlist(.numBand(img, layer))
-  layer_t <- unlist(.numBand(img_t, layer))
+  layer <- unlist(.numBand(img, layer))
 
   multLayers <- if (length(layer)>1) TRUE else FALSE
-  multLayers_t <- if (length(layer_t)>1) TRUE else FALSE
+  multLayers <- if (length(layer)>1) TRUE else FALSE
   if(multLayers & !geom_raster & ggObj) {
     warning("You asked for multiple layers but geom_raster is FALSE.",
             "\ngeom_raster will be reset to TRUE", 
@@ -115,7 +114,7 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0
             call. = FALSE)
     geom_raster <- TRUE
   }
-  if(multLayers_t & !geom_raster & ggObj) {
+  if(multLayers & !geom_raster & ggObj) {
     warning("You asked for multiple layers but geom_raster is FALSE.",
             "\ngeom_raster will be reset to TRUE",
             "\nHint: in case you're looking for a grayscale and facetted plot, use:",
@@ -125,43 +124,34 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0
   }
   annotation <- !geom_raster
 
-  ex <- extent(img)
-  ex_t <- ext(img_t)
+  ex <- ext(img)
 
-  xfort <- sampleRegular(img[[layer]], maxpixels, ext = ex, asRaster = TRUE)
-  ex <- as.vector(extent(xfort))
+  xfort <- spatSample(img[[layer]], maxpixels, ext = ex, method = "regular", as.raster = TRUE)
+  ex <- as.vector(ext(xfort))
 
-  xfort_t <- spatSample(img_t[[layer]], maxpixels, ext = ex_t, method = "regular", as.raster = TRUE)
-  ex_t <- as.vector(ext(xfort_t))
-
-  print(xfort)
-  print(xfort_t)
-
-  stop()
-  
   dimImg <- dim(xfort)
+
   df <- lapply(names(xfort), function(layer) {
-    df    <- data.frame(as.data.frame(xfort[[layer]],  xy = TRUE), 
+    df    <- data.frame(extract(xfort, seq_along(values(xfort)), xy = TRUE),
                         layerName = factor(layer, levels = names(xfort)))
-    colnames(df) <- c("x", "y", "value", "layerName") 
+    colnames(df) <- c("x", "y", "value", "layerName")
     df
   })
   df <- do.call(rbind, df)
-  
-  if(forceCat & !is.factor(df[,"value"])) df[,"value"] <- as.factor(df[,"value"])
-  
-  if(is.character(df[,"value"])) df[,"value"] <- factor(df[,"value"])
-  fac <- is.factor(df[,"value"]) 
-  
+
+  if(forceCat & !is.factor(df$value)) df$value <- as.factor(df$value)
+
+  if(is.character(df$value)) df$value <- factor(df$value)
+  fac <- is.factor(df$value)
+
   if(fac & (annotation | !ggObj)) {
     .vMessage("img values are factors but annotation is TRUE. Converting factors as.numeric.")
     levelLUT   <- levels(df[,"value"])
     df[,"value"] <- as.numeric(df[,"value"])
   }
-  
   if(!fac & stretch != "none")  {
     for(layer in levels(df$layerName)) {
-      df[df$layerName==layer,"value"] <- .stretch(df[df$layerName==layer,"value"], method = stretch, quantiles = quantiles)    
+      df[df$layerName==layer,"value"] <- .stretch(df[df$layerName==layer,"value"], method = stretch, quantiles = quantiles)
     }
   }
   
@@ -182,14 +172,14 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0
   
   x <- y <- value <- NULL  
   if(ggObj) {       
-    if(annotation)  {        
-      dmat <- matrix(df$fill, nrow=dimImg[1], ncol=dimImg[2], byrow = TRUE)  
+    if(annotation)  {
+      dmat <- matrix(df$fill, nrow=dimImg[1], ncol=dimImg[2], byrow = TRUE)
       ggl  <- annotation_raster(raster = dmat, xmin = ex[1], xmax = ex[2], ymin = ex[3], ymax = ex[4], interpolate = FALSE)
     } else {
-      ggl  <- geom_raster(data = df[,c("x","y","value","layerName")], aes(x = x, y = y, fill = value), alpha = alpha) 
+      ggl  <- geom_raster(data = df[,c("x","y","value","layerName")], aes(x = x, y = y, fill = value), alpha = alpha)
     }
     if(multLayers) facetObj <- facet_wrap(~layerName)
-    
+
     if(ggLayer) {
       if(multLayers) {
         return(list(ggl, facetObj))
@@ -199,7 +189,7 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0
     }
     
     if(annotation) {   
-      dummy <- data.frame(x = ex[1:2],y = ex[3:4], layerName = rep(levels(df$layerName), each = 2) )       
+      dummy <- data.frame(x = ex[1:2],y = ex[3:4], layerName = rep(levels(df$layerName), each = 2) )
       p <- ggplot()  + ggl + geom_blank(data = dummy, aes(x,y))
       if(coord_equal) p <- p + coord_equal()
       if(multLayers) p <- p + facet_wrap(~layerName)
@@ -222,11 +212,11 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0
 test <- function(){
   devtools::load_all()
 
-  i <- 2
+  i <- 3
   r <- rast(vals = 1, ncol = 2, nrow = 1)[[c(1,1,1)]]
   suppressWarnings(r[[1]][]<- NA)
   r[[2]][]<- 17
   r[[3]][]<- c(NA,2)
 
-  ggR(r, i)
+  class(ggR(r, 1))
 }

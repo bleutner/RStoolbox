@@ -4,8 +4,8 @@ ra <- raster(ncol = 5, nrow=5, val = 1)
 terra <- rast(ra)
 
 test_that(".toRaster conversion", {
-            expect_identical(stack(ra),.toRaster(terra))            
-        })
+    expect_identical(stack(ra),.toRaster(terra))
+})
 
 sp <- readRDS(system.file("external/trainingPolygons.rds", package="RStoolbox"))
 sf <- st_as_sf(sp)

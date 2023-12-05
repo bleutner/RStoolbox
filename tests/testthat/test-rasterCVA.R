@@ -1,7 +1,7 @@
 context("rasterCVA")
 
-r <- raster(val = 0, ncol = 2, nrow = 10)
-r1 <- r2 <- stack(r,r)
+r <- rast(val = 0, ncol = 2, nrow = 10)
+r1 <- r2 <- c(r, r)
 s <- 4
 x <- c(0,s,s,s,0,-s,-s,-s, NA, 0)
 y <- c(s,s,0,-s,-s,-s,0,s, 0, NA)
