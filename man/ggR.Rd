@@ -100,8 +100,8 @@ ggR(rlogo, geom_raster = TRUE) +
 \donttest{
 ggR(lsat, 1:6, geom_raster=TRUE, stretch = "lin") +
     scale_fill_gradientn(colors=grey.colors(100), guide = FALSE) +
-    theme(axis.text = element_text(size=5), 
-          axis.text.y = element_text(angle=90),
+    theme(axis.text = elementext(size=5), 
+          axis.text.y = elementext(angle=90),
           axis.title=element_blank())
 
 ## Don't plot, just return a data.frame
