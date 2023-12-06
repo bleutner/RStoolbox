@@ -14,11 +14,10 @@ ml[] <- 1
 ml[,2] <- 10
 ml[,3] <- NA
 names(ml) <- "henryMaske"
-data(lsat)
+lsat <- lsat_rs
 
 r <- rast(r)
 ml <- rast(ml)
-lsat <- rast(lsat)
 test_that("errors and warnings are emitted", {
   expect_error(spectralIndices(r, red = 1, indices = "NDVI"), "you must specify \\*all\\* required bands")
   expect_error(spectralIndices(r, red = 1), "you must specify \\*all\\* required bands")

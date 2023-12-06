@@ -1,6 +1,6 @@
 context("tasseledCap")
 
-data(lsat)
+lsat <- lsat_rs
 
 test_that("basic function",{
            for(sat in c("Landsat4TM", "Landsat5TM", "Landsat7ETM", "Landsat8OLI"))  {

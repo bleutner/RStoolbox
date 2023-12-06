@@ -34,8 +34,7 @@ For example for a given pixel in image A and B for the red and nir band the chan
 }
 \examples{
 library(terra)
-## Create example data
-data(lsat)
+
 pca <- rasterPCA(lsat)$map
 
 ## Do change vector analysis 

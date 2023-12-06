@@ -1,6 +1,6 @@
 context("save and read RSTBX objects")
 library(terra)
-data(rlogo)
+rlogo <- rlogo_rs
 
 ## Create RSTBX object
 train <- readRDS(system.file("external/trainingPoints.rds", package="RStoolbox"))

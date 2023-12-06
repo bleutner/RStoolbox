@@ -31,9 +31,7 @@
 #' @export 
 #' @examples 
 #' library(terra)
-#' 
-#' ## Import Landsat example data
-#' data(lsat)
+#'
 #' 
 #' ## Create fake example data
 #' ## In practice this would be an image from another acquisition date

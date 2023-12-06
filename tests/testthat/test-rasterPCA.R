@@ -2,12 +2,11 @@ context("rasterPCA")
 
 library(terra)
 
-data(lsat)
-lsat <- crop(rast(lsat), ext(lsat)*.2)
+lsat <- lsat_rs
+lsat <- crop(lsat, ext(lsat)*.2)
 ld   <- as.data.frame(lsat)
 
 for(spc in c(FALSE, TRUE)) {
-	spc <- TRUE
 	test_that(paste("princomp(covMat(raster)) == princomp(sample) with spca=",spc), {
 		expect_s3_class(r   <- rasterPCA(lsat, nSamples = NULL, spca = spc), c("RStoolbox","rasterPCA"))
 		expect_s3_class(rs  <- rasterPCA(lsat, nSamples = ncell(lsat), spca = spc), c("RStoolbox","rasterPCA"))
@@ -30,5 +29,4 @@ for(i in 1:nrow(G)){
 			expect_false(any(is.na(r$map[1:99])))
 		})
 	})
-	
 }

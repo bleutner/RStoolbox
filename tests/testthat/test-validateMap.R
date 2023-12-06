@@ -1,5 +1,5 @@
 context("validateMap")
-data(lsat)
+lsat <- lsat_rs
 lsat <- lsat[[1:4]]
 
 ## Set-up test data

@@ -1,7 +1,7 @@
 context("pifMatch")
 library(terra)
 
-data(lsat)
+lsat <- lsat_rs
 lsat_b <- log(lsat)  
 
 for(m in c("cor", "sam", "ed")) {

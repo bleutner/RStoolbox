@@ -3,7 +3,7 @@ suppressPackageStartupMessages(library("randomForest"))
 suppressPackageStartupMessages(library("sp"))
 
 train <- readRDS(system.file("external/trainingPoints.rds", package="RStoolbox"))
-data(rlogo)
+rlogo <- rlogo_rs
 train$num <- rnorm(nrow(train))
 class   <- superClass(rlogo, trainData = train, responseCol = "class", tuneLength = 1, trainPartition = 0.7, predict = FALSE)
 reg     <- superClass(rlogo, trainData = train, responseCol = "num", tuneLength = 1, trainPartition = 0.7, predict = FALSE, mode = "regression")

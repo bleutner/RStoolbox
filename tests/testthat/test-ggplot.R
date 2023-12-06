@@ -1,8 +1,8 @@
 context("ggplot: ggR, ggRGB & fortify")
 library(terra)
 
-data(lsat)
-data(rlogo)
+lsat <- lsat_rs
+rlogo <- rlogo_rs
 
 for(lib in c("terra", "raster")) {
   test_that("ggR returns proper ggplot2 classes or data.frames", {

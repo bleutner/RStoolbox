@@ -5,7 +5,7 @@ suppressPackageStartupMessages(library(pls))
 suppressPackageStartupMessages(library(randomForest))
 suppressPackageStartupMessages(library(caret))
 
-data(lsat)
+lsat <- lsat_rs
 lsat <- lsat[[1:4]]
 ## Set-up test data
 set.seed(1)
@@ -138,7 +138,7 @@ test_that("sp inputs",{
         })
 #
 test_that("terra inputs",{
-            expect_is( superClass(rast(lsat), trainData = poly, nSamples = 50, responseCol = "class", model = "pls", 
+            expect_is( superClass(lsat, trainData = poly, nSamples = 50, responseCol = "class", model = "pls",
                             tuneGrid = data.frame(ncomp = 3), tuneLength = 1, trainPartition = 0.7, predict = FALSE), "superClass")
             
         })
@@ -146,11 +146,11 @@ test_that("terra inputs",{
 if (identical(Sys.getenv("NOT_CRAN"), "true") ) {
     ## Tiny raster bug caused superClass to fail when predictions were written to .grd file 
 #	test_that("NA in raster remains NA",{
-#				expect_is(sc <- superClass(lsNA, trainData = pts, responseCol = "class", model = "rf", 
+#				expect_is(sc <- superClass(lsNA, trainData = pts, responseCol = "class", model = "rf",
 #                                filename = rasterTmpFile(), trainPartition = 0.7, predict = TRUE), "superClass")
-#				expect_equal(sum(is.na(sc$map[1:100,])), 100*ncol(lsNA)) 
-#				expect_false(anyNA(sc$map[101:nrow(lsNA),]))            
-#			}) 
+#				expect_equal(sum(is.na(sc$map[1:100,])), 100*ncol(lsNA))
+#				expect_false(anyNA(sc$map[101:nrow(lsNA),]))
+#			})
     
     ## Checks after clipping 
     test_that("fails if no validation points remain after clipping",{

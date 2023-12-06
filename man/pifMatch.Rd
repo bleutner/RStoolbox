@@ -56,8 +56,6 @@ Model fitting is performed with simple linear models (\code{\link[stats]{lm}}); 
 \examples{
 library(terra)
 
-## Import Landsat example data
-data(lsat)
 
 ## Create fake example data
 ## In practice this would be an image from another acquisition date

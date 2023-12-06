@@ -16,8 +16,6 @@
 #' @examples 
 #' library(terra)
 #' library(ggplot2)
-#' ## Load example data-set
-#' data(lsat) 
 #' 
 #' ## Sample endmember spectra 
 #' ## First location is water, second is open agricultural vegetation

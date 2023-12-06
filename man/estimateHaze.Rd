@@ -43,8 +43,6 @@ Hence, the haze values are estimates of path radiance, which can be subtracted i
 Atmospheric haze affects almost exclusively the visible wavelength range. Therefore, typically, you'd only want to estimate haze in blue, green and red bands, occasionally also in the nir band.
 }
 \examples{
-data(lsat)
-
 ## Estimate haze for blue, green and red band
 haze <- estimateHaze(lsat, hazeBands = 1:3, plot = TRUE)
 haze

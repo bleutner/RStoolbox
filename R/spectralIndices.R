@@ -28,7 +28,6 @@
 #' @examples
 #' library(ggplot2)
 #' library(terra)
-#' data(lsat)
 #' 
 #' ## Calculate NDVI
 #' ndvi <- spectralIndices(lsat, red = "B3_dn", nir = "B4_dn", indices = "NDVI")

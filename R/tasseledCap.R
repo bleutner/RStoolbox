@@ -42,7 +42,6 @@
 #' Returns a SpatRaster with the thee bands: brigthness, greenness, and (soil) wetness.
 #' @examples 
 #' library(terra)
-#' data(lsat)
 #' 
 #' ## Run tasseled cap (exclude thermal band 6)
 #' lsat_tc <- tasseledCap(lsat[[c(1:5,7)]], sat = "Landsat5TM")

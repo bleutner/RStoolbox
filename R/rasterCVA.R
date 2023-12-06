@@ -22,8 +22,7 @@
 #' @export 
 #' @examples 
 #' library(terra)
-#' ## Create example data
-#' data(lsat)
+#'
 #' pca <- rasterPCA(lsat)$map
 #' 
 #' ## Do change vector analysis 

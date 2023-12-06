@@ -35,7 +35,6 @@ library(caret)
 library(terra)
 
 ## Training data
-data(lsat)
 poly     <- readRDS(system.file("external/trainingPolygons.rds", package="RStoolbox"))
 
 ## Split training data in training and validation set (50\%-50\%)

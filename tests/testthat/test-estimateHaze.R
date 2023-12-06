@@ -1,7 +1,7 @@
 context("estimateHaze")
 
 mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
-data(lsat)
+lsat <- lsat_rs
 
 test_that("all hazeBand specifications work", {
   hb <- list(single = 2, contiguous = c(1:3), noncontiguous = c(1,3), noncontiguous2 = c(2,4))

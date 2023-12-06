@@ -1,13 +1,7 @@
 context("Entropy")
 
-data(lsat_t)
-
-data(rlogo)
-
-data(lsat)
-writeRaster(rast(lsat), "data/lsat_t.tif")
-library(RStoolbox)
-data(lsat_t, package = "RStoolbox")
+rlogo <- rlogo_rs
+lsat <- lsat_rs
 
 entro <- function(x){
     p <- table(x)/length(x)

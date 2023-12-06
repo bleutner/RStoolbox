@@ -1,6 +1,6 @@
 context("coregisterImages")
 
-data(lsat)
+lsat <- lsat_rs
 loff <- shift(lsat, 30, 60)
 
 test_that("works and finds correct shift", {

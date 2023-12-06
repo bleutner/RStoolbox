@@ -353,7 +353,6 @@
     library.dynam.unload("RStoolbox", libpath)
 }
 
-#' @deprecated
 #' @noRd
 .nlyr <- function (r) {
     return(dim(r)[3])
@@ -465,4 +464,20 @@
 	} else {
 		return(d)
 	}
+}
+
+.terraTmpFile <- function(prefix = "terra_tmp_", ext = ".tif") {
+  # Create a temporary directory
+  temp_dir <- file.path(tempdir(), "raster")
+
+  # Ensure the directory exists
+  if (!dir.exists(temp_dir)) dir.create(temp_dir, recursive = TRUE)
+
+  # Generate a unique file name
+  timestamp <- format(Sys.time(), "%Y-%m-%d_%H%M%S")
+  filename <- paste0(prefix, timestamp, "_", Sys.getpid(), "_", sample.int(99999, 1), ext)
+
+  # Return the full path to the temporary file
+  full_path <- file.path(temp_dir, filename)
+  return(full_path)
 }

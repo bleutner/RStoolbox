@@ -37,8 +37,6 @@ By providing \code{xmin = -1} and \code{xmax = 1} the values can be rescaled to 
 e.g. 1 to 100 while comparability to other rescaled NDVI scenes is retained.
 }
 \examples{
-## Create example data
-data(lsat)
 lsat2 <- lsat - 1000
 lsat2
 

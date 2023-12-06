@@ -1,7 +1,7 @@
 context("radCor")
 
 mtlFile <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package = "RStoolbox")
-data(lsat)
+lsat <- lsat_rs
 
 
 test_that("radiance conversion", {

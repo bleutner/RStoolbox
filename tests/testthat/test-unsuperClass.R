@@ -1,16 +1,14 @@
 context("unsuperClass")
 library(terra)
-library(terra)
-
 
 ## Set-up test data
-data(lsat)
+lsat <- lsat_rs
 
 lsatNA <- lsat
 lsatNA[20:40, ] <- NA
 lsatNA2 <- lsat
-lsatNA2 <- writeRaster(lsatNA2, rasterTmpFile())
-NAvalue(lsatNA2) <- 20
+lsatNA2 <- terra::writeRaster(lsatNA2, .terraTmpFile())
+values(lsatNA2)[is.na(values(lsatNA2))] <- 20
 
 ## Tiny raster bug caused superClass to fail when predictions were written to .grd file 
 test_that("unsuperClass and NA",{
@@ -18,13 +16,13 @@ test_that("unsuperClass and NA",{
                 expect_is(sc <- unsuperClass(lsat,  nClasses = 2, clusterMap = cm), "unsuperClass")
                 expect_is(scNA <- unsuperClass(lsatNA,  nClasses = 2, clusterMap = cm), "unsuperClass")
                 expect_true(all(is.na(scNA$map[20:40,])))			
-                expect_is(scNA <- unsuperClass(lsatNA2,  nClasses = 2, filename = rasterTmpFile(), clusterMap = cm), "unsuperClass")
+                expect_is(scNA <- unsuperClass(lsatNA2,  nClasses = 2, filename = .terraTmpFile(), clusterMap = cm), "unsuperClass")
                 expect_equal(sort(unique(scNA$map[])), c(1,2))
             }
         }) 
 
 test_that("terra inputs",{
-	expect_is(sc <- unsuperClass(rast(lsat),  nClasses = 2), "unsuperClass")
+	expect_is(sc <- unsuperClass(lsat,  nClasses = 2), "unsuperClass")
 })
 
 ## kmeans prediction function only

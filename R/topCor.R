@@ -26,11 +26,7 @@
 #' ## Load example data
 #' metaData <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
 #' metaData <- readMeta(metaData)
-#' lsat     <- stackMeta(metaData) 
-#' data(srtm)
-#' \dontshow{
-#' data(lsat)
-#' }
+#' lsat     <- stackMeta(metaData)
 #' 
 #' ## Minnaert correction, solar angles from metaData
 #' lsat_minnaert <- topCor(lsat, dem = srtm, metaData = metaData, method = "minnaert")

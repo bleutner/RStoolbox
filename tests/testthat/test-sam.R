@@ -1,10 +1,11 @@
 context("spectral angle mapper")
 
-data(lsat)
+lsat <- lsat_rs
 lsat[1] <- NA
 lsat[2,1] <- NA
 pts <- data.frame(x = c(624720, 627480), y = c(-414690, -411090))
 endmembers <- extract(lsat, pts)
+endmembers <- endmembers[,-1]
 rownames(endmembers) <- c("water", "vegetation")
 
 test_that("returns correct classes and deals with NA",{

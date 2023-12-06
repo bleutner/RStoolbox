@@ -21,9 +21,7 @@
 #' @seealso [histMatch][histMatch()]
 #' @export
 #' @md
-#' @examples 
-#' ## Create example data
-#' data(lsat)
+#' @examples
 #' lsat2 <- lsat - 1000
 #' lsat2
 #' 

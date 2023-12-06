@@ -3,7 +3,7 @@ suppressPackageStartupMessages(library(terra))
 metaData <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
 metaData <- readMeta(metaData)
 lsat     <- stackMeta(metaData) 
-data(srtm)
+srtm <- srtm_rs
 
 
 ## Minnaert correction, solar angles from metaData

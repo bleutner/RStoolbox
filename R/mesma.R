@@ -25,9 +25,7 @@
 #' #load packages
 #' library(terra)
 #' library(RStoolbox)
-#' 
-#' #load an example dataset
-#' data(lsat)
+#'
 #' 
 #' #make up some endmember spectra: water and land
 #' em_names <- c("water", "land")
