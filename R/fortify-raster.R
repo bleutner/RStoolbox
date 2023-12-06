@@ -25,7 +25,7 @@ fortify.RasterLayer <- function(x, maxpixels = 50000){
     }
     
     
-    if(inherits(x, "Raster") && .nlyr(x) == 1 && is.factor(x)) raster <- stack(raster,raster)  ## workaround raster bug #6043
+    if(inherits(x, "Raster") && nlyr(x) == 1 && is.factor(x)) raster <- stack(raster,raster)  ## workaround raster bug #6043
     as.data.frame(raster, xy = TRUE)
         
 }

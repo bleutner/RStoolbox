@@ -353,16 +353,11 @@
     library.dynam.unload("RStoolbox", libpath)
 }
 
-#' @noRd
-.nlyr <- function (r) {
-    return(dim(r)[3])
-}
-
 #' Can process in memory. Copied from raster package
 #' @noRd
 .canProcInMem <- function(x, n = 4, verbose = FALSE) {
   nc <- ncell(x)
-  n <- n * .nlyr(x)
+  n <- n * dim(x)[3]
   memneed <- nc * n * 8
   if (memneed < .minmemory()) {
     if (verbose) {

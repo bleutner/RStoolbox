@@ -16,7 +16,7 @@
 #' ggR(re, geom_raster = TRUE)
 rasterEntropy <- function(img, ...){
 	img <- .toTerra(img)
-    if(.nlyr(img) <= 1)
+    if(nlyr(img) <= 1)
       stop("img must have at least two layers")
     out <- app(img, fun = entropyCpp, ...)
     out <- .updateLayerNames(out, "entropy")
