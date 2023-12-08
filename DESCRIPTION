@@ -35,8 +35,7 @@ Imports:
     foreach,
     Rcpp,
     methods,
-    magrittr,
-    tidyverse
+    magrittr
 Suggests:
     randomForest,
     kernlab,
