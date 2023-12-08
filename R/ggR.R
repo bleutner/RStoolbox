@@ -17,7 +17,7 @@
 #' @param coord_equal Logical. Force addition of coord_equal, i.e. aspect ratio of 1:1. Typically useful for remote sensing data (depending on your projection), hence it defaults to TRUE.
 #'         Note however, that this does not apply if (\code{ggLayer=FALSE}).
 #' @param forceCat Logical. If \code{TRUE} the raster values will be forced to be categorical (will be converted to factor if needed). 
-#' @seealso \link{ggRGB}, \link[=fortify.raster]{fortify}
+#' @seealso \link{ggRGB}, \link[=fortify.SpatRaster]{fortify}
 #' @return 
 #' \tabular{ll}{
 #'  \code{ggObj = TRUE}:   \tab ggplot2 plot \cr

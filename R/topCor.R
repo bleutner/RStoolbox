@@ -91,7 +91,7 @@ topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg
     if (method == "avgcos") {
         ## Eq 4 in Riano2003
         ## Lambertian assumption
-        avgillu_t <- as.numeric(t(global(illu_t, "mean", na.rm = TRUE)))
+        avgillu_t <- as.numeric(t(terra::global(illu_t, "mean", na.rm = TRUE)))
 
         Lh_t_func <- function(x,y){ x + x * (avgillu_t-y) / avgillu_t}
         Lh_t <- Lh_t_func(img_t, illu_t)

@@ -68,7 +68,7 @@ rasterPCA <- function(img, nSamples = NULL, nComp = nlyr(img), spca = FALSE,  ma
             if(sum(values(totalMask)) == 0) stop("img contains either a layer with NAs only or no single pixel with valid values across all layers")
             img <- mask(img, totalMask , maskvalue = 0) ## NA areas must be masked from all layers, otherwise the covariance matrix is not non-negative definite
         }
-        covMat <- layerCor(img, "cov", na.rm = TRUE)
+        covMat <- terra::layerCor(img, "cov", na.rm = TRUE)
         model  <- princomp(covmat = covMat$covariance, cor = spca)
         model$center <- covMat$mean
         model$n.obs  <- ncell(!any(is.na(img)))

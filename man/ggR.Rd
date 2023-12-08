@@ -133,5 +133,5 @@ ggR(hill) +
    scale_fill_gradientn(colours = terrain.colors(100), name = "elevation")
 }
 \seealso{
-\link{ggRGB}, \link[=fortify.raster]{fortify}
+\link{ggRGB}, \link[=fortify.SpatRaster]{fortify}
 }

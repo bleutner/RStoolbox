@@ -7,8 +7,7 @@
 #' @param category Character vector. Which category of data to return. Options 'image': image data, 'pan': panchromatic image, 'index': multiband indices, 'qa' quality flag bands, 'all': all categories.
 #' @param quantity Character vector. Which quantity should be returned. Options: digital numbers ('dn'), top of atmosphere reflectance ('tre'), at surface reflectance ('sre'), brightness temperature ('bt'), spectral index ('index'), all quantities ('all').
 #' @param allResolutions Logical. if \code{TRUE} a list will be returned with length = unique spatial resolutions.
-#' @param returnTerra Logical. If \code{TRUE} returns an object of class terra::SpatRaster. If \code{FALSE} returns a raster::RasterStack object (default). 
-#' This argument was introduced to maintain backward compatibility and will be switched to TRUE in an upcoming release. Please base all new code on terra. 
+#' This argument was introduced to maintain backward compatibility and will be switched to TRUE in an upcoming release. Please base all new code on terra.
 #' @return 
 #' Returns one single SpatRaster comprising all requested bands.
 #' If \code{allResolutions = TRUE} *and* there are different resolution layers (e.g. a 15m panchromatic band along wit 30m imagery) a list of RasterStacks will be returned.
@@ -27,7 +26,7 @@
 #' ## Load rasters based on metadata file
 #' lsat     <- stackMeta(mtlFile)
 #' lsat
-stackMeta <- function(file,  quantity = "all", category = "image", allResolutions = FALSE, returnTerra = TRUE){
+stackMeta <- function(file,  quantity = "all", category = "image", allResolutions = FALSE){
     
     stopifnot( !any(!category %in%  c("pan", "image", "index", "qa", "all")), !any(!quantity %in% c("all", "dn", "tra", "tre", "sre", "bt", "index")))
     
@@ -92,16 +91,10 @@ stackMeta <- function(file,  quantity = "all", category = "image", allResolution
         s <- do.call(c, rl[resL == x])
         names(s)     <- meta$DATA$BANDS[resL == x]
         s <- s[[ which(names(s) %in% select)]]
-        if(!returnTerra) {
-          return(.toRaster(s))
-        }
         return(s)
     })
-    if(!returnTerra){
-      LS[lapply(LS, nlayers) == 0] <- NULL
-    }else{
-      LS[lapply(LS, nlyr) == 0] <- NULL
-    }
+    LS[lapply(LS, nlyr) == 0] <- NULL
+
     names(LS) <- paste0("spatRes_",returnRes,"m")
     if(!allResolutions) LS <- LS[[1]]
     

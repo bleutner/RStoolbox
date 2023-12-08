@@ -43,7 +43,7 @@ rasterCVA <- function(x, y, tmf = NULL, nct = NULL,  ...) {
 	}
 	
 	if(!is.null(tmf)) {
-		maxMag <- sqrt(sum((as.numeric(t(global(x, "max", na.rm=T))) - as.numeric(t(global(y, "max", na.rm=T))) )^2))*2
+		maxMag <- sqrt(sum((as.numeric(t(terra::global(x, "max", na.rm=T))) - as.numeric(t(terra::global(y, "max", na.rm=T))) )^2))*2
 		medianBuckets <- seq(1e-10, maxMag, length.out = 2e5)
 		RStoolbox_rasterCVAEnv <- new.env()
 		RStoolbox_rasterCVAEnv$medianTable <- 0
@@ -80,7 +80,7 @@ rasterCVA <- function(x, y, tmf = NULL, nct = NULL,  ...) {
 		magfile <- if(!is.null(ellips$filename) && !doClamp) filename else rasterTmpFile()
 		X   <- readStart(X)
 		out <- writeStart(out, filename = magfile, ...)
-		tr  <- blocks(out)
+		tr  <- terra::blocks(out)
 		for (i in 1:tr$n) {
 			vo <- values(X, row=tr$row[i], nrows=tr$nrows[i])
 			vo <- anglefun(vo, tmf)

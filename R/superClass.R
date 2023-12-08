@@ -414,7 +414,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
         v$area <- st_area(v)
         v <- v %>% group_by( group = get(responseCol)) %>%
                   mutate( nSamps = max(as.integer(ceiling(area/sum(area) * nSamples)),1)) %>%
-                    dplyr::select(-group)
+                    dplyr::select(-"group")
         nSampsCol <- "nSamps"
     }
 
@@ -513,7 +513,7 @@ predict.superClass <- function(object, img, predType = "raw", filename = NULL, d
     
     ## extract model (avoid copying entire object to SOCK clusters in .paraRasterFun - I think / not validated)
     model <- object$model
-    img = .toRaster(img)
+    img <- .toTerra(img)
     if(predType == "prob") {
         py<-img[1:2]
         py[]<-1

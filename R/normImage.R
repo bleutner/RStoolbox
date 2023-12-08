@@ -30,10 +30,10 @@ normImage <- function(img, norm = TRUE, ...) {
     out[] <- scale(img[], center = TRUE, scale = norm)
     if("filename" %in% names(list(...))) out <- terra::writeRaster(out, ...)
   } else {
-    means <- as.numeric(t(global(img, "mean")))
+    means <- as.numeric(t(terra::global(img, "mean")))
     names(means) <- names(img)
     sds <- if(norm){
-      as.numeric(t(global(img, "mean")))
+      as.numeric(t(terra::global(img, "mean")))
       names(means) <- names(img)
     }else {
       rep(1, nlyr(img))

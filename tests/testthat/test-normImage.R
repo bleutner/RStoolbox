@@ -32,20 +32,16 @@ test_that("normImage with NAs",{
 
 
 
-#test_that("normImage.cpp works", {
-#
-#  m  <- lsat[1:5]
-#  m_r <- .toRaster(lsat[1:5])
-#  cm <- colMeans(m, na.rm = TRUE)
-#  cm_r <- colMeans(m_r, na.rm = TRUE)
-#  cs <- apply(m, 2, sd, na.rm = TRUE)
-#  cs_r <- apply(m_r, 2, sd, na.rm = TRUE)
-#
-#  expect_is(cmat <- normImageCpp(m_r, cm_r, cs_r), "matrix")
-#  expect_true(all(round(colMeans(cmat, na.rm = T), 10)==0))
-#  expect_true(all(round(apply(cmat, 2, sd, na.rm = T), 10)==1))
-#  expect_equal(sum(is.na(cmat[1,])), 7)
-#  expect_equal(sum(is.na(cmat[2,])), 1)
-#  expect_equivalent(normImageCpp(m, cm, cs), scale(m, T, T))
-#
-#})
+test_that("normImage.cpp works", {
+  m  <- as.matrix(lsat[1:5])
+  cm <- colMeans(m, na.rm = TRUE)
+  cs <- apply(m, 2, sd, na.rm = TRUE)
+
+  expect_is(cmat <- normImageCpp(m, cm, cs), "matrix")
+  expect_true(all(round(colMeans(cmat, na.rm = T), 10)==0))
+  expect_true(all(round(apply(cmat, 2, sd, na.rm = T), 10)==1))
+  expect_equal(sum(is.na(cmat[1,])), 7)
+  expect_equal(sum(is.na(cmat[2,])), 1)
+  expect_equivalent(normImageCpp(m, cm, cs), scale(m, T, T))
+
+})

@@ -35,7 +35,7 @@
 #'  \code{ggObj = FALSE}:  \tab data.frame in long format suitable for plotting with ggplot2, includes the pixel values and the calculated colors \cr  
 #' }
 #' @export
-#' @seealso \link{ggR}, \link[=fortify.raster]{fortify}
+#' @seealso \link{ggR}, \link[=fortify.SpatRaster]{fortify}
 #' @examples   
 #' library(ggplot2)
 #' data(rlogo)
@@ -73,15 +73,9 @@ ggRGB <- function(img, r = 3, g = 2, b = 1, scale, maxpixels = 500000, stretch =
     ## Subsample raster        
     rgb <- unlist(.numBand(raster=img,r,g,b))
     nComps <- length(rgb)
-    if(inherits(img, "RasterLayer")) img <- brick(img)
-    
-    if(inherits(img, "Raster")) {
-      rr <- sampleRegular(img[[rgb]], maxpixels, ext = .toRaster(ext), asRaster = TRUE)
-      ex <- as.vector(extent(rr))
-    } else {
-      rr <- spatSample(img[[rgb]], maxpixels, ext = .toTerra(ext), method = "regular", as.raster = TRUE)
-      ex <- as.vector(ext(rr))
-    }
+
+    rr <- spatSample(img[[rgb]], maxpixels, ext = .toTerra(ext), method = "regular", as.raster = TRUE)
+    ex <- as.vector(ext(rr))
     
     RGB    <- as.data.frame(rr, xy = TRUE)
     xy <- RGB[,c("x", "y")]

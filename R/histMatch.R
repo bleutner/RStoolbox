@@ -20,7 +20,6 @@
 #' @examples 
 #' library(ggplot2)
 #' library(terra)
-#' data(rlogo)
 #' ## Original image a (+1 to prevent log(0))
 #' img_a <-  rlogo + 1 
 #' ## Degraded image b
@@ -109,7 +108,7 @@ histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e5, inte
     inverse.ref.ecdf <- approxfun(y, kn, method = "linear", yleft = limits[1], yright = limits[2], ties = "ordered")
 
     ## Function definition
-    histMatchFun <- if (grepl("INT", datatype(ref)[i]) | forceInteger)
+    histMatchFun <- if (grepl("INT", terra::datatype(ref)[i]) | forceInteger)
       function(values, na.rm = FALSE) { round(inverse.ref.ecdf(source.ecdf(values))) }
     else {
       function(values, na.rm = FALSE) { inverse.ref.ecdf(source.ecdf(values)) }

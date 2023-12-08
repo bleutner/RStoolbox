@@ -10,51 +10,12 @@
 	.ESdistance[doy]
 }
 
-#' Convert terra::SpatRaster to raster::RasterStack
-#' 
-#' This is a temporary function used to add terra support to RStoolbox, while RStoolbox internals 
-#' are still implemented based on raster functionality. In the long run it is
-#' aimed to re-base RStoolbox on terra
+#' Convert raster::RasterStack to terra::SpatRaster
+#'
 #' @param x raster or terra object
 #' @return RasterStack
 #' @keywords internal
-#' @noRd 
-.toRaster <- function(x) {
-	if (inherits(x, "SpatRaster")) {
-	    p <- crs(x)
-		s <- stack(x)
-		crs(s) <- p
-		return(s)
-	} else {
-		return(x)
-	}
-}
-
-#' Convert sf objects to sp objects
-#' 
-#' This is a temporary function used to add sf support to RStoolbox, while RStoolbox internals 
-#' are still implemented based on sp functionality. In the long run it is
-#' aimed to re-base RStoolbox on sf
-#' @param x sf or sp object
-#' @return sf object
-#' @keywords internal
-#' @noRd 
-.toSp <- function(x) {
-	if (inherits(x, "sf")) {
-		return(as_Spatial(x))
-	} else {
-		return(x)
-	}
-}
-
-.toSf <- function(x) {
-    if (inherits(x, "Spatial")) {
-        return(st_as_sf(x))
-    } else {
-        return(x)
-    }
-}
-
+#' @noRd
 .toTerra <- function(x) {
   if (inherits(x, "Raster")) {
     return(terra::rast(x))
@@ -63,6 +24,20 @@
   } else {
     return(x)
   }
+}
+
+#' Convert sf objects to sp objects
+#'
+#' @param x sf or sp object
+#' @return sf object
+#' @keywords internal
+#' @noRd
+.toSf <- function(x) {
+    if (inherits(x, "Spatial")) {
+        return(st_as_sf(x))
+    } else {
+        return(x)
+    }
 }
 
 #' Extract numbers from strings

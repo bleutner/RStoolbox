@@ -107,5 +107,5 @@ p + ggRGB(rlogo, ggLayer = TRUE) +
        coord_equal(ylim=c(0,75))
 }
 \seealso{
-\link{ggR}, \link[=fortify.raster]{fortify}
+\link{ggR}, \link[=fortify.SpatRaster]{fortify}
 }

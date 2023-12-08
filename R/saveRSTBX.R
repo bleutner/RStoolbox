@@ -56,10 +56,10 @@ saveRSTBX <- function(x, filename, format = "raster", ...){
     f <- terra::sources(x$map)
 
     if(inMemory(x$map)){
-        x$map <- wrap(writeRaster(x$map, filename = rastFile, ...))
+        x$map <- terra::wrap(writeRaster(x$map, filename = rastFile, ...))
     } else {
         if(f != rastFile){
-            x$map <- wrap(writeRaster(x$map, filename = rastFile, ...))
+            x$map <- terra::wrap(writeRaster(x$map, filename = rastFile, ...))
         }
     }
 
@@ -73,13 +73,13 @@ readRSTBX <- function(filename){
 
     x <- readRDS(rdsFile)
 
-    try(x$map <- unwrap(x$map), silent = FALSE)
+    try(x$map <- terra::unwrap(x$map), silent = FALSE)
 
     if(!inherits(x, "RStoolbox"))
       stop(filename, "is not a RStoolbox object.", call. = FALSE)
 
     if(inherits(x$map, "SpatRaster")){
-        rastFile <- paste0(rastFile, sources(x$map))
+        rastFile <- paste0(rastFile, terra::sources(x$map))
         if(!file.exists(rastFile)) {
             warning("Corresponding raster file ", rastFile, " cannot be found.  \nThe *.rds and the raster file must be located in the same directory.")
             x$map <- "Raster map not found"

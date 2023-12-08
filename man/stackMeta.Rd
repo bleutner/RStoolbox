@@ -4,13 +4,7 @@
 \alias{stackMeta}
 \title{Import separate Landsat files into single stack}
 \usage{
-stackMeta(
-  file,
-  quantity = "all",
-  category = "image",
-  allResolutions = FALSE,
-  returnTerra = TRUE
-)
+stackMeta(file, quantity = "all", category = "image", allResolutions = FALSE)
 }
 \arguments{
 \item{file}{Character. Path to Landsat MTL metadata (*_MTL.txt) file or an Landsat CDR xml metadata file (*.xml).}
@@ -19,9 +13,7 @@ stackMeta(
 
 \item{category}{Character vector. Which category of data to return. Options 'image': image data, 'pan': panchromatic image, 'index': multiband indices, 'qa' quality flag bands, 'all': all categories.}
 
-\item{allResolutions}{Logical. if \code{TRUE} a list will be returned with length = unique spatial resolutions.}
-
-\item{returnTerra}{Logical. If \code{TRUE} returns an object of class terra::SpatRaster. If \code{FALSE} returns a raster::RasterStack object (default). 
+\item{allResolutions}{Logical. if \code{TRUE} a list will be returned with length = unique spatial resolutions.
 This argument was introduced to maintain backward compatibility and will be switched to TRUE in an upcoming release. Please base all new code on terra.}
 }
 \value{
