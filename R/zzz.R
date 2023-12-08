@@ -1,5 +1,5 @@
 .onAttach <- function(libname, pkgname) {
-  packageStartupMessage("This is version ", packageVersion(pkgname), " of ", pkgname)
+  packageStartupMessage("This is version ", utils::packageVersion(pkgname), " of ", pkgname)
 
   packageStartupMessage("
         ____       __              ____

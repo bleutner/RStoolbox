@@ -206,16 +206,3 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0
   }
   
 }
-
-
-test <- function(){
-  devtools::load_all()
-
-  i <- 3
-  r <- rast(vals = 1, ncol = 2, nrow = 1)[[c(1,1,1)]]
-  suppressWarnings(r[[1]][]<- NA)
-  r[[2]][]<- 17
-  r[[3]][]<- c(NA,2)
-
-  class(ggR(r, 1))
-}
