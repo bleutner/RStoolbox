@@ -52,7 +52,7 @@ Performs image to image contrast adjustments based on histogram matching using e
 library(ggplot2)
 library(terra)
 ## Original image a (+1 to prevent log(0))
-img_a <-  rlogo + 1 
+img_a <-  rlogo_rs + 1
 ## Degraded image b
 img_b <- log(img_a)
 ## Cut-off half the image (just for better display)
@@ -76,7 +76,7 @@ ggRGB(img_a, 1, 2, 3)+
 ## Histogram comparison
 opar <- par(mfrow = c(1, 3), no.readonly = TRUE)
 img_a[,1:50] <- NA
-redLayers <- stack(img_a, img_b, img_b_matched)[[c(1,4,7)]]
+redLayers <- c(img_a, img_b, img_b_matched)[[c(1,4,7)]]
 names(redLayers) <- c("img_a", "img_b", "img_b_matched")
 
 hist(redLayers) 

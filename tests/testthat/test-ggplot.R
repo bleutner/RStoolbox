@@ -87,11 +87,11 @@ test_that("ggRGB returns proper ggplot2 classes or data.frames", {
 
 })
 
-test_that("fortify.raster returns proper data.frames", {
-  df <- fortify(rlogo)
+test_that("fortify returns proper data.frames", {
+  df <- fortifySpatRaster(rlogo)
   expect_named(df, c("x", "y", "red", "green", "blue"))
   expect_identical(nrow(df), 7777L)
   ## Single layer
-  expect_named(fortify(rlogo[[1]]), c("x", "y", "red"))
+  expect_named(fortifySpatRaster(rlogo[[1]]), c("x", "y", "red"))
 })
   

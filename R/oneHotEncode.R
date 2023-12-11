@@ -13,33 +13,27 @@
 #' @export 
 #' @examples 
 #' ## example data
-#' data(rlogo)
-#' sc <- unsuperClass(rlogo, nClasses = 3)
+#' \donttest{
+#' sc <- unsuperClass(rlogo_rs, nClasses = 3)
 #' 
 #' ## one-hot encode 
 #' sc_oneHot <- oneHotEncode(sc$map, classes = c(1,2,3))
 #' 
 #' ## check results
 #' sc_oneHot
-#' plot(sc_oneHot)
+#' plot(sc_oneHot)}
 oneHotEncode <- function(img, classes, background = 0, foreground = 1, na.rm = FALSE, ...) {
 	img <- .toTerra(img)
-    stopifnot(inherits(img, c("SpatRaster", "integer", "numeric", "matrix")))
-    if(inherits(img, "SpatRaster")) {
-        if(nlyr(img)>1) {
-          warning(paste0("oneHotEncode() currently works on single layers only, but `img` has ", nlyr(img), " layers.",
-                         "\nDefaulting to first layer.",
-                         "\nSubmit a feature request at <https://github.com/bleutner/RStoolbox/issues> if you need it for more layers."),
-                  call. = FALSE)
-        }
-        out <- app(img[[1]], 
-                function(x, cl = classes, bg = background, fg = foreground, na.rm) 
-                    oneHotCpp(x, classes = cl, bg = bg, fg = fg, na_rm = na.rm), 
-                na.rm = na.rm,  ...)
-        names(out) <- paste0("c_", classes)
-    } else {
-        out <- oneHotCpp(img, classes = classes, bg = background, fg = foreground, na_rm = na.rm)
-        colnames(out) <- paste0("c_", classes)
+    if(nlyr(img)>1) {
+      warning(paste0("oneHotEncode() currently works on single layers only, but `img` has ", nlyr(img), " layers.",
+                     "\nDefaulting to first layer.",
+                     "\nSubmit a feature request at <https://github.com/bleutner/RStoolbox/issues> if you need it for more layers."),
+              call. = FALSE)
     }
+    out <- app(img,
+            function(x, cl = classes, bg = background, fg = foreground, na.rm)
+                oneHotCpp(x, classes = cl, bg = bg, fg = fg, na_rm = na.rm),
+            na.rm = na.rm,  ...)
+    names(out) <- paste0("c_", classes)
     out
 }

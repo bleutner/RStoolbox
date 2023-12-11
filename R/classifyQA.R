@@ -32,7 +32,7 @@
 #' @export 
 #' @examples
 #' library(terra)
-#' qa <- raster(ncol = 100, nrow=100, val = sample(1:2^14,  10000))
+#' qa <- rast(ncol = 100, nrow=100, val = sample(1:2^14,  10000))
 #' 
 #' ## QA classes
 #' qacs <- classifyQA(img = qa)

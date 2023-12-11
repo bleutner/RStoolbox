@@ -2,6 +2,7 @@
 ^\.travis\.yml$
 inst/demo
 .project
+.idea
 .git
 .gitignore
 .Rprofile

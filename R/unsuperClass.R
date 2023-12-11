@@ -29,8 +29,7 @@
 #' @export
 #' @examples 
 #' library(terra)
-#' data(rlogo)
-#' input <- rast(rlogo)
+#' input <- rlogo_rs
 #' 
 #' ## Plot 
 #' olpar <- par(no.readonly = TRUE) # back-up par
@@ -125,13 +124,12 @@ unsuperClass <- function(img, nSamples = 10000, nClasses = 5, nStarts = 25, nIte
 #' @export 
 #' @examples 
 #' ## Load training data
-#' data(rlogo)
 #' 
 #' ## Perform unsupervised classification
-#' uc  <- unsuperClass(rlogo, nClasses = 10)
+#' uc  <- unsuperClass(rlogo_rs, nClasses = 10)
 #' 
 #' ## Apply the model to another raster
-#' map <- predict(uc, rlogo)
+#' map <- predict(uc, rlogo_rs)
 predict.unsuperClass <- function(object, img,  output  = "classes", ...){
   img <- .toTerra(img)
   stopifnot(inherits(object, c("RStoolbox", "unsuperClass")))

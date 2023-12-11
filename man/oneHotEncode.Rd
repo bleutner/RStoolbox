@@ -28,13 +28,13 @@ Splits a categorical raster layer (or a vector) into a multilayer raster (or mat
 }
 \examples{
 ## example data
-data(rlogo)
-sc <- unsuperClass(rlogo, nClasses = 3)
+\donttest{
+sc <- unsuperClass(rlogo_rs, nClasses = 3)
 
 ## one-hot encode 
 sc_oneHot <- oneHotEncode(sc$map, classes = c(1,2,3))
 
 ## check results
 sc_oneHot
-plot(sc_oneHot)
+plot(sc_oneHot)}
 }

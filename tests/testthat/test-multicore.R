@@ -6,6 +6,7 @@ library(terra)
 # test_that(".paraRasterFun is equal to predict, calc, overlay, Both single and multicore.", {
 #     #skip_on_cran() # hadley says its risky to test parallel code on cran :-)
 #     for (clusterType in c('PSOCK', 'FORK')){
+#         clusterType <- "PSOCK"
 #         if(Sys.info()[["sysname"]] != "Linux" && clusterType == "FORK") next
 #         r <- rast(ncol=10,nrow=10, vals=1:100)
 #         r <- c(r, r^2)
@@ -16,9 +17,9 @@ library(terra)
 #         beginCluster(2, type=clusterType)
 #         cluster <- "multicore"
 #         for(i in 1:2){
+#           i <- 1
 #             expect_equal(.paraRasterFun(r, rasterFun = predict, args = list(model = m)), predict(r, m), label = paste("predict:", cluster))
 #             expect_equal(.paraRasterFun(r, rasterFun = calc, args = list(fun = sum)), calc(r, fun = sum), label = paste("calc:", cluster))
-#             expect_equal(.paraRasterFun(r, rasterFun = overlay, args = list(fun = f)), overlay(r, fun = f), label = paste("overlay:", cluster))
 #             endCluster()
 #             cluster <- "singlecore"
 #         }

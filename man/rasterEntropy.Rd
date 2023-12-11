@@ -22,7 +22,6 @@ To be used with categorical / integer valued rasters.
 Entropy is calculated as -sum(p log(p)); p being the class frequency per pixel.
 }
 \examples{
-data(rlogo)
-re <- rasterEntropy(rlogo)
+re <- rasterEntropy(rlogo_rs)
 ggR(re, geom_raster = TRUE)
 }

@@ -23,15 +23,15 @@
 #' @export
 #' @examples
 #' ## Estimate haze for blue, green and red band
-#' haze <- estimateHaze(lsat, hazeBands = 1:3, plot = TRUE)
+#' haze <- estimateHaze(lsat_rs, hazeBands = 1:3, plot = FALSE)
 #' haze
 #'
 #' ## Find threshold interactively
 #' #### Return the frequency tables for re-use
 #' #### avoids having to sample the Raster again and again
-#' haze <- estimateHaze(lsat, hazeBands = 1:3, returnTables = TRUE)
+#' haze <- estimateHaze(lsat_rs, hazeBands = 1:3, returnTables = TRUE)
 #' ## Use frequency table instead of lsat and fiddle with
-#' haze <- estimateHaze(haze, hazeBands = 1:3, darkProp = .1, plot = TRUE)
+#' haze <- estimateHaze(haze, hazeBands = 1:3, darkProp = .1, plot = FALSE)
 #' haze$SHV
 estimateHaze <- function(x, hazeBands, darkProp = 0.01, maxSlope = TRUE, plot = FALSE, returnTables = FALSE) {
 
@@ -45,7 +45,7 @@ estimateHaze <- function(x, hazeBands, darkProp = 0.01, maxSlope = TRUE, plot = 
             preCalc <- TRUE
             returnTables <- TRUE
         } else {
-            stop("x must be a SpatRaster* object or the result of a previous run of estimateHaze(SpatRaster*, ) with argument 'returnTables = TRUE'", call. = FALSE)
+            stop("x must be a SpatRaster or the result of a previous run of estimateHaze(SpatRaster*, ) with argument 'returnTables = TRUE'", call. = FALSE)
         }
     }
 

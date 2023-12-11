@@ -54,16 +54,14 @@
 #' library(terra)
 #' library(caret)
 #' ## Create fake input images
-#' data(rlogo)
-#' lsat <- rast(rlogo)
 #' agg.level <- 9
-#' modis <- terra::aggregate(lsat, agg.level)
+#' modis <- terra::aggregate(rlogo_rs, agg.level)
 #' 
 #' ## Perform an exemplary classification
-#' lc      <- unsuperClass(lsat, nClass=2)
+#' lc      <- unsuperClass(rlogo_rs, nClass=2)
 #' 
 #' ## Calculate the true cover, which is of course only possible in this example, 
-#' ## because the fake corse resolution imagery is exactly res(lsat)*9
+#' ## because the fake corse resolution imagery is exactly res(rlogo_rs)*9
 #' trueCover <- terra::aggregate(lc$map, agg.level, 
 #'                    fun = function(x, ...){sum(x == 1, ...)/sum(!is.na(x))})
 #' 
@@ -90,7 +88,7 @@
 #'            xlab = "True Cover", ylab = "Predicted Cover" )
 #'    abline(coef=c(0,1))
 #
-#'    rmse <- sqrt(global(compare.rf^2, "sum", na.rm = T))/ncell(compare.rf)
+#'    rmse <- sqrt(global(compare.rf^2, "sum", na.rm = TRUE))/ncell(compare.rf)
 #'    r2 <- cor(trueCover[], fc$map[], "complete.obs")
 #'    text(0.9,0.1, adj=1, labels = 
 #'         paste(c("RMSE:","\nR2:"), round(unlist(c(rmse, r2)),3), collapse=""))

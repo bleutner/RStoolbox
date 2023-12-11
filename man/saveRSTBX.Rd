@@ -46,7 +46,7 @@ This is because x$map is a Raster* object and hence contains only a static link 
 }
 \examples{
 \dontrun{
-input <- brick(system.file("external/rlogo.grd", package="raster"))
+input <- rlogo_rs
 ## Create filename
 file  <- paste0(tempdir(), "/test", runif(1))
 ## Run PCA

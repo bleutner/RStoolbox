@@ -81,57 +81,57 @@ library(ggplot2)
 library(terra)
 
 ## Simple grey scale annotation
-ggR(rlogo)
+ggR(rlogo_rs)
 
 ## With linear stretch contrast enhancement
-ggR(rlogo, stretch = "lin", quantiles = c(0.1,0.9))
+ggR(rlogo_rs, stretch = "lin", quantiles = c(0.1,0.9))
 
 ## ggplot with geom_raster instead of annotation_raster
 ## and default scale_fill*
-ggR(rlogo, geom_raster = TRUE)
+ggR(rlogo_rs, geom_raster = TRUE)
 
 ## with different scale
-ggR(rlogo, geom_raster = TRUE) +
+ggR(rlogo_rs, geom_raster = TRUE) +
         scale_fill_gradientn(name = "mojo", colours = rainbow(10)) +
         ggtitle("**Funkadelic**")
 
 ## Plot multiple layers
 \donttest{
-ggR(lsat, 1:6, geom_raster=TRUE, stretch = "lin") +
-    scale_fill_gradientn(colors=grey.colors(100), guide = FALSE) +
-    theme(axis.text = elementext(size=5), 
-          axis.text.y = elementext(angle=90),
+ggR(lsat_rs, 1:6, geom_raster=TRUE, stretch = "lin") +
+    scale_fill_gradientn(colors=grey.colors(100), guide = "none") +
+    theme(axis.text = element_text(size=5),
+          axis.text.y = element_text(angle=90),
           axis.title=element_blank())
 
 ## Don't plot, just return a data.frame
-df <- ggR(rlogo, ggObj = FALSE)
+df <- ggR(rlogo_rs, ggObj = FALSE)
 head(df, n = 3)
 
 ## Layermode (ggLayer=TRUE)
 data <- data.frame(x = c(0, 0:100,100), y = c(0,sin(seq(0,2*pi,pi/50))*10+20, 0))
-ggplot(data, aes(x, y)) +  ggR(rlogo, geom_raster= FALSE, ggLayer = TRUE) +
+ggplot(data, aes(x, y)) +  ggR(rlogo_rs, geom_raster= FALSE, ggLayer = TRUE) +
        geom_polygon(aes(x, y), fill = "blue", alpha = 0.4) +
        coord_equal(ylim=c(0,75))
 
 ## Categorical data 
 ## In this case you probably want to use geom_raster=TRUE 
 ## in order to perform aestetic mapping (i.e. a meaningful legend)
-rc   <- raster(rlogo)
-rc[] <- cut(rlogo[[1]][], seq(0,300, 50))
+rc   <- rlogo_rs
+rc[] <- cut(rlogo_rs[[1]][], seq(0,300, 50))
 ggR(rc, geom_raster = TRUE)
 
 ## Legend cusomization etc. ...
-ggR(rc, geom_raster = TRUE) + scale_fill_discrete(labels=paste("Class", 1:6))
+ggR(rc, geom_raster = TRUE) + scale_fill_continuous(labels=paste("Class", 1:6))
 }
 ## Creating a nicely looking DEM with hillshade background
-terr <- terrain(srtm, c("slope", "aspect"))
-hill <- hillShade(terr[["slope"]], terr[["aspect"]])
+terr <- terrain(srtm_rs, c("slope", "aspect"))
+hill <- shade(terr[["slope"]], terr[["aspect"]])
 ggR(hill)
 
 ggR(hill) + 
-   ggR(srtm, geom_raster = TRUE, ggLayer = TRUE, alpha = 0.3) +
+   ggR(srtm_rs, geom_raster = TRUE, ggLayer = TRUE, alpha = 0.3) +
    scale_fill_gradientn(colours = terrain.colors(100), name = "elevation")
 }
 \seealso{
-\link{ggRGB}, \link[=fortify.SpatRaster]{fortify}
+\link{ggRGB}, \link[=fortifySpatRaster]{fortifySpatRaster}
 }

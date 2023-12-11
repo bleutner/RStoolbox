@@ -19,16 +19,18 @@
 #' 
 #' ## Sample endmember spectra 
 #' ## First location is water, second is open agricultural vegetation
+#' \donttest{
 #' pts <- data.frame(x = c(624720, 627480), y = c(-414690, -411090))
-#' endmembers <- extract(lsat, pts)
+#' endmembers <- extract(lsat_rs, pts)
 #' rownames(endmembers) <- c("water", "vegetation")
 #' 
 #' ## Calculate spectral angles
-#' lsat_sam <- sam(lsat, endmembers, angles = TRUE)
+#' lsat_sam <- sam(lsat_rs, endmembers, angles = TRUE)
 #' plot(lsat_sam)
 #' 
 #' ## Classify based on minimum angle
-#' lsat_sam <- sam(lsat, endmembers, angles = FALSE)
+#' lsat_sam <- sam(lsat_rs, endmembers, angles = FALSE)
+#' }
 #' 
 #' \donttest{ggR(lsat_sam, forceCat = TRUE, geom_raster=TRUE) + 
 #'         scale_fill_manual(values = c("blue", "green"), labels = c("water", "vegetation"))}

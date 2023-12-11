@@ -72,42 +72,39 @@
 #' @name RStoolbox
 NULL
 
-
-#' Rlogo as RasterBrick
+#' Rlogo as SpatRaster
 #'
-#' Tiny example of raster data used to run examples. 
-#' 
-#' @usage rlogo
+#' Tiny example of raster data used to run examples.
+#'
+#' @usage rlogo_rs
 #' @docType data
 #' @keywords datasets
-#' @name rlogo
+#' @name rlogo_rs
 #' @examples
-#' ggRGB(rlogo,r = 1,g = 2,b = 3)
+#' ggRGB(rlogo_rs,r = 1,g = 2,b = 3)
 NULL
-
 
 #' SRTM Digital Elevation Model
-#' 
-#' DEM for the Landsat example area taken from SRTM v3 tile: s04_w050_1arc_v3.tif 
-#' 
-#' @usage srtm
+#'
+#' DEM for the Landsat example area taken from SRTM v3 tile: s04_w050_1arc_v3.tif
+#'
+#' @usage srtm_rs
 #' @docType data
 #' @keywords datasets
-#' @name srtm
+#' @name srtm_rs
 #' @examples
-#' ggR(srtm)
+#' ggR(srtm_rs)
 NULL
 
-
 #' Landsat 5TM Example Data
-#' 
+#'
 #' Subset of Landsat 5 TM Scene: LT52240631988227CUB02
 #' Contains all seven bands in DN format.
-#' 
-#' @usage lsat
+#'
+#' @usage lsat_rs
 #' @docType data
 #' @keywords datasets
-#' @name lsat
+#' @name lsat_rs
 #' @examples
-#' ggRGB(lsat, stretch = "lin")
+#' ggRGB(lsat_rs, stretch = "lin")
 NULL

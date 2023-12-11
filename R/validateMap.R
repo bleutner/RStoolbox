@@ -25,7 +25,7 @@
 #' val   <- poly[-splitIn,]
 #' 
 #' ## Classify (deliberately poorly)
-#' sc <- superClass(lsat, trainData = train, responseCol = "class", nSamples = 50, model = "mlc")
+#' sc <- superClass(lsat_rs, trainData = train, responseCol = "class", nSamples = 50, model = "mlc")
 #' 
 #' ## Polish map with majority filter
 #' 

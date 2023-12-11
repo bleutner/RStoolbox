@@ -9,15 +9,15 @@
     /_/ |_/____/\\__/\\____/\\____/_/_.___/\\____/_/|_|
   ")
 
-  lsat_rs <- terra::unwrap(readRDS("inst/external/lsat.rds"))
-  assign("lsat_rs", lsat_rs, envir=as.environment(paste0("package:", pkgname)))
+  lsat_rs <- terra::unwrap(readRDS(system.file("external", "lsat.rds", package = pkgname)))
+  assign("lsat_rs", lsat_rs, envir=as.environment("package:RStoolbox"))
 
-  rlogo_rs <- terra::unwrap(readRDS("inst/external/rlogo.rds"))
-  assign("rlogo_rs", rlogo_rs, envir=as.environment(paste0("package:", pkgname)))
+  rlogo_rs <- terra::unwrap(readRDS(system.file("external", "rlogo.rds", package = pkgname)))
+  assign("rlogo_rs", rlogo_rs, envir=as.environment("package:RStoolbox"))
 
-  srtm_rs <- terra::unwrap(readRDS("inst/external/srtm.rds"))
-  assign("srtm_rs", srtm_rs, envir=as.environment(paste0("package:", pkgname)))
-
-
+  srtm_rs <- terra::unwrap(readRDS(system.file("external", "srtm.rds", package = pkgname)))
+  assign("srtm_rs", srtm_rs, envir=as.environment("package:RStoolbox"))
 
 }
+
+

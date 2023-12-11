@@ -21,11 +21,10 @@ Useful if you want to apply a kmeans model of scene A to scene B.
 }
 \examples{
 ## Load training data
-data(rlogo)
 
 ## Perform unsupervised classification
-uc  <- unsuperClass(rlogo, nClasses = 10)
+uc  <- unsuperClass(rlogo_rs, nClasses = 10)
 
 ## Apply the model to another raster
-map <- predict(uc, rlogo)
+map <- predict(uc, rlogo_rs)
 }

@@ -42,7 +42,7 @@ Required bands are:
 library(terra)
 
 ## Run tasseled cap (exclude thermal band 6)
-lsat_tc <- tasseledCap(lsat[[c(1:5,7)]], sat = "Landsat5TM")
+lsat_tc <- tasseledCap(lsat_rs[[c(1:5,7)]], sat = "Landsat5TM")
 lsat_tc
 plot(lsat_tc)
 }
