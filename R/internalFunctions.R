@@ -10,7 +10,7 @@
 	.ESdistance[doy]
 }
 
-#' Convert raster::RasterStack to terra::SpatRaster
+#' Convert to terra::SpatRaster
 #'
 #' @param x raster or terra object
 #' @return RasterStack
@@ -26,9 +26,9 @@
   }
 }
 
-#' Convert sf objects to sp objects
+#' Convert sf objects
 #'
-#' @param x sf or sp object
+#' @param x spatial sp object to sf
 #' @return sf object
 #' @keywords internal
 #' @noRd
@@ -83,59 +83,18 @@
 #' @examples
 #' \dontrun{
 #'  xList <- lapply(rep(1000,10000), rnorm)
-#'  for(i in 1:2) {
-#'     if(i == 2) raster::beginCluster(4, type="SOCK")
-#'     RStoolbox:::.parXapply(xList, XFUN = "lapply", FUN = sum, na.rm = TRUE, envir = environment()),
-#'     RStoolbox:::.parXapply(xList, XFUN = "sapply", FUN = sum, na.rm = TRUE, envir = environment()),
-#'     RStoolbox:::.parXapply(matrix(100^2, 100,100), XFUN = "apply", MAR = 1, FUN = sum, na.rm = TRUE, envir = environment()),
-#'     endCluster()
+#'  RStoolbox:::.parXapply(xList, XFUN = "lapply", FUN = sum, na.rm = TRUE, envir = environment()),
+#'  RStoolbox:::.parXapply(xList, XFUN = "sapply", FUN = sum, na.rm = TRUE, envir = environment()),
+#'  RStoolbox:::.parXapply(matrix(100^2, 100,100), XFUN = "apply", MAR = 1, FUN = sum, na.rm = TRUE, envir = environment())
 #'  }
-#' }
-.parXapply <- function(X, XFUN, MARGIN, FUN, envir, ...){   
-    
+.parXapply <- function(X, XFUN, MARGIN, FUN, envir, ...){
+
     call <- quote(f(cl = cl, X = X, FUN = FUN, MARGIN = MARGIN, ...))
-    
-    if(isTRUE( getOption('rasterCluster'))) {
-        cl <- getCluster()  
-        on.exit(returnCluster()) 
-        f  <- c(lapply=parLapply, sapply=parSapply, apply=parApply)[[XFUN]]
-        if(!is.primitive(FUN)){
-            g  <- findGlobals(FUN)
-            gg <- lapply(g, get, envir = envir) 
-            names(gg) <- g
-        } else {
-            gg<-NULL
-        }
-        l  <- c(list(...),gg)
-        clusterExport(cl=cl, names(l), envir = envir)
-        if(XFUN == "lapply") names(call)[names(call)=="FUN"] <- "fun"
-    } else {
-        f <- get(XFUN)
-        call[["cl"]] <- NULL
-    }    
+    f <- get(XFUN)
+    call[["cl"]] <- NULL
     if(XFUN != "apply") call[["MARGIN"]] <- NULL
     eval(call)
-    
-}
 
-#' Set-up doParallel backend when beginCluster has been called
-#' 
-#' this is to allow caret to run caret::train in parallel (via foreach) 
-#' stopCluster will take place automatically on call to raster::endCluster
-#' @keywords internal
-#' @noRd 
-.registerDoParallel <- function(){
-    if(isTRUE(getOption('rasterCluster')) && !getDoParRegistered()) {
-        cl <- raster::getCluster()
-        registerDoParallel(cl)
-    }
-}
-
-.getNCores <- function(){
-    if(isTRUE(getOption('rasterCluster'))) {
-        return (length(raster::getCluster()))
-    }
-    return(1)
 }
 
 #' Get file extension for writeRaster
@@ -193,9 +152,6 @@
 .updateLayerNames<-function(x, n){
     if(!identical(names(x),n)){
         names(x) <- n
-        if(!inMemory(x) && extension(filename(x)) == ".grd") {
-            hdr(x, format = "RASTER")
-        }
     }
     x
 }

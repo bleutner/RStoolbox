@@ -47,8 +47,7 @@
 #' \item \code{\link{ggRGB}}: efficient plotting of remote sensing imagery in RGB with ggplot2
 #' }
 #' 
-#' @import raster sp sf 
-#' @importFrom terra rast vect project nlyr setMinMax minmax app spatSample ext
+#' @import terra sf
 #' @importFrom exactextractr exact_extract
 #' @importFrom lifecycle is_present deprecate_warn deprecated
 #' @importFrom ggplot2 aes aes_string annotation_raster coord_equal fortify geom_raster geom_blank ggplot scale_fill_discrete scale_fill_gradientn scale_fill_identity facet_wrap
@@ -61,9 +60,9 @@
 #' @importFrom codetools findGlobals
 #' @importFrom parallel parLapply parSapply parApply clusterExport makeCluster
 #' @importFrom XML xmlParse xmlToList
-#' @importFrom stats coefficients lm ecdf median approxfun knots kmeans na.omit complete.cases loadings princomp cov cor setNames
+#' @importFrom stats coefficients lm ecdf approxfun knots kmeans complete.cases loadings princomp cov cor setNames
 #' @importFrom graphics par abline
-#' @importFrom methods as
+#' @importFrom methods as show
 #' @importFrom utils read.csv read.delim read.table str write.table data capture.output
 #' @importFrom grDevices hsv
 #' @useDynLib RStoolbox

@@ -50,8 +50,6 @@ Buffering should be seen as final polishing, i.e. as long as the pure cloud cent
 Once your mask detects obvious cloud pixels properly re-enable buffering for fine tuning if desired. Finally, once a suitable threshold is established re-run cloudMask on the whole scene with this threshold and go get a coffee.
 }
 \examples{
-  
-library(raster)
 library(ggplot2)
 ## Import Landsat example subset
 ## We have two tiny clouds in the east
@@ -79,7 +77,7 @@ cldmsk_final <- cloudMask(cldmsk, threshold = 0.1, buffer = 5)
 \donttest{shadow <- cloudShadowMask(lsat_rs, cldmsk_final, shiftEstimate = c(-16,-6))}
 
 ## Plot
-\donttest{csmask <- raster::merge(cldmsk_final[[1]], shadow)
+\donttest{csmask <- terra::merge(cldmsk_final[[1]], shadow)
 ggRGB(lsat_rs, stretch = "lin") +
         ggR(csmask, ggLayer = TRUE, forceCat = TRUE, geom_raster = TRUE) +
         scale_fill_manual(values = c("blue", "yellow"), 

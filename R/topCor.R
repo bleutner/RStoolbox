@@ -207,7 +207,7 @@ topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg
             .vMessage("Begin strafification")
             if(method == "stratQuantiles") {
                 ## Quantile method
-                groups <- quantile(stratImg, probs = 0:n/n)
+                groups <- terra::quantile(stratImg, probs = 0:n/n)
             }
             if(method == "stratEqualBins") {
                 ## Equal method

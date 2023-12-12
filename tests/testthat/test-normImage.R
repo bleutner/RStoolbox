@@ -4,7 +4,6 @@ library(terra)
 lsat <- lsat_rs
 
 for(mem in c(TRUE, FALSE)){
-  rasterOptions(todisk = mem)
   test_that("normImage for single or multiple layers", {
     ## Multiple layers 	
     expect_is(nlsat <- normImage(lsat, norm = TRUE), "SpatRaster")

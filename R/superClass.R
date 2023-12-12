@@ -173,8 +173,8 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
         classMapping <- NULL
     }
     
-    ## Spit ellipsis into caret::trainControl and raster::writeRaster
-#    frmlsrain <- names(formals(raster::writeRaster))
+    ## Spit ellipsis into caret::trainControl and terra::writeRaster
+#    frmlsrain <- names(formals(terra::writeRaster))
 #    args  <- c(list(...), method = method)
 #    argsrainControl  <- args[names(args) %in% frmlsrain]
 #    args_writeRaster   <- args[!names(args) %in% frmlsrain]
@@ -277,8 +277,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
     }
 
     ## TRAIN ######################### 
-    .vMessage("Starting to fit model")   
-    .registerDoParallel()
+    .vMessage("Starting to fit model")
     indexIn <- if(polygonBasedCV) lapply(1:kfold, function(x) which(x != indexOut))
 
     if(model == "mlc")
@@ -505,7 +504,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 #' SC       <- superClass(rlogo_rs, trainData = train, responseCol = "class",
 #'               model = "rf", tuneLength = 1, predict = FALSE)
 #' 
-#' map <- predict(SC, rlogo)
+#' map <- predict(SC, rlogo_rs)
 predict.superClass <- function(object, img, predType = "raw", filename = NULL, datatype = "INT2U", ...){
     stopifnot(inherits(object, c("RStoolbox", "superClass")))
     
@@ -528,7 +527,7 @@ predict.superClass <- function(object, img, predType = "raw", filename = NULL, d
     
     wrArgs          <- c(list(...), list(filename = filename, datatype = datatype))
     wrArgs$filename <- filename ## remove filename from args if is.null(filename) --> standard writeRaster handling applies
-    .paraRasterFun(img, rasterFun=raster::predict, args = list(model=model, type = predType, index = probInd), wrArgs = wrArgs) 
+    .paraRasterFun(img, rasterFun=terra::predict, args = list(model=model, type = predType, index = probInd), wrArgs = wrArgs)
     
 }
 predict.superClass <- function(object, img, predType = "raw", filename = NULL, datatype = "INT2U", ...){

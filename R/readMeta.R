@@ -90,7 +90,7 @@ readMeta <- function(file, raw = FALSE){
         
         pars    <- meta[[projGroup]][c("MAP_PROJECTION","UTM_ZONE","DATUM", "ELLIPSOID"),]
         pars[1] <- tolower(pars[1])
-        proj    <- CRS(paste0(c("+proj=", "+zone=", "+units=m +datum=", "+ellips="), pars, collapse=" "))
+        proj    <- st_crs(paste0(c("+proj=", "+zone=", "+units=m +datum=", "+ellips="), pars, collapse=" "))
         
         rn <- row.names(meta[[contGroup]])
         
@@ -206,7 +206,7 @@ readMeta <- function(file, raw = FALSE){
         row     <- as.numeric(meta$global_metadata$wrs["row"])
         az      <- as.numeric(meta$global_metadata$solar_angles["azimuth"])
         selv    <- 90 - as.numeric(meta$global_metadata$solar_angles["zenith"])        
-        proj    <- CRS(paste0("+proj=utm +zone=",meta$global_metadata$projection_information$utm_proj_params," +datum=WGS84 +units=m"))
+        proj    <- st_crs(paste0("+proj=utm +zone=",meta$global_metadata$projection_information$utm_proj_params," +datum=WGS84 +units=m"))
         esd     <- .ESdist(date)
         files   <- sapply(meta$bands, "[[", "file_name")   
         quant   <- luv[sapply(atts, "[", "product")]
@@ -327,7 +327,7 @@ ImageMetaData <- function(file = NA, format = NA, sat = NA, sen = NA, scene = NA
 summary.ImageMetaData <- function(object, ...) { 
     
     labs <- format(c("Scene:", "Satellite:", "Sensor:", "Date:", "Path/Row:", "Projection:")) 
-    vals <- c(object$SCENE_ID, object$SATELLITE,object$SENSOR,format(object$ACQUISITION_DATE, "%F"), paste(object$PATH_ROW, collapse="/"), projection(object$PROJECTION))
+    vals <- c(object$SCENE_ID, object$SATELLITE,object$SENSOR,format(object$ACQUISITION_DATE, "%F"), paste(object$PATH_ROW, collapse="/"), st_crs(object$PROJECTION))
     cat(paste(labs, vals), fill =1)
     
     cat("\nData:\n") 

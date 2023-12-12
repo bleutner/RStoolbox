@@ -43,8 +43,6 @@ this is a quick and easy to use tool for Landsat data if you're just working on 
 it does perform surprisingly well.
 }
 \examples{
-  
-library(raster)
 library(ggplot2)
 ## Import Landsat example subset
 ## We have two tiny clouds in the east
@@ -72,7 +70,7 @@ cldmsk_final <- cloudMask(cldmsk, threshold = 0.1, buffer = 5)
 \donttest{shadow <- cloudShadowMask(lsat_rs, cldmsk_final, shiftEstimate = c(-16,-6))}
 
 ## Plot
-\donttest{csmask <- raster::merge(cldmsk_final[[1]], shadow)
+\donttest{csmask <- terra::merge(cldmsk_final[[1]], shadow)
 ggRGB(lsat_rs, stretch = "lin") +
         ggR(csmask, ggLayer = TRUE, forceCat = TRUE, geom_raster = TRUE) +
         scale_fill_manual(values = c("blue", "yellow"), 

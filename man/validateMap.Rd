@@ -16,7 +16,7 @@ validateMap(
 \arguments{
 \item{map}{RasterLayer or SpatRaster. The classified map.}
 
-\item{valData}{sf or sp object with validation data (POLYGONs or POINTs).}
+\item{valData}{sf object with validation data (POLYGONs or POINTs).}
 
 \item{responseCol}{Character. Column containing the validation data in attribute table of \code{valData}.}
 

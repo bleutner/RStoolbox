@@ -77,7 +77,7 @@ rasterCVA <- function(x, y, tmf = NULL, nct = NULL,  ...) {
 			out <- writeRaster(out, ...)
 		}
 	} else {
-		magfile <- if(!is.null(ellips$filename) && !doClamp) filename else rasterTmpFile()
+		magfile <- if(!is.null(ellips$filename) && !doClamp) sources else .terraTmpFile()
 		X   <- readStart(X)
 		out <- writeStart(out, filename = magfile, ...)
 		tr  <- terra::blocks(out)

@@ -162,11 +162,11 @@ fCover <- function(classImage, predImage,
   # Normalize by 1-NAfrequency
   fCov[include,classes]   <- fCov[include,classes]/(1-fCov[include,'NA',drop=TRUE])
   
-  .registerDoParallel()
+
   ## Fit regression model and predict
   wopt <- list(...)
   fn <- if(length(classes) == 1 & !is.null(filename)) filename else "" ## write raster here already during predict if only one layer is output
-  fCL <- lapply(1:length(classes), function(cl){
+  fCL <- lapply(seq_along(classes), function(cl){
     .vMessage("Fitting regression model for class ", cl)
     
     ## Assemble training data (and remove cells exceeding maxNA)

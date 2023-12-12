@@ -50,10 +50,10 @@ rownames(em) <- em_names
 probs <- mesma(lsat_rs, em, method = "NNLS")
 
 #take a look
-raster::hist(probs$water)
-raster::plot(probs$water, col = c("white","blue"))
-raster::hist(probs$land)
-raster::plot(probs$land, col = c("white","brown"))
+terra::hist(probs$water)
+terra::plot(probs$water, col = c("white","blue"))
+terra::hist(probs$land)
+terra::plot(probs$land, col = c("white","brown"))
 
 }
 \references{

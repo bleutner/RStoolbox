@@ -16,7 +16,7 @@ test_that("basic functioning", {
       }
       skip_on_cran()
       for(method in  mths){
-          expect_is(tc <- topCor(lsat, dem = srtm, metaData = metaData, method = method, filename = rasterTmpFile()), "SpatRaster")
+          expect_is(tc <- topCor(lsat, dem = srtm, metaData = metaData, method = method, filename = .terraTmpFile()), "SpatRaster")
           expect_equal(names(tc),  if(method!="illu") names(lsat) else "illu")
       }
       expect_is(tc2 <- topCor(lsat, dem = srtm, metaData = metaData, method = "minnaert", stratImg='slope', nStrat = 5), "list")

@@ -1,5 +1,4 @@
-#' @examples   
-#' library(raster)
+#' @examples
 #' library(ggplot2)
 #' ## Import Landsat example subset
 #' ## We have two tiny clouds in the east
@@ -27,7 +26,7 @@
 #' \donttest{shadow <- cloudShadowMask(lsat_rs, cldmsk_final, shiftEstimate = c(-16,-6))}
 #'
 #' ## Plot
-#' \donttest{csmask <- raster::merge(cldmsk_final[[1]], shadow)
+#' \donttest{csmask <- terra::merge(cldmsk_final[[1]], shadow)
 #' ggRGB(lsat_rs, stretch = "lin") +
 #'         ggR(csmask, ggLayer = TRUE, forceCat = TRUE, geom_raster = TRUE) +
 #'         scale_fill_manual(values = c("blue", "yellow"), 

@@ -37,15 +37,14 @@
 #' probs <- mesma(lsat_rs, em, method = "NNLS")
 #' 
 #' #take a look
-#' raster::hist(probs$water)
-#' raster::plot(probs$water, col = c("white","blue"))
-#' raster::hist(probs$land)
-#' raster::plot(probs$land, col = c("white","brown"))
+#' terra::hist(probs$water)
+#' terra::plot(probs$water, col = c("white","blue"))
+#' terra::hist(probs$land)
+#' terra::plot(probs$land, col = c("white","brown"))
 #' 
 #' @export
 #' 
 mesma <- function(img, em, method = "NNLS", iterate = 400, tolerance = 0.00000001, ..., verbose){
-  
   img <- .toTerra(img)
   ## messages
   if(!missing("verbose")) .initVerbose(verbose)

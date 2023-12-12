@@ -4,7 +4,7 @@
 #' validate a map from a classification or regression model. This can be useful to update the accuracy assessment after filtering, e.g. for a minimum mapping unit.
 #'  
 #' @param map RasterLayer or SpatRaster. The classified map.
-#' @param valData sf or sp object with validation data (POLYGONs or POINTs).
+#' @param valData sf object with validation data (POLYGONs or POINTs).
 #' @param nSamplesV Integer. Number of pixels to sample for validation (only applies to polygons).
 #' @param responseCol Character. Column containing the validation data in attribute table of \code{valData}.
 #' @param mode Character. Either 'classification' or 'regression'.

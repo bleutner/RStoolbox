@@ -19,8 +19,6 @@ Depends:
     R (>= 3.5.0)
 Imports:
     caret (>= 6.0-79),
-    raster,
-    sp,
     sf,
     terra,
     XML,

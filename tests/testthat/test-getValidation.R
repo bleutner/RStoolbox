@@ -1,6 +1,5 @@
 context("getValidation")
 suppressPackageStartupMessages(library("randomForest"))
-suppressPackageStartupMessages(library("sp"))
 
 train <- readRDS(system.file("external/trainingPoints.rds", package="RStoolbox"))
 rlogo <- rlogo_rs
