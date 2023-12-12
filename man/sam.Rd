@@ -33,7 +33,7 @@ library(ggplot2)
 
 ## Sample endmember spectra 
 ## First location is water, second is open agricultural vegetation
-\donttest{
+\dontrun{
 pts <- data.frame(x = c(624720, 627480), y = c(-414690, -411090))
 endmembers <- extract(lsat_rs, pts)
 rownames(endmembers) <- c("water", "vegetation")
@@ -44,8 +44,7 @@ plot(lsat_sam)
 
 ## Classify based on minimum angle
 lsat_sam <- sam(lsat_rs, endmembers, angles = FALSE)
-}
 
-\donttest{ggR(lsat_sam, forceCat = TRUE, geom_raster=TRUE) + 
+ggR(lsat_sam, forceCat = TRUE, geom_raster=TRUE) +
         scale_fill_manual(values = c("blue", "green"), labels = c("water", "vegetation"))}
 }

@@ -17,7 +17,7 @@ oneHotEncode(img, classes, background = 0, foreground = 1, na.rm = FALSE, ...)
 
 \item{na.rm}{logical: if \code{TRUE}, \code{NA}s will be coerced to the \code{background} value.}
 
-\item{...}{further arguments passed to \link[terra]{writeRaster}. Ignored if img is not a RasterLayer, but a numeric/integer vector}
+\item{...}{further arguments passed to \link[terra]{writeRaster}. Ignored if img is not a SpatRaster, but a numeric/integer vector or matrix}
 }
 \value{
 A SpatRaster with as many layers as there are classes.
@@ -27,7 +27,6 @@ Pixels matching the class of interest are set to 1, backround values by default 
 Splits a categorical raster layer (or a vector) into a multilayer raster (or matrix).
 }
 \examples{
-## example data
 \donttest{
 sc <- unsuperClass(rlogo_rs, nClasses = 3)
 
@@ -36,5 +35,5 @@ sc_oneHot <- oneHotEncode(sc$map, classes = c(1,2,3))
 
 ## check results
 sc_oneHot
-plot(sc_oneHot)}
+}
 }
