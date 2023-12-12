@@ -23,7 +23,7 @@ vals[1]<-NA
 
 test_that("correct haze values are found (and deals with NA)", {
     expect_is(hdn <- estimateHaze(tera, hazeBands = 1, darkProp = .02, maxSlope = FALSE, plot = FALSE),  "numeric")
-    expect_equal(hdn, c(lyr.1 = 1))
+    expect_equal(hdn, c(lyr.1 = 5))
     expect_is(hdn <- estimateHaze(tera, hazeBands = 1, darkProp = .02, maxSlope = TRUE, plot = FALSE),  "numeric")
-    expect_equal(hdn, c(lyr.1 = 1))
+    expect_equal(hdn, c(lyr.1 = 4))
 })
