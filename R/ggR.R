@@ -7,8 +7,8 @@
 #' @param maxpixels Integer. Maximal number of pixels to sample.
 #' @param ext Extent object to crop the image
 #' @param alpha Numeric. Transparency (0-1).
-#' @param hue Numeric. Hue value for color calculation [0,1] (see \[grDevices]{hsv}). Change if you need anything else than greyscale. Only effective if \code{sat > 0}.
-#' @param sat Numeric. Saturation value for color calculation [0,1] (see \[grDevices]{hsv}). Change if you need anything else than greyscale.
+#' @param hue Numeric. Hue value for color calculation [0,1] (see \code{\link[grDevices]{hsv}}). Change if you need anything else than greyscale. Only effective if \code{sat > 0}.
+#' @param sat Numeric. Saturation value for color calculation [0,1] (see \code{\link[grDevices]{hsv}}). Change if you need anything else than greyscale.
 #' @param stretch Character. Either 'none', 'lin', 'hist', 'sqrt' or 'log' for no stretch, linear, histogram, square-root or logarithmic stretch.
 #' @param quantiles Numeric vector with two elements. Min and max quantiles to stretch to. Defaults to 2\% stretch, i.e. c(0.02,0.98). 
 #' @param ggObj Logical. Return a stand-alone ggplot object (TRUE) or just the data.frame with values and colors

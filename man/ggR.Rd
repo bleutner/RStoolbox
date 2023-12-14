@@ -30,9 +30,9 @@ ggR(
 
 \item{alpha}{Numeric. Transparency (0-1).}
 
-\item{hue}{Numeric. Hue value for color calculation [0,1] (see \[grDevices]{hsv}). Change if you need anything else than greyscale. Only effective if \code{sat > 0}.}
+\item{hue}{Numeric. Hue value for color calculation [0,1] (see \code{\link[grDevices]{hsv}}). Change if you need anything else than greyscale. Only effective if \code{sat > 0}.}
 
-\item{sat}{Numeric. Saturation value for color calculation [0,1] (see \[grDevices]{hsv}). Change if you need anything else than greyscale.}
+\item{sat}{Numeric. Saturation value for color calculation [0,1] (see \code{\link[grDevices]{hsv}}). Change if you need anything else than greyscale.}
 
 \item{stretch}{Character. Either 'none', 'lin', 'hist', 'sqrt' or 'log' for no stretch, linear, histogram, square-root or logarithmic stretch.}
 
