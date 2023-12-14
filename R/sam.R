@@ -62,4 +62,3 @@ sam <- function(img, em, angles = FALSE, ...){
     return(out)
     
 }
-

@@ -79,7 +79,7 @@ legend(1,1, legend = paste0("C",1:5), fill = colors,
 ## Return the distance of each pixel to each class centroid
 unC <- unsuperClass(input, nSamples = 100, nClasses = 3, output = "distances")
 unC
-ggR(unC$map, 1:3, geom_raster = TRUE)
+\dontrun{ggR(unC$map, 1:3, geom_raster = TRUE)}
 
 par(olpar) # reset par
 }
