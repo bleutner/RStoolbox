@@ -4,7 +4,7 @@
 #' You can either specify a metadata file, or supply all neccesary values manually. 
 #' With proper parametrization apref and sdos should work for other sensors as well.
 #' 
-#' @param img Raster* object or SpatRaster
+#' @param img SpatRaster
 #' @param metaData object of class ImageMetaData or a path to the meta data (MTL) file. 
 #' @param method Radiometric conversion/correction method to be used. There are currently four methods available (see Details):
 #' "rad", "apref", "sdos", "dos", "costz".
@@ -17,7 +17,7 @@
 #' @param darkProp Numeric. Estimated proportion of dark pixels in the scene. Used only for automatic guessing of hazeValues (typically one would choose 1 or 2\%).
 #' @param clamp Logical. Enforce valid value range. By default reflectance will be forced to stay within [0,1] and radiance >= 0 by replacing invalid values with the correspinding boundary, e.g. -0.1 will become 0.
 #' @param verbose Logical. Print status information. 
-#' @note This was originally a fork of randcorr() function in the landsat package. This version works on Raster* objects and hence is suitable for large rasters.
+#' @note This was originally a fork of randcorr() function in the landsat package. This version works on SpatRasters and hence is suitable for large rasters.
 #' @return 
 #' SpatRaster with top-of-atmosphere radiance (\eqn{W/(m^2 * srad * \mu m)}), at-satellite brightness temperature (K),
 #' top-of-atmosphere reflectance (unitless) corrected for the sun angle or at-surface reflectance (unitless).

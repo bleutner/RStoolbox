@@ -3,7 +3,7 @@
 #' This is an accessor function to quickly access information stored in ImageMetaData, e.g. scale factor per band.
 #' Intended for use with imagery which was imported using stackMeta. Will return parameters using the actual band order in img.
 #' 
-#' @param img Raster* or SpatRaster or character vector with band names.
+#' @param img SpatRaster or character vector with band names.
 #' @param metaData ImageMetaData or path to meta data file.
 #' @param what Character. Parameter to extract. Either data descriptors, or conversion parameters (see Details for options)
 #' @export 
@@ -67,7 +67,7 @@ getMeta <- function(img, metaData, what){
     } else if (inherits(img,"character")) {
         bds <- img
     } else {
-        stop("img must be a Raster* or character")
+        stop("img must be a SpatRaster or character")
     }
     
     if(what %in% c("CALREF", "CALRAD", "CALBT")) {

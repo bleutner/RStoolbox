@@ -42,7 +42,7 @@ return the object but the raster will be missing.
 
 writeRSTBX and readRSTBX are convenience wrappers around saveRDS, readRDS. This means 
 you can read all files created this way also with base functionality as long as you don't move your files.
-This is because x$map is a Raster* object and hence contains only a static link to the file on disk.
+This is because x$map is a SpatRaster object and hence contains only a static link to the file on disk.
 }
 \examples{
 \dontrun{

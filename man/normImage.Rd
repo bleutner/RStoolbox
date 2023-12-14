@@ -7,7 +7,7 @@
 normImage(img, norm = TRUE, ...)
 }
 \arguments{
-\item{img}{Raster* object or SpatRaster. Image to transform. Transformation will be performed separately for each layer.}
+\item{img}{SpatRaster. Image to transform. Transformation will be performed separately for each layer.}
 
 \item{norm}{Logical. Perform normalization (scaling) in addition to centering, i.e. divide by standard deviation.}
 

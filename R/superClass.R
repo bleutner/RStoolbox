@@ -2,7 +2,7 @@
 #' 
 #' Supervised classification both for classification and regression mode based on vector training data (points or polygons). 
 #' 
-#' @param img Raster* object or SpatRaster. Typically remote sensing imagery, which is to be classified.
+#' @param img SpatRaster. Typically remote sensing imagery, which is to be classified.
 #' @param trainData sf or sp spatial vector data containing the training locations (POINTs,or POLYGONs).
 #' @param valData  Ssf or sp spatial vector data containing the validation locations (POINTs,or POLYGONs) (optional).
 #' @param responseCol Character or integer giving the column in \code{trainData}, which contains the response variable. Can be omitted, when \code{trainData} has only one column.
@@ -382,7 +382,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 #' Note CRS equality is assumed and not tested anymore (tested earlier)
 #' this was introduced to avoid spurious CRS mismatches  
 #' 
-#' @param img Raster* or any other geometry which returns a st_bbox
+#' @param img SpatRaster or any other geometry which returns a st_bbox
 #' @param vect sf 
 #' @keywords internal
 #' @noRd

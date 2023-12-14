@@ -1,6 +1,6 @@
 #' Plot RasterLayers in ggplot with greyscale
 #' 
-#' Plot single layer imagery in grey-scale. Can be used with any Raster* object.
+#' Plot single layer imagery in grey-scale. Can be used with a SpatRaster.
 #' 
 #' @param img raster
 #' @param layer Character or numeric. Layername or number. Can be more than one layer, in which case each layer is plotted in a subplot.
@@ -27,7 +27,7 @@
 #' }
 #' @details
 #' When \code{img} contains factor values and \code{annotation=TRUE}, the raster values will automatically be converted
-#' to numeric in order to proceed with the brightness calculation. ä
+#' to numeric in order to proceed with the brightness calculation.
 #' 
 #' The raster package provides a class lookup-table for categorical rasters (e.g. what you get if you run superClass in classification mode). If your raster has a lookup-table ggR will automatically treat it as categorical (see \link[raster]{factor}). 
 #' However, the factor status of Raster objects is easily lost and the values are interpreted as numeric. In such cases you should make use of the \code{forceCat = TRUE} argument, which makes sure

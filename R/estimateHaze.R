@@ -7,7 +7,7 @@
 #' @param darkProp Numeric. Proportion of pixels estimated to be dark.
 #' @param maxSlope Logical. Use \code{darkProp} only as an upper boundary and search for the DN of maximum slope in the histogram below this value.
 #' @param plot Logical. Option to display histograms and haze values
-#' @param returnTables Logical. Option to return the frequency table per layer. Only takes effect if x is a Raster* object. If x is a result of estimateHaze tables will always be returned.
+#' @param returnTables Logical. Option to return the frequency table per layer. Only takes effect if x is a SpatRaster. If x is a result of estimateHaze tables will always be returned.
 #' @details
 #' It is assumed that any radiation originating from *dark* pixels is due to atmospheric haze and
 #' not the reflectance of the surface itself (the surface is dark, i.e. it has a reflectance close to zero).
@@ -45,7 +45,7 @@ estimateHaze <- function(x, hazeBands, darkProp = 0.01, maxSlope = TRUE, plot = 
             preCalc <- TRUE
             returnTables <- TRUE
         } else {
-            stop("x must be a SpatRaster or the result of a previous run of estimateHaze(SpatRaster*, ) with argument 'returnTables = TRUE'", call. = FALSE)
+            stop("x must be a SpatRaster or the result of a previous run of estimateHaze(SpatRaster, ...) with argument 'returnTables = TRUE'", call. = FALSE)
         }
     }
 

@@ -15,9 +15,9 @@ cloudShadowMask(
 )
 }
 \arguments{
-\item{img}{Raster* object containing the scene}
+\item{img}{SpatRaster containing the scene}
 
-\item{cm}{Raster* object. Cloud mask (typically the result of \code{\link{cloudMask}})}
+\item{cm}{SpatRaster. Cloud mask (typically the result of \code{\link{cloudMask}})}
 
 \item{nc}{Integer. Number of control points. A few points (default) are fine because the final shift is estimated by \link{coregisterImages}.}
 

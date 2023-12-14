@@ -2,7 +2,7 @@
 #' 
 #' Calculate a suite of multispectral indices such as NDVI, SAVI etc. in an efficient way.
 #' 
-#' @param img Raster* object or SpatRaster. Typically remote sensing imagery, which is to be classified.
+#' @param img SpatRaster, Typically remote sensing imagery, which is to be classified.
 #' @param blue Character or integer. Blue band. 
 #' @param green Character or integer. Green band. 
 #' @param red Character or integer. Red band. 

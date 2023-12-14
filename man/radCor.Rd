@@ -18,7 +18,7 @@ radCor(
 )
 }
 \arguments{
-\item{img}{Raster* object or SpatRaster}
+\item{img}{SpatRaster}
 
 \item{metaData}{object of class ImageMetaData or a path to the meta data (MTL) file.}
 
@@ -83,7 +83,7 @@ Therefore, these values were derived from a standard reference spectrum publishe
 The implemented sun-earth distances neglect the earth's eccentricity. Instead we use a 100 year daily average (1979-2070).
 }
 \note{
-This was originally a fork of randcorr() function in the landsat package. This version works on Raster* objects and hence is suitable for large rasters.
+This was originally a fork of randcorr() function in the landsat package. This version works on SpatRasters and hence is suitable for large rasters.
 }
 \examples{
 library(terra)

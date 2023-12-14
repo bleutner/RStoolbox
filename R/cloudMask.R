@@ -95,8 +95,8 @@ cloudMask <- function(x, threshold = 0.2,  blue = "B1_sre", tir = "B6_sre", buff
 #' corresponding cloud/cloudShadow pixels which will be used to estimate coordinates 
 #' for a linear cloudmask shift.
 #' 
-#' @param img Raster* object containing the scene 
-#' @param cm Raster* object. Cloud mask (typically the result of \code{\link{cloudMask}})
+#' @param img SpatRaster containing the scene
+#' @param cm SpatRaster. Cloud mask (typically the result of \code{\link{cloudMask}})
 #' @param nc Integer. Number of control points. A few points (default) are fine because the final shift is estimated by \link{coregisterImages}.
 #' @param shiftEstimate NULL or numeric vector of length two (x,y). Estimated displacement of shadows in map units. If \code{NULL}, the user will be asked to select control points interactively.
 #' @param preciseShift NULL or numeric vector of length two (x,y). Use this if cloud/cloud-shadow displacement is already known, e.g. from a previous run of \code{cloudShadowMask}.

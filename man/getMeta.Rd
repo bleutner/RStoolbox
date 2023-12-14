@@ -7,7 +7,7 @@
 getMeta(img, metaData, what)
 }
 \arguments{
-\item{img}{Raster* or SpatRaster or character vector with band names.}
+\item{img}{SpatRaster or character vector with band names.}
 
 \item{metaData}{ImageMetaData or path to meta data file.}
 

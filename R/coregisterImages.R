@@ -3,8 +3,8 @@
 #' Shifts an image to match a reference image. Matching is based on maximum
 #' mutual information. 
 #' 
-#' @param img Raster* object or SpatRaster. Image to shift to match reference image. \code{img} and \code{ref} must have equal numbers of bands.
-#' @param ref Raster* object or SpatRaster. Reference image. \code{img} and \code{ref} must have equal numbers of bands.
+#' @param img SpatRaster or SpatRaster. Image to shift to match reference image. \code{img} and \code{ref} must have equal numbers of bands.
+#' @param ref SpatRaster or SpatRaster. Reference image. \code{img} and \code{ref} must have equal numbers of bands.
 #' @param shift Numeric or matrix. If numeric, then shift is the maximal absolute radius (in pixels of \code{img} resolution) which \code{img} is shifted (\code{seq(-shift, shift, by=shiftInc)}). 
 #'  If shift is a matrix it must have two columns (x shift and y shift), then only these shift values will be tested.
 #' @param shiftInc Numeric. Shift increment (in pixels, but not restricted to integer). Ignored if \code{shift} is a matrix.

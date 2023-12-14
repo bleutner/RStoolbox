@@ -15,7 +15,7 @@
 #' 
 #' writeRSTBX and readRSTBX are convenience wrappers around saveRDS, readRDS. This means 
 #' you can read all files created this way also with base functionality as long as you don't move your files.
-#' This is because x$map is a Raster* object and hence contains only a static link to the file on disk.
+#' This is because x$map is a SpatRaster object and hence contains only a static link to the file on disk.
 #' 
 #' @param x RStoolbox object of classes c("fCover", "rasterPCA", "superClass", "unsuperClass")
 #' @param filename Character. Path and filename. Any file extension will be ignored.

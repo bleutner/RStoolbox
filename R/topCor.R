@@ -2,15 +2,15 @@
 #' 
 #' account and correct for changes in illumination due to terrain elevation.
 #' 
-#' @param img Raster* object or SpatRaster. Imagery to correct
-#' @param dem Raster* object or SpatRaster. Either a digital elevation model as a RasterLayer or a RasterStack/Brick with pre-calculated slope and aspect (see \link[raster]{terrain}) in which case the layers must be named 'slope' and 'aspect'.
+#' @param img SpatRaster. Imagery to correct
+#' @param dem SpatRaster. Either a digital elevation model as a RasterLayer or a RasterStack/Brick with pre-calculated slope and aspect (see \link[raster]{terrain}) in which case the layers must be named 'slope' and 'aspect'.
 #' Must have the same dimensions as \code{img}.
 #' @param metaData Character, ImageMetaData. Either a path to a Landsat meta-data file (MTL) or an ImageMetaData object (see \link{readMeta}) 
 #' @param solarAngles Numeric vector containing sun azimuth and sun zenith (in radians and in that order). Not needed if metaData is provided   
 #' @param method Character. One of c("cos", "avgcos", "minnaert", "C", "stat", "illu"). Choosing 'illu' will return only the local illumination map.
 #' @param stratImg RasterLayer or SpatRaster to define strata, e.g. NDVI. Or the string 'slope' in which case stratification will be on \code{nStrat} slope classes. Only relevant if \code{method = 'minnaert'}.
 #' @param nStrat Integer. Number of bins or quantiles to stratify by. If a bin has less than 50 samples it will be merged with the next bin. Only relevant if \code{method = 'minnaert'}.
-#' @param illu Raster* object or SpatRaster. Optional pre-calculated ilumination map. Run topCor with method="illu" to calculate an ilumination map
+#' @param illu SpatRaster. Optional pre-calculated ilumination map. Run topCor with method="illu" to calculate an ilumination map
 #' @param ... arguments passed to \code{\link[raster]{writeRaster}}
 #' @details
 #' For detailed discussion of the various approaches please see Riano et al. (2003).

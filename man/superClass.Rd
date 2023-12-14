@@ -27,7 +27,7 @@ superClass(
 )
 }
 \arguments{
-\item{img}{Raster* object or SpatRaster. Typically remote sensing imagery, which is to be classified.}
+\item{img}{SpatRaster. Typically remote sensing imagery, which is to be classified.}
 
 \item{trainData}{sf or sp spatial vector data containing the training locations (POINTs,or POLYGONs).}
 

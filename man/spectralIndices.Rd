@@ -28,7 +28,7 @@ spectralIndices(
 )
 }
 \arguments{
-\item{img}{Raster* object or SpatRaster. Typically remote sensing imagery, which is to be classified.}
+\item{img}{SpatRaster, Typically remote sensing imagery, which is to be classified.}
 
 \item{blue}{Character or integer. Blue band.}
 

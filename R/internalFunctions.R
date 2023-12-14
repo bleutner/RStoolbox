@@ -57,7 +57,7 @@
 }
 
 #' Run raster functions in parallel if possible
-#' @param raster Raster* Object
+#' @param SpatRaster Object
 #' @param rasterFun function. E.g. predict, calc, overlay 
 #' @param args list. arguments to be passed to rasterFun.
 #' @param wrArgs arguments to be passed to rasterFun, typically to writeRaster
@@ -168,7 +168,7 @@
 }
 
 #' Convert character to numric band
-#' @param raster Raster*
+#' @param SpatRaster raster
 #' @param ... Character or Numeric bands
 #' @keywords internal
 #' @noRd 

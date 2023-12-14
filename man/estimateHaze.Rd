@@ -24,7 +24,7 @@ estimateHaze(
 
 \item{plot}{Logical. Option to display histograms and haze values}
 
-\item{returnTables}{Logical. Option to return the frequency table per layer. Only takes effect if x is a Raster* object. If x is a result of estimateHaze tables will always be returned.}
+\item{returnTables}{Logical. Option to return the frequency table per layer. Only takes effect if x is a SpatRaster. If x is a result of estimateHaze tables will always be returned.}
 }
 \value{
 If returnTables is FALSE (default). Then a vector of length(hazeBands) containing the estimated haze DNs will be returned.

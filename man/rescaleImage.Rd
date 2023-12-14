@@ -7,9 +7,9 @@
 rescaleImage(x, y, xmin, xmax, ymin, ymax, forceMinMax = FALSE, ...)
 }
 \arguments{
-\item{x}{Raster* object or SpatRaster or numeric vector. Image to normalise.}
+\item{x}{patRaster or numeric vector. Image to normalise.}
 
-\item{y}{Raster* object or SpatRaster or numeric vector. Reference image. Optional. Used to extract min and max values if ymin or ymax are missing.}
+\item{y}{SpatRaster or numeric vector. Reference image. Optional. Used to extract min and max values if ymin or ymax are missing.}
 
 \item{xmin}{Numeric. Min value of x. Either a single value or one value per layer in x. If xmin is not provided it will be extracted from x.}
 

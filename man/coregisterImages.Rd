@@ -19,9 +19,9 @@ coregisterImages(
 )
 }
 \arguments{
-\item{img}{Raster* object or SpatRaster. Image to shift to match reference image. \code{img} and \code{ref} must have equal numbers of bands.}
+\item{img}{SpatRaster or SpatRaster. Image to shift to match reference image. \code{img} and \code{ref} must have equal numbers of bands.}
 
-\item{ref}{Raster* object or SpatRaster. Reference image. \code{img} and \code{ref} must have equal numbers of bands.}
+\item{ref}{SpatRaster or SpatRaster. Reference image. \code{img} and \code{ref} must have equal numbers of bands.}
 
 \item{shift}{Numeric or matrix. If numeric, then shift is the maximal absolute radius (in pixels of \code{img} resolution) which \code{img} is shifted (\code{seq(-shift, shift, by=shiftInc)}). 
 If shift is a matrix it must have two columns (x shift and y shift), then only these shift values will be tested.}

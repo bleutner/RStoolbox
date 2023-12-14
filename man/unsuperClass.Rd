@@ -18,7 +18,7 @@ unsuperClass(
 )
 }
 \arguments{
-\item{img}{Raster* object or SpatRaster.}
+\item{img}{SpatRaster.}
 
 \item{nSamples}{Integer. Number of random samples to draw to fit cluster map. Only relevant if clusterMap = TRUE.}
 
@@ -44,7 +44,7 @@ For output = "classes", $map contains a SpatRaster with discrete classes (kmeans
 a SpatRaster, with `nClasses` layers, where each layer maps the euclidean distance to the corresponding class centroid.
 }
 \description{
-Unsupervised clustering of Raster* data using kmeans clustering
+Unsupervised clustering of SpatRaster data using kmeans clustering
 }
 \details{
 Clustering is done using \code{\link[stats]{kmeans}}. This can be done for all pixels of the image (\code{clusterMap=FALSE}), however this can be slow and is

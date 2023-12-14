@@ -1,8 +1,8 @@
 #' Unsupervised Classification
 #' 
-#' Unsupervised clustering of Raster* data using kmeans clustering
+#' Unsupervised clustering of SpatRaster data using kmeans clustering
 #' 
-#' @param img Raster* object or SpatRaster.
+#' @param img SpatRaster.
 #' @param nSamples Integer. Number of random samples to draw to fit cluster map. Only relevant if clusterMap = TRUE.
 #' @param nClasses Integer. Number of classes.
 #' @param nStarts  Integer. Number of random starts for kmeans algorithm.

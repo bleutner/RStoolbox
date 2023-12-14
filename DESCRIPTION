@@ -1,7 +1,7 @@
 Package: RStoolbox
 Type: Package
 Title: Tools for Remote Sensing Data Analysis
-Version: 0.3.1.9999
+Version: 0.4.0
 Authors@R: c(
     person("Benjamin", "Leutner", role=c("cre", "aut"), email="rstoolboxpackage@gmail.com", comment = c(ORCID = "0000-0002-6893-2002")),
     person("Ned", "Horning", role ="aut", email="horning@amnh.org"),
