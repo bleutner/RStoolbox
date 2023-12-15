@@ -78,7 +78,6 @@ With the tuneLength argument you can specify how many different values of each t
 algorithm for example can be tuned by varying the mtry parameter. Hence, by specifying tuneLength = 10, ten different levels
 of mtry will be tested in a cross-validation scheme and the best-performing value will be chosen for the final model.
 
-If you register a parallel backend before, model fitting will run in parallel.
 
 If the total no-data values for a block of high resolution pixels is greater than maxNA then 
 it will not be included in the training data set since there is too much missing data to provide 

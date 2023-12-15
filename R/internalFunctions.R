@@ -56,7 +56,7 @@
             }, numeric(1))
 }
 
-#' Run raster functions in parallel if possible
+#' Run raster functions
 #' @param SpatRaster Object
 #' @param rasterFun function. E.g. predict, calc, overlay 
 #' @param args list. arguments to be passed to rasterFun.
@@ -64,14 +64,10 @@
 #' @keywords internal
 #' @noRd 
 .paraRasterFun <- function(raster, rasterFun, args = list(), wrArgs = list()){
-    if (isTRUE(getOption('rasterCluster'))) {
-        do.call("clusterR", args = c(list(x = raster, fun = rasterFun, args=args), wrArgs))
-    } else {
-        do.call("rasterFun", c(list(raster), args, wrArgs))
-    }
+  do.call("rasterFun", c(list(raster), args, wrArgs))
 }
 
-#' Run functions of ?apply family in parallel if possible
+#' Run functions of ?apply family
 #' @param X object
 #' @param XFUN ?apply function. Currently c(sapply,lapply, apply)
 #' @param MARGIN integer. Margin for apply.
@@ -88,7 +84,6 @@
 #'  RStoolbox:::.parXapply(matrix(100^2, 100,100), XFUN = "apply", MAR = 1, FUN = sum, na.rm = TRUE, envir = environment())
 #'  }
 .parXapply <- function(X, XFUN, MARGIN, FUN, envir, ...){
-
     call <- quote(f(cl = cl, X = X, FUN = FUN, MARGIN = MARGIN, ...))
     f <- get(XFUN)
     call[["cl"]] <- NULL
