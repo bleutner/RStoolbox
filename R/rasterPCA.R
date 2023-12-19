@@ -81,7 +81,7 @@ rasterPCA <- function(img, nSamples = NULL, nComp = nlyr(img), spca = FALSE,  ma
         }
     }
     ## Predict
-    out <- terra::predict(img, model = model, na.rm = TRUE, index = 1:nComp, wArgs = ellip)
+    out <- .paraRasterFun(img, predict, args = list(model = model, index = 1:nComp), wrArgs = ellip)
     names(out) <- paste0("PC", 1:nComp)
     structure(list(call = match.call(), model = model, map = out), class = c("rasterPCA", "RStoolbox"))  
 

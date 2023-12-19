@@ -1,5 +1,4 @@
 context("Multicore/Singlecore")
-library(parallel)
 library(terra)
 
 
@@ -14,7 +13,7 @@ test_that(".paraRasterFun is equal to predict, calc, overlay, Both single and mu
         f <- function(a,b){a-b}
 
         for(i in 1:2){
-          expect_equal(.paraRasterFun(r, rasterFun = predict, args = list(model = m)), predict(r, m), label = paste("predict:", "singlecore"))
+          expect_equal(.paraRasterFun(r, rasterFun = terra::predict, args = list(model = m)), terra::predict(r, m), label = paste("predict:", "singlecore"))
           expect_equal(.paraRasterFun(r, rasterFun = app, args = list(fun = sum)), app(r, fun = sum), label = paste("calc:", "singlecore"))
         }
     }
