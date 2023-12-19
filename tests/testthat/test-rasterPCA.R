@@ -7,7 +7,7 @@ lsat <- crop(lsat, ext(lsat)*.2)
 ld   <- as.data.frame(lsat)
 
 for(spc in c(FALSE, TRUE)) {
-	test_that(paste("princomp(covMat(raster)) == princomp(sample) with spca=",spc), {
+	test_that(paste("stats::princomp(covMat(raster)) == stats::princomp(sample) with spca=",spc), {
 		expect_s3_class(r   <- rasterPCA(lsat, nSamples = NULL, spca = spc), c("RStoolbox","rasterPCA"))
 		expect_s3_class(rs  <- rasterPCA(lsat, nSamples = ncell(lsat), spca = spc), c("RStoolbox","rasterPCA"))
 		expect_equal(abs(unclass(rs$model$loadings)), abs(unclass(r$model$loadings)))
@@ -19,7 +19,7 @@ for(spc in c(FALSE, TRUE)) {
 lsat[[1]][100:200] <- NA
 lsat[400:500] 	   <- NA
 G <- expand.grid(smpl=c(TRUE,FALSE), spc = c(TRUE, FALSE))
-for(i in 1:nrow(G)){
+for(i in seq_len(nrow(G))){
 	spc  <- G[i,"spc"]
 	smpl <- if(G[i,"smpl"]) ncell(lsat) else NULL
 	test_that(paste("rasterPCA NA handling; spca =",spc, "; nSamples =", deparse(smpl)), {

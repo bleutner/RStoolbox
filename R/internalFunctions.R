@@ -64,7 +64,7 @@
 #' @keywords internal
 #' @noRd 
 .paraRasterFun <- function(raster, rasterFun, args = list(), wrArgs = list()){
-  do.call("rasterFun", c(list(raster), args, wrArgs))
+  do.call(rasterFun, c(list(raster), args, wrArgs))
 }
 
 #' Run functions of ?apply family
