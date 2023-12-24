@@ -98,7 +98,7 @@ rasterCVA <- function(x, y, tmf = NULL, nct = NULL,  ...) {
 			nct <- tmf * medianEstimate
 			rm(RStoolbox_rasterCVAEnv)
 		}
-		out <- do.call(clamp, c(list(x = out, lower=nct), ellips))
+		out <- do.call(terra::clamp, c(list(x = out, lower=nct), ellips))
 		
 		names(out) <- c("angle", "magnitude")
 	}
