@@ -45,8 +45,8 @@
 #' \item \code{\link{ggR}}: single raster layer plotting with ggplot2
 #' \item \code{\link{ggRGB}}: efficient plotting of remote sensing imagery in RGB with ggplot2
 #' }
-#' 
-#' @import terra sf
+#'
+#' @import sf terra
 #' @importFrom exactextractr exact_extract
 #' @importFrom lifecycle is_present deprecate_warn deprecated
 #' @importFrom ggplot2 aes aes_string annotation_raster coord_equal fortify geom_raster geom_blank ggplot scale_fill_discrete scale_fill_gradientn scale_fill_identity facet_wrap
@@ -55,7 +55,7 @@
 #' @importFrom tidyr pivot_wider complete
 #' @importFrom dplyr mutate group_by summarize filter
 #' @importFrom XML xmlParse xmlToList
-#' @importFrom stats coefficients lm ecdf approxfun knots kmeans complete.cases loadings princomp cov cor setNames
+#' @importFrom stats coefficients lm ecdf approxfun knots kmeans complete.cases loadings cov cor setNames
 #' @importFrom graphics par abline
 #' @importFrom methods as show
 #' @importFrom utils read.csv read.delim read.table str write.table data capture.output
