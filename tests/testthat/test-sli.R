@@ -30,11 +30,11 @@ test_that("read and write are compatible", {
 
 
 test_that("spectra labels are parsed correctly", {
-            skip_on_cran()
-            for(s in letters[1:4]) {
-                expect_is(sli <- readSLI(paste0("tests/testthat/testdata/sli/", s, ".sli")), "data.frame", info = paste0("failed: ", s, ".sli"))
-                expect_equal(colnames(sli), c("wavelength", "spectrum_a", "spectrum_b"))
-                expect_equal(unlist(sli[1,]), c(wavelength = 350, spectrum_a = 0.008958003153785, spectrum_b = 0.00883699393591312  ))
-            }
-        })
+    skip_on_cran()
+    for(s in letters[1:4]) {
+        expect_is(sli <- readSLI(paste0("tests/testthat/testdata/sli/", s, ".sli")), "data.frame", info = paste0("failed: ", s, ".sli"))
+        expect_equal(colnames(sli), c("wavelength", "spectrum_a", "spectrum_b"))
+        expect_equal(unlist(sli[1,]), c(wavelength = 350, spectrum_a = 0.008958003153785, spectrum_b = 0.00883699393591312  ))
+    }
+})
 
