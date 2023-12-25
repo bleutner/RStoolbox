@@ -27,6 +27,8 @@ jobs:
 
       - name: Test coverage
         run: |
+          install.packages("devtools")
+          library(devtools)
           devtools::load_all()
           covr::codecov()
         shell: Rscript {0}
