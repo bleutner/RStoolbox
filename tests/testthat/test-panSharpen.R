@@ -4,7 +4,7 @@ lsat <- lsat_rs
 library(terra)
 
 test_that("panSharpen methods", {
-	skip_on_cran()
+	skip_on_covr()
 	suppressWarnings({
 		agg     <- aggregate(lsat,10)
 		pan     <- sum(lsat[[1:3]])
