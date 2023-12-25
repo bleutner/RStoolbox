@@ -3,10 +3,10 @@ Type: Package
 Title: Tools for Remote Sensing Data Analysis
 Version: 0.4.0
 Authors@R: c(
-    person("Benjamin", "Leutner", role=c("cre", "aut"), email="konstantinfinn.mueller@gmx.de", comment = c(ORCID = "0000-0002-6893-2002")),
-    person("Ned", "Horning", role ="aut", email="konstantinfinn.mueller@gmx.de"),
-    person("Jakob", "Schwalb-Willmann", role ="aut", email="konstantinfinn.mueller@gmx.de", comment = c(ORCID = "0000-0003-2665-1509")),
-    person("Robert J.", "Hijmans", role = "ctb",  email = "konstantinfinn.mueller@gmx.de",comment = c(ORCID = "0000-0001-5872-2872")),
+    person("Benjamin", "Leutner", role=c("cre", "aut"), email="rstoolboxpackage@gmail.com", comment = c(ORCID = "0000-0002-6893-2002")),
+    person("Ned", "Horning", role ="aut", email="horning@amnh.org"),
+    person("Jakob", "Schwalb-Willmann", role ="aut", email="movevis@schwalb-willmann.de", comment = c(ORCID = "0000-0003-2665-1509")),
+    person("Robert J.", "Hijmans", role = "ctb",  email = "r.hijmans@gmail.com",comment = c(ORCID = "0000-0001-5872-2872")),
     person("Konstantin", "Mueller", role = "ctb", email = "konstantinfinn.mueller@gmx.de", comment = c(ORCID = "0000-0001-6540-3124"))
     )
 Description: Toolbox for remote sensing image processing and analysis such as
