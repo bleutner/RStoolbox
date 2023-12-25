@@ -104,7 +104,7 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0
   layer <- unlist(.numBand(img, layer))
 
   multLayers <- if (length(layer)>1) TRUE else FALSE
-  multLayers <- if (length(layer)>1) TRUE else FALSE
+
   if(multLayers & !geom_raster & ggObj) {
     warning("You asked for multiple layers but geom_raster is FALSE.",
             "\ngeom_raster will be reset to TRUE", 

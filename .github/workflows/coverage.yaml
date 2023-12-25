@@ -23,12 +23,17 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: covr
+          extra-packages: |
+            covr
+            devtools
+
+      - uses: codecov/codecov-action@v3
 
       - name: Test coverage
         run: |
-          install.packages("devtools")
-          library(devtools)
           devtools::load_all()
+          devtools::build()
+          devtools::install()
+          covr::package_coverage()
           covr::codecov()
         shell: Rscript {0}
