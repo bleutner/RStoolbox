@@ -18,6 +18,6 @@ Returns a data.frame with coordinates (x,y) and corresponding raster values.
 Fortify method for classes from the terra package.
 }
 \examples{
-r_df <- fortifySpatRaster(rlogo_rs)
+r_df <- fortifySpatRaster(rlogo)
 head(r_df)
 }

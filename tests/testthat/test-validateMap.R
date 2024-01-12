@@ -1,13 +1,13 @@
 context("validateMap")
-lsat <- lsat_rs
-lsat <- lsat[[1:4]]
+lsat_t <- lsat
+lsat_t <- lsat_t[[1:4]]
 
 ## Set-up test data
 set.seed(1)
 poly     <- readRDS(system.file("external/trainingPolygons.rds", package="RStoolbox"))
 poly$classNum <- as.numeric(poly$class)
 
-sc <- superClass(lsat, trainData = poly, nSamples = 50, responseCol = "class", model = "mlc", trainPartition = 0.7, predict = TRUE)
+sc <- superClass(lsat_t, trainData = poly, nSamples = 50, responseCol = "class", model = "mlc", trainPartition = 0.7, predict = TRUE)
 
 test_that("classification, without class mapping",{
             val <- validateMap(sc$map, valData = poly, nSample =50, responseCol = "classNum", classMapping = NULL)

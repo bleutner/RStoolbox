@@ -23,7 +23,7 @@
 #' @examples 
 #' library(terra)
 #' \dontrun{
-#' pca <- rasterPCA(lsat_rs)$map
+#' pca <- rasterPCA(lsat)$map
 #' 
 #' ## Do change vector analysis 
 #' cva <- rasterCVA(pca[[1:2]], pca[[3:4]])

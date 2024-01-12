@@ -1,9 +1,6 @@
 context("ggplot: ggR, ggRGB & fortify")
 library(terra)
 
-lsat <- lsat_rs
-rlogo <- rlogo_rs
-
 test_that("ggR returns proper ggplot2 classes or data.frames", {
   suppressWarnings({
     tests  <- expand.grid(forceCat = c(TRUE, FALSE), anno = c(TRUE, FALSE), ggLayer = c(TRUE, FALSE), ggObj = c(TRUE,FALSE))

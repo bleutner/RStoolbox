@@ -90,19 +90,19 @@ library(terra)
 ## Import meta-data and bands based on MTL file
 mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
 metaData <- readMeta(mtlFile)
-lsat <- stackMeta(mtlFile)
+lsat_t <- stackMeta(mtlFile)
 
 
 ## Convert DN to top of atmosphere reflectance and brightness temperature
-lsat_ref <- radCor(lsat, metaData = metaData, method = "apref")
+lsat_ref <- radCor(lsat_t, metaData = metaData, method = "apref")
 
 ## Correct DN to at-surface-reflecatance with DOS (Chavez decay model)
-\donttest{lsat_sref <- radCor(lsat, metaData = metaData)}
+\donttest{lsat_sref <- radCor(lsat_t, metaData = metaData)}
 
 ## Correct DN to at-surface-reflecatance with simple DOS 
 ## Automatic haze estimation
-hazeDN    <- estimateHaze(lsat, hazeBands = 1:4, darkProp = 0.01, plot = FALSE)
-lsat_sref <- radCor(lsat_rs, metaData = metaData, method = "sdos",
+hazeDN    <- estimateHaze(lsat_t, hazeBands = 1:4, darkProp = 0.01, plot = FALSE)
+lsat_sref <- radCor(lsat_t, metaData = metaData, method = "sdos",
                      hazeValues = hazeDN, hazeBands = 1:4)
 }
 \references{

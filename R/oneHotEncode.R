@@ -13,7 +13,7 @@
 #' @export 
 #' @examples
 #' \donttest{
-#' sc <- unsuperClass(rlogo_rs, nClasses = 3)
+#' sc <- unsuperClass(rlogo, nClasses = 3)
 #' 
 #' ## one-hot encode 
 #' sc_oneHot <- oneHotEncode(sc$map, classes = c(1,2,3))

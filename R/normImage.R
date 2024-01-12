@@ -13,11 +13,11 @@
 #' ## Load example data
 #' 
 #' ## Normalization: Center and Scale
-#' rlogo_center_norm <- normImage(rlogo_rs)
+#' rlogo_center_norm <- normImage(rlogo)
 #' hist(rlogo_center_norm)
 #' 
 #' ## Centering
-#' rlogo_center <- normImage(rlogo_rs, norm = FALSE)
+#' rlogo_center <- normImage(rlogo, norm = FALSE)
 normImage <- function(img, norm = TRUE, ...) {
   img <- .toTerra(img)
 

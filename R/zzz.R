@@ -10,12 +10,12 @@
   ")
 
   lsat_rs <- terra::readRDS(system.file("external", "lsat.rds", package = pkgname))
-  assign("lsat_rs", lsat_rs, envir=as.environment("package:RStoolbox"))
+  assign("lsat", lsat_rs, envir=as.environment("package:RStoolbox"))
 
   rlogo_rs <- terra::readRDS(system.file("external", "rlogo.rds", package = pkgname))
-  assign("rlogo_rs", rlogo_rs, envir=as.environment("package:RStoolbox"))
+  assign("rlogo", rlogo_rs, envir=as.environment("package:RStoolbox"))
 
   srtm_rs <- terra::readRDS(system.file("external", "srtm.rds", package = pkgname))
-  assign("srtm_rs", srtm_rs, envir=as.environment("package:RStoolbox"))
+  assign("srtm", srtm_rs, envir=as.environment("package:RStoolbox"))
 
 }

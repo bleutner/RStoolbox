@@ -23,8 +23,8 @@ Useful if you want to apply a kmeans model of scene A to scene B.
 ## Load training data
 
 ## Perform unsupervised classification
-uc  <- unsuperClass(rlogo_rs, nClasses = 10)
+uc  <- unsuperClass(rlogo, nClasses = 10)
 
 ## Apply the model to another raster
-map <- predict(uc, rlogo_rs)
+map <- predict(uc, rlogo)
 }

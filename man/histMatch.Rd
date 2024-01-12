@@ -52,7 +52,7 @@ Performs image to image contrast adjustments based on histogram matching using e
 library(ggplot2)
 library(terra)
 ## Original image a (+1 to prevent log(0))
-img_a <-  rlogo_rs + 1
+img_a <-  rlogo + 1
 ## Degraded image b
 img_b <- log(img_a)
 ## Cut-off half the image (just for better display)

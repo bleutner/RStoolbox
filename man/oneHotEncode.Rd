@@ -28,7 +28,7 @@ Splits a categorical raster layer (or a vector) into a multilayer raster (or mat
 }
 \examples{
 \donttest{
-sc <- unsuperClass(rlogo_rs, nClasses = 3)
+sc <- unsuperClass(rlogo, nClasses = 3)
 
 ## one-hot encode 
 sc_oneHot <- oneHotEncode(sc$map, classes = c(1,2,3))

@@ -44,11 +44,11 @@ library(ggplot2)
 
 ## Fake panchromatic image (30m resolution covering
 ## the visible range (integral from blue to red))
-pan       <- sum(lsat_rs[[1:3]])
+pan       <- sum(lsat[[1:3]])
 ggR(pan, stretch = "lin") 
 
 ## Fake coarse resolution image (150m spatial resolution)
-lowResImg <- aggregate(lsat_rs, 5)
+lowResImg <- aggregate(lsat, 5)
 
 
 ## Brovey pan sharpening

@@ -1,7 +1,6 @@
 context("histMatch")
 
 library(terra)
-lsat <- lsat_rs
 singLay <- histMatch(lsat[[1]], lsat[[2]])
 multLay <- histMatch(lsat, sqrt(lsat))
 

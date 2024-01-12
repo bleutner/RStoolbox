@@ -5,25 +5,25 @@ suppressPackageStartupMessages(library(pls))
 suppressPackageStartupMessages(library(randomForest))
 suppressPackageStartupMessages(library(caret))
 
-lsat <- lsat_rs
-lsat <- lsat[[1:4]]
+lsat_t <- lsat
+lsat_t <- lsat_t[[1:4]]
 ## Set-up test data
 set.seed(1)
 poly     <- readRDS(system.file("external/trainingPolygons.rds", package="RStoolbox"))
 poly$res <- as.numeric(poly$class)
 poly <- st_as_sf(poly)
 pts <- st_join(st_as_sf(st_sample(poly, 100, type = "regular")), poly)
-lsNA     <- lsat
+lsNA     <- lsat_t
 lsNA[1:100,] <- NA
 
-trainList <- list(projected = list(polygons = poly, points = pts, img = lsat)) 
+trainList <- list(projected = list(polygons = poly, points = pts, img = lsat_t))
 
 g <- function(x){as.character(st_geometry_type(x,F))}
 
 
 ## Maximum likelihood custom model
 test_that("maximum likelihood model",
-    expect_is(superClass(lsat, trainData = poly, responseCol = "class", model = "mlc", tuneLength = 1, trainPartition = 0.7, predict = FALSE), "superClass")
+    expect_is(superClass(lsat_t, trainData = poly, responseCol = "class", model = "mlc", tuneLength = 1, trainPartition = 0.7, predict = FALSE), "superClass")
 ) 
 
 for(type in c("polygons", "points")){
@@ -132,14 +132,14 @@ for(type in c("polygons", "points")){
 
 #
 test_that("sp inputs",{
-            expect_is( superClass(lsat, trainData = as_Spatial(poly), nSamples = 50, responseCol = "class", model = "pls", 
-                            tuneGrid = data.frame(ncomp = 3), tuneLength = 1, trainPartition = 0.7, predict = FALSE), "superClass")
+            expect_is( superClass(lsat_t, trainData = as_Spatial(poly), nSamples = 50, responseCol = "class", model = "pls",
+                                  tuneGrid = data.frame(ncomp = 3), tuneLength = 1, trainPartition = 0.7, predict = FALSE), "superClass")
             
         })
 #
 test_that("terra inputs",{
-            expect_is( superClass(lsat, trainData = poly, nSamples = 50, responseCol = "class", model = "pls",
-                            tuneGrid = data.frame(ncomp = 3), tuneLength = 1, trainPartition = 0.7, predict = FALSE), "superClass")
+            expect_is( superClass(lsat_t, trainData = poly, nSamples = 50, responseCol = "class", model = "pls",
+                                  tuneGrid = data.frame(ncomp = 3), tuneLength = 1, trainPartition = 0.7, predict = FALSE), "superClass")
             
         })
 #
@@ -161,7 +161,7 @@ if (identical(Sys.getenv("NOT_CRAN"), "true") ) {
     ## Projection checks
     poly <- st_transform(poly, "epsg:4326")
     test_that("projection mismatch errors", 
-            expect_error(superClass(lsat, trainData = poly, responseCol = "class"), "must have the same projection")
+            expect_error(superClass(lsat_t, trainData = poly, responseCol = "class"), "must have the same projection")
     )
 #	
 }

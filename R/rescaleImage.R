@@ -22,11 +22,11 @@
 #' @export
 #' @md
 #' @examples
-#' lsat2 <- lsat_rs - 1000
+#' lsat2 <- lsat - 1000
 #' lsat2
 #' 
 #' ## Rescale lsat2 to match original lsat value range
-#' lsat2_rescaled <- rescaleImage(lsat2, lsat_rs)
+#' lsat2_rescaled <- rescaleImage(lsat2, lsat)
 #' lsat2_rescaled
 #' 
 #' ## Rescale lsat to value range [0,1]

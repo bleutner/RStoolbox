@@ -11,7 +11,7 @@
 #' SpatRaster "entropy"
 #' @export 
 #' @examples
-#' re <- rasterEntropy(rlogo_rs)
+#' re <- rasterEntropy(rlogo)
 #' ggR(re, geom_raster = TRUE)
 rasterEntropy <- function(img, ...){
 	img <- .toTerra(img)

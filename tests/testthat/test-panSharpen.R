@@ -1,6 +1,5 @@
 context("panSharpen")
 
-lsat <- lsat_rs
 library(terra)
 
 test_that("panSharpen methods", {
@@ -8,7 +7,7 @@ test_that("panSharpen methods", {
 	skip_on_covr()
 	skip_on_ci()
 	suppressWarnings({
-		agg     <- aggregate(lsat,10)
+		agg     <- aggregate(lsat, 10)
 		pan     <- sum(lsat[[1:3]])
 		meth    <- c("brovey", "ihs", "pca")
 		panList <- lapply(meth, function(m) panSharpen(img = agg, pan = pan, r = 3, g = 2, b = 1, method = m))

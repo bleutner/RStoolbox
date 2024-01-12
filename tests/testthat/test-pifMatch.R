@@ -1,12 +1,11 @@
 context("pifMatch")
 library(terra)
 
-lsat <- lsat_rs
-lsat_b <- log(lsat)  
+lsat_b <- log(lsat)
 
 for(m in c("cor", "sam", "ed")) {
    test_that("pifMatch return classes", {
-      expect_is(lb <- pifMatch(lsat_b, lsat, method = m, returnPifMap = TRUE, returnSimMap = TRUE, returnModels = TRUE), "list", info = sprintf("method=%s",m))
+      expect_is(lb <- pifMatch(lsat_b, lsat, method = m, returnPifMap = TRUE, returnSimMap = TRUE, returnModels = TRUE), "list", info = sprintf("method=%s", m))
       expect_equal(names(lb), c("img", "simMap", "pifMap", "models"))
       expect_is(lb$models$B1_dn, "lm")
       expect_true(all(vapply(lb[2:3],inherits, logical(1), "SpatRaster")))

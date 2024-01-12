@@ -54,13 +54,13 @@
 #' library(caret)
 #' ## Create fake input images
 #' agg.level <- 9
-#' modis <- terra::aggregate(rlogo_rs, agg.level)
+#' modis <- terra::aggregate(rlogo, agg.level)
 #' 
 #' ## Perform an exemplary classification
-#' lc      <- unsuperClass(rlogo_rs, nClass=2)
+#' lc      <- unsuperClass(rlogo, nClass=2)
 #' 
 #' ## Calculate the true cover, which is of course only possible in this example, 
-#' ## because the fake corse resolution imagery is exactly res(rlogo_rs)*9
+#' ## because the fake corse resolution imagery is exactly res(rlogo)*9
 #' trueCover <- terra::aggregate(lc$map, agg.level, 
 #'                    fun = function(x, ...){sum(x == 1, ...)/sum(!is.na(x))})
 #' 

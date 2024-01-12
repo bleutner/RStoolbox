@@ -44,13 +44,13 @@ Atmospheric haze affects almost exclusively the visible wavelength range. Theref
 }
 \examples{
 ## Estimate haze for blue, green and red band
-haze <- estimateHaze(lsat_rs, hazeBands = 1:3, plot = FALSE)
+haze <- estimateHaze(lsat, hazeBands = 1:3, plot = FALSE)
 haze
 
 ## Find threshold interactively
 #### Return the frequency tables for re-use
 #### avoids having to sample the Raster again and again
-haze <- estimateHaze(lsat_rs, hazeBands = 1:3, returnTables = TRUE)
+haze <- estimateHaze(lsat, hazeBands = 1:3, returnTables = TRUE)
 ## Use frequency table instead of lsat and fiddle with
 haze <- estimateHaze(haze, hazeBands = 1:3, darkProp = .1, plot = FALSE)
 haze$SHV

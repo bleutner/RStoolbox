@@ -63,7 +63,7 @@ When two images are exactly co-registered their mutual information is maximal. B
 library(terra)
 library(ggplot2)
 library(reshape2)
-reference <- rlogo_rs
+reference <- rlogo
 ## Shift reference 2 pixels to the right and 3 up
 missreg <- shift(reference,  2,  3)
 

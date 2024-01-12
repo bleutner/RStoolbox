@@ -50,11 +50,11 @@ has the same effect as using normalised bands of unit variance.
 \dontrun{
 library(ggplot2)
 library(reshape2)
-ggRGB(rlogo_rs, 1,2,3)
+ggRGB(rlogo, 1,2,3)
 
 ## Run PCA
 set.seed(25)
-rpc <- rasterPCA(rlogo_rs)
+rpc <- rasterPCA(rlogo)
 rpc
 
 ## Model parameters:

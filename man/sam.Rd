@@ -35,15 +35,15 @@ library(ggplot2)
 ## First location is water, second is open agricultural vegetation
 \dontrun{
 pts <- data.frame(x = c(624720, 627480), y = c(-414690, -411090))
-endmembers <- extract(lsat_rs, pts)
+endmembers <- extract(lsat, pts)
 rownames(endmembers) <- c("water", "vegetation")
 
 ## Calculate spectral angles
-lsat_sam <- sam(lsat_rs, endmembers, angles = TRUE)
+lsat_sam <- sam(lsat, endmembers, angles = TRUE)
 plot(lsat_sam)
 
 ## Classify based on minimum angle
-lsat_sam <- sam(lsat_rs, endmembers, angles = FALSE)
+lsat_sam <- sam(lsat, endmembers, angles = FALSE)
 
 ggR(lsat_sam, forceCat = TRUE, geom_raster=TRUE) +
         scale_fill_manual(values = c("blue", "green"), labels = c("water", "vegetation"))}

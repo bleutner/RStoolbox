@@ -1,17 +1,16 @@
 context("estimateHaze")
 
 mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
-lsat <- lsat_rs
 
 test_that("all hazeBand specifications work", {
   hb <- list(single = 2, contiguous = c(1:3), noncontiguous = c(1,3), noncontiguous2 = c(2,4))
   for(i in seq_along(hb)){
-      expect_is(hdn <- estimateHaze(lsat, hazeBands = hb[[i]], plot = FALSE),  "numeric")
+      expect_is(hdn <- estimateHaze(lsat, hazeBands = hb[[i]], plot = FALSE), "numeric")
       expect_identical(length(hdn), length(hb[[i]]))
-      expect_is(hdn2 <- estimateHaze(lsat, hazeBands = names(lsat)[hb[[i]]], plot = FALSE),  "numeric")
+      expect_is(hdn2 <- estimateHaze(lsat, hazeBands = names(lsat)[hb[[i]]], plot = FALSE), "numeric")
       expect_identical(hdn, hdn2)
       expect_equal(names(hdn), names(lsat)[hb[[i]]])
-      expect_is(hdn <- estimateHaze(lsat, hazeBands = hb[[i]], maxSlope = FALSE, plot = FALSE),  "numeric")
+      expect_is(hdn <- estimateHaze(lsat, hazeBands = hb[[i]], maxSlope = FALSE, plot = FALSE), "numeric")
   }
   expect_error(estimateHaze(lsat), "specify the band")
 })

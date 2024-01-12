@@ -14,7 +14,6 @@ ml[] <- 1
 ml[,2] <- 10
 ml[,3] <- NA
 names(ml) <- "henryMaske"
-lsat <- lsat_rs
 
 r <- rast(r)
 ml <- rast(ml)

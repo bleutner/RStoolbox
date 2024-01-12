@@ -58,7 +58,7 @@ The \code{nStarts} argument allows to specify how many random starts are conduct
 }
 \examples{
 library(terra)
-input <- rlogo_rs
+input <- rlogo
 
 ## Plot 
 olpar <- par(no.readonly = TRUE) # back-up par

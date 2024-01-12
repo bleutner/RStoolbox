@@ -7,7 +7,7 @@
 #' @return Returns a data.frame with coordinates (x,y) and corresponding raster values.
 #' @name fortifySpatRaster
 #' @examples
-#' r_df <- fortifySpatRaster(rlogo_rs)
+#' r_df <- fortifySpatRaster(rlogo)
 #' head(r_df)
 #' @export
 fortifySpatRaster <- function(x, maxpixels = 50000){

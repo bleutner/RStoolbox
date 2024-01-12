@@ -76,11 +76,11 @@
 #' olpar <- par(no.readonly = TRUE) # back-up par
 #' par(mfrow=c(1,2))
 #' colors <- c("yellow", "green", "deeppink")
-#' plotRGB(rlogo_rs)
+#' plotRGB(rlogo)
 #' plot(train, add = TRUE, col =  colors[train$class], pch = 19)
 #' 
 #' ## Fit classifier (splitting training into 70\% training data, 30\% validation data)
-#' SC       <- superClass(rlogo_rs, trainData = train, responseCol = "class",
+#' SC       <- superClass(rlogo, trainData = train, responseCol = "class",
 #' model = "rf", tuneLength = 1, trainPartition = 0.7)
 #' SC
 #' 
@@ -501,10 +501,10 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 #' train <- readRDS(system.file("external/trainingPoints.rds", package="RStoolbox"))
 #' 
 #' ## Fit classifier 
-#' SC       <- superClass(rlogo_rs, trainData = train, responseCol = "class",
+#' SC       <- superClass(rlogo, trainData = train, responseCol = "class",
 #'               model = "rf", tuneLength = 1, predict = FALSE)
 #' 
-#' map <- predict(SC, rlogo_rs)
+#' map <- predict(SC, rlogo)
 predict.superClass <- function(object, img, predType = "raw", filename = NULL, datatype = "INT2U", ...){
     stopifnot(inherits(object, c("RStoolbox", "superClass")))
     

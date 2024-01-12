@@ -46,7 +46,7 @@ This is because x$map is a SpatRaster object and hence contains only a static li
 }
 \examples{
 \dontrun{
-input <- rlogo_rs
+input <- rlogo
 ## Create filename
 file  <- paste0(tempdir(), "/test", runif(1))
 ## Run PCA

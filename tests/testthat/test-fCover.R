@@ -3,7 +3,6 @@ context("fCover")
 set.seed(42)
 suppressPackageStartupMessages(library(terra))
 
-lsat <- lsat_rs
 lc	  <- unsuperClass(lsat, nSamples = 50, nClass=3)$map
 modis <- aggregate(lsat, 9)
 
