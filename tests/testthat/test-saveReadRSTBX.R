@@ -1,6 +1,5 @@
 context("save and read RSTBX objects")
-library(raster)
-data(rlogo)
+library(terra)
 
 ## Create RSTBX object
 train <- readRDS(system.file("external/trainingPoints.rds", package="RStoolbox"))
@@ -13,7 +12,7 @@ sc_re <- readRSTBX(paste0(outbase, ".rds"))
 womap <- setdiff(names(sc), "map")
 
 test_that("export and import works",{
-        expect_is(sc_re, c("RStoolbox", "superClass"))
-        expect_equal(sc[womap], sc_re[womap]) ## need to test $map separately because things like @fromdisk can change
-        expect_true(compareRaster(sc_re$map, sc$map, values = TRUE))  
-    })
+    expect_is(sc_re, c("RStoolbox", "superClass"))
+    expect_equal(sc[womap], sc_re[womap])
+    expect_equal(values(sc_re$map), values(sc$map))
+})

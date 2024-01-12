@@ -18,7 +18,7 @@ unsuperClass(
 )
 }
 \arguments{
-\item{img}{Raster* object.}
+\item{img}{SpatRaster.}
 
 \item{nSamples}{Integer. Number of random samples to draw to fit cluster map. Only relevant if clusterMap = TRUE.}
 
@@ -36,15 +36,15 @@ unsuperClass(
 
 \item{output}{Character. Either 'classes' (kmeans class; default) or 'distances' (euclidean distance to each cluster center).}
 
-\item{...}{further arguments to be passed to \link[raster]{writeRaster}, e.g. filename}
+\item{...}{further arguments to be passed to \link[terra]{writeRaster}, e.g. filename}
 }
 \value{
 Returns an RStoolbox::unsuperClass object, which is a list containing the kmeans model ($model) and the raster map ($map).
-For output = "classes", $map contains a RasterLayer with discrete classes (kmeans clusters); for output = "distances" $map contains 
-a RasterBrick, with `nClasses` layers, where each layer maps the euclidean distance to the corresponding class centroid.
+For output = "classes", $map contains a SpatRaster with discrete classes (kmeans clusters); for output = "distances" $map contains
+a SpatRaster, with `nClasses` layers, where each layer maps the euclidean distance to the corresponding class centroid.
 }
 \description{
-Unsupervised clustering of Raster* data using kmeans clustering
+Unsupervised clustering of SpatRaster data using kmeans clustering
 }
 \details{
 Clustering is done using \code{\link[stats]{kmeans}}. This can be done for all pixels of the image (\code{clusterMap=FALSE}), however this can be slow and is
@@ -57,8 +57,8 @@ Therefore, kmeans is usually run with multiple random starting configurations in
 The \code{nStarts} argument allows to specify how many random starts are conducted.
 }
 \examples{
-library(raster)
-input <- brick(system.file("external/rlogo.grd", package="raster"))
+library(terra)
+input <- rlogo
 
 ## Plot 
 olpar <- par(no.readonly = TRUE) # back-up par
@@ -79,7 +79,7 @@ legend(1,1, legend = paste0("C",1:5), fill = colors,
 ## Return the distance of each pixel to each class centroid
 unC <- unsuperClass(input, nSamples = 100, nClasses = 3, output = "distances")
 unC
-ggR(unC$map, 1:3, geom_raster = TRUE)
+\dontrun{ggR(unC$map, 1:3, geom_raster = TRUE)}
 
 par(olpar) # reset par
 }

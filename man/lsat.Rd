@@ -5,14 +5,13 @@
 \alias{lsat}
 \title{Landsat 5TM Example Data}
 \usage{
-data(lsat)
+lsat
 }
 \description{
 Subset of Landsat 5 TM Scene: LT52240631988227CUB02
 Contains all seven bands in DN format.
 }
 \examples{
-data(lsat)
 ggRGB(lsat, stretch = "lin")
 }
 \keyword{datasets}

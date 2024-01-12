@@ -5,29 +5,28 @@ suppressPackageStartupMessages(library(pls))
 suppressPackageStartupMessages(library(randomForest))
 suppressPackageStartupMessages(library(caret))
 
-data(lsat)
-lsat <- lsat[[1:4]]
+lsat_t <- lsat
+lsat_t <- lsat_t[[1:4]]
 ## Set-up test data
 set.seed(1)
 poly     <- readRDS(system.file("external/trainingPolygons.rds", package="RStoolbox"))
 poly$res <- as.numeric(poly$class)
 poly <- st_as_sf(poly)
 pts <- st_join(st_as_sf(st_sample(poly, 100, type = "regular")), poly)
-lsNA     <- lsat
+lsNA     <- lsat_t
 lsNA[1:100,] <- NA
 
-trainList <- list(projected = list(polygons = poly, points = pts, img = lsat)) 
+trainList <- list(projected = list(polygons = poly, points = pts, img = lsat_t))
 
 g <- function(x){as.character(st_geometry_type(x,F))}
 
 
 ## Maximum likelihood custom model
 test_that("maximum likelihood model",
-        expect_is(superClass(lsat, trainData = poly, responseCol = "class", model = "mlc", tuneLength = 1, trainPartition = 0.7, predict = FALSE), "superClass")
+    expect_is(superClass(lsat_t, trainData = poly, responseCol = "class", model = "mlc", tuneLength = 1, trainPartition = 0.7, predict = FALSE), "superClass")
 ) 
 
 for(type in c("polygons", "points")){
-    
     if (!identical(Sys.getenv("NOT_CRAN"), "true") ) {
         if( type == "points") break
     }
@@ -67,7 +66,7 @@ for(type in c("polygons", "points")){
             }) 
     
     test_that("numeric vs. factor predictors", {                        
-                expect_equal(cellStats(sc2$map - sc3$map, sum), 0, info = info)
+                expect_equal(sum(values(sc2$map - sc3$map)), 0, info = info)
             })
     
     test_that("validation sample coords and geometries are returned", {                        
@@ -83,16 +82,16 @@ for(type in c("polygons", "points")){
             })
     
     test_that("predict.superClass map is identical to superClass$map",{
-                expect_true(compareRaster(sc2$map, predict(sc2, img), values = TRUE), info = info)                      
+                expect_equal(sum(values(sc2$map) - values(predict(sc2, img))), 0)
             })
     
     test_that("prediction of probability layers", {   
                 expect_is(sc4  <- superClass(img, trainData = train, nSamples = 50, ntree = 100, responseCol = "class", model = "rf",
                                 predType = "prob", tuneLength = 1, predict = TRUE),  "superClass", info = info)
-                expect_is(scp <- predict(sc4, img, predType = "prob"), "RasterBrick")
-                expect_identical(dim(sc4$map)[3], 4L, info=info)
-                expect_true(compareRaster(sc4$map, scp, values = TRUE), info = info) 
-                expect_equal(unique(round(sum(sc4$map))) , 1, info = info)            
+                expect_is(scp <- predict(sc4, img, predType = "prob"), "SpatRaster")
+                expect_identical(dim(sc4$map)[3], 4, info=info)
+                expect_equal(sum(values(sc4$map) - values(scp)), 0)
+                expect_equal(as.numeric(unique(values(round(sum(sc4$map))))), 1)
             })
     
     test_that("external valData instead of trainPartition",{
@@ -124,7 +123,7 @@ for(type in c("polygons", "points")){
     
     st_crs(train) <- NA
     nimg <- img
-    projection(nimg) <- NA
+    crs(nimg) <- NA
     test_that("missing projection info", {
                 expect_warning(superClass(nimg, trainData = train, minDist = 1, nSamples = 50, responseCol = "class", model = "pls", 
                                 tuneGrid = data.frame(ncomp = 3), tuneLength = 1, trainPartition = 0.7, predict = FALSE), "missing projection")
@@ -133,25 +132,25 @@ for(type in c("polygons", "points")){
 
 #
 test_that("sp inputs",{
-            expect_is( superClass(lsat, trainData = as_Spatial(poly), nSamples = 50, responseCol = "class", model = "pls", 
-                            tuneGrid = data.frame(ncomp = 3), tuneLength = 1, trainPartition = 0.7, predict = FALSE), "superClass")
+            expect_is( superClass(lsat_t, trainData = as_Spatial(poly), nSamples = 50, responseCol = "class", model = "pls",
+                                  tuneGrid = data.frame(ncomp = 3), tuneLength = 1, trainPartition = 0.7, predict = FALSE), "superClass")
             
         })
 #
 test_that("terra inputs",{
-            expect_is( superClass(rast(lsat), trainData = poly, nSamples = 50, responseCol = "class", model = "pls", 
-                            tuneGrid = data.frame(ncomp = 3), tuneLength = 1, trainPartition = 0.7, predict = FALSE), "superClass")
+            expect_is( superClass(lsat_t, trainData = poly, nSamples = 50, responseCol = "class", model = "pls",
+                                  tuneGrid = data.frame(ncomp = 3), tuneLength = 1, trainPartition = 0.7, predict = FALSE), "superClass")
             
         })
 #
 if (identical(Sys.getenv("NOT_CRAN"), "true") ) {
     ## Tiny raster bug caused superClass to fail when predictions were written to .grd file 
 #	test_that("NA in raster remains NA",{
-#				expect_is(sc <- superClass(lsNA, trainData = pts, responseCol = "class", model = "rf", 
+#				expect_is(sc <- superClass(lsNA, trainData = pts, responseCol = "class", model = "rf",
 #                                filename = rasterTmpFile(), trainPartition = 0.7, predict = TRUE), "superClass")
-#				expect_equal(sum(is.na(sc$map[1:100,])), 100*ncol(lsNA)) 
-#				expect_false(anyNA(sc$map[101:nrow(lsNA),]))            
-#			}) 
+#				expect_equal(sum(is.na(sc$map[1:100,])), 100*ncol(lsNA))
+#				expect_false(anyNA(sc$map[101:nrow(lsNA),]))
+#			})
     
     ## Checks after clipping 
     test_that("fails if no validation points remain after clipping",{
@@ -162,7 +161,7 @@ if (identical(Sys.getenv("NOT_CRAN"), "true") ) {
     ## Projection checks
     poly <- st_transform(poly, "epsg:4326")
     test_that("projection mismatch errors", 
-            expect_error(superClass(lsat, trainData = poly, responseCol = "class"), "must have the same projection")
+            expect_error(superClass(lsat_t, trainData = poly, responseCol = "class"), "must have the same projection")
     )
 #	
 }

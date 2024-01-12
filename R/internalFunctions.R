@@ -10,54 +10,31 @@
 	.ESdistance[doy]
 }
 
-#' Convert terra::SpatRaster to raster::RasterStack
-#' 
-#' This is a temporary function used to add terra support to RStoolbox, while RStoolbox internals 
-#' are still implemented based on raster functionality. In the long run it is
-#' aimed to re-base RStoolbox on terra
+#' Convert to terra::SpatRaster
+#'
 #' @param x raster or terra object
 #' @return RasterStack
 #' @keywords internal
-#' @noRd 
-.toRaster <- function(x) {
-	if (inherits(x, "SpatRaster")) {
-	  p <- crs(x)
-		s <- stack(x)
-		crs(s) <- p
-		return(s)
-	} else {
-		return(x)
-	}
+#' @noRd
+.toTerra <- function(x) {
+  if (inherits(x, "Raster")) {
+    return(terra::rast(x))
+  } else if (inherits(x, "Extent")) {
+    return(terra::ext(x))
+  } else {
+    return(x)
+  }
 }
 
-#' Convert sf objects to sp objects
-#' 
-#' This is a temporary function used to add sf support to RStoolbox, while RStoolbox internals 
-#' are still implemented based on sp functionality. In the long run it is
-#' aimed to re-base RStoolbox on sf
-#' @param x sf or sp object
+#' Convert sf objects
+#'
+#' @param x spatial sp object to sf
 #' @return sf object
 #' @keywords internal
-#' @noRd 
-.toSp <- function(x) {
-	if (inherits(x, "sf")) {
-		return(as_Spatial(x))
-	} else {
-		return(x)
-	}
-}
-
+#' @noRd
 .toSf <- function(x) {
     if (inherits(x, "Spatial")) {
         return(st_as_sf(x))
-    } else {
-        return(x)
-    }
-}
-
-.toTerra <- function(x) {
-    if (inherits(x, "Raster")) {
-        return(rast(x))
     } else {
         return(x)
     }
@@ -79,22 +56,18 @@
             }, numeric(1))
 }
 
-#' Run raster functions in parallel if possible
-#' @param raster Raster* Object
+#' Run raster functions
+#' @param SpatRaster Object
 #' @param rasterFun function. E.g. predict, calc, overlay 
 #' @param args list. arguments to be passed to rasterFun.
 #' @param wrArgs arguments to be passed to rasterFun, typically to writeRaster
 #' @keywords internal
 #' @noRd 
 .paraRasterFun <- function(raster, rasterFun, args = list(), wrArgs = list()){
-    if (isTRUE( getOption('rasterCluster'))) {
-        do.call("clusterR", args = c(list(x = raster, fun = rasterFun, args=args), wrArgs))
-    } else {
-        do.call("rasterFun", args=c(raster, args, wrArgs))
-    }
+  do.call(rasterFun, c(list(raster), args, wrArgs))
 }
 
-#' Run functions of ?apply family in parallel if possible
+#' Run functions of ?apply family
 #' @param X object
 #' @param XFUN ?apply function. Currently c(sapply,lapply, apply)
 #' @param MARGIN integer. Margin for apply.
@@ -106,59 +79,17 @@
 #' @examples
 #' \dontrun{
 #'  xList <- lapply(rep(1000,10000), rnorm)
-#'  for(i in 1:2) {
-#'     if(i == 2) raster::beginCluster(4, type="SOCK")
-#'     RStoolbox:::.parXapply(xList, XFUN = "lapply", FUN = sum, na.rm = TRUE, envir = environment()),
-#'     RStoolbox:::.parXapply(xList, XFUN = "sapply", FUN = sum, na.rm = TRUE, envir = environment()),
-#'     RStoolbox:::.parXapply(matrix(100^2, 100,100), XFUN = "apply", MAR = 1, FUN = sum, na.rm = TRUE, envir = environment()),
-#'     endCluster()
+#'  RStoolbox:::.parXapply(xList, XFUN = "lapply", FUN = sum, na.rm = TRUE, envir = environment()),
+#'  RStoolbox:::.parXapply(xList, XFUN = "sapply", FUN = sum, na.rm = TRUE, envir = environment()),
+#'  RStoolbox:::.parXapply(matrix(100^2, 100,100), XFUN = "apply", MAR = 1, FUN = sum, na.rm = TRUE, envir = environment())
 #'  }
-#' }
-.parXapply <- function(X, XFUN, MARGIN, FUN, envir, ...){   
-    
+.parXapply <- function(X, XFUN, MARGIN, FUN, envir, ...){
     call <- quote(f(cl = cl, X = X, FUN = FUN, MARGIN = MARGIN, ...))
-    
-    if(isTRUE( getOption('rasterCluster'))) {
-        cl <- getCluster()  
-        on.exit(returnCluster()) 
-        f  <- c(lapply=parLapply, sapply=parSapply, apply=parApply)[[XFUN]]
-        if(!is.primitive(FUN)){
-            g  <- findGlobals(FUN)
-            gg <- lapply(g, get, envir = envir) 
-            names(gg) <- g
-        } else {
-            gg<-NULL
-        }
-        l  <- c(list(...),gg)
-        clusterExport(cl=cl, names(l), envir = envir)
-        if(XFUN == "lapply") names(call)[names(call)=="FUN"] <- "fun"
-    } else {
-        f <- get(XFUN)
-        call[["cl"]] <- NULL
-    }    
+    f <- get(XFUN)
+    call[["cl"]] <- NULL
     if(XFUN != "apply") call[["MARGIN"]] <- NULL
     eval(call)
-    
-}
 
-#' Set-up doParallel backend when beginCluster has been called
-#' 
-#' this is to allow caret to run caret::train in parallel (via foreach) 
-#' stopCluster will take place automatically on call to raster::endCluster
-#' @keywords internal
-#' @noRd 
-.registerDoParallel <- function(){
-    if(isTRUE(getOption('rasterCluster')) && !getDoParRegistered()) {
-        cl <- raster::getCluster()
-        registerDoParallel(cl)
-    }
-}
-
-.getNCores <- function(){
-    if(isTRUE(getOption('rasterCluster'))) {
-        return (length(raster::getCluster()))
-    }
-    return(1)
 }
 
 #' Get file extension for writeRaster
@@ -190,7 +121,10 @@
     x <- gsub("\\\\", "/", x) ## anti-win
     x <- gsub("//", "/", x)   ## anti-win
     
-    if(basename(x) == x | grepl("^[.][.]/", x))    x   <- file.path(getwd(),x)
+    if(basename(x) == x | grepl("^[.][.]/", x)){
+      x   <- file.path(getwd(),x)
+    }
+
     if(grepl("[.][.]", x)){
         xs  <- strsplit(x, "/")[[1]]
         ups <- grep("[.][.]", xs)  
@@ -213,9 +147,6 @@
 .updateLayerNames<-function(x, n){
     if(!identical(names(x),n)){
         names(x) <- n
-        if(!inMemory(x) && extension(filename(x)) == ".grd") {
-            hdr(x, format = "RASTER")
-        }
     }
     x
 }
@@ -232,7 +163,7 @@
 }
 
 #' Convert character to numric band
-#' @param raster Raster*
+#' @param SpatRaster raster
 #' @param ... Character or Numeric bands
 #' @keywords internal
 #' @noRd 
@@ -256,12 +187,12 @@
 #' 
 #' @param ... Extent objects to combine
 #' @return Extent object
-#' @noRd 
+#' @noRd
 .getExtentOverlap <- function(...){
     el <- list(...)
-    if(any(!vapply(el, inherits, what = "Extent", logical(1)))) stop("You can only supply Extent objects to getExtentOverlap")
+    if(any(!vapply(el, inherits, what = "SpatExtent", logical(1)))) stop("You can only supply Extent objects to getExtentOverlap")
     em <- do.call("rbind", lapply(el, as.vector))
-    extent(c(max(em[,1]), min(em[,2]), max(em[,3]), min(em[,4])))    
+    ext(c(max(em[,1]), min(em[,2]), max(em[,3]), min(em[,4])))
 }
 
 #' Get center coordinates of Extent object or any object from which an extent can be derived
@@ -275,14 +206,15 @@
 
 
 #' Check haveminmax slot
-#' @param x Raster*
+#' @param x SpatRaster
 #' @noRd 
 #' @keywords internal
 .hasMinMax <- function(x) {
-    if(inherits(x, c("RasterLayer", "RasterBrick"))) {
+    if(inherits(x, "SpatRaster")) {
+        print(x)
         return(x@data@haveminmax)
     } else {
-        return(vapply(1:nlayers(x), function(xi) {x[[xi]]@data@haveminmax}, logical(1)))
+        return(vapply(1:nlyr(x), function(xi) {x[[xi]]@data@haveminmax}, logical(1)))
     }
 }
 
@@ -347,7 +279,126 @@
     library.dynam.unload("RStoolbox", libpath)
 }
 
+#' Can process in memory. Copied from raster package
+#' @noRd
+.canProcInMem <- function(x, n = 4, verbose = FALSE) {
+  nc <- ncell(x)
+  n <- n * dim(x)[3]
+  memneed <- nc * n * 8
+  if (memneed < .minmemory()) {
+    if (verbose) {
+      gb <- 1.07374e+09
+      cat("            GB")
+      cat(paste("\n   needed :", round(memneed / gb, 2)))
+      cat("below minmemory threshold")
+    }
+    return(TRUE)
+  }
+  maxmem <- .maxmemory()
+  memavail <- availableRAMCpp(maxmem)
+  if (verbose) {
+    gb <- 1.07374e+09
+    cat("            GB")
+    cat(paste("\navailable :", round(memavail / gb, 2)))
+    cat(paste0("\n      ", round(100 * .memfrac()), "% : ", round(.memfrac() * memavail / gb, 2)))
+    cat(paste("\n   needed :", round(memneed / gb, 2)))
+    cat(paste("\n  allowed :", round(maxmem / gb, 2), " (if available)\n"))
+  }
+  if (nc > (2 ^ 31 - 1)) return(FALSE)
+  memavail <- .memfrac() * memavail
+  memavail <- min(memavail, maxmem)
+  if (memneed > memavail) {
+    options(rasterChunk = min(.chunksize(), memavail * 0.25))
+    return(FALSE)
+  } else {
+    return(TRUE)
+  }
+}
+
+.maxmemory <- function() {
+	default <- 5e+9
+	d <- getOption('rasterMaxMemory')
+	if (is.null(d)) {
+		return( default )
+	}
+	d <- round(as.numeric(d[1]))
+	if (is.na(d) | d < 1e+6) {
+		d <- 1e+6
+	}
+	return(d)
+}
+
+.minmemory <- function() {
+	default <- 8e+6
+	d <- getOption('rasterMinMemory')
+	if (is.null(d)) {
+		return( default )
+	}
+	d <- round(as.numeric(d[1]))
+	if (is.na(d) | d < 10000) {
+		d <- 8e+6
+	}
+	return(d)
+}
 
 
+.toDisk <- function(..., todisk) {
+	if (missing(todisk)) {
+		todisk <- getOption('rasterToDisk')
+		if (is.null(todisk)) {
+			return(FALSE)  # the default
+		} else {
+			try (todisk <- as.logical(todisk))
+			if (is.logical(todisk)) {
+				return(todisk)
+			} else {
+				return(FALSE)
+			}
+		}
+	} else {
+		if (is.logical(todisk)) {
+			return(todisk)
+		} else {
+			return(FALSE)
+		}
+	}
+}
 
+.chunksize <- function(){
+	default <- 10^8
+	d <- getOption('rasterChunkSize')
+	if (is.null(d)) {
+		return( default )
+	}
+	d <- round(as.numeric(d[1]))
+	if (is.na(d) | d < 10000) {
+		d <- default
+	}
+	return(d)
+}
 
+.memfrac <- function() {
+	default <- 0.6
+	d <- getOption('rasterMemfrac')
+	if (is.null(d)) {
+		return( default )
+	} else {
+		return(d)
+	}
+}
+
+.terraTmpFile <- function(prefix = "terra_tmp_", ext = ".tif") {
+  # Create a temporary directory
+  temp_dir <- file.path(tempdir(), "raster")
+
+  # Ensure the directory exists
+  if (!dir.exists(temp_dir)) dir.create(temp_dir, recursive = TRUE)
+
+  # Generate a unique file name
+  timestamp <- format(Sys.time(), "%Y-%m-%d_%H%M%S")
+  filename <- paste0(prefix, timestamp, "_", Sys.getpid(), "_", sample.int(99999, 1), ext)
+
+  # Return the full path to the temporary file
+  full_path <- file.path(temp_dir, filename)
+  return(full_path)
+}

@@ -28,7 +28,7 @@ spectralIndices(
 )
 }
 \arguments{
-\item{img}{Raster* object. Typically remote sensing imagery, which is to be classified.}
+\item{img}{SpatRaster, Typically remote sensing imagery, which is to be classified.}
 
 \item{blue}{Character or integer. Blue band.}
 
@@ -59,16 +59,16 @@ If there are invalid reflectances, e.g. clouds with reflectance > 1 this check w
 
 \item{index}{Character. Alias for \code{indices}.}
 
-\item{maskLayer}{RasterLayer containing a mask, e.g. clouds, for which pixels are set to NA. Alternatively a layername or -number can be provided if the mask is part of \code{img}.}
+\item{maskLayer}{RasterLayer or SpatRaster containing a mask, e.g. clouds, for which pixels are set to NA. Alternatively a layername or -number can be provided if the mask is part of \code{img}.}
 
 \item{maskValue}{Integer. Pixel value in \code{maskLayer} which should be masked in output, i.e. will be set to \code{NA} in all calculated indices.}
 
 \item{coefs}{List of coefficients (see Details).}
 
-\item{...}{further arguments such as filename etc. passed to \link[raster]{writeRaster}}
+\item{...}{further arguments such as filename etc. passed to \link[terra]{writeRaster}}
 }
 \value{
-RasterBrick or a RasterLayer if length(indices) == 1
+SpatRaster
 }
 \description{
 Calculate a suite of multispectral indices such as NDVI, SAVI etc. in an efficient way.
@@ -108,8 +108,7 @@ The last column shows exemplarily which Landsat 5 TM bands correspond to which w
 }
 \examples{
 library(ggplot2)
-library(raster)
-data(lsat)
+library(terra)
 
 ## Calculate NDVI
 ndvi <- spectralIndices(lsat, red = "B3_dn", nir = "B4_dn", indices = "NDVI")

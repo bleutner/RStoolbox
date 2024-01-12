@@ -18,7 +18,7 @@ radCor(
 )
 }
 \arguments{
-\item{img}{raster object}
+\item{img}{SpatRaster}
 
 \item{metaData}{object of class ImageMetaData or a path to the meta data (MTL) file.}
 
@@ -42,7 +42,7 @@ Argument only applies to methods 'sdos', 'dos' and 'costz'.}
 \item{verbose}{Logical. Print status information.}
 }
 \value{
-RasterStack with top-of-atmosphere radiance (\eqn{W/(m^2 * srad * \mu m)}), at-satellite brightness temperature (K),
+SpatRaster with top-of-atmosphere radiance (\eqn{W/(m^2 * srad * \mu m)}), at-satellite brightness temperature (K),
 top-of-atmosphere reflectance (unitless) corrected for the sun angle or at-surface reflectance (unitless).
 }
 \description{
@@ -83,29 +83,27 @@ Therefore, these values were derived from a standard reference spectrum publishe
 The implemented sun-earth distances neglect the earth's eccentricity. Instead we use a 100 year daily average (1979-2070).
 }
 \note{
-This was originally a fork of randcorr() function in the landsat package. This version works on Raster* objects and hence is suitable for large rasters.
+This was originally a fork of randcorr() function in the landsat package. This version works on SpatRasters and hence is suitable for large rasters.
 }
 \examples{
-library(raster)
+library(terra)
 ## Import meta-data and bands based on MTL file
-mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", 
-                                package="RStoolbox")
+mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
 metaData <- readMeta(mtlFile)
-\donttest{lsat     <- stackMeta(mtlFile)}
+lsat_t <- stackMeta(mtlFile)
 
-\dontshow{lsat <- readAll(lsat)}
 
 ## Convert DN to top of atmosphere reflectance and brightness temperature
-lsat_ref <- radCor(lsat, metaData = metaData, method = "apref")
+lsat_ref <- radCor(lsat_t, metaData = metaData, method = "apref")
 
 ## Correct DN to at-surface-reflecatance with DOS (Chavez decay model)
-\donttest{lsat_sref <- radCor(lsat, metaData = metaData, method = "dos")}
+\donttest{lsat_sref <- radCor(lsat_t, metaData = metaData)}
 
 ## Correct DN to at-surface-reflecatance with simple DOS 
 ## Automatic haze estimation
-hazeDN    <- estimateHaze(lsat, hazeBands = 1:4, darkProp = 0.01, plot = TRUE)
-lsat_sref <- radCor(lsat, metaData = metaData, method = "sdos", 
-                    hazeValues = hazeDN, hazeBands = 1:4)
+hazeDN    <- estimateHaze(lsat_t, hazeBands = 1:4, darkProp = 0.01, plot = FALSE)
+lsat_sref <- radCor(lsat_t, metaData = metaData, method = "sdos",
+                     hazeValues = hazeDN, hazeBands = 1:4)
 }
 \references{
 S. Goslee (2011): Analyzing Remote Sensing Data in R: The landsat Package. Journal of Statistical Software 43(4).

@@ -2,7 +2,7 @@
 #' 
 #' Calculate a suite of multispectral indices such as NDVI, SAVI etc. in an efficient way.
 #' 
-#' @param img Raster* object. Typically remote sensing imagery, which is to be classified.
+#' @param img SpatRaster, Typically remote sensing imagery, which is to be classified.
 #' @param blue Character or integer. Blue band. 
 #' @param green Character or integer. Green band. 
 #' @param red Character or integer. Red band. 
@@ -15,20 +15,19 @@
 #' @param swir3 Character or integer. Short-wave-infrared band (2000-2500nm). 
 #' @param indices Character. One or more spectral indices to calculate (see Details). By default (NULL) all implemented indices given the spectral bands which are provided will be calculated.
 #' @param index Character. Alias for \code{indices}.
-#' @param maskLayer RasterLayer containing a mask, e.g. clouds, for which pixels are set to NA. Alternatively a layername or -number can be provided if the mask is part of \code{img}. 
+#' @param maskLayer RasterLayer or SpatRaster containing a mask, e.g. clouds, for which pixels are set to NA. Alternatively a layername or -number can be provided if the mask is part of \code{img}.
 #' @param maskValue Integer. Pixel value in \code{maskLayer} which should be masked in output, i.e. will be set to \code{NA} in all calculated indices.
 #' @param scaleFactor Numeric. Scale factor for the conversion of scaled reflectances to [0,1] value range (applied as reflectance/scaleFactor) Neccesary for calculating EVI/EVI2 with scaled reflectance values.
 #' @param skipRefCheck Logical. When EVI/EVI2 is to be calculated there is a rough heuristic check, whether the data are inside [0,1]+/-0.5 (after applying a potential \code{scaleFactor}).
 #'  If there are invalid reflectances, e.g. clouds with reflectance > 1 this check will result in a false positive and skip EVI calculation. Use this argument to skip this check in such cases *iff* you are sure the data and scaleFactor are valid. 
 #' @param coefs List of coefficients (see Details).  
-#' @param ... further arguments such as filename etc. passed to \link[raster]{writeRaster}
-#' @return  RasterBrick or a RasterLayer if length(indices) == 1
+#' @param ... further arguments such as filename etc. passed to \link[terra]{writeRaster}
+#' @return  SpatRaster
 #' @template spectralIndices_table 
 #' @export
 #' @examples
 #' library(ggplot2)
-#' library(raster)
-#' data(lsat)
+#' library(terra)
 #' 
 #' ## Calculate NDVI
 #' ndvi <- spectralIndices(lsat, red = "B3_dn", nir = "B4_dn", indices = "NDVI")
@@ -71,9 +70,8 @@ spectralIndices <- function(img,
     # TIR1  | thermal infra-red    |  8000  -   9500 nm
     # TIR2  | thermal infra-red    | 10000  - 140000 nm
     ##    
-	img <- .toRaster(img)
-	if(!is.null(maskLayer)) maskLayer <- .toRaster(maskLayer)
-	
+	img <- .toTerra(img)
+	if(!is.null(maskLayer)) maskLayer <- .toTerra(maskLayer)
     if(!is.null(index)) indices <- index  ## argument translation for convenience
     if("LSWI" %in% toupper(indices)) stop("LSWI has been deprecated. Use NDWI2 instead; it is identical.")
     if(!is.null(swir1)) stop(paste0("Currently there is no spectral index requiring swir1.", 
@@ -111,9 +109,10 @@ spectralIndices <- function(img,
     
     canCalc  <- names(requested)[!vapply(requested, function(x) any(!x %in% bands), logical(1))]
     if(!skipRefCheck && any(c("EVI","EVI2") %in% canCalc)){
-        ## TODO: clarify setMinMax reqiurements throughout RStoolbox
-        if(!.hasMinMax(img[[red]])) img[[red]] <- setMinMax(img[[red]])
-        if((maxValue(img[[red]])/scaleFactor > 1.5 | minValue(img[[red]])/scaleFactor < -.5)){
+        img[[red]] <- setMinMax(img[[red]])
+        mm <- minmax(img[[red]])
+
+        if(is.nan(mm[2,1]) || is.nan(mm[1,1]) || mm[2,1]/scaleFactor > 1.5 || mm[1,1]/scaleFactor < -0.5){
             ## checking for range [0,1] +/- .5 to allow for artifacts in reflectance.
             warning("EVI/EVI2 parameters L_evi, G, C1 and C2 are defined for reflectance [0,1] but img values are outside of this range.\n",
                     "  If you are using scaled reflectance values please provide the scaleFactor argument.\n", 
@@ -144,10 +143,10 @@ spectralIndices <- function(img,
     
     ## Add mask layer to img if present
     if(!is.null(maskLayer)){
-        if(inherits(maskLayer, "Raster")) {
-            if(nlayers(maskLayer) > 1) warning(sprintf("maskLayer has %s layers. Only the first layer will be used for masking.", nlayers(maskLayer)),call.=FALSE)
-            img <- stack(img, maskLayer[[1]])
-            names(img)[nlayers(img)] <- "mask"
+        if(inherits(maskLayer, "SpatRaster")) {
+            if(nlyr(maskLayer) > 1) warning(sprintf("maskLayer has %s layers. Only the first layer will be used for masking.", nlyr(maskLayer)),call.=FALSE)
+            img <- c(img, maskLayer[[1]])
+            names(img)[nlyr(img)] <- "mask"
         } else if (is.numeric(maskLayer)) {
             names(img)[maskLayer] <- "mask"
         }  else if (is.character(maskLayer)) {
@@ -165,9 +164,15 @@ spectralIndices <- function(img,
     ## This way we don't have to sample the whole stack if we only need a few layers
     fullSet <- vapply(potArgs, function(n) match(n, names(bandsCalc)), integer(1))
     
+    wopt <- list(...)
+    filename <- if("filename" %in% names(wopt)) wopt$filename else ""
+    overwrite <- if("overwrite" %in% names(wopt)) wopt$overwrite else FALSE
+    wopt[c("filename","overwrite")] <- NULL
+    
+    
     # Perform calculations 
-    indexMagic <- .paraRasterFun(img[[bandsCalc]], rasterFun = raster::calc,
-            args = list(fun = function(m) {
+    indexMagic <- terra::app(img[[bandsCalc]], fun = function(m) {
+                        
                         spectralIndicesCpp(
                                 x = m,
                                 indices   = canCalc,
@@ -187,13 +192,12 @@ spectralIndices <- function(img,
                                 C1 = coefs[["C1"]], C2 = coefs[["C2"]], s = coefs[["s"]],
                                 swir2ccc = coefs[["swir2ccc"]], swir2cdiff = coefs[["swir2cdiff"]], sf = scaleFactor
                         )},
-                    forcefun =TRUE), wrArgs = list(...))
+                     wopt=wopt, filename = filename, overwrite = overwrite) 
     
     names(indexMagic) <- canCalc      
     
     return(indexMagic)
 }
-
 
 ## NOT USED FOR CALCULATIONS ONLY FOR DOCUMENTATION
 ## SEE /src/spectraIndices.cpp for calculations

@@ -7,8 +7,9 @@
 #' @param category Character vector. Which category of data to return. Options 'image': image data, 'pan': panchromatic image, 'index': multiband indices, 'qa' quality flag bands, 'all': all categories.
 #' @param quantity Character vector. Which quantity should be returned. Options: digital numbers ('dn'), top of atmosphere reflectance ('tre'), at surface reflectance ('sre'), brightness temperature ('bt'), spectral index ('index'), all quantities ('all').
 #' @param allResolutions Logical. if \code{TRUE} a list will be returned with length = unique spatial resolutions.
+#' This argument was introduced to maintain backward compatibility and will be switched to TRUE in an upcoming release. Please base all new code on terra.
 #' @return 
-#' Returns one single RasterStack comprising all requested bands. 
+#' Returns one single SpatRaster comprising all requested bands.
 #' If \code{allResolutions = TRUE} *and* there are different resolution layers (e.g. a 15m panchromatic band along wit 30m imagery) a list of RasterStacks will be returned.
 #' @note 
 #' Be aware that by default stackMeta() does NOT import panchromatic bands nor thermal bands with resolutions != 30m. Use the allResolutions argument to import all layers.
@@ -25,7 +26,7 @@
 #' ## Load rasters based on metadata file
 #' lsat     <- stackMeta(mtlFile)
 #' lsat
-stackMeta <- function(file,  quantity = "all", category = "image", allResolutions = FALSE){ 
+stackMeta <- function(file,  quantity = "all", category = "image", allResolutions = FALSE){
     
     stopifnot( !any(!category %in%  c("pan", "image", "index", "qa", "all")), !any(!quantity %in% c("all", "dn", "tra", "tre", "sre", "bt", "index")))
     
@@ -71,8 +72,8 @@ stackMeta <- function(file,  quantity = "all", category = "image", allResolution
     select <- meta$DATA$BANDS[se]               
     
     ## Import rasters
-    rl <- lapply(paste0(path, files), raster)
-    resL <- lapply(rl, function(x) res(x)[1])
+    rl <- lapply(paste0(path, files), rast)
+    resL <- lapply(rl, xres)
     resLs <- resL[se]
     if(any(resL > 30)) .vMessage("Your Landsat data includes TIR band(s) which were not resampled to 30m.")
     if(length(unique(resLs)) > 1 & !allResolutions) warning("You asked to import rasters of different resolutions but the allResolutions argument is FALSE. Will return only 30m data", call. = FALSE)
@@ -87,11 +88,13 @@ stackMeta <- function(file,  quantity = "all", category = "image", allResolution
     
     ## Stack
     LS     <- lapply(returnRes, function(x){
-                s            <- stack(rl[resL == x])
-                names(s)     <- meta$DATA$BANDS[resL == x]
-                s[[ which(names(s) %in% select)]]
-            })
-    LS[lapply(LS, nlayers) == 0] <- NULL
+        s <- do.call(c, rl[resL == x])
+        names(s)     <- meta$DATA$BANDS[resL == x]
+        s <- s[[ which(names(s) %in% select)]]
+        return(s)
+    })
+    LS[lapply(LS, nlyr) == 0] <- NULL
+
     names(LS) <- paste0("spatRes_",returnRes,"m")
     if(!allResolutions) LS <- LS[[1]]
     

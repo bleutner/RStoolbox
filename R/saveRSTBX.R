@@ -15,7 +15,7 @@
 #' 
 #' writeRSTBX and readRSTBX are convenience wrappers around saveRDS, readRDS. This means 
 #' you can read all files created this way also with base functionality as long as you don't move your files.
-#' This is because x$map is a Raster* object and hence contains only a static link to the file on disk.
+#' This is because x$map is a SpatRaster object and hence contains only a static link to the file on disk.
 #' 
 #' @param x RStoolbox object of classes c("fCover", "rasterPCA", "superClass", "unsuperClass")
 #' @param filename Character. Path and filename. Any file extension will be ignored.
@@ -24,7 +24,7 @@
 #' @export 
 #' @examples 
 #' \dontrun{
-#' input <- brick(system.file("external/rlogo.grd", package="raster"))
+#' input <- rlogo
 #' ## Create filename
 #' file  <- paste0(tempdir(), "/test", runif(1))
 #' ## Run PCA
@@ -42,47 +42,48 @@
 NULL
 
 #' @describeIn saveRSTBX Save RStoolbox object to file 
-saveRSTBX <- function(x, filename, format ="raster", ...){
-    
+saveRSTBX <- function(x, filename, format = "raster", ...){
     stopifnot(inherits(x, "RStoolbox"))
-    
-    rdsFile <- rastFile <- .fullPath(filename)
-    extension(rdsFile)  <- ".rds"
-    extension(rastFile) <- .rasterExtension(format)          
-    f <- raster::filename(x$map)
-    if(inherits(x$map, "Raster")){
-        if(inMemory(x$map)){
-            ## In memory
-            x$map <- writeRaster(x$map, filename = rastFile, format=format, ...)
-        } else {
-            if(f!=rastFile){
-                ## File onDisk but not in requested path and/or format
-                x$map <- writeRaster(x$map, filename = rastFile, format=format, ...)                           
-            }
-        }  
+
+    if(!inherits(x$map, "SpatRaster")){
+        x$map <- .toTerra(x$map)
     }
-    saveRDS(x, rdsFile)
+
+    rdsFile <- rastFile <- .fullPath(filename)
+    rdsFile <- paste0(rdsFile, ".rds")
+    rastFile <- paste0(rastFile, .rasterExtension(format))
+
+    f <- terra::sources(x$map)
+
+    if(inMemory(x$map)){
+        x$map <- terra::wrap(writeRaster(x$map, filename = rastFile, ...))
+    } else {
+        if(f != rastFile){
+            x$map <- terra::wrap(writeRaster(x$map, filename = rastFile, ...))
+        }
+    }
+
+    base::saveRDS(x, rdsFile)
 }
 
 #' @describeIn saveRSTBX Read files saved with saveRSTBX
 #' @export 
 readRSTBX <- function(filename){
     rdsFile <- rastFile <- .fullPath(filename)
-    extension(rdsFile)  <- ".rds"
-    x         <- readRDS(rdsFile)
-    if(!inherits(x, "RStoolbox")) stop(filename, "is not a RStoolbox object.", call. = FALSE)
-    namesBU <- names(x$map) ## backup names (might get lost between file formats)
-    if(inherits(x$map, "Raster")){
-        extension(rastFile) <-  extension(filename(x$map))  
+
+    x <- readRDS(rdsFile)
+
+    try(x$map <- terra::unwrap(x$map), silent = FALSE)
+
+    if(!inherits(x, "RStoolbox"))
+      stop(filename, "is not a RStoolbox object.", call. = FALSE)
+
+    if(inherits(x$map, "SpatRaster")){
+        rastFile <- paste0(rastFile, terra::sources(x$map))
         if(!file.exists(rastFile)) {
             warning("Corresponding raster file ", rastFile, " cannot be found.  \nThe *.rds and the raster file must be located in the same directory.")
             x$map <- "Raster map not found"
-        } else {
-            x$map <- if(inherits(x$map, "RasterLayer")) raster(rastFile) else brick(rastFile) 
-        }          
-        names(x$map) <- namesBU
+        }
     }
     x
 }
-
-

@@ -7,9 +7,9 @@
 rasterCVA(x, y, tmf = NULL, nct = NULL, ...)
 }
 \arguments{
-\item{x}{RasterBrick or RasterStack with two layers. This will be the reference/origin for the change calculations. Both rasters (y and y) need to correspond to each other, i.e. same resolution, extent and origin.}
+\item{x}{RasterBrick or RasterStack or SpatRaster with two layers. This will be the reference/origin for the change calculations. Both rasters (y and y) need to correspond to each other, i.e. same resolution, extent and origin.}
 
-\item{y}{RasterBrick or RasterStack with two layers. Both rasters (y and y) need to correspond to each other, i.e. same resolution, extent and origin.}
+\item{y}{RasterBrick or RasterStack or SpatRaster with two layers. Both rasters (y and y) need to correspond to each other, i.e. same resolution, extent and origin.}
 
 \item{tmf}{Numeric. Threshold median factor (optional). Used to calculate a threshold magnitude for which pixels are considered stable, i.e. no change. Calculated as \code{tmf * mean(magnitude[magnitude > 0])}.}
 
@@ -18,7 +18,7 @@ rasterCVA(x, y, tmf = NULL, nct = NULL, ...)
 \item{...}{further arguments passed to writeRaster}
 }
 \value{
-Returns a RasterBrick with two layers: change vector angle and change vector magnitude
+Returns a SpatRaster with two layers: change vector angle and change vector magnitude
 }
 \description{
 Calculates angle and magnitude of change vectors. 
@@ -33,13 +33,13 @@ For example for a given pixel in image A and B for the red and nir band the chan
  Angles are returned *in degree* beginning with 0 degrees pointing 'north', i.e. the y-axis, i.e. the second band.
 }
 \examples{
-library(raster)
-## Create example data
-data(lsat)
+library(terra)
+\dontrun{
 pca <- rasterPCA(lsat)$map
 
 ## Do change vector analysis 
 cva <- rasterCVA(pca[[1:2]], pca[[3:4]])
 cva
 plot(cva)
+}
 }

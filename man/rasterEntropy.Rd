@@ -7,12 +7,12 @@
 rasterEntropy(img, ...)
 }
 \arguments{
-\item{img}{RasterStack or RasterBrick}
+\item{img}{RasterStack or RasterBrick or SpatRaster}
 
 \item{...}{additional arguments passed to writeRaster}
 }
 \value{
-RasterLayer "entropy"
+SpatRaster "entropy"
 }
 \description{
 Shannon entropy is calculated for each pixel based on it's layer values.
@@ -22,7 +22,6 @@ To be used with categorical / integer valued rasters.
 Entropy is calculated as -sum(p log(p)); p being the class frequency per pixel.
 }
 \examples{
-data(rlogo)
 re <- rasterEntropy(rlogo)
 ggR(re, geom_raster = TRUE)
 }

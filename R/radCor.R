@@ -4,7 +4,7 @@
 #' You can either specify a metadata file, or supply all neccesary values manually. 
 #' With proper parametrization apref and sdos should work for other sensors as well.
 #' 
-#' @param img raster object
+#' @param img SpatRaster
 #' @param metaData object of class ImageMetaData or a path to the meta data (MTL) file. 
 #' @param method Radiometric conversion/correction method to be used. There are currently four methods available (see Details):
 #' "rad", "apref", "sdos", "dos", "costz".
@@ -17,9 +17,9 @@
 #' @param darkProp Numeric. Estimated proportion of dark pixels in the scene. Used only for automatic guessing of hazeValues (typically one would choose 1 or 2\%).
 #' @param clamp Logical. Enforce valid value range. By default reflectance will be forced to stay within [0,1] and radiance >= 0 by replacing invalid values with the correspinding boundary, e.g. -0.1 will become 0.
 #' @param verbose Logical. Print status information. 
-#' @note This was originally a fork of randcorr() function in the landsat package. This version works on Raster* objects and hence is suitable for large rasters.
+#' @note This was originally a fork of randcorr() function in the landsat package. This version works on SpatRasters and hence is suitable for large rasters.
 #' @return 
-#' RasterStack with top-of-atmosphere radiance (\eqn{W/(m^2 * srad * \mu m)}), at-satellite brightness temperature (K),
+#' SpatRaster with top-of-atmosphere radiance (\eqn{W/(m^2 * srad * \mu m)}), at-satellite brightness temperature (K),
 #' top-of-atmosphere reflectance (unitless) corrected for the sun angle or at-surface reflectance (unitless).
 #' @details 
 #' The atmospheric correction methods (sdos, dos and costz) apply to the optical (solar) region of the spectrum and do not affect the thermal band.
@@ -58,33 +58,30 @@
 #' G. Thuillier et al. (2003)  THE SOLAR SPECTRAL IRRADIANCE FROM 200 TO 2400 nm AS MEASURED BY THE SOLSPEC SPECTROMETER FROM THE ATLAS AND EURECA MISSIONS. Solar Physics 214(1): 1-22 (
 #' @export
 #' @examples 
-#' library(raster)
+#' library(terra)
 #' ## Import meta-data and bands based on MTL file
-#' mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", 
-#'                                 package="RStoolbox")
+#' mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
 #' metaData <- readMeta(mtlFile)
-#' \donttest{lsat     <- stackMeta(mtlFile)}
-#' 
-#' \dontshow{lsat <- readAll(lsat)}
+#' lsat_t <- stackMeta(mtlFile)
+#'
 #' 
 #' ## Convert DN to top of atmosphere reflectance and brightness temperature
-#' lsat_ref <- radCor(lsat, metaData = metaData, method = "apref")
+#' lsat_ref <- radCor(lsat_t, metaData = metaData, method = "apref")
 #' 
 #' ## Correct DN to at-surface-reflecatance with DOS (Chavez decay model)
-#' \donttest{lsat_sref <- radCor(lsat, metaData = metaData, method = "dos")}
+#' \donttest{lsat_sref <- radCor(lsat_t, metaData = metaData)}
 #' 
 #' ## Correct DN to at-surface-reflecatance with simple DOS 
 #' ## Automatic haze estimation
-#' hazeDN    <- estimateHaze(lsat, hazeBands = 1:4, darkProp = 0.01, plot = TRUE)
-#' lsat_sref <- radCor(lsat, metaData = metaData, method = "sdos", 
-#'                     hazeValues = hazeDN, hazeBands = 1:4)
-radCor <-    function(img, metaData, method = "apref", bandSet = "full", hazeValues, hazeBands, atmosphere, darkProp = 0.01, clamp = TRUE, verbose){
+#' hazeDN    <- estimateHaze(lsat_t, hazeBands = 1:4, darkProp = 0.01, plot = FALSE)
+#' lsat_sref <- radCor(lsat_t, metaData = metaData, method = "sdos",
+#'                      hazeValues = hazeDN, hazeBands = 1:4)
+radCor <- function(img, metaData, method = "apref", bandSet = "full", hazeValues, hazeBands, atmosphere, darkProp = 0.01, clamp = TRUE, verbose){
     # http://landsat.usgs.gov/Landsat8_Using_Product.php
-    img <- .toRaster(img)
+    img <- .toTerra(img)
 	if(!missing("verbose")) .initVerbose(verbose)
     
     if(!method %in% c("rad", "apref", "dos", "costz", "sdos")) stop("method must be one of 'rad' 'apref', 'dos', 'costz' 'sdos'", call.=FALSE)
-    
     
     ## Read metadata from file
     if(is.character(metaData)) {    
@@ -144,7 +141,7 @@ radCor <-    function(img, metaData, method = "apref", bandSet = "full", hazeVal
         K2       <- metaData$CALBT[tirBands, "K2"]
         GAIN    <- metaData$CALRAD[tirBands,"gain"]
         OFFSET  <- metaData$CALRAD[tirBands,"offset"]           
-        xtir <- .paraRasterFun(raster = img[[tirBands]], rasterFun = calc, args = list(fun = function(x) {
+        xtir <- .paraRasterFun(raster = img[[tirBands]], rasterFun = app, args = list(fun = function(x) {
                             if(length(GAIN) > 1) {
                                 for(i in seq_along(GAIN)){
                                     suppressWarnings(x[,i] <- K2[i] / log(K1[i] / (GAIN[i] * x[,i] + OFFSET[i]) +1))
@@ -153,7 +150,7 @@ radCor <-    function(img, metaData, method = "apref", bandSet = "full", hazeVal
                             } else {
                                 return(suppressWarnings(K2 / log(K1 / (GAIN * x + OFFSET) + 1)))
                             }
-                        }, forcefun = TRUE))
+                        }))
         names(xtir) <- gsub("dn", "bt", tirBands)
     } else {
         xtir <- NULL
@@ -223,7 +220,7 @@ radCor <-    function(img, metaData, method = "apref", bandSet = "full", hazeVal
         
         
         if(method %in% c("dos", "costz")) {    
-            if(Lhaze[1] < 0) stop("Estimated Lhaze is < 0. DOS-based approaches don't make sense in this case.")
+            if(Lhaze[1] < 0) warning("Estimated Lhaze is < 0. DOS-based approaches don't make sense in this case.")
             
             ## Pick atmoshpere type
             if(missing(atmosphere)) {
@@ -275,21 +272,18 @@ radCor <-    function(img, metaData, method = "apref", bandSet = "full", hazeVal
     if(clamp & method != "rad") CLAMP <- c(TRUE,TRUE)
     
     if(length(bandSet) > 1){
-        xref <- .paraRasterFun(img[[bandSet]], rasterFun = calc, args = list(fun = function(x) {gainOffsetRescale(x,GAIN,OFFSET,CLAMP)}, forcefun=TRUE))
+        xref <- .paraRasterFun(img[[bandSet]], rasterFun = app, args = list(fun = function(x) {gainOffsetRescale(x,GAIN,OFFSET,CLAMP)}))
     } else {
-        xref <- .paraRasterFun(img[[bandSet]], rasterFun = calc, args = list(fun = function(x) {gainOffsetRescale(as.matrix(x),GAIN,OFFSET,CLAMP)}, forcefun=TRUE))
+        xref <- .paraRasterFun(img[[bandSet]], rasterFun = app, args = list(fun = function(x) {gainOffsetRescale(as.matrix(x),GAIN,OFFSET,CLAMP)}))
     } 
     
     names(xref) <- layernames   
     
     ## Re-combine thermal, solar and excluded imagery
-    out <- stack(xref, xtir, excl)
+    out <- c(xref, xtir, excl)
     
     bandOrder <- match(origBands, c(bandSet, tirBands))
     out <- out[[na.omit(bandOrder)]]
     
     return(out)
 }
-
-
-

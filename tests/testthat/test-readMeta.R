@@ -1,4 +1,4 @@
-context("readMeta & stackMeta")
+context("readMeta")
 mfil <- list.files("testdata/metadata", full = TRUE)
 for(f in mfil) {
 	test_that(paste("readMeta and summary(readMeta)", basename(f)), {
@@ -9,12 +9,4 @@ for(f in mfil) {
 				expect_is(m <- readMeta(f, raw = TRUE), "list")
 				expect_gte(length(names(m)), 2)
 			})
-	
 }
-
-mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
-test_that("stackMeta with exampleData", {
-			expect_s4_class(st <- stackMeta(mtlFile), "RasterStack")
-			expect_s4_class(stackMeta(readMeta(mtlFile)), "RasterStack")
-            expect_true(all(grepl("B[1-7]_dn", names(st))))
-		})

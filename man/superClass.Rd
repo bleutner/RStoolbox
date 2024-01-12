@@ -27,7 +27,7 @@ superClass(
 )
 }
 \arguments{
-\item{img}{terra::SpatRast or raster::Raster* object. Typically remote sensing imagery, which is to be classified.}
+\item{img}{SpatRaster. Typically remote sensing imagery, which is to be classified.}
 
 \item{trainData}{sf or sp spatial vector data containing the training locations (POINTs,or POLYGONs).}
 
@@ -116,8 +116,7 @@ otherwise it will be performed on a per-pixel basis.
 library(caret)
 library(randomForest)
 library(e1071)
-library(raster)
-data(rlogo)
+library(terra)
 train <- readRDS(system.file("external/trainingPoints.rds", package="RStoolbox"))
 
 ## Plot training data
@@ -128,7 +127,7 @@ plotRGB(rlogo)
 plot(train, add = TRUE, col =  colors[train$class], pch = 19)
 
 ## Fit classifier (splitting training into 70\\% training data, 30\\% validation data)
-SC       <- superClass(rlogo, trainData = train, responseCol = "class", 
+SC       <- superClass(rlogo, trainData = train, responseCol = "class",
 model = "rf", tuneLength = 1, trainPartition = 0.7)
 SC
 

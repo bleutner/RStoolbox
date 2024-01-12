@@ -21,7 +21,6 @@ Useful if you want to apply a kmeans model of scene A to scene B.
 }
 \examples{
 ## Load training data
-data(rlogo)
 
 ## Perform unsupervised classification
 uc  <- unsuperClass(rlogo, nClasses = 10)

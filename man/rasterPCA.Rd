@@ -7,14 +7,14 @@
 rasterPCA(
   img,
   nSamples = NULL,
-  nComp = nlayers(img),
+  nComp = nlyr(img),
   spca = FALSE,
   maskCheck = TRUE,
   ...
 )
 }
 \arguments{
-\item{img}{RasterBrick or RasterStack.}
+\item{img}{RasterLayer or SpatRaster.}
 
 \item{nSamples}{Integer or NULL. Number of pixels to sample for PCA fitting. If NULL, all pixels will be used.}
 
@@ -28,7 +28,7 @@ Takes effect only if nSamples is NULL.}
 \item{...}{further arguments to be passed to \link[raster]{writeRaster}, e.g. filename.}
 }
 \value{
-Returns a named list containing the PCA model object ($model) and the RasterBrick with the principal component layers ($object).
+Returns a named list containing the PCA model object ($model) and a SpatRaster with the principal component layers ($object).
 }
 \description{
 Calculates R-mode PCA for RasterBricks or RasterStacks and returns a RasterBrick with multiple layers of PCA scores.
@@ -47,9 +47,9 @@ Standardised PCA (SPCA) can be useful if imagery or bands of different dynamic r
 has the same effect as using normalised bands of unit variance.
 }
 \examples{
+\dontrun{
 library(ggplot2)
 library(reshape2)
-data(rlogo)
 ggRGB(rlogo, 1,2,3)
 
 ## Run PCA
@@ -65,5 +65,6 @@ ggRGB(rpc$map,1,2,3, stretch="lin", q=0)
 if(require(gridExtra)){
 plots <- lapply(1:3, function(x) ggR(rpc$map, x, geom_raster = TRUE))
 grid.arrange(plots[[1]],plots[[2]], plots[[3]], ncol=2)
+}
 }
 }

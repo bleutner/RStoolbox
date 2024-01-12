@@ -3,8 +3,8 @@
 #' Shifts an image to match a reference image. Matching is based on maximum
 #' mutual information. 
 #' 
-#' @param img Raster* or SpatRast object. Image to shift to match reference image. \code{img} and \code{ref} must have equal numbers of bands.
-#' @param ref Raster* or SpatRast object. Reference image. \code{img} and \code{ref} must have equal numbers of bands.
+#' @param img SpatRaster or SpatRaster. Image to shift to match reference image. \code{img} and \code{ref} must have equal numbers of bands.
+#' @param ref SpatRaster or SpatRaster. Reference image. \code{img} and \code{ref} must have equal numbers of bands.
 #' @param shift Numeric or matrix. If numeric, then shift is the maximal absolute radius (in pixels of \code{img} resolution) which \code{img} is shifted (\code{seq(-shift, shift, by=shiftInc)}). 
 #'  If shift is a matrix it must have two columns (x shift and y shift), then only these shift values will be tested.
 #' @param shiftInc Numeric. Shift increment (in pixels, but not restricted to integer). Ignored if \code{shift} is a matrix.
@@ -23,15 +23,14 @@
 #' Roughly speaking, the higher the mutual information of two data-sets, the higher is their shared information content, i.e. their similarity.
 #' When two images are exactly co-registered their mutual information is maximal. By trying different image shifts, we aim to find the best overlap which maximises the mutual information.
 #' @return 
-#' \code{reportStats=FALSE} returns a Raster* object (x-y shifted image).  
+#' \code{reportStats=FALSE} returns a SpatRaster (x-y shifted image).
 #' \code{reportStats=TRUE} returns a list containing a data.frame with mutual information per shift ($MI), the shift of maximum MI ($bestShift),
 #' the joint histograms per shift in a list ($jointHist) and the shifted image ($coregImg). 
 #' @export 
 #' @examples 
-#' library(raster)
+#' library(terra)
 #' library(ggplot2)
 #' library(reshape2)
-#' data(rlogo)
 #' reference <- rlogo
 #' ## Shift reference 2 pixels to the right and 3 up
 #' missreg <- shift(reference,  2,  3)
@@ -58,7 +57,7 @@
 #'## Compare correction
 #'ggR(reference, sat = 1, alpha = .5) +
 #'   ggR(coreg$coregImg, sat = 1, hue = .5, alpha = 0.5, ggLayer=TRUE) 
-coregisterImages <- function(img, ref, shift = 3, shiftInc = 1, nSamples = 1e5, 
+coregisterImages <- function(img, ref, shift = 3, shiftInc = 1, nSamples = 100,
         reportStats = FALSE, verbose, nBins = 100, 
         master = deprecated(), slave = deprecated(),
         ...) {
@@ -69,44 +68,50 @@ coregisterImages <- function(img, ref, shift = 3, shiftInc = 1, nSamples = 1e5,
     if(is_present(master)){
         deprecate_warn("0.3.0", "coregisterImages(master)", "coregisterImages(ref)")
     }
-    
-	img <- .toRaster(img)
-	ref <- .toRaster(ref) 
+
+    img <- .toTerra(img)
+	ref <- .toTerra(ref)
 	
     ## TODO: allow user selected pseudo control points
     ## TODO: add computation of MI to docu
     #if(!swin%%2 | !mwin%%2) stop("swin and mwin must be odd numbers")
     if(!missing("verbose")) .initVerbose(verbose)
-    if(!compareCRS(ref,  img)) stop("Projection must be the same for ref and img")
+    if(!crs(img) == crs(ref)) stop("Projection must be the same for ref and img")
     nSamples <- min(nSamples, ncell(img))
     
-    if(inherits(shift, "matrix") && ncol(shift)  == 2) { 
-        shifts <- shift * res(img) 
+    if(inherits(shift, "matrix") && ncol(shift) == 2) {
+        shifts <- shift * res(img)
     } else {
-        shift <-  seq(0, shift, shiftInc)
+        shift <- seq(0, shift, shiftInc)
         shift <- c(-rev(shift), shift[-1]) ## always include zero shift
         shifts <- expand.grid(shift * res(img)[1], shift * res(img)[2])
-    } 
-    names(shifts) <- c("x", "y")        
-    
+    }
+    names(shifts) <- c("x", "y")
+
     ran   <- apply(shifts, 2, range)
-    minex <- extent(shift(img, ran[1,1], ran[1,2]))
-    maxex <- extent(shift(img, ran[2,1], ran[2,2]))   
-    
-    XYimgs <- sampleRandom(ref, size = nSamples, ext = .getExtentOverlap(minex, maxex)*0.9, xy = TRUE)
+    minex <- ext(shift(img, ran[1,1], ran[1,2]))
+    maxex <- ext(shift(img, ran[2,1], ran[2,2]))
+
+    XYimgs <- data.matrix(
+      terra::spatSample(ref, size = nSamples, ext = .getExtentOverlap(minex, maxex) * .9, xy = TRUE)
+    )
+
+    mmin <- min(values(ref))
+    mmax <- max(values(ref))
+    smin <- min(values(img))
+    smax <- max(values(img))
+
     xy <- XYimgs[,c(1,2)]
-    me <- XYimgs[,-c(1,2)]      
-    mmin <- min(minValue(ref))
-    mmax <- max(maxValue(ref))
-    smin <- min(minValue(img))
-    smax <- max(maxValue(img))
-    
+    me <- XYimgs[,-c(1,2)]
+
     mbreax <- seq(mmin, mmax, by = (mmax - mmin)/nBins)
     sbreax <- seq(smin, smax, by = (smax - smin)/nBins)
-    me       <- cut(me, breaks = mbreax, labels = FALSE, include.lowest = TRUE)
-    
-    nsl <- nlayers(img)
-    nml <- nlayers(ref)
+
+    me <- cut(me, breaks = mbreax, labels = FALSE, include.lowest = TRUE)
+
+    nsl <- ncol(img)
+    nml <- ncol(ref)
+
     if(nsl !=  nml)  stop("Currently img and ref must have the same number of layers")         
     
     shiftPts <- function(o, x, y) {
@@ -119,16 +124,16 @@ coregisterImages <- function(img, ref, shift = 3, shiftInc = 1, nSamples = 1e5,
                 xt <- shiftPts(xy, x = -shifts[i,1], y = -shifts[i,2])
                 cellFromXY(img, xt)
             }, envir=environment())
-    
+
     ucells <- sort(unique(unlist(spts)))
     lut <- as.matrix(img[ucells])
     rownames(lut) <- ucells
     spts <- lapply(spts, as.character)
-    
+
     ## Shift and calculate mutual information
     sh <- .parXapply(X = 1:nrow(shifts), XFUN = "lapply", FUN = function(i){
                 se <- lut[spts[[i]], ]
-                se  <- cut(se, breaks = sbreax, labels = FALSE, include.lowest = TRUE)  
+                se  <- cut(as.numeric(se), breaks = sbreax, labels = FALSE, include.lowest = TRUE)
                 
                 pab  <- table(me,se)
                 pab  <- pab/sum(pab)
@@ -147,9 +152,10 @@ coregisterImages <- function(img, ref, shift = 3, shiftInc = 1, nSamples = 1e5,
                 list(mi = mi, joint = pab)
                 
             }, envir = environment() )
-    
+
     ## Aggregate stats
-    mi <- vapply(sh,"[[", i = 1, numeric(1)) 
+    mi <- vapply(sh,"[[", i = 1, numeric(1))
+
     if(reportStats){
         jh <- lapply(sh, function(x) matrix(as.vector(x$joint), nrow=nrow(x$joint), ncol=ncol(x$joint)))   
         names(jh) <- paste(shifts[,"x"], shifts[,"y"], sep = "/")
@@ -157,27 +163,16 @@ coregisterImages <- function(img, ref, shift = 3, shiftInc = 1, nSamples = 1e5,
     ## Find best shift and shift if doShift
     moveIt <- shifts[which.max(mi),]
     .vMessage("Identified shift in map units (x/y): ", paste(moveIt, collapse="/"))
-    moved <- shift(img, moveIt[1], moveIt[2], ...)
+
+    moved <- shift(img, as.numeric(moveIt[1]), as.numeric(moveIt[2]), ...)
+
     if(reportStats) {
         return(list(MI = data.frame(shifts, mi=mi), jointHist = jh, bestShift = moveIt, coregImg = moved))
     } else {
         return(moved)
     }
-    
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #    if(method == "areaCor"){
 #        mwin = 11, swin = 3, regbands = 3, 

@@ -9,7 +9,7 @@ coregisterImages(
   ref,
   shift = 3,
   shiftInc = 1,
-  nSamples = 1e+05,
+  nSamples = 100,
   reportStats = FALSE,
   verbose,
   nBins = 100,
@@ -19,9 +19,9 @@ coregisterImages(
 )
 }
 \arguments{
-\item{img}{Raster* or SpatRast object. Image to shift to match reference image. \code{img} and \code{ref} must have equal numbers of bands.}
+\item{img}{SpatRaster or SpatRaster. Image to shift to match reference image. \code{img} and \code{ref} must have equal numbers of bands.}
 
-\item{ref}{Raster* or SpatRast object. Reference image. \code{img} and \code{ref} must have equal numbers of bands.}
+\item{ref}{SpatRaster or SpatRaster. Reference image. \code{img} and \code{ref} must have equal numbers of bands.}
 
 \item{shift}{Numeric or matrix. If numeric, then shift is the maximal absolute radius (in pixels of \code{img} resolution) which \code{img} is shifted (\code{seq(-shift, shift, by=shiftInc)}). 
 If shift is a matrix it must have two columns (x shift and y shift), then only these shift values will be tested.}
@@ -43,7 +43,7 @@ If shift is a matrix it must have two columns (x shift and y shift), then only t
 \item{...}{further arguments passed to \code{\link[raster]{writeRaster}}.}
 }
 \value{
-\code{reportStats=FALSE} returns a Raster* object (x-y shifted image).  
+\code{reportStats=FALSE} returns a SpatRaster (x-y shifted image).
 \code{reportStats=TRUE} returns a list containing a data.frame with mutual information per shift ($MI), the shift of maximum MI ($bestShift),
 the joint histograms per shift in a list ($jointHist) and the shifted image ($coregImg).
 }
@@ -60,10 +60,9 @@ Roughly speaking, the higher the mutual information of two data-sets, the higher
 When two images are exactly co-registered their mutual information is maximal. By trying different image shifts, we aim to find the best overlap which maximises the mutual information.
 }
 \examples{
-library(raster)
+library(terra)
 library(ggplot2)
 library(reshape2)
-data(rlogo)
 reference <- rlogo
 ## Shift reference 2 pixels to the right and 3 up
 missreg <- shift(reference,  2,  3)

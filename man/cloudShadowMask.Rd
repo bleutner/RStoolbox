@@ -15,9 +15,9 @@ cloudShadowMask(
 )
 }
 \arguments{
-\item{img}{Raster* object containing the scene}
+\item{img}{SpatRaster containing the scene}
 
-\item{cm}{Raster* object. Cloud mask (typically the result of \code{\link{cloudMask}})}
+\item{cm}{SpatRaster. Cloud mask (typically the result of \code{\link{cloudMask}})}
 
 \item{nc}{Integer. Number of control points. A few points (default) are fine because the final shift is estimated by \link{coregisterImages}.}
 
@@ -43,11 +43,8 @@ this is a quick and easy to use tool for Landsat data if you're just working on 
 it does perform surprisingly well.
 }
 \examples{
-  
-library(raster)
 library(ggplot2)
 ## Import Landsat example subset
-data(lsat) 
 ## We have two tiny clouds in the east
 \donttest{ggRGB(lsat, stretch = "lin")}
 
@@ -73,7 +70,7 @@ cldmsk_final <- cloudMask(cldmsk, threshold = 0.1, buffer = 5)
 \donttest{shadow <- cloudShadowMask(lsat, cldmsk_final, shiftEstimate = c(-16,-6))}
 
 ## Plot
-\donttest{csmask <- raster::merge(cldmsk_final[[1]], shadow)
+\donttest{csmask <- terra::merge(cldmsk_final[[1]], shadow)
 ggRGB(lsat, stretch = "lin") +
         ggR(csmask, ggLayer = TRUE, forceCat = TRUE, geom_raster = TRUE) +
         scale_fill_manual(values = c("blue", "yellow"), 

@@ -3,7 +3,7 @@
 #' Calculates brightness, greenness and wetness from multispectral imagery.
 #' Currently implemented Landsat 4 TM, Landsat 5 TM, Landsat 7ETM+, Landsat 8 OLI, MODIS, QuickBird, Spot5 and RapidEye.
 #' 
-#' @param img RasterBrick or RasterStack. Input image. Band order must correspond to sensor specifications (see Details and Examples)
+#' @param img RasterBrick or RasterStack or SpatRaster. Input image. Band order must correspond to sensor specifications (see Details and Examples)
 #' @param sat Character. Sensor; one of: c("Landsat4TM", "Landsat5TM", "Landsat7ETM", "Landsat8OLI", "MODIS", "QuickBird", "Spot5", "RapidEye"). Case is irrelevant.
 #' @param ... Further arguments passed to writeRaster.
 #' @export 
@@ -39,28 +39,27 @@
 #' 
 #' Schoenert et al. (2014) "Derivation of tasseled cap coefficients for RapidEye data." Earth Resources and Environmental Remote Sensing/GIS Applications V (9245): 92450Qs.
 #' @return 
-#' Returns a RasterBrick with the thee bands: brigthness, greenness, and (soil) wetness. 
+#' Returns a SpatRaster with the thee bands: brigthness, greenness, and (soil) wetness.
 #' @examples 
-#' library(raster)
-#' data(lsat)
+#' library(terra)
 #' 
 #' ## Run tasseled cap (exclude thermal band 6)
 #' lsat_tc <- tasseledCap(lsat[[c(1:5,7)]], sat = "Landsat5TM")
 #' lsat_tc
 #' plot(lsat_tc)
 tasseledCap <- function(img, sat, ...) {
-	img <- .toRaster(img)
+	img <- .toTerra(img)
 	
     sat <- tolower(sat)
     if(!sat %in% c("landsat4tm" , "landsat5tm" , "landsat7etm" ,"landsat8oli", "modis", "quickbird", "spot5", "rapideye")) stop("Sensor not implemented. See ?tasseledCap for options.")     
     
-    if(nlayers(img) != nrow(.TCcoefs[[sat]])) stop("Number of layers does not match required number of layers")
+    if(nlyr(img) != nrow(.TCcoefs[[sat]])) stop("Number of layers does not match required number of layers")
     
     tct <- function(x, cof = .TCcoefs[[sat]]) {
         x %*% cof 
     }
     
-	out <- .paraRasterFun(img, rasterFun = calc, args = list(fun = tct, forcefun = TRUE), wrArgs = list(...))
+	out <- app(img, fun = tct, ...)
 	out <- .updateLayerNames(out, colnames(.TCcoefs[[sat]]))
 	out
 }

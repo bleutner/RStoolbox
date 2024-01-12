@@ -7,7 +7,7 @@
 oneHotEncode(img, classes, background = 0, foreground = 1, na.rm = FALSE, ...)
 }
 \arguments{
-\item{img}{RasterLayer or integer/numeric vector containing multiple classes}
+\item{img}{RasterLayer or SpatRaster or integer/numeric vector containing multiple classes}
 
 \item{classes}{integer: vector of classes which should be extracted}
 
@@ -17,20 +17,17 @@ oneHotEncode(img, classes, background = 0, foreground = 1, na.rm = FALSE, ...)
 
 \item{na.rm}{logical: if \code{TRUE}, \code{NA}s will be coerced to the \code{background} value.}
 
-\item{...}{further arguments passed to \link[raster]{writeRaster}. Ignored if img is not a RasterLayer, but a numeric/integer vector}
+\item{...}{further arguments passed to \link[terra]{writeRaster}. Ignored if img is not a SpatRaster, but a numeric/integer vector or matrix}
 }
 \value{
-A RasterBrick with as many layers as there are classes. 
+A SpatRaster with as many layers as there are classes.
 Pixels matching the class of interest are set to 1, backround values by default are set to 0 (see background argument)
 }
 \description{
 Splits a categorical raster layer (or a vector) into a multilayer raster (or matrix).
 }
 \examples{
-library(raster)
-
-## example data
-data(rlogo)
+\donttest{
 sc <- unsuperClass(rlogo, nClasses = 3)
 
 ## one-hot encode 
@@ -38,5 +35,5 @@ sc_oneHot <- oneHotEncode(sc$map, classes = c(1,2,3))
 
 ## check results
 sc_oneHot
-plot(sc_oneHot)
+}
 }

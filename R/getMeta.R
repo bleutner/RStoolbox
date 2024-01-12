@@ -3,7 +3,7 @@
 #' This is an accessor function to quickly access information stored in ImageMetaData, e.g. scale factor per band.
 #' Intended for use with imagery which was imported using stackMeta. Will return parameters using the actual band order in img.
 #' 
-#' @param img Raster* or character vector with band names. 
+#' @param img SpatRaster or character vector with band names.
 #' @param metaData ImageMetaData or path to meta data file.
 #' @param what Character. Parameter to extract. Either data descriptors, or conversion parameters (see Details for options)
 #' @export 
@@ -34,23 +34,23 @@
 #' ## Import example data
 #' mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
 #' meta <- readMeta(mtlFile)
-#' lsat <- stackMeta(mtlFile)
+#' lsat_t <- stackMeta(mtlFile)
 #' 
 #' ## Get integer scale factors
-#' getMeta(lsat, metaData = meta, what = "SCALE_FACTOR")
+#' getMeta(lsat_t, metaData = meta, what = "SCALE_FACTOR")
 #' 
 #' ## Conversion factors for brightness temperature
 #' getMeta("B6_dn", metaData = meta, what = "CALBT")
 #' 
 #' ## Conversion factors to top-of-atmosphere radiance
 #' ## Band order not corresponding to metaData order
-#' getMeta(lsat[[5:1]], metaData = meta, what = "CALRAD")
+#' getMeta(lsat_t[[5:1]], metaData = meta, what = "CALRAD")
 #' 
 #' ## Get integer scale factors
-#' getMeta(lsat, metaData = meta, what = "SCALE_FACTOR")
+#' getMeta(lsat_t, metaData = meta, what = "SCALE_FACTOR")
 #' 
 #' ## Get file basenames
-#' getMeta(lsat, metaData = meta, what = "FILES")
+#' getMeta(lsat_t, metaData = meta, what = "FILES")
 #' 
 getMeta <- function(img, metaData, what){
         
@@ -67,7 +67,7 @@ getMeta <- function(img, metaData, what){
     } else if (inherits(img,"character")) {
         bds <- img
     } else {
-        stop("img must be a Raster* or character")
+        stop("img must be a SpatRaster or character")
     }
     
     if(what %in% c("CALREF", "CALRAD", "CALBT")) {

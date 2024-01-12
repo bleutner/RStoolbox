@@ -3,8 +3,8 @@
 #'
 #' validate a map from a classification or regression model. This can be useful to update the accuracy assessment after filtering, e.g. for a minimum mapping unit.
 #'  
-#' @param map RasterLayer. The classified map.
-#' @param valData sf or sp object with validation data (POLYGONs or POINTs).
+#' @param map RasterLayer or SpatRaster. The classified map.
+#' @param valData sf object with validation data (POLYGONs or POINTs).
 #' @param nSamplesV Integer. Number of pixels to sample for validation (only applies to polygons).
 #' @param responseCol Character. Column containing the validation data in attribute table of \code{valData}.
 #' @param mode Character. Either 'classification' or 'regression'.
@@ -14,10 +14,9 @@
 #' @examples 
 #' \dontrun{
 #' library(caret)
-#' library(raster)
+#' library(terra)
 #' 
 #' ## Training data
-#' data(lsat)
 #' poly     <- readRDS(system.file("external/trainingPolygons.rds", package="RStoolbox"))
 #' 
 #' ## Split training data in training and validation set (50%-50%)
@@ -41,7 +40,7 @@
 #'                              classMapping = sc$classMapping)
 #' }
 validateMap <- function(map, valData, responseCol, nSamplesV = 500,  mode = "classification", classMapping = NULL){
-	map <- .toRaster(map)
+	map <- .toTerra(map)
     valData <- .toSf(valData)
 	
     stopifnot(responseCol %in% names(valData), mode %in% c("classification", "regression"))

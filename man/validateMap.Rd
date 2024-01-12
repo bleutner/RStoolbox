@@ -14,9 +14,9 @@ validateMap(
 )
 }
 \arguments{
-\item{map}{RasterLayer. The classified map.}
+\item{map}{RasterLayer or SpatRaster. The classified map.}
 
-\item{valData}{sf or sp object with validation data (POLYGONs or POINTs).}
+\item{valData}{sf object with validation data (POLYGONs or POINTs).}
 
 \item{responseCol}{Character. Column containing the validation data in attribute table of \code{valData}.}
 
@@ -32,10 +32,9 @@ validate a map from a classification or regression model. This can be useful to 
 \examples{
 \dontrun{
 library(caret)
-library(raster)
+library(terra)
 
 ## Training data
-data(lsat)
 poly     <- readRDS(system.file("external/trainingPolygons.rds", package="RStoolbox"))
 
 ## Split training data in training and validation set (50\%-50\%)

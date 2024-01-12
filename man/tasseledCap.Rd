@@ -7,14 +7,14 @@
 tasseledCap(img, sat, ...)
 }
 \arguments{
-\item{img}{RasterBrick or RasterStack. Input image. Band order must correspond to sensor specifications (see Details and Examples)}
+\item{img}{RasterBrick or RasterStack or SpatRaster. Input image. Band order must correspond to sensor specifications (see Details and Examples)}
 
 \item{sat}{Character. Sensor; one of: c("Landsat4TM", "Landsat5TM", "Landsat7ETM", "Landsat8OLI", "MODIS", "QuickBird", "Spot5", "RapidEye"). Case is irrelevant.}
 
 \item{...}{Further arguments passed to writeRaster.}
 }
 \value{
-Returns a RasterBrick with the thee bands: brigthness, greenness, and (soil) wetness.
+Returns a SpatRaster with the thee bands: brigthness, greenness, and (soil) wetness.
 }
 \description{
 Calculates brightness, greenness and wetness from multispectral imagery.
@@ -39,8 +39,7 @@ Required bands are:
 }
 }
 \examples{
-library(raster)
-data(lsat)
+library(terra)
 
 ## Run tasseled cap (exclude thermal band 6)
 lsat_tc <- tasseledCap(lsat[[c(1:5,7)]], sat = "Landsat5TM")

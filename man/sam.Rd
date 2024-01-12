@@ -7,16 +7,16 @@
 sam(img, em, angles = FALSE, ...)
 }
 \arguments{
-\item{img}{RasterBrick or RasterStack. Remote sensing imagery (usually hyperspectral)}
+\item{img}{RasterBrick or RasterStack or SpatRaster. Remote sensing imagery.}
 
 \item{em}{Matrix or data.frame with endmembers. Each row should contain the endmember spectrum of a class, i.e. columns correspond to bands in \code{img}. It is reccomended to set the rownames to class names.}
 
 \item{angles}{Logical. If \code{TRUE} a RasterBrick containing each one layer per endmember will be returned containing the spectral angles.}
 
-\item{...}{further arguments to be passed to \code{\link[raster]{writeRaster}}}
+\item{...}{further arguments to be passed to \code{\link[terra]{writeRaster}}}
 }
 \value{
-RasterBrick or RasterLayer
+SpatRaster
 If \code{angles = FALSE} a single Layer will be returned in which each pixel is assigned to the closest endmember class (integer pixel values correspond to row order of \code{em}.
 }
 \description{
@@ -28,13 +28,12 @@ one raster layer for each endmember containing the spectral angle. The smaller t
 In a second step one can the go ahead an enforce thresholds of maximum angles or simply classify each pixel to the most similar endmember.
 }
 \examples{
-library(raster)
+library(terra)
 library(ggplot2)
-## Load example data-set
-data(lsat) 
 
 ## Sample endmember spectra 
 ## First location is water, second is open agricultural vegetation
+\dontrun{
 pts <- data.frame(x = c(624720, 627480), y = c(-414690, -411090))
 endmembers <- extract(lsat, pts)
 rownames(endmembers) <- c("water", "vegetation")
@@ -46,6 +45,6 @@ plot(lsat_sam)
 ## Classify based on minimum angle
 lsat_sam <- sam(lsat, endmembers, angles = FALSE)
 
-\donttest{ggR(lsat_sam, forceCat = TRUE, geom_raster=TRUE) + 
+ggR(lsat_sam, forceCat = TRUE, geom_raster=TRUE) +
         scale_fill_manual(values = c("blue", "green"), labels = c("water", "vegetation"))}
 }

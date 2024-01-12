@@ -5,19 +5,19 @@
 #' 
 #' Entropy is calculated as -sum(p log(p)); p being the class frequency per pixel.
 #' 
-#' @param img RasterStack or RasterBrick
+#' @param img RasterStack or RasterBrick or SpatRaster
 #' @param ... additional arguments passed to writeRaster
 #' @return
-#' RasterLayer "entropy"
+#' SpatRaster "entropy"
 #' @export 
-#' @examples 
-#' data(rlogo)
+#' @examples
 #' re <- rasterEntropy(rlogo)
 #' ggR(re, geom_raster = TRUE)
 rasterEntropy <- function(img, ...){
-	img <- .toRaster(img)
-    if(nlayers(img) <= 1) stop("img must have at least two layers")
-    out <- calc(img, fun = entropyCpp, forcefun = TRUE, ...)
+	img <- .toTerra(img)
+    if(nlyr(img) <= 1)
+      stop("img must have at least two layers")
+    out <- app(img, fun = entropyCpp, ...)
     out <- .updateLayerNames(out, "entropy")
     out
 }

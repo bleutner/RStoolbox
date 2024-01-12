@@ -3,8 +3,8 @@
 #' Calculates angle and magnitude of change vectors. 
 #' Dimensionality is limited to two bands per image. 
 #' 
-#' @param x RasterBrick or RasterStack with two layers. This will be the reference/origin for the change calculations. Both rasters (y and y) need to correspond to each other, i.e. same resolution, extent and origin.
-#' @param y RasterBrick or RasterStack with two layers. Both rasters (y and y) need to correspond to each other, i.e. same resolution, extent and origin.
+#' @param x RasterBrick or RasterStack or SpatRaster with two layers. This will be the reference/origin for the change calculations. Both rasters (y and y) need to correspond to each other, i.e. same resolution, extent and origin.
+#' @param y RasterBrick or RasterStack or SpatRaster with two layers. Both rasters (y and y) need to correspond to each other, i.e. same resolution, extent and origin.
 #' @param tmf Numeric. Threshold median factor (optional). Used to calculate a threshold magnitude for which pixels are considered stable, i.e. no change. Calculated as \code{tmf * mean(magnitude[magnitude > 0])}.
 #' @param nct Numeric. No-change threshold (optional). Alternative to \code{tmf}. Sets an absolute threshold. Change magnitudes below \code{nct} are considered stable and set to NA.
 #' @param ... further arguments passed to writeRaster
@@ -18,22 +18,24 @@
 #' 
 #'
 #' @return 
-#' Returns a RasterBrick with two layers: change vector angle and change vector magnitude
+#' Returns a SpatRaster with two layers: change vector angle and change vector magnitude
 #' @export 
 #' @examples 
-#' library(raster)
-#' ## Create example data
-#' data(lsat)
+#' library(terra)
+#' \dontrun{
 #' pca <- rasterPCA(lsat)$map
 #' 
 #' ## Do change vector analysis 
 #' cva <- rasterCVA(pca[[1:2]], pca[[3:4]])
 #' cva
 #' plot(cva)
+#' }
 rasterCVA <- function(x, y, tmf = NULL, nct = NULL,  ...) {
-	x <- .toRaster(x)
-	y <- .toRaster(y)
-	if(nlayers(x) != 2 | nlayers(y) != 2) stop("need two rasters with two layers each")
+	x <- .toTerra(x)
+	y <- .toTerra(y)
+
+	if(nlyr(x) != 2 | nlyr(y) != 2)
+		stop("need two rasters with two layers each")
 	
 	doClamp <- !is.null(tmf) || !is.null(nct) 
 	
@@ -42,46 +44,46 @@ rasterCVA <- function(x, y, tmf = NULL, nct = NULL,  ...) {
 	}
 	
 	if(!is.null(tmf)) {
-		maxMag <- sqrt(sum((maxValue(x) - maxValue(y) )^2))*2 
+		maxMag <- sqrt(sum((as.numeric(t(terra::global(x, "max", na.rm=T))) - as.numeric(t(terra::global(y, "max", na.rm=T))) )^2))*2
 		medianBuckets <- seq(1e-10, maxMag, length.out = 2e5)
-		RStoolbox_rasterCVAEnv <- new.env() 
+		RStoolbox_rasterCVAEnv <- new.env()
 		RStoolbox_rasterCVAEnv$medianTable <- 0
 	}
-	
 	anglefun <- function(values,tmf,...) {
 		dif <- values[,3:4] - values[,1:2]
-		magnitude <- sqrt(rowSums(dif^2))	
-		
+		magnitude <- sqrt(rowSums(dif^2))
+
 		if(!is.null(tmf)) {
 			RStoolbox_rasterCVAEnv$medianTable <- RStoolbox_rasterCVAEnv$medianTable + table(cut(magnitude, medianBuckets), useNA = "no")
 		}
-		
+
 		angle  <- rep(0, length(magnitude))
 		sel    <- !is.na(magnitude)
 		angle[sel]  <- atan2(dif[sel,1],dif[sel,2]) / pi * 180
 		negang <- angle < 0
-		angle[negang] <- 360 + angle[negang] 
+		angle[negang] <- 360 + angle[negang]
 		angle[!sel] <- NA
 		cbind(angle, magnitude)
 	}
-	
-	X    <- stack(x,y)
-	out  <- brick(x, 2, values = FALSE)
+
+	X    <- c(x,y)
+	out <- rast(x, 2)
+
 	names(out) <- c("angle", "magnitude")
 	ellips <- list(...)
 	
-	if(canProcessInMemory(X, 2) ) {
-		out[] <- anglefun(getValues(X), tmf)
+	if(.canProcInMem(X, 2) ) {
+		out[] <- anglefun(values(X), tmf)
 		if(!doClamp && !is.null(ellips$filename)){
 			out <- writeRaster(out, ...)
 		}
 	} else {
-		magfile <- if(!is.null(ellips$filename) && !doClamp) filename else rasterTmpFile()
+		magfile <- if(!is.null(ellips$filename) && !doClamp) sources else .terraTmpFile()
 		X   <- readStart(X)
 		out <- writeStart(out, filename = magfile, ...)
-		tr  <- blockSize(out)
+		tr  <- terra::blocks(out)
 		for (i in 1:tr$n) {
-			vo <- getValues(X, row=tr$row[i], nrows=tr$nrows[i])
+			vo <- values(X, row=tr$row[i], nrows=tr$nrows[i])
 			vo <- anglefun(vo, tmf)
 			out <- writeValues(out, vo, tr$row[i])
 		}
@@ -96,12 +98,10 @@ rasterCVA <- function(x, y, tmf = NULL, nct = NULL,  ...) {
 			nct <- tmf * medianEstimate
 			rm(RStoolbox_rasterCVAEnv)
 		}
-		out <- do.call(clamp, c(list(x = out, lower=nct, useValues = FALSE), ellips))
+		out <- do.call(terra::clamp, c(list(x = out, lower=nct), ellips))
 		
 		names(out) <- c("angle", "magnitude")
 	}
 	
 	return(out)
-}	
-
-
+}

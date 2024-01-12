@@ -39,7 +39,7 @@ ggRGB(
 
 \item{stretch}{Character. Either 'none', 'lin', 'hist', 'sqrt' or 'log' for no stretch, linear, histogram, square-root or logarithmic stretch.}
 
-\item{ext}{Extent object to crop the image}
+\item{ext}{Extent or SpatExtent object to crop the image}
 
 \item{limits}{Vector or matrix. Can be used to reduce the range of values. Either a vector of two values for all bands (c(min, max))
 or a 3x2 matrix with min and max values (columns) for each layer (rows).}
@@ -82,7 +82,6 @@ Functionality is based on \code{\link[raster]{plotRGB}} from the raster package.
 \examples{
   
 library(ggplot2)
-data(rlogo)
 
 ggRGB(rlogo, r=1, g=2, b=3)
 
@@ -102,10 +101,10 @@ head(df)
 ## Use in layer-mode, e.g. to add to another plot
 wave <- data.frame(x = c(0, 0:100,100), y = c(0,sin(seq(0,2*pi,pi/50))*10+20, 0))
 p <- ggplot(wave, aes(x, y)) 
-p + ggRGB(rlogo, ggLayer = TRUE) + 
+p + ggRGB(rlogo, ggLayer = TRUE) +
        geom_polygon(aes(x, y), fill = "blue", alpha = 0.4) +
        coord_equal(ylim=c(0,75))
 }
 \seealso{
-\link{ggR}, \link[=fortify.raster]{fortify}
+\link{ggR}, \link[=fortifySpatRaster]{fortifySpatRaster}
 }

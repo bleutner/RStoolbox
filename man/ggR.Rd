@@ -13,6 +13,7 @@ ggR(
   sat = 0,
   stretch = "none",
   quantiles = c(0.02, 0.98),
+  ext = NULL,
   coord_equal = TRUE,
   ggLayer = FALSE,
   ggObj = TRUE,
@@ -29,13 +30,15 @@ ggR(
 
 \item{alpha}{Numeric. Transparency (0-1).}
 
-\item{hue}{Numeric. Hue value for color calculation [0,1] (see \[grDevices]{hsv}). Change if you need anything else than greyscale. Only effective if \code{sat > 0}.}
+\item{hue}{Numeric. Hue value for color calculation [0,1] (see \code{\link[grDevices]{hsv}}). Change if you need anything else than greyscale. Only effective if \code{sat > 0}.}
 
-\item{sat}{Numeric. Saturation value for color calculation [0,1] (see \[grDevices]{hsv}). Change if you need anything else than greyscale.}
+\item{sat}{Numeric. Saturation value for color calculation [0,1] (see \code{\link[grDevices]{hsv}}). Change if you need anything else than greyscale.}
 
 \item{stretch}{Character. Either 'none', 'lin', 'hist', 'sqrt' or 'log' for no stretch, linear, histogram, square-root or logarithmic stretch.}
 
 \item{quantiles}{Numeric vector with two elements. Min and max quantiles to stretch to. Defaults to 2\% stretch, i.e. c(0.02,0.98).}
+
+\item{ext}{Extent object to crop the image}
 
 \item{coord_equal}{Logical. Force addition of coord_equal, i.e. aspect ratio of 1:1. Typically useful for remote sensing data (depending on your projection), hence it defaults to TRUE.
 Note however, that this does not apply if (\code{ggLayer=FALSE}).}
@@ -57,11 +60,11 @@ Note however, that this does not apply if (\code{ggLayer=FALSE}).}
 }
 }
 \description{
-Plot single layer imagery in grey-scale. Can be used with any Raster* object.
+Plot single layer imagery in grey-scale. Can be used with a SpatRaster.
 }
 \details{
 When \code{img} contains factor values and \code{annotation=TRUE}, the raster values will automatically be converted
-to numeric in order to proceed with the brightness calculation. ä
+to numeric in order to proceed with the brightness calculation.
 
 The raster package provides a class lookup-table for categorical rasters (e.g. what you get if you run superClass in classification mode). If your raster has a lookup-table ggR will automatically treat it as categorical (see \link[raster]{factor}). 
 However, the factor status of Raster objects is easily lost and the values are interpreted as numeric. In such cases you should make use of the \code{forceCat = TRUE} argument, which makes sure
@@ -75,8 +78,7 @@ map a value to their fill colour. For more details on the theory behind aestetic
 }
 \examples{
 library(ggplot2)
-library(raster)
-data(rlogo); data(lsat); data(srtm)
+library(terra)
 
 ## Simple grey scale annotation
 ggR(rlogo)
@@ -96,8 +98,8 @@ ggR(rlogo, geom_raster = TRUE) +
 ## Plot multiple layers
 \donttest{
 ggR(lsat, 1:6, geom_raster=TRUE, stretch = "lin") +
-    scale_fill_gradientn(colors=grey.colors(100), guide = FALSE) +
-    theme(axis.text = element_text(size=5), 
+    scale_fill_gradientn(colors=grey.colors(100), guide = "none") +
+    theme(axis.text = element_text(size=5),
           axis.text.y = element_text(angle=90),
           axis.title=element_blank())
 
@@ -114,16 +116,16 @@ ggplot(data, aes(x, y)) +  ggR(rlogo, geom_raster= FALSE, ggLayer = TRUE) +
 ## Categorical data 
 ## In this case you probably want to use geom_raster=TRUE 
 ## in order to perform aestetic mapping (i.e. a meaningful legend)
-rc   <- raster(rlogo)
+rc   <- rlogo
 rc[] <- cut(rlogo[[1]][], seq(0,300, 50))
 ggR(rc, geom_raster = TRUE)
 
 ## Legend cusomization etc. ...
-ggR(rc, geom_raster = TRUE) + scale_fill_discrete(labels=paste("Class", 1:6))
+ggR(rc, geom_raster = TRUE) + scale_fill_continuous(labels=paste("Class", 1:6))
 }
 ## Creating a nicely looking DEM with hillshade background
 terr <- terrain(srtm, c("slope", "aspect"))
-hill <- hillShade(terr[["slope"]], terr[["aspect"]])
+hill <- shade(terr[["slope"]], terr[["aspect"]])
 ggR(hill)
 
 ggR(hill) + 
@@ -131,5 +133,5 @@ ggR(hill) +
    scale_fill_gradientn(colours = terrain.colors(100), name = "elevation")
 }
 \seealso{
-\link{ggRGB}, \link[=fortify.raster]{fortify}
+\link{ggRGB}, \link[=fortifySpatRaster]{fortifySpatRaster}
 }

@@ -29,11 +29,11 @@ file. Useful to archive the fitted models.
 }
 \section{Functions}{
 \itemize{
-\item \code{saveRSTBX}: Save RStoolbox object to file
+\item \code{saveRSTBX()}: Save RStoolbox object to file
 
-\item \code{readRSTBX}: Read files saved with saveRSTBX
+\item \code{readRSTBX()}: Read files saved with saveRSTBX
+
 }}
-
 \note{
 All files must be kept in the same directory to read the full object back into R
 by means of readRSTBX. You can move them to another location but you'll have to move *all* of them 
@@ -42,11 +42,11 @@ return the object but the raster will be missing.
 
 writeRSTBX and readRSTBX are convenience wrappers around saveRDS, readRDS. This means 
 you can read all files created this way also with base functionality as long as you don't move your files.
-This is because x$map is a Raster* object and hence contains only a static link to the file on disk.
+This is because x$map is a SpatRaster object and hence contains only a static link to the file on disk.
 }
 \examples{
 \dontrun{
-input <- brick(system.file("external/rlogo.grd", package="raster"))
+input <- rlogo
 ## Create filename
 file  <- paste0(tempdir(), "/test", runif(1))
 ## Run PCA

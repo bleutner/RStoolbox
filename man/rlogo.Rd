@@ -3,15 +3,14 @@
 \docType{data}
 \name{rlogo}
 \alias{rlogo}
-\title{Rlogo as RasterBrick}
+\title{Rlogo as SpatRaster}
 \usage{
-data(rlogo)
+rlogo
 }
 \description{
 Tiny example of raster data used to run examples.
 }
 \examples{
-data(rlogo)
 ggRGB(rlogo,r = 1,g = 2,b = 3)
 }
 \keyword{datasets}

@@ -6,7 +6,7 @@
 \usage{
 cloudMask(
   x,
-  threshold = 0.8,
+  threshold = 0.2,
   blue = "B1_sre",
   tir = "B6_sre",
   buffer = NULL,
@@ -15,7 +15,7 @@ cloudMask(
 )
 }
 \arguments{
-\item{x}{RasterBrick or RasterStack with reflectance and brightness temperature OR the mask of a previous run of \code{cloudMask} with \code{returnDiffLayer=TRUE}.}
+\item{x}{RasterBrick or RasterStack or SpatRaster with reflectance and brightness temperature OR the mask of a previous run of \code{cloudMask} with \code{returnDiffLayer=TRUE}.}
 
 \item{threshold}{Numeric. cloud detection threshold. If not provided it will be guessed. Everything *below* this threshold will be considered a cloud pixel (unless it is removed by filtering afterwards).}
 
@@ -30,7 +30,7 @@ cloudMask(
 \item{verbose}{Logical. Print messages or suppress.}
 }
 \value{
-Returns a RasterStack with two layers: CMASK contains the binary cloud mask (1 = cloud, NA = not-cloud) and NDTCI contains the cloud index.
+Returns a SpatRaster with two layers: CMASK contains the binary cloud mask (1 = cloud, NA = not-cloud) and NDTCI contains the cloud index.
 }
 \description{
 Developed for use with Landsat data \code{cloudMask} relies on the distinctive difference between the blue (or any other short-wave band) 
@@ -50,11 +50,8 @@ Buffering should be seen as final polishing, i.e. as long as the pure cloud cent
 Once your mask detects obvious cloud pixels properly re-enable buffering for fine tuning if desired. Finally, once a suitable threshold is established re-run cloudMask on the whole scene with this threshold and go get a coffee.
 }
 \examples{
-  
-library(raster)
 library(ggplot2)
 ## Import Landsat example subset
-data(lsat) 
 ## We have two tiny clouds in the east
 \donttest{ggRGB(lsat, stretch = "lin")}
 
@@ -80,7 +77,7 @@ cldmsk_final <- cloudMask(cldmsk, threshold = 0.1, buffer = 5)
 \donttest{shadow <- cloudShadowMask(lsat, cldmsk_final, shiftEstimate = c(-16,-6))}
 
 ## Plot
-\donttest{csmask <- raster::merge(cldmsk_final[[1]], shadow)
+\donttest{csmask <- terra::merge(cldmsk_final[[1]], shadow)
 ggRGB(lsat, stretch = "lin") +
         ggR(csmask, ggLayer = TRUE, forceCat = TRUE, geom_raster = TRUE) +
         scale_fill_manual(values = c("blue", "yellow"), 
