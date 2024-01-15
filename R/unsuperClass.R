@@ -27,7 +27,8 @@
 #' a SpatRaster, with `nClasses` layers, where each layer maps the euclidean distance to the corresponding class centroid.
 #'
 #' @export
-#' @examples 
+#' @examples
+#' \dontrun{
 #' library(terra)
 #' input <- rlogo
 #' 
@@ -44,15 +45,16 @@
 #' ## Plots
 #' colors <- rainbow(5)
 #' plot(unC$map, col = colors, legend = FALSE, axes = FALSE, box = FALSE)
-#' legend(1,1, legend = paste0("C",1:5), fill = colors,
-#'        title = "Classes", horiz = TRUE,  bty = "n")
+#' legend(1,1, legend = paste0("C",1:5), fill = colors, title = "Classes", horiz = TRUE,  bty = "n")
 #' 
 #' ## Return the distance of each pixel to each class centroid
 #' unC <- unsuperClass(input, nSamples = 100, nClasses = 3, output = "distances")
 #' unC
-#' \dontrun{ggR(unC$map, 1:3, geom_raster = TRUE)}
-#' 
+#'
+#' ggR(unC$map, 1:3, geom_raster = TRUE)
+#'
 #' par(olpar) # reset par
+#' }
 unsuperClass <- function(img, nSamples = 10000, nClasses = 5, nStarts = 25, nIter = 100, norm = FALSE, 
                          clusterMap = TRUE, algorithm = "Hartigan-Wong", output  = "classes", ...){      
   ## TODO: check outermost prediction (cpp)
@@ -123,7 +125,7 @@ unsuperClass <- function(img, nSamples = 10000, nClasses = 5, nStarts = 25, nIte
 #' @param ... further arguments to be passed to \link[raster]{writeRaster}, e.g. filename
 #' @export
 #' @return
-#' Returns a raster with the K-means distances base on your object passed in the arguments
+#' Returns a raster with the K-means distances base on your object passed in the arguments.
 #' @examples 
 #' ## Load training data
 #' 

@@ -5,7 +5,6 @@ lsat_t[1] <- NA
 lsat_t[2, 1] <- NA
 pts <- data.frame(x = c(624720, 627480), y = c(-414690, -411090))
 endmembers <- extract(lsat_t, pts)
-endmembers <- endmembers[,-1]
 rownames(endmembers) <- c("water", "vegetation")
 
 test_that("returns correct classes and deals with NA",{
@@ -14,7 +13,7 @@ test_that("returns correct classes and deals with NA",{
             expect_true(all(is.na(ls[1])))
             expect_true(all(is.na(ls[1,1])))
             expect_is(ls <- sam(lsat_t, endmembers, angles = FALSE), "SpatRaster")
-            expect_equal(names(ls), c("class"))
+            expect_equal(names(ls), "class")
             expect_true(is.na(ls[1]))
             expect_true(is.na(ls[2,1]))
             

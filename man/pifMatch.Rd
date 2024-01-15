@@ -31,7 +31,7 @@ pifMatch(
 }
 \value{
 Returns a List with the adjusted image and intermediate products (if requested). 
-#' \itemize{
+\itemize{
    \item \code{img}: the adjusted image
    \item \code{simMap}: pixel-wise similarity map (if \code{returnSimMap = TRUE})
    \item \code{pifMap}: binary map of pixels selected as pseudo-invariant features (if \code{returnPifMap = TRUE}) 

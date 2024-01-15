@@ -38,10 +38,10 @@ sam <- function(img, em, angles = FALSE, ...){
     if(is.vector(em)) {
         em <- matrix(em, nrow = 1, ncol=length(em))
     } else if (is.data.frame(em)) {
-        em <- as.matrix(em)
+        em <- as.matrix(em, ncol=length(colnames(em)))
     }
 
-    em <- em[,-1]
+    em <- em[, colnames(em) != "ID", drop=F]
     if(ncol(em) != nlyr(img)) stop("The number of columns in em must match the number of bands in x.")
     if(!angles && nrow(em) == 1){
         stop(paste0("With only one class an image classification does not make sense.",

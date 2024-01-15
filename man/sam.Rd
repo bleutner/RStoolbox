@@ -33,7 +33,6 @@ library(ggplot2)
 
 ## Sample endmember spectra 
 ## First location is water, second is open agricultural vegetation
-\dontrun{
 pts <- data.frame(x = c(624720, 627480), y = c(-414690, -411090))
 endmembers <- extract(lsat, pts)
 rownames(endmembers) <- c("water", "vegetation")
@@ -46,5 +45,5 @@ plot(lsat_sam)
 lsat_sam <- sam(lsat, endmembers, angles = FALSE)
 
 ggR(lsat_sam, forceCat = TRUE, geom_raster=TRUE) +
-        scale_fill_manual(values = c("blue", "green"), labels = c("water", "vegetation"))}
+        scale_fill_manual(values = c("blue", "green"), labels = c("water", "vegetation"))
 }

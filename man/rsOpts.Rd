@@ -16,6 +16,6 @@ No return, just a setter for the verbosiness of the RStoolbox package
 shortcut to options(RStoolbox.*)
 }
 \examples{
-# rsOpts(verbose=TRUE)
+rsOpts(verbose=TRUE)
 
 }

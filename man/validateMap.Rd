@@ -33,7 +33,6 @@ Returns a structured list includng the preformance and confusion-matrix of your 
 validate a map from a classification or regression model. This can be useful to update the accuracy assessment after filtering, e.g. for a minimum mapping unit.
 }
 \examples{
-\dontrun{
 library(caret)
 library(terra)
 
@@ -54,10 +53,9 @@ polishedMap <- focal(sc$map, matrix(1,3,3), fun = modal)
 
 ## Validation
 ## Before filtering
-val0 <- validateMap(sc$map, valData = val, responseCol = "class", 
+val0 <- validateMap(sc$map, valData = val, responseCol = "class",
                             classMapping = sc$classMapping)
 ## After filtering
 val1 <- validateMap(polishedMap, valData = val, responseCol = "class",
                              classMapping = sc$classMapping)
-}
 }

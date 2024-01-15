@@ -22,7 +22,7 @@
 #' @param format Character. Driver to use for the raster file
 #' @param ... further arguments passed to writeRaster
 #' @export 
-#' @examples 
+#' @examples
 #' \dontrun{
 #' input <- rlogo
 #' ## Create filename
@@ -35,7 +35,7 @@
 #' list.files(tempdir(), pattern = basename(file))
 #' ## Re-read files
 #' re_rpc <- readRSTBX(file)
-#' ## Remove files 
+#' ## Remove files
 #' file.remove(list.files(tempdir(), pattern = basename(file), full = TRUE))
 #' }
 #' @name saveRSTBX

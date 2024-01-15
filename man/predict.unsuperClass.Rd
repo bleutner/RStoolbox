@@ -16,7 +16,7 @@
 \item{...}{further arguments to be passed to \link[raster]{writeRaster}, e.g. filename}
 }
 \value{
-Returns a raster with the K-means distances base on your object passed in the arguments
+Returns a raster with the K-means distances base on your object passed in the arguments.
 }
 \description{
 applies a kmeans cluster model to all pixels of a raster.
