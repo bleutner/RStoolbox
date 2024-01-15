@@ -26,6 +26,9 @@ writeSLI(
 
 \item{endian}{character. Optional. By default the endian is determined based on the platform, but can be forced manually by setting it to either "little" or "big".}
 }
+\value{
+Does not return anything, write the SLI file directly to your drive for where your specified your path parameter
+}
 \description{
 Writes binary ENVI spectral library files (sli) with accompanying header (.sli.hdr) files OR ASCII spectral library files in ENVI format.
 }

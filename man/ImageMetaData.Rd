@@ -92,6 +92,9 @@ ImageMetaData(
 
 \item{spatRes}{Numeric vector. Spatial resolution per band.}
 }
+\value{
+Returns a structured, fully customizable meta-data table of a file
+}
 \description{
 ImageMetaData Class
 }

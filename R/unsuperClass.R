@@ -121,7 +121,9 @@ unsuperClass <- function(img, nSamples = 10000, nClasses = 5, nStarts = 25, nIte
 #' @param img Raster object. Layernames must correspond to layernames used to train the superClass model, i.e. layernames in the original raster image.
 #' @param output Character. Either 'classes' (kmeans class; default) or 'distances' (euclidean distance to each cluster center).
 #' @param ... further arguments to be passed to \link[raster]{writeRaster}, e.g. filename
-#' @export 
+#' @export
+#' @return
+#' Returns a raster with the K-means distances base on your object passed in the arguments
 #' @examples 
 #' ## Load training data
 #' 

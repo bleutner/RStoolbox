@@ -26,6 +26,9 @@ validateMap(
 
 \item{classMapping}{optional data.frame with columns \code{'class'} and \code{'classID'} defining the mapping from raster integers to class names.}
 }
+\value{
+Returns a structured list includng the preformance and confusion-matrix of your then validated input data
+}
 \description{
 validate a map from a classification or regression model. This can be useful to update the accuracy assessment after filtering, e.g. for a minimum mapping unit.
 }

@@ -87,6 +87,8 @@ readSLI <- function(path) {
 #' @param scaleF optional reflectance scaling factor. Defaults to 1.
 #' @param mode character string specifying output file type. Must be one of \code{"bin"} for binary .sli files or \code{"ASCII"} for ASCII ENVI plot files.
 #' @param endian character. Optional. By default the endian is determined based on the platform, but can be forced manually by setting it to either "little" or "big".
+#' @return
+#' Does not return anything, write the SLI file directly to your drive for where your specified your path parameter
 #' @seealso \code{\link{readSLI}}
 #' @export
 #' @template examples_SLI

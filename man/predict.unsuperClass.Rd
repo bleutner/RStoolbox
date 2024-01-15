@@ -15,6 +15,9 @@
 
 \item{...}{further arguments to be passed to \link[raster]{writeRaster}, e.g. filename}
 }
+\value{
+Returns a raster with the K-means distances base on your object passed in the arguments
+}
 \description{
 applies a kmeans cluster model to all pixels of a raster.
 Useful if you want to apply a kmeans model of scene A to scene B.

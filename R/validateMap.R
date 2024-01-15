@@ -9,7 +9,8 @@
 #' @param responseCol Character. Column containing the validation data in attribute table of \code{valData}.
 #' @param mode Character. Either 'classification' or 'regression'.
 #' @param classMapping optional data.frame with columns \code{'class'} and \code{'classID'} defining the mapping from raster integers to class names. 
-#' 
+#' @return
+#' Returns a structured list includng the preformance and confusion-matrix of your then validated input data
 #' @export 
 #' @examples 
 #' \dontrun{

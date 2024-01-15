@@ -9,6 +9,9 @@ decodeQA(x)
 \arguments{
 \item{x}{Integer (16bit)}
 }
+\value{
+Returns the decoded QA values from an integer
+}
 \description{
 Intended for use with Landsat 16-bit QA bands. Decodes pixel quality flags from integer to bit-words.
 }

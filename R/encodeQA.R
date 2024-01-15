@@ -90,6 +90,8 @@ encodeQA <- function(fill = "no", terrainOcclusion = "no", radSaturation = "na",
 #' @seealso \link{encodeQA}
 #' @examples
 #' decodeQA(53248)
+#' @return
+#' Returns the decoded QA values from an integer
 decodeQA <- function(x){
   bit <- intToBits(x)
   paste(tail(rev(as.integer(bit)), 16), collapse="")                        

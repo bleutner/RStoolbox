@@ -275,6 +275,8 @@ readMeta <- function(file, raw = FALSE){
 #' @param calref data.frame. Calibration coefficients for dn->reflectance conversion. Must have columns 'gain' and 'offset'. Rows named according to \code{bands}.
 #' @param calbt data.frame. Calibration coefficients for dn->brightness temperature conversion. Must have columns 'K1' and 'K2'. Rows named according to \code{bands}.
 #' @export
+#' @return
+#' Returns a structured, fully customizable meta-data table of a file
 ImageMetaData <- function(file = NA, format = NA, sat = NA, sen = NA, scene = NA, colNum = NA, colTier = NA, 
         proj =NA, date = NA, pdate = NA,path = NA, row = NA, az = NA, selv = NA,
         esd = NA, files = NA, bands = NA, quant = NA, cat = NA, na = NA, vsat = NA, 

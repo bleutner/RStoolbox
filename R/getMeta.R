@@ -62,7 +62,7 @@ getMeta <- function(img, metaData, what){
     
     stopifnot(what %in% c(names(metaData$DATA), "CALREF", "CALRAD", "CALBT") & length(what) == 1)
 
-    if(inherits(img, "Raster") | inherits(img, "SpatRaster")){
+    if(inherits(img, "SpatRaster")){
         bds <- names(img) 
     } else if (inherits(img,"character")) {
         bds <- img
