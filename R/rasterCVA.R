@@ -22,14 +22,12 @@
 #' @export 
 #' @examples 
 #' library(terra)
-#' \dontrun{
 #' pca <- rasterPCA(lsat)$map
 #' 
 #' ## Do change vector analysis 
 #' cva <- rasterCVA(pca[[1:2]], pca[[3:4]])
 #' cva
 #' plot(cva)
-#' }
 rasterCVA <- function(x, y, tmf = NULL, nct = NULL,  ...) {
 	x <- .toTerra(x)
 	y <- .toTerra(y)

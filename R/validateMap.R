@@ -12,8 +12,7 @@
 #' @return
 #' Returns a structured list includng the preformance and confusion-matrix of your then validated input data
 #' @export 
-#' @examples 
-#' \dontrun{
+#' @examples
 #' library(caret)
 #' library(terra)
 #' 
@@ -34,12 +33,11 @@
 #' 
 #' ## Validation
 #' ## Before filtering
-#' val0 <- validateMap(sc$map, valData = val, responseCol = "class", 
+#' val0 <- validateMap(sc$map, valData = val, responseCol = "class",
 #'                             classMapping = sc$classMapping)
 #' ## After filtering
 #' val1 <- validateMap(polishedMap, valData = val, responseCol = "class",
 #'                              classMapping = sc$classMapping)
-#' }
 validateMap <- function(map, valData, responseCol, nSamplesV = 500,  mode = "classification", classMapping = NULL){
 	map <- .toTerra(map)
     valData <- .toSf(valData)

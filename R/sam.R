@@ -19,7 +19,6 @@
 #' 
 #' ## Sample endmember spectra 
 #' ## First location is water, second is open agricultural vegetation
-#' \dontrun{
 #' pts <- data.frame(x = c(624720, 627480), y = c(-414690, -411090))
 #' endmembers <- extract(lsat, pts)
 #' rownames(endmembers) <- c("water", "vegetation")
@@ -32,7 +31,7 @@
 #' lsat_sam <- sam(lsat, endmembers, angles = FALSE)
 #'
 #' ggR(lsat_sam, forceCat = TRUE, geom_raster=TRUE) +
-#'         scale_fill_manual(values = c("blue", "green"), labels = c("water", "vegetation"))}
+#'         scale_fill_manual(values = c("blue", "green"), labels = c("water", "vegetation"))
 sam <- function(img, em, angles = FALSE, ...){
 	img <- .toTerra(img)
 	
@@ -41,7 +40,8 @@ sam <- function(img, em, angles = FALSE, ...){
     } else if (is.data.frame(em)) {
         em <- as.matrix(em)
     }
-    
+
+    em <- em[,-1]
     if(ncol(em) != nlyr(img)) stop("The number of columns in em must match the number of bands in x.")
     if(!angles && nrow(em) == 1){
         stop(paste0("With only one class an image classification does not make sense.",

@@ -77,12 +77,11 @@
 #' @keywords internal
 #' @noRd
 #' @examples
-#' \dontrun{
-#'  xList <- lapply(rep(1000,10000), rnorm)
-#'  RStoolbox:::.parXapply(xList, XFUN = "lapply", FUN = sum, na.rm = TRUE, envir = environment()),
-#'  RStoolbox:::.parXapply(xList, XFUN = "sapply", FUN = sum, na.rm = TRUE, envir = environment()),
-#'  RStoolbox:::.parXapply(matrix(100^2, 100,100), XFUN = "apply", MAR = 1, FUN = sum, na.rm = TRUE, envir = environment())
-#'  }
+#' xList <- lapply(rep(1000,10000), rnorm)
+#' RStoolbox:::.parXapply(xList, XFUN = "lapply", FUN = sum, na.rm = TRUE, envir = environment())
+#' RStoolbox:::.parXapply(xList, XFUN = "sapply", FUN = sum, na.rm = TRUE, envir = environment())
+#' RStoolbox:::.parXapply(matrix(100^2, 100,100), XFUN = "apply", MAR = 1, FUN = sum, na.rm = TRUE, envir = environment())
+#'
 .parXapply <- function(X, XFUN, MARGIN, FUN, envir, ...){
     call <- quote(f(cl = cl, X = X, FUN = FUN, MARGIN = MARGIN, ...))
     f <- get(XFUN)
