@@ -7,7 +7,7 @@
 #' @return
 #' No return, just a setter for the verbosiness of the RStoolbox package
 #' @examples 
-#' # rsOpts(verbose=TRUE)
+#' rsOpts(verbose=TRUE)
 #'
 rsOpts <- function(verbose){
     options(RStoolbox.verbose=verbose)

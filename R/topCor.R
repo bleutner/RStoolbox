@@ -33,7 +33,7 @@
 #' ## C correction, solar angles provided manually
 #' lsat_C <- topCor(lsat, dem = srtm, solarAngles = c(1.081533, 0.7023922), method = "C")
 #' 
-topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg = NULL, nStrat = 5, illu, ...){
+topCor <- function(img, dem, metaData, seed, solarAngles = c(), method = "C", stratImg = NULL, nStrat = 5, illu, ...){
     img_t <- .toTerra(img)
     if(!missing("dem")) dem_t <- .toTerra(dem)
 	if(!missing("illu")) illu_t <- .toTerra(illu)
@@ -101,7 +101,7 @@ topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg
         ## Lambertian assumption if k == 1
         ## Non-lambertian if 0 <= k < 1   
         stratMethod <- if(is.null(stratImg)) {stratImg <- "slope"; "noStrat"} else "stratEqualBins"
-        ks_t <- .kestimate_t(img_t, illu_t, slope_t, method = stratMethod, stratImg = stratImg, n = nStrat, sz=sz)
+        ks_t <- .kestimate_t(img_t, illu_t, slope_t, seed = seed, method = stratMethod, stratImg = stratImg, n = nStrat, sz=sz)
 
         ks_t$k <- lapply(ks_t$k, function(x){
             x[x[,2] < 0, 2] <- 0
@@ -129,7 +129,7 @@ topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg
     }    
     if(method ==  "stat") {
         ## Eq 8 in Riano2003
-        ks_t <- .kestimate_t(img_t, illu_t, slope_t, method = "stat")
+        ks_t <- .kestimate_t(img_t, illu_t, slope_t, seed = seed, method = "stat")
         sub_t <- rast(lapply(ks_t$k, function(x){
             x[,2] * illu_t
         }))
@@ -138,7 +138,7 @@ topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg
 
     }
     if(method == "C") {
-        ks_t <- .kestimate_t(img_t, illu_t, slope_t, method = "stat")
+        ks_t <- .kestimate_t(img_t, illu_t, slope_t, seed = seed, method = "stat")
         mult_t <- rast(lapply(ks_t$k, function(x){
             ck <- x[,1]/x[,2]
             (cos(sz) + ck) /  (illu_t + ck)
@@ -186,11 +186,11 @@ topCor <- function(img, dem, metaData, solarAngles = c(), method = "C", stratImg
 #' Parameter estimation
 #' @noRd 
 #' @keywords internal
-.kestimate_t <- function(img, illu, slope, stratImg = "slope", method = "noStrat", n = 5, minN = 50, sz) {
+.kestimate_t <- function(img, illu, slope, seed, stratImg = "slope", method = "noStrat", n = 5, minN = 50, sz) {
     suppressWarnings({
         stopifnot(method %in% c("stat", "noStrat", "stratEqualBins", "stratQuantiles"))
         ## Following Lu 2008 sample pre selection
-        set.seed(10)
+        set.seed(seed)
         strat <- if(inherits(stratImg, "character")) NULL else {names(stratImg) <- "strat"; stratImg}
         sr       <- as.data.frame(spatSample(c(img, illu, slope, strat), size = min(ncell(img), 10000), na.rm=TRUE))
 
