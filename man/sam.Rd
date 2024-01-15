@@ -45,5 +45,5 @@ plot(lsat_sam)
 lsat_sam <- sam(lsat, endmembers, angles = FALSE)
 
 ggR(lsat_sam, forceCat = TRUE, geom_raster=TRUE) +
-        scale_fill_manual(values = c("blue", "green"), labels = c("water", "vegetation"))
+             scale_fill_manual(values = c("blue", "green"), labels = c("water", "vegetation"))
 }

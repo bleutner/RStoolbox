@@ -8,7 +8,6 @@ topCor(
   img,
   dem,
   metaData,
-  seed,
   solarAngles = c(),
   method = "C",
   stratImg = NULL,
