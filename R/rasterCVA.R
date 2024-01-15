@@ -20,7 +20,8 @@
 #' @return 
 #' Returns a SpatRaster with two layers: change vector angle and change vector magnitude
 #' @export 
-#' @examples 
+#' @examples
+#' \dontrun{
 #' library(terra)
 #' pca <- rasterPCA(lsat)$map
 #' 
@@ -28,6 +29,7 @@
 #' cva <- rasterCVA(pca[[1:2]], pca[[3:4]])
 #' cva
 #' plot(cva)
+#' }
 rasterCVA <- function(x, y, tmf = NULL, nct = NULL,  ...) {
 	x <- .toTerra(x)
 	y <- .toTerra(y)
