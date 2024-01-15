@@ -57,7 +57,7 @@ saveRSTBX(rpc, filename=file)
 list.files(tempdir(), pattern = basename(file))
 ## Re-read files
 re_rpc <- readRSTBX(file)
-## Remove files 
+## Remove files
 file.remove(list.files(tempdir(), pattern = basename(file), full = TRUE))
 }
 }
