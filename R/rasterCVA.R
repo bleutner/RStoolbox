@@ -21,6 +21,7 @@
 #' Returns a SpatRaster with two layers: change vector angle and change vector magnitude
 #' @export 
 #' @examples
+#' \donttest{
 #' library(terra)
 #' pca <- rasterPCA(lsat)$map
 #'
@@ -28,6 +29,7 @@
 #' cva <- rasterCVA(pca[[1:2]], pca[[3:4]])
 #' cva
 #' plot(cva)
+#' }
 rasterCVA <- function(x, y, tmf = NULL, nct = NULL,  ...) {
 	x <- .toTerra(x)
 	y <- .toTerra(y)
@@ -96,7 +98,7 @@ rasterCVA <- function(x, y, tmf = NULL, nct = NULL,  ...) {
 			nct <- tmf * medianEstimate
 			rm(RStoolbox_rasterCVAEnv)
 		}
-		out <- terra::clamp(out, lower = nct, ... = ellips)
+		out <- do.call(terra::clamp, c(list(x = out, lower=nct), ellips))
 		
 		names(out) <- c("angle", "magnitude")
 	}
@@ -104,20 +106,3 @@ rasterCVA <- function(x, y, tmf = NULL, nct = NULL,  ...) {
 	return(out)
 }
 
-test <- function(){
-	devtools::load_all()
-
-	r <- rast(val = 0, ncol = 2, nrow = 10)
-	r1 <- r2 <- c(r, r)
-	s <- 4
-	x <- c(0,s,s,s,0,-s,-s,-s, NA, 0)
-	y <- c(s,s,0,-s,-s,-s,0,s, 0, NA)
-	r2[[1]][] <- c(x, x + sign(x)*2)
-	r2[[2]][] <- c(y, y + sign(y)*2)
-
-	expectedDf <- as.matrix(data.frame(angle = c(0,45,90,135,180,225,270,315,NA,NA),
-					magnitude = c(rep(c(s, sqrt(2*s^2)), 4), NA,NA, rep(c((2+s), sqrt(2*(2+s)^2)), 4), NA,NA)))
-
-	rasterCVA(r1,r2, tmf = 0)
-
-}

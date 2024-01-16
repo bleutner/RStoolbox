@@ -24,6 +24,7 @@
 #' @return Returns a named list containing the PCA model object ($model) and a SpatRaster with the principal component layers ($object).
 #' @export 
 #' @examples
+#' \donttest{
 #' library(ggplot2)
 #' library(reshape2)
 #' ggRGB(rlogo, 1,2,3)
@@ -41,6 +42,7 @@
 #' if(require(gridExtra)){
 #'   plots <- lapply(1:3, function(x) ggR(rpc$map, x, geom_raster = TRUE))
 #'   grid.arrange(plots[[1]],plots[[2]], plots[[3]], ncol=2)
+#' }
 #' }
 rasterPCA <- function(img, nSamples = NULL, nComp = nlyr(img), spca = FALSE,  maskCheck = TRUE, ...){
     img <- .toTerra(img)
