@@ -33,7 +33,6 @@ For example for a given pixel in image A and B for the red and nir band the chan
  Angles are returned *in degree* beginning with 0 degrees pointing 'north', i.e. the y-axis, i.e. the second band.
 }
 \examples{
-\donttest{
 library(terra)
 pca <- rasterPCA(lsat)$map
 
@@ -41,5 +40,4 @@ pca <- rasterPCA(lsat)$map
 cva <- rasterCVA(pca[[1:2]], pca[[3:4]])
 cva
 plot(cva)
-}
 }

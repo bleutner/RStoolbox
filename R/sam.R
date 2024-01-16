@@ -13,20 +13,20 @@
 #' In a second step one can the go ahead an enforce thresholds of maximum angles or simply classify each pixel to the most similar endmember. 
 #' @return SpatRaster
 #' If \code{angles = FALSE} a single Layer will be returned in which each pixel is assigned to the closest endmember class (integer pixel values correspond to row order of \code{em}. 
-#' @examples 
+#' @examples
 #' library(terra)
 #' library(ggplot2)
-#' 
-#' ## Sample endmember spectra 
+#'
+#' ## Sample endmember spectra
 #' ## First location is water, second is open agricultural vegetation
 #' pts <- data.frame(x = c(624720, 627480), y = c(-414690, -411090))
 #' endmembers <- extract(lsat, pts)
 #' rownames(endmembers) <- c("water", "vegetation")
-#' 
+#'
 #' ## Calculate spectral angles
 #' lsat_sam <- sam(lsat, endmembers, angles = TRUE)
 #' plot(lsat_sam)
-#' 
+#'
 #' ## Classify based on minimum angle
 #' lsat_sam <- sam(lsat, endmembers, angles = FALSE)
 #'

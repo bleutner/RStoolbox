@@ -31,7 +31,7 @@ In a second step one can the go ahead an enforce thresholds of maximum angles or
 library(terra)
 library(ggplot2)
 
-## Sample endmember spectra 
+## Sample endmember spectra
 ## First location is water, second is open agricultural vegetation
 pts <- data.frame(x = c(624720, 627480), y = c(-414690, -411090))
 endmembers <- extract(lsat, pts)

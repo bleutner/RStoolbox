@@ -24,7 +24,6 @@
 #' @return Returns a named list containing the PCA model object ($model) and a SpatRaster with the principal component layers ($object).
 #' @export 
 #' @examples
-#' \donttest{
 #' library(ggplot2)
 #' library(reshape2)
 #' ggRGB(rlogo, 1,2,3)
@@ -43,7 +42,6 @@
 #'   plots <- lapply(1:3, function(x) ggR(rpc$map, x, geom_raster = TRUE))
 #'   grid.arrange(plots[[1]],plots[[2]], plots[[3]], ncol=2)
 #' }
-#' }
 rasterPCA <- function(img, nSamples = NULL, nComp = nlyr(img), spca = FALSE,  maskCheck = TRUE, ...){
     img <- .toTerra(img)
 
@@ -60,7 +58,7 @@ rasterPCA <- function(img, nSamples = NULL, nComp = nlyr(img), spca = FALSE,  ma
     
     if(!is.null(nSamples)){
         trainData <- terra::spatSample(img, size = nSamples, na.rm = TRUE)
-        if(nrow(trainData) < terra::nlyr(img)) stop("nSamples too small or img contains a layer with NAs only")
+        if(nrow(trainData) < nlyr(img)) stop("nSamples too small or img contains a layer with NAs only")
         model <- stats::princomp(trainData, scores = FALSE, cor = spca)
     } else {
         if(maskCheck) {
@@ -72,7 +70,7 @@ rasterPCA <- function(img, nSamples = NULL, nComp = nlyr(img), spca = FALSE,  ma
         covMat <- terra::layerCor(img, "cov", na.rm = TRUE)
         model  <- stats::princomp(covmat = covMat$covariance, cor = spca)
         model$center <- covMat$mean
-        model$n.obs  <- terra::ncell(!any(is.na(img)))
+        model$n.obs  <- t(global(img, "sum", na.rm = TRUE))
 
         if(spca) {    
             ## Calculate scale as population sd like in in princomp

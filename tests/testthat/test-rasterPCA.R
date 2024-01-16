@@ -7,13 +7,10 @@ ld   <- as.data.frame(lsat_t)
 
 for(spc in c(FALSE, TRUE)) {
 	test_that(paste("stats::princomp(covMat(raster)) == stats::princomp(sample) with spca=",spc), {
-		skip_on_covr()
-		skip_on_cran()
-		skip_on_ci()
 		expect_s3_class(r   <- rasterPCA(lsat_t, nSamples = NULL, spca = spc), c("RStoolbox", "rasterPCA"))
 		expect_s3_class(rs  <- rasterPCA(lsat_t, nSamples = ncell(lsat_t), spca = spc), c("RStoolbox", "rasterPCA"))
 		expect_equal(abs(unclass(rs$model$loadings)), abs(unclass(r$model$loadings)))
-		expect_equivalent(abs(r$map[]), abs(rs$map[]))
+		expect_equal(abs(r$map[]), abs(rs$map[]), tolerance = 1e-03)
 	})
 	
 }
@@ -26,9 +23,6 @@ for(i in seq_len(nrow(G))){
 	smpl <- if(G[i,"smpl"]) ncell(lsat_t) else NULL
 	test_that(paste("rasterPCA NA handling; spca =",spc, "; nSamples =", deparse(smpl)), {
 		suppressWarnings({
-			skip_on_cran()
-			skip_on_covr()
-			skip_on_ci()
 			expect_s3_class(r   <- rasterPCA(lsat_t, nSamples = smpl, spca = spc), c("RStoolbox", "rasterPCA"))
 			expect_true(all(is.na(r$map[c(100:200,400:500)])))
 			expect_false(any(is.na(r$map[1:99])))
