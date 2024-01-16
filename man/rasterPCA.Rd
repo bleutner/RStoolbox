@@ -25,7 +25,7 @@ rasterPCA(
 \item{maskCheck}{Logical. Masks all pixels which have at least one NA (default TRUE is reccomended but introduces a slow-down, see Details when it is wise to disable maskCheck). 
 Takes effect only if nSamples is NULL.}
 
-\item{...}{further arguments to be passed to \link[raster]{writeRaster}, e.g. filename.}
+\item{...}{further arguments to be passed to \link[terra]{writeRaster}, e.g. filename.}
 }
 \value{
 Returns a named list containing the PCA model object ($model) and a SpatRaster with the principal component layers ($object).
@@ -47,6 +47,7 @@ Standardised PCA (SPCA) can be useful if imagery or bands of different dynamic r
 has the same effect as using normalised bands of unit variance.
 }
 \examples{
+\donttest{
 library(ggplot2)
 library(reshape2)
 ggRGB(rlogo, 1,2,3)
@@ -64,5 +65,6 @@ ggRGB(rpc$map,1,2,3, stretch="lin", q=0)
 if(require(gridExtra)){
   plots <- lapply(1:3, function(x) ggR(rpc$map, x, geom_raster = TRUE))
   grid.arrange(plots[[1]],plots[[2]], plots[[3]], ncol=2)
+}
 }
 }

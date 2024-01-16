@@ -2,7 +2,7 @@
 #' 
 #' Calculates RGB color composite raster for plotting with ggplot2. Optional values for clipping and and stretching can be used to enhance the imagery.
 #' 
-#' Functionality is based on \code{\link[raster]{plotRGB}} from the raster package.
+#' Functionality is based on \code{\link[terra]{plotRGB}} from the raster package.
 #' 
 #' @param img RasterStack or RasterBrick
 #' @param r Integer or character. Red layer in x. Can be set to \code{NULL}, in which case the red channel will be set to zero.

@@ -20,7 +20,7 @@ mesma(img, em, method = "NNLS", iterate = 400, tolerance = 1e-08, ..., verbose)
 
 \item{tolerance}{Numeric. Tolerance limit representing a nearly zero minimal number. Default is 1e-8.}
 
-\item{...}{further arguments passed to \link[raster]{writeRaster}.}
+\item{...}{further arguments passed to \link[terra]{writeRaster}.}
 
 \item{verbose}{Logical. Prints progress messages during execution.}
 }

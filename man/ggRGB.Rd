@@ -77,7 +77,7 @@ Note that you can't use scale_fill* in addition to the latter, because it alread
 Calculates RGB color composite raster for plotting with ggplot2. Optional values for clipping and and stretching can be used to enhance the imagery.
 }
 \details{
-Functionality is based on \code{\link[raster]{plotRGB}} from the raster package.
+Functionality is based on \code{\link[terra]{plotRGB}} from the raster package.
 }
 \examples{
   

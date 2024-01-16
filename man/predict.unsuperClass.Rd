@@ -13,7 +13,7 @@
 
 \item{output}{Character. Either 'classes' (kmeans class; default) or 'distances' (euclidean distance to each cluster center).}
 
-\item{...}{further arguments to be passed to \link[raster]{writeRaster}, e.g. filename}
+\item{...}{further arguments to be passed to \link[terra]{writeRaster}, e.g. filename}
 }
 \value{
 Returns a raster with the K-means distances base on your object passed in the arguments.

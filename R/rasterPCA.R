@@ -20,10 +20,11 @@
 #' @param spca Logical. If \code{TRUE}, perform standardized PCA. Corresponds to centered and scaled input image. This is usually beneficial for equal weighting of all layers. (\code{FALSE} by default)
 #' @param maskCheck Logical. Masks all pixels which have at least one NA (default TRUE is reccomended but introduces a slow-down, see Details when it is wise to disable maskCheck). 
 #' Takes effect only if nSamples is NULL.
-#' @param ... further arguments to be passed to \link[raster]{writeRaster}, e.g. filename.
+#' @param ... further arguments to be passed to \link[terra]{writeRaster}, e.g. filename.
 #' @return Returns a named list containing the PCA model object ($model) and a SpatRaster with the principal component layers ($object).
 #' @export 
 #' @examples
+#' \donttest{
 #' library(ggplot2)
 #' library(reshape2)
 #' ggRGB(rlogo, 1,2,3)
@@ -42,6 +43,7 @@
 #'   plots <- lapply(1:3, function(x) ggR(rpc$map, x, geom_raster = TRUE))
 #'   grid.arrange(plots[[1]],plots[[2]], plots[[3]], ncol=2)
 #' }
+#' }
 rasterPCA <- function(img, nSamples = NULL, nComp = nlyr(img), spca = FALSE,  maskCheck = TRUE, ...){
     img <- .toTerra(img)
 
@@ -54,7 +56,7 @@ rasterPCA <- function(img, nSamples = NULL, nComp = nlyr(img), spca = FALSE,  ma
         ellip[["norm"]] <- NULL
     }
     
-    if(nComp > terra::nlyr(img)) nComp <- terra::nlyr(img)
+    if(nComp > nlyr(img)) nComp <- nlyr(img)
     
     if(!is.null(nSamples)){
         trainData <- terra::spatSample(img, size = nSamples, na.rm = TRUE)
@@ -70,7 +72,7 @@ rasterPCA <- function(img, nSamples = NULL, nComp = nlyr(img), spca = FALSE,  ma
         covMat <- terra::layerCor(img, "cov", na.rm = TRUE)
         model  <- stats::princomp(covmat = covMat$covariance, cor = spca)
         model$center <- covMat$mean
-        model$n.obs  <- t(global(img, "sum", na.rm = TRUE))
+        model$n.obs  <- ncell(any(!is.na(img)))
 
         if(spca) {    
             ## Calculate scale as population sd like in in princomp
@@ -79,7 +81,8 @@ rasterPCA <- function(img, nSamples = NULL, nComp = nlyr(img), spca = FALSE,  ma
         }
     }
     ## Predict
-    out <- .paraRasterFun(img, predict, args = list(model = model, index = 1:nComp), wrArgs = ellip)
+    out   <- .paraRasterFun(img, terra::predict, args = list(model = model, na.rm = TRUE, index = 1:nComp), wrArgs = ellip)
+
     names(out) <- paste0("PC", 1:nComp)
     structure(list(call = match.call(), model = model, map = out), class = c("rasterPCA", "RStoolbox"))  
 

@@ -12,7 +12,7 @@
 #' @param nBins Integer. Number of bins to calculate joint histogram.
 #' @param reportStats Logical. If \code{FALSE} it will return only the shifted images. Otherwise it will return the shifted image in a list containing stats such as mutual information per shift and joint histograms.
 #' @param verbose Logical. Print status messages. Overrides global RStoolbox.verbose option.
-#' @param ... further arguments passed to \code{\link[raster]{writeRaster}}.
+#' @param ... further arguments passed to \code{\link[terra]{writeRaster}}.
 #' @param slave DEPRECATED! Argument was renamed. Please use \code{img} from now on.
 #' @param master DEPRECATED! Argument was renamed. Please use \code{ref} from now on.
 #' @details 

@@ -268,7 +268,7 @@ readMeta <- function(file, raw = FALSE){
 #' @param na Numeric vector. No-data value per band
 #' @param vsat Numeric vector. Saturation value per band
 #' @param scal Numeric vector. Scale factor per band. e.g. if data was scaled to 1000*reflectance for integer conversion.
-#' @param dtyp Character vector. Data type per band. See \code{\link[raster]{dataType}} for options.
+#' @param dtyp Character vector. Data type per band. See \code{\link[terra]{dataType}} for options.
 #' @param radRes Numeric vector. Radiometric resolution per band.
 #' @param spatRes Numeric vector. Spatial resolution per band.
 #' @param calrad data.frame. Calibration coefficients for dn->radiance conversion. Must have columns 'gain' and 'offset'. Rows named according to \code{bands}.

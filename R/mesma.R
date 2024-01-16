@@ -11,7 +11,7 @@
 #' @param iterate Integer. Set maximum iteration per pixel. Processing time could increase the more iterations are made possible. Default is 400.
 #' @param tolerance Numeric. Tolerance limit representing a nearly zero minimal number. Default is 1e-8. 
 #' @param verbose Logical. Prints progress messages during execution.
-#' @param ... further arguments passed to \link[raster]{writeRaster}.
+#' @param ... further arguments passed to \link[terra]{writeRaster}.
 #' 
 #' @return SpatRaster. The object will contain one band per endmember, with each value representing the estimated presence probability of the endmember per pixel (0 to 1), and an RMSE band.
 #' 

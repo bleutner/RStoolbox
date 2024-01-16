@@ -36,7 +36,7 @@ histMatch(
 
 \item{returnFunctions}{Logical. If \code{TRUE} the matching functions will be returned instead of applying them to \code{x}.}
 
-\item{...}{Further arguments to be passed to \link[raster]{writeRaster}.}
+\item{...}{Further arguments to be passed to \link[terra]{writeRaster}.}
 }
 \value{
 A SpatRaster of \code{x} adjusted to the histogram of \code{ref}. If \code{returnFunctions  = TRUE} a list of functions (one for each layer) will be returned instead.

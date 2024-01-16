@@ -24,7 +24,7 @@ classifyQA(
 
 \item{legacy}{Encoding systematic Options: \code{c("collection1", "pre_collection")}. Default is "collection1" for the Landsat Collection 1 8-bit quality designations. Use "pre_collection" for imagery downloaded before the Collection 1 quality designations were introduced}
 
-\item{...}{further arguments passed to \link[raster]{writeRaster}}
+\item{...}{further arguments passed to \link[terra]{writeRaster}}
 }
 \value{
 Returns a SpatRaster with maximal five classes:

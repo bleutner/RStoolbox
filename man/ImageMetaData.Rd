@@ -80,7 +80,7 @@ ImageMetaData(
 
 \item{scal}{Numeric vector. Scale factor per band. e.g. if data was scaled to 1000*reflectance for integer conversion.}
 
-\item{dtyp}{Character vector. Data type per band. See \code{\link[raster]{dataType}} for options.}
+\item{dtyp}{Character vector. Data type per band. See \code{\link[terra]{dataType}} for options.}
 
 \item{calrad}{data.frame. Calibration coefficients for dn->radiance conversion. Must have columns 'gain' and 'offset'. Rows named according to \code{bands}.}
 

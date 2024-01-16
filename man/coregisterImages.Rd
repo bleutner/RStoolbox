@@ -40,7 +40,7 @@ If shift is a matrix it must have two columns (x shift and y shift), then only t
 
 \item{slave}{DEPRECATED! Argument was renamed. Please use \code{img} from now on.}
 
-\item{...}{further arguments passed to \code{\link[raster]{writeRaster}}.}
+\item{...}{further arguments passed to \code{\link[terra]{writeRaster}}.}
 }
 \value{
 \code{reportStats=FALSE} returns a SpatRaster (x-y shifted image).

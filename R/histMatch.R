@@ -11,7 +11,7 @@
 #' @param intersectOnly Logical. If \code{TRUE} sampling will only take place in the overlap extent of the two rasters. Otherwise the full rasters will be used for sampling.
 #' @param paired Logical. If \code{TRUE} the corresponding pixels will be used in the overlap.
 #' @param returnFunctions Logical. If \code{TRUE} the matching functions will be returned instead of applying them to \code{x}. 
-#' @param ... Further arguments to be passed to \link[raster]{writeRaster}.
+#' @param ... Further arguments to be passed to \link[terra]{writeRaster}.
 #' @param forceInteger Logical. Force integer output.
 #' @note \code{x} and \code{ref} must have the same number of layers.
 #' @return A SpatRaster of \code{x} adjusted to the histogram of \code{ref}. If \code{returnFunctions  = TRUE} a list of functions (one for each layer) will be returned instead.
