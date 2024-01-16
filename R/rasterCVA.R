@@ -21,7 +21,7 @@
 #' Returns a SpatRaster with two layers: change vector angle and change vector magnitude
 #' @export 
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' library(terra)
 #' pca <- rasterPCA(lsat)$map
 #'

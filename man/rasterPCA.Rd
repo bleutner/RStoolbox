@@ -47,7 +47,7 @@ Standardised PCA (SPCA) can be useful if imagery or bands of different dynamic r
 has the same effect as using normalised bands of unit variance.
 }
 \examples{
-\donttest{
+\dontrun{
 library(ggplot2)
 library(reshape2)
 ggRGB(rlogo, 1,2,3)

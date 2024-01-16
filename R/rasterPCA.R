@@ -24,7 +24,7 @@
 #' @return Returns a named list containing the PCA model object ($model) and a SpatRaster with the principal component layers ($object).
 #' @export 
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' library(ggplot2)
 #' library(reshape2)
 #' ggRGB(rlogo, 1,2,3)

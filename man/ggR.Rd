@@ -66,10 +66,6 @@ Plot single layer imagery in grey-scale. Can be used with a SpatRaster.
 When \code{img} contains factor values and \code{annotation=TRUE}, the raster values will automatically be converted
 to numeric in order to proceed with the brightness calculation.
 
-The raster package provides a class lookup-table for categorical rasters (e.g. what you get if you run superClass in classification mode). If your raster has a lookup-table ggR will automatically treat it as categorical (see \link[terra]{factor}).
-However, the factor status of Raster objects is easily lost and the values are interpreted as numeric. In such cases you should make use of the \code{forceCat = TRUE} argument, which makes sure
-that ggplot2 uses a discrete scale, not a continuous one.
-
 The geom_raster argument switches from the default use of annotation_raster to geom_raster. The difference between the two is that geom_raster performs
 a meaningful mapping from pixel values to fill colour, while annotation_raster is simply adding a picture to your plot. In practice this means that whenever you 
 need a legend for your raster you should use \code{geom_raster = TRUE}. This also allows you to specify and modify the fill scale manually. 

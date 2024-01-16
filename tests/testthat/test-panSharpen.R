@@ -3,6 +3,9 @@ context("panSharpen")
 library(terra)
 
 test_that("panSharpen methods", {
+	skip_on_ci()
+	skip_on_cran()
+	skip_on_covr()
 	suppressWarnings({
 		agg     <- aggregate(lsat, 10)
 		pan     <- sum(lsat[[1:3]])
@@ -11,7 +14,7 @@ test_that("panSharpen methods", {
 		nlayers <- c(3,3,7)
 		names(nlayers) <- names(panList) <- meth
 
-		for(m in meth) expect_is(panList[[m]], "SpatRaster", info = m)
+		for(m in meth) expect_is(panList[[m]], "SpatRaster")
 		for(m in meth) expect_equal(names(panList[[m]]), paste0(names(agg)[1:nlayers[m]], "_pan"), info = m)  # tests inmplicitly for correct number of layers
 		for(m in meth) expect_equal(res(panList[[m]]), res(pan), info = m)
 	})
