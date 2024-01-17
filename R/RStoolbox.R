@@ -55,7 +55,7 @@
 #' @importFrom tidyr pivot_wider complete
 #' @importFrom dplyr mutate group_by summarize filter
 #' @importFrom XML xmlParse xmlToList
-#' @importFrom stats coefficients lm ecdf approxfun knots kmeans complete.cases loadings cov cor setNames
+#' @importFrom stats coefficients cov.wt lm ecdf approxfun knots kmeans complete.cases loadings cov cor setNames
 #' @importFrom graphics par abline
 #' @importFrom methods as show
 #' @importFrom utils read.csv read.delim read.table str write.table data capture.output
