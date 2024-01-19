@@ -20,7 +20,7 @@ Depends:
 Imports:
     caret (>= 6.0-79),
     sf,
-    terra,
+    terra (>= 1.6-41),
     XML,
     dplyr,
     ggplot2,
