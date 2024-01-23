@@ -112,18 +112,19 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0
 
   ex <- ext(img)
 
-  xfort <- spatSample(img[[layer]], maxpixels, ext = ex, method = "regular", as.raster = TRUE)
+  xfort <- spatSample(img[[layer]], maxpixels, ext = ex, method = "regular", as.raster = TRUE, na.rm = TRUE)
   ex <- as.vector(ext(xfort))
 
   dimImg <- dim(xfort)
 
   df <- lapply(names(xfort), function(layer) {
-    df    <- data.frame(as.data.frame(xfort[[layer]], xy = TRUE),
+    df <- data.frame(extract(xfort[[layer]], seq_along(values(xfort[[layer]])), xy = TRUE),
                         layerName = factor(layer, levels = names(xfort)))
     colnames(df) <- c("x", "y", "value", "layerName")
     df
   })
   df <- do.call(rbind, df)
+
 
   if(forceCat & !is.factor(df$value)) df$value <- as.factor(df$value)
 
