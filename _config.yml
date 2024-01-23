@@ -12,8 +12,8 @@ highlighter: rouge
 title : RStoolbox
 tagline: Remote Sensing Data Analysis in R
 author :
-  name : Benjamin Leutner
-  email : rstoolboxpackage@gmail.com
+  name : Konstantin Müller (Maintainer)
+  email : konstantinfinn.mueller@gmx.de
   github : bleutner
   twitter : username
   feedburner : feedname
