@@ -6,3 +6,9 @@
 *.so
 *.dll
 *.README.md.html
+_Rmd
+.Rproj.user
+RStoolbox.Rproj
+revdep
+*Rplots.pdf
+CRAN_RELEASE

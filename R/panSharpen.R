@@ -3,8 +3,8 @@
 #' provides different methods for pan sharpening a coarse resolution (typically multispectral) image with 
 #' a higher reolution panchromatic image. Values of the pan-chromatic and multispectral images must be of the same scale, (e.g. from 0:1, or all DNs from 0:255)
 #' 
-#' @param img Raster* object. Coarse resolution multispectral image 
-#' @param pan RasterLayer. High resolution image, typically panchromatic.
+#' @param img RasterLayer or SpatRaster. Coarse resolution multispectral image
+#' @param pan RasterLayer or SpatRaster. High resolution image, typically panchromatic.
 #' @param method Character. Choose method from c("pca", "ihs", "brovey").
 #' @param r Character or Integer. Red band in \code{img}. Only relevant if \code{method!='pca'}
 #' @param g Character or Integer. Green band in \code{img}. Only relevant if \code{method!='pca'}
@@ -16,33 +16,38 @@
 #' \itemize{ 
 #'  \item{\code{method='pca'}: Performs a pca using \link{rasterPCA}. The first component is then swapped for the pan band an the PCA is rotated backwards.}
 #'  \item{\code{method='ihs'}: Performs a color space transform to Intensity-Hue-Saturation space, swaps intensity for the histogram matched pan and does the backwards transformation.}
-#' 	\item{\code{method='brovey'}: Performs Brovey reweighting. Pan and img must be at the same value scale (e.g. 0:1, or 0:255) otherwise you'll end up with psychodelic colors.}
+#'     \item{\code{method='brovey'}: Performs Brovey reweighting. Pan and img must be at the same value scale (e.g. 0:1, or 0:255) otherwise you'll end up with psychodelic colors.}
 #' }
+#' @returns pan-sharpened SpatRaster
 #' @export
 #' @examples 
-#' library(raster)
-#' library(gridExtra)
+#' library(terra)
+#' library(ggplot2)
+#'
+#' ## Fake panchromatic image (30m resolution covering
+#' ## the visible range (integral from blue to red))
+#' pan       <- sum(lsat[[1:3]])
+#' ggR(pan, stretch = "lin") 
 #' 
-#' ## Load example data
-#' data(lsat)
-#' ## Fake panchromatic image (30m resolution, wavelength: visible (integral from blue to red)
-#' pan       <- sum(lsat[[1:3]]) 
 #' ## Fake coarse resolution image (150m spatial resolution)
-#' lowResImg <- aggregate(lsat, 5) 
+#' lowResImg <- aggregate(lsat, 5)
+#' 
 #' 
 #' ## Brovey pan sharpening
 #' lowResImg_pan <- panSharpen(lowResImg, pan, r = 3, g = 2, b = 1, method = "brovey")
 #' lowResImg_pan
 #' ## Plot 
-#' grid.arrange(
-#' 		ggRGB(lowResImg, stretch = "lin"),
-#' 		ggR(pan, stretch = "lin"),
-#' 		ggRGB(lowResImg_pan,, stretch="lin"),
-#' 		ncol=3
-#' 		)
+#' ggRGB(lowResImg, stretch = "lin") + ggtitle("Original")
+#' ggRGB(lowResImg_pan, stretch="lin") + ggtitle("Pansharpened (Brovey)")
+#'     
 panSharpen <- function(img, pan, r, g, b, pc = 1, method = "brovey", norm = TRUE) {
+	img <- .toTerra(img)
+	pan <- .toTerra(pan)
+
     ## TODO: add weighting
-	stopifnot(inherits(img, "Raster") & inherits(pan, "Raster"))
+    stopifnot(inherits(img, "SpatRaster") & inherits(pan, "SpatRaster"))
+    if(res(img)[1] <= res(pan)[1]) stop("Pan image must be of higher spatial resolution than img.")
+        
     if(method == "pca") {
         layernames <- names(img) 
     } else {
@@ -54,7 +59,7 @@ panSharpen <- function(img, pan, r, g, b, pc = 1, method = "brovey", norm = TRUE
     if(method == "pca") {
         imgpca <- rasterPCA(img)
         
-        imgpcaHiRes <- raster::resample(imgpca$map, pan, method = "ngb")
+        imgpcaHiRes <- terra::resample(imgpca$map, pan, method = "near")
         
         if(norm) {
             panMa <- rescaleImage(pan, imgpca$map[[1]])
@@ -64,7 +69,7 @@ panSharpen <- function(img, pan, r, g, b, pc = 1, method = "brovey", norm = TRUE
         imgpcaHiRes[[pc]] <- panMa
         eigen  <- t(loadings(imgpca$model))
         cents  <- imgpca$model$center
-        panimg <- .paraRasterFun(imgpcaHiRes, rasterFun = calc, args = list(fun = function(x) { x %*%  eigen  +  cents}))
+        panimg <- .paraRasterFun(imgpcaHiRes, rasterFun = app, args = list(fun = function(x) { x %*%  eigen  +  cents}))
     }
     if(method == "ihs")     {  
         #xmax <- .DATATYPEdb[dataType(img[[c(r,g,b)]]),"max"]
@@ -74,18 +79,16 @@ panSharpen <- function(img, pan, r, g, b, pc = 1, method = "brovey", norm = TRUE
         Mbwd <- t(Mfwd)
         Mbwd[1,] <- 1  
         
-        Ivv    <- .paraRasterFun(img[[c(r,g,b)]], rasterFun = calc, args = list(fun = function(x) x %*% Mfwd))
-        Ivvr   <- raster::resample(Ivv[[2:3]], pan, method = "bilinear")
-        panMa  <- histMatch(pan, Ivv[[1]])
-        panimg <- .paraRasterFun(stack(panMa, Ivvr) , rasterFun = calc, args = list(fun = function(x) x %*% Mbwd))
+        Ivv    <- .paraRasterFun(img[[c(r,g,b)]], rasterFun = app, args = list(fun = function(x) x %*% Mfwd))
+        Ivvr   <- terra::resample(Ivv[[2:3]], pan, method = "bilinear")
+        panMa  <- histMatch(x = pan, ref = Ivv[[1]], paired = FALSE, intersectOnly = FALSE)
+        panimg <- .paraRasterFun(c(panMa, Ivvr) , rasterFun = app, args = list(fun = function(x) x %*% Mbwd))
     }
     if(method == "brovey"){
-        msi    <- resample(img[[layernames]], pan, method = "ngb")
+        msi    <- resample(img[[layernames]], pan, method = "near")
         mult   <- pan / sum(msi)
         panimg <- msi * mult
     }
     names(panimg) <- paste0(layernames, "_pan")
     panimg
 }
-
-

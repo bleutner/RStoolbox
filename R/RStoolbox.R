@@ -1,7 +1,6 @@
 #' RStoolbox: A Collection of Remote Sensing Tools
 #' 
 #' The RStoolbox package provides a set of functions which simplify performing standard remote sensing tasks in R.
-#' Most functions have built-in parallel support. All that is required is to run \code{\link[raster]{beginCluster}} beforehand.
 #' 
 #' @section Data Import and Export:
 #'  
@@ -21,7 +20,7 @@
 #'  \item \code{\link{cloudMask} & \link{cloudShadowMask}}: mask clouds and cloud shadows in Landsat or other imagery which comes with a thermal band
 #'  \item \code{\link{classifyQA}}: extract layers from Landsat 8 QA bands, e.g. cloud confidence
 #'  \item \code{\link{rescaleImage}}: rescale image to match min/max from another image or a specified min/max range
-#' 	\item \code{\link{normImage}}: normalize imagery by centering and scaling
+#'     \item \code{\link{normImage}}: normalize imagery by centering and scaling
 #'  \item \code{\link{histMatch}}: matches the histograms of two scenes
 #'  \item \code{\link{coregisterImages}}: co-register images based on mutual information
 #'  \item \code{\link{panSharpen}}: sharpen a coarse resolution image with a high resolution image (typically panchromatic)
@@ -37,7 +36,7 @@
 #' \item \code{\link{rasterCVA}}: change vector analysis
 #' \item \code{\link{unsuperClass}}: unsupervised classification
 #' \item \code{\link{superClass}}: supervised classification
-#' \item \code{\link{fCover}}: fractional cover of coarse resolution imagery based on high resolution classificaton
+#' \item \code{\link{fCover}}: fractional cover of coarse resolution imagery based on high resolution classification
 #' }
 #' 
 #' @section Data Display:
@@ -46,18 +45,20 @@
 #' \item \code{\link{ggR}}: single raster layer plotting with ggplot2
 #' \item \code{\link{ggRGB}}: efficient plotting of remote sensing imagery in RGB with ggplot2
 #' }
-#' 
-#' @import raster sp rgeos plyr caret stringr reshape2 ggplot2 
-#' @importFrom foreach getDoParRegistered 
-#' @importFrom doParallel registerDoParallel
-#' @importFrom codetools findGlobals
-#' @importFrom geosphere areaPolygon
-#' @importFrom parallel parLapply parSapply parApply clusterExport
+#'
+#' @import sf terra
+#' @importFrom exactextractr exact_extract
+#' @importFrom lifecycle is_present deprecate_warn deprecated
+#' @importFrom ggplot2 aes aes_string annotation_raster coord_equal fortify geom_raster geom_blank ggplot scale_fill_discrete scale_fill_gradientn scale_fill_identity facet_wrap
+#' @importFrom caret confusionMatrix train trainControl postResample createDataPartition createFolds getTrainPerf
+#' @importFrom reshape2 melt
+#' @importFrom tidyr pivot_wider complete
+#' @importFrom dplyr mutate group_by summarize filter
 #' @importFrom XML xmlParse xmlToList
-#' @importFrom stats coefficients lm ecdf median approxfun knots kmeans na.omit complete.cases loadings princomp
+#' @importFrom stats coefficients cov.wt lm ecdf approxfun knots kmeans complete.cases loadings cov cor setNames
 #' @importFrom graphics par abline
-#' @importFrom methods as
-#' @importFrom utils read.csv read.delim str write.table data
+#' @importFrom methods as show
+#' @importFrom utils read.csv read.delim read.table str write.table data capture.output
 #' @importFrom grDevices hsv
 #' @useDynLib RStoolbox
 #' @importFrom Rcpp sourceCpp
@@ -65,43 +66,39 @@
 #' @name RStoolbox
 NULL
 
-
-#' Rlogo as RasterBrick
+#' Rlogo as SpatRaster
 #'
-#' Tiny example of raster data used to run examples. 
-#' 
-#' @usage data(rlogo)
+#' Tiny example of raster data used to run examples.
+#'
+#' @usage rlogo
 #' @docType data
 #' @keywords datasets
 #' @name rlogo
-#' @examples 
+#' @examples
 #' ggRGB(rlogo,r = 1,g = 2,b = 3)
 NULL
 
-
 #' SRTM Digital Elevation Model
-#' 
-#' DEM for the Landsat example area taken from SRTM v3 tile: s04_w050_1arc_v3.tif 
-#' 
-#' @usage data(srtm)
+#'
+#' DEM for the Landsat example area taken from SRTM v3 tile: s04_w050_1arc_v3.tif
+#'
+#' @usage srtm
 #' @docType data
 #' @keywords datasets
 #' @name srtm
-#' @examples 
+#' @examples
 #' ggR(srtm)
 NULL
 
-
 #' Landsat 5TM Example Data
-#' 
+#'
 #' Subset of Landsat 5 TM Scene: LT52240631988227CUB02
 #' Contains all seven bands in DN format.
-#' 
-#' @usage data(lsat)
+#'
+#' @usage lsat
 #' @docType data
 #' @keywords datasets
 #' @name lsat
-#' @examples 
-#' data(lsat)
+#' @examples
 #' ggRGB(lsat, stretch = "lin")
 NULL

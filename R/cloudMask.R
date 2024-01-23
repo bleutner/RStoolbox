@@ -4,7 +4,7 @@
 #' and thermal band for semi-automated creation of a cloud mask. Since it relies on thermal information it doesn't work well for sensors without
 #' thermal bands. 
 #' 
-#' @param x RasterBrick or RasterStack with reflectance and brightness temperature OR the mask of a previous run of \code{cloudMask} with \code{returnDiffLayer=TRUE}. 
+#' @param x RasterBrick or RasterStack or SpatRaster with reflectance and brightness temperature OR the mask of a previous run of \code{cloudMask} with \code{returnDiffLayer=TRUE}.
 #' @param threshold Numeric. cloud detection threshold. If not provided it will be guessed. Everything *below* this threshold will be considered a cloud pixel (unless it is removed by filtering afterwards).
 #' @param blue Character or integer. Bandname or number for the blue band
 #' @param tir Character or integer. Bandname or number for the thermal band
@@ -16,67 +16,76 @@
 #' provide DN, radiance or brightness temperature.
 #' 
 #' This approach to cloud masking is very simplistic. And aims only at rough removal of potentially clouded areas. Nevertheless, it is able to provide satisfactory results. 
-#' More sophisticated approaches, including cloud cast shadow detection can be found elsewhere, e.g. \href{http://code.google.com/p/fmask}{fmask}.
+#' More sophisticated approaches, including cloud cast shadow detection can be found elsewhere, e.g. \href{https://code.google.com/archive/p/fmask}{fmask}.
 #' 
 #' It can make sense to find a suitable threshold on a cropped version of the scene. Also make sure you make use of the \code{returnDiffLayer} argument to save yourself one processing step.
 #' Buffering should be seen as final polishing, i.e. as long as the pure cloud centers are not detected properly, you might want to turn it off. since it takes some time to calculate.
 #' Once your mask detects obvious cloud pixels properly re-enable buffering for fine tuning if desired. Finally, once a suitable threshold is established re-run cloudMask on the whole scene with this threshold and go get a coffee.
 #' @export
 #' @return
-#' Returns a RasterStack with two layers: CMASK contains the binary cloud mask (1 = cloud, NA = not-cloud) and NDTCI contains the cloud index.
+#' Returns a SpatRaster with two layers: CMASK contains the binary cloud mask (1 = cloud, NA = not-cloud) and NDTCI contains the cloud index.
 #' @seealso 
 #' \code{\link{cloudShadowMask}}
 #' @template examples_cloudMask
-cloudMask <- function(x, threshold = 0.8,  blue = "B1_sre", tir = "B6_sre", buffer = NULL, plot = FALSE, verbose){
-    
+cloudMask <- function(x, threshold = 0.2,  blue = "B1_sre", tir = "B6_sre", buffer = NULL, plot = FALSE, verbose){
     if(!missing("verbose")) .initVerbose(verbose)
+
+	x <- .toTerra(x)
+
     ## Set-up graphics device 
     op <- par(mfrow = c(2+is.null(buffer),1))
     on.exit(par(op), add = TRUE)
     
-    ## Calculate or re-reuse cloud difference layer	
+    ## Calculate or re-reuse cloud difference layer    
     if("NDTCI" %in% names(x)) {
         .vMessage("Re-using NDTCI layer from previous run.") 
         ndtci <- x[["NDTCI"]]
     } else {
         tirn <- rescaleImage(x[[tir]], x[[blue]])
-        ndtci <- overlay(stack(tirn, x[[blue]]), fun = function(high, low) (high - low) / (high + low))
+        ndtci <- (x[[blue]] - tirn) / (x[[blue]] + tirn)
         names(ndtci) <- "NDTCI" 
     }
     if(plot) plot(ndtci, main = "Normalized difference thermal cloud index")
     
     ## Thresholding
     .vMessage("Begin thresholding")
-    cmask <- ndtci < threshold
-    cmask <- mask(cmask, cmask, maskvalue = 0)
-    
-    if(plot) plot(cmask, main = paste0("Cloud mask\nThreshold: ", threshold))
+    cmask <- ndtci
+    cmask[cmask >= threshold] <- 1
+    cmask[cmask < threshold] <- NA
+
+    if(plot) plot(cmask, main = paste0("Cloud mask threshold: ", threshold))
     
     ## Buffer cloud centers (we could also do a circular buffer, but for now this should suffice)
     if(!is.null(buffer)){  
-        .vMessage("Begin region-growing")
-        bufferMethod <- 1
-        if(bufferMethod){
-            # TODO: Check buffer vs. focal  performance
-            w <- matrix(ncol = buffer, nrow = buffer, 1)
-            w[c(1,buffer,1,buffer), c(1,1,buffer,buffer)] <- 0
-            cmask <- focal(cmask, w, na.rm = TRUE )
-            cmask[!is.na(cmask)] <- 1L
-        } else {
-            buffer <- buffer * res(cmask)[1]
-            cmask <- buffer(cmask, buffer, na.rm = TRUE )
+        if(buffer %% 2 != 0){
+            .vMessage("Begin region-growing")
+            bufferMethod <- 1
+            if(bufferMethod){
+                # TODO: Check buffer vs. focal  performance
+                w <- matrix(ncol = buffer, nrow = buffer, 1)
+                w[c(1,buffer,1,buffer), c(1,1,buffer,buffer)] <- 0
+                cmask <- focal(cmask, w, na.rm = TRUE )
+                nonfinite <- is.na(cmask)
+                cmask[!nonfinite] <- 1L
+                cmask[nonfinite] <- NA
+            } else {
+                buffer <- buffer * res(cmask)[1]
+                cmask <- buffer(cmask, buffer, na.rm = TRUE )
+            }
             if(plot) plot(cmask, main = "Region-grown cloud mask")
+        }else{
+            stop("buffer must be odd for a focal buffering")
         }
     }
     
     if(plot){
         plotRGB(x, 1, 2, 3, stretch = "lin")
-        plot(cmask,  legend = FALSE, add = T, col = "yellow")
+        plot(cmask, na.action = NA, legend = F, add = T, col = "yellow")
     }
     
     ## Return
     names(cmask) <- "CMASK"
-    return(stack(cmask, ndtci))
+    return(c(cmask, ndtci))
 }
 
 
@@ -86,8 +95,8 @@ cloudMask <- function(x, threshold = 0.8,  blue = "B1_sre", tir = "B6_sre", buff
 #' corresponding cloud/cloudShadow pixels which will be used to estimate coordinates 
 #' for a linear cloudmask shift.
 #' 
-#' @param img Raster* object containing the scene 
-#' @param cm Raster* object. Cloud mask (typically the result of \code{\link{cloudMask}})
+#' @param img SpatRaster containing the scene
+#' @param cm SpatRaster. Cloud mask (typically the result of \code{\link{cloudMask}})
 #' @param nc Integer. Number of control points. A few points (default) are fine because the final shift is estimated by \link{coregisterImages}.
 #' @param shiftEstimate NULL or numeric vector of length two (x,y). Estimated displacement of shadows in map units. If \code{NULL}, the user will be asked to select control points interactively.
 #' @param preciseShift NULL or numeric vector of length two (x,y). Use this if cloud/cloud-shadow displacement is already known, e.g. from a previous run of \code{cloudShadowMask}.
@@ -103,13 +112,19 @@ cloudMask <- function(x, threshold = 0.8,  blue = "B1_sre", tir = "B6_sre", buff
 #' @export
 #' @template examples_cloudMask
 cloudShadowMask <- function (img, cm, nc = 5, shiftEstimate = NULL, preciseShift = NULL, quantile = 0.2, returnShift = FALSE) {
-    
+
     stopifnot(quantile > 0 & quantile < 1) 
-    #csind <- overlay(stack(tir, x[[]]), fun = function(high, low) (high - low) / (high + low))
-    if(is.null(preciseShift)){ 
-        
+	img <- .toTerra(img)
+	cm <- .toTerra(cm)
+	
+    if(is.null(preciseShift)){
         csind <- sum(img)
-        csindm <- csind < quantile(csind, quantile)
+        csindm <- csind < quantile(values(csind), quantile)
+        uvals <- unique(csindm)
+        if(nrow(uvals)==1){
+            if(uvals == 0) stop("Argument 'quantiles' is too low.", call. = FALSE)
+            if(uvals == 1) stop("Argument 'quantiles' is too high.", call. = FALSE)
+        } 
         if(is.null(shiftEstimate)){
             
             plotRGB(img, stretch = "hist")
@@ -126,16 +141,14 @@ cloudShadowMask <- function (img, cm, nc = 5, shiftEstimate = NULL, preciseShift
         cma <- is.na(cm[[1]])
         shifts <- matrix(shiftEstimate + rep(seq(-3,3,0.5), each = 2), ncol=2, byrow=TRUE)
         colnames(shifts) <- c("x", "y")
-        cms <- coregisterImages(cma, csindm, shift = shifts, nBins = 2, nSamples = ncell(cma), reportStats = TRUE)
+        cms <- coregisterImages(cma, csindm, shift = shifts, nBins = 2, nSamples = ncell(cma) / 4, reportStats = TRUE)
         shiftPar <- cms$bestShift
         cms <- cms$coregImg
         cms[cms == 1] <- NA
     } else {
         cms <- shift(cm[[1]], preciseShift[1], preciseShift[2])
     }
-    cms <- resample(cms, cm, method = "ngb")
+    cms <- resample(cms, cm, method = "near")
     if(returnShift) return(list(shift = shiftPar, shadowMap = cms)) else return(cms)
     
 }
-
-

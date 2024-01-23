@@ -1,43 +1,45 @@
 Package: RStoolbox
 Type: Package
-Title: Tools for Remote Sensing Data Analysis 
-Version: 0.1.1
-Date: 2015-09-07
+Title: Remote Sensing Data Analysis
+Version: 0.4.0
 Authors@R: c(
-    person("Benjamin", "Leutner", role=c("cre", "aut"), email="benjamin.leutner@uni-wuerzburg.de"),
-    person("Ned", "Horning", role ="aut", email="horning@amnh.org")
+    person("Benjamin", "Leutner", role=c("aut"), email="rstoolboxpackage@gmail.com", comment = c(ORCID = "0000-0002-6893-2002")),
+    person("Ned", "Horning", role ="aut", email="horning@amnh.org"),
+    person("Jakob", "Schwalb-Willmann", role ="aut", email="movevis@schwalb-willmann.de", comment = c(ORCID = "0000-0003-2665-1509")),
+    person("Robert J.", "Hijmans", role = "ctb",  email = "r.hijmans@gmail.com",comment = c(ORCID = "0000-0001-5872-2872")),
+    person("Konstantin", "Mueller", role = c("aut", "cre"), email = "konstantinfinn.mueller@gmx.de", comment = c(ORCID = "0000-0001-6540-3124"))
     )
-Description: Toolbox for remote sensing image processing and analysis such
-    as calculating spectral indices, principal component transformation, unsupervised
+Description: Toolbox for remote sensing image processing and analysis such as
+    calculating spectral indexes, principal component transformation, unsupervised
     and supervised classification or fractional cover analyses.
-URL: https://github.com/bleutner/RStoolbox    
-BugReports: https://github.com/bleutner/RStoolbox/issues    
-Depends: 
-    R (>= 3.1.0)
-Imports: 
-	raster (>= 2.3-40),
-	caret (>= 6.0-52),
-    sp,
-    stringr,
+URL: https://bleutner.github.io/RStoolbox/, https://github.com/bleutner/RStoolbox
+BugReports: https://github.com/bleutner/RStoolbox/issues
+Encoding: UTF-8
+Depends:
+    R (>= 3.5.0)
+Imports:
+    caret (>= 6.0-79),
+    sf,
+    terra (>= 1.6-41),
     XML,
-    geosphere,
+    dplyr,
     ggplot2,
-    plyr,
+    tidyr,
     reshape2,
-    rgeos,
-    codetools,
-    parallel,
-    doParallel,
-    foreach,
+    lifecycle,
+    exactextractr,
     Rcpp,
-    methods
-Suggests: 
-    rgdal,
+    methods,
+    magrittr
+Suggests:
     randomForest,
     kernlab,
     e1071,
     gridExtra,
+    pls,
     testthat
-LinkingTo: Rcpp    
+LinkingTo: Rcpp,
+    RcppArmadillo
 License: GPL (>=3)
+RoxygenNote: 7.2.3
 LazyData: true

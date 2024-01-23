@@ -1,8 +1,10 @@
+^CRAN-RELEASE$
 ^\.travis\.yml$
 inst/demo
 .project
+.idea
 .git
-.gitignore 	
+.gitignore
 .Rprofile
 man-roxygen
 data-raw
@@ -10,3 +12,9 @@ prep-release
 cran-comments.md
 .README.md.html
 pkg-build.sh
+^.*\.Rproj$
+^\.Rproj\.user$
+revdep
+^\.github$
+^logo\.png$
+^CRAN-SUBMISSION$

@@ -1,8 +1,6 @@
-#' @examples   
-#' library(raster)
+#' @examples
 #' library(ggplot2)
 #' ## Import Landsat example subset
-#' data(lsat) 
 #' ## We have two tiny clouds in the east
 #' \donttest{ggRGB(lsat, stretch = "lin")}
 #' 
@@ -18,7 +16,7 @@
 #' ## Plot cloudmask 
 #' \donttest{ggRGB(lsat, stretch = "lin") +
 #'    ggR(cldmsk_final[[1]], ggLayer = TRUE, forceCat = TRUE, geom_raster = TRUE) +
-#'    scale_fill_manual(values = "red", na.value = NA)
+#'    scale_fill_manual(values = c("red"), na.value = NA)
 #' }
 #' #' ## Estimate cloud shadow displacement
 #' ## Interactively (click on cloud pixels and the corresponding shadow pixels)
@@ -28,7 +26,7 @@
 #' \donttest{shadow <- cloudShadowMask(lsat, cldmsk_final, shiftEstimate = c(-16,-6))}
 #'
 #' ## Plot
-#' \donttest{csmask <- raster::merge(cldmsk_final[[1]], shadow)
+#' \donttest{csmask <- terra::merge(cldmsk_final[[1]], shadow)
 #' ggRGB(lsat, stretch = "lin") +
 #'         ggR(csmask, ggLayer = TRUE, forceCat = TRUE, geom_raster = TRUE) +
 #'         scale_fill_manual(values = c("blue", "yellow"), 
