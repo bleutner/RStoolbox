@@ -97,21 +97,12 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0
   img <- .toTerra(img)
 
   layer <- unlist(.numBand(img, layer))
-  layer <- unlist(.numBand(img, layer))
 
   multLayers <- if (length(layer)>1) TRUE else FALSE
 
   if(multLayers & !geom_raster & ggObj) {
     warning("You asked for multiple layers but geom_raster is FALSE.",
             "\ngeom_raster will be reset to TRUE", 
-            "\nHint: in case you're looking for a grayscale and facetted plot, use:",
-            "\nggR(img, ..., geom_raster=TRUE)+scale_fill_gradientn(colors = grey.colors(100))",
-            call. = FALSE)
-    geom_raster <- TRUE
-  }
-  if(multLayers & !geom_raster & ggObj) {
-    warning("You asked for multiple layers but geom_raster is FALSE.",
-            "\ngeom_raster will be reset to TRUE",
             "\nHint: in case you're looking for a grayscale and facetted plot, use:",
             "\nggR(img, ..., geom_raster=TRUE)+scale_fill_gradientn(colors = grey.colors(100))",
             call. = FALSE)
@@ -127,7 +118,7 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0
   dimImg <- dim(xfort)
 
   df <- lapply(names(xfort), function(layer) {
-    df    <- data.frame(extract(xfort, seq_along(values(xfort)), xy = TRUE),
+    df    <- data.frame(as.data.frame(xfort[[layer]], xy = TRUE),
                         layerName = factor(layer, levels = names(xfort)))
     colnames(df) <- c("x", "y", "value", "layerName")
     df
@@ -164,6 +155,8 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0
     })
     df <- do.call(rbind, df)
   }
+
+  print(head(df))
   
   x <- y <- value <- NULL  
   if(ggObj) {       
@@ -201,4 +194,13 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0
     return(df)
   }
   
+}
+
+test <- function(){
+  devtools::load_all()
+  ggR(lsat, 1:6, geom_raster=TRUE, stretch = "lin") +
+    scale_fill_gradientn(colors=grey.colors(100), guide = FALSE) +
+    theme(axis.text = element_text(size=5),
+          axis.text.y = element_text(angle=90),
+          axis.title=element_blank())
 }
