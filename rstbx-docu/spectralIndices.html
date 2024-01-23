@@ -57,7 +57,7 @@ spectralIndices(
 <table summary="R argblock">
 <tr valign="top"><td><code class="r">img</code></td>
 <td>
-<p>Raster* object. Typically remote sensing imagery, which is to be classified.</p>
+<p>SpatRaster object. Typically remote sensing imagery, which is to be classified.</p>
 </td></tr>
 <tr valign="top"><td><code class="r">blue</code></td>
 <td>
@@ -118,7 +118,7 @@ If there are invalid reflectances, e.g. clouds with reflectance &gt; 1 this chec
 </td></tr>
 <tr valign="top"><td><code class="r">maskLayer</code></td>
 <td>
-<p>RasterLayer containing a mask, e.g. clouds, for which pixels are set to NA. Alternatively a layername or -number can be provided if the mask is part of <code class="r">img</code>.</p>
+<p>SpatRaster containing a mask, e.g. clouds, for which pixels are set to NA. Alternatively a layername or -number can be provided if the mask is part of <code class="r">img</code>.</p>
 </td></tr>
 <tr valign="top"><td><code class="r">maskValue</code></td>
 <td>
@@ -130,7 +130,7 @@ If there are invalid reflectances, e.g. clouds with reflectance &gt; 1 this chec
 </td></tr>
 <tr valign="top"><td><code class="r">...</code></td>
 <td>
-<p>further arguments such as filename etc. passed to <a href="https://www.rdocumentation.org/packages/raster/help/writeRaster">writeRaster</a></p>
+<p>further arguments such as filename etc. passed to <a href="https://www.rdocumentation.org/packages/terra/help/writeRaster">writeRaster</a></p>
 </td></tr>
 </table>
 

@@ -20,7 +20,7 @@ group: navigation
 
 <h3>Description</h3>
 
-<p>Unsupervised clustering of Raster* data using kmeans clustering
+<p>Unsupervised clustering of SpatRaster data using kmeans clustering
 </p>
 
 
@@ -47,7 +47,7 @@ unsuperClass(
 <table summary="R argblock">
 <tr valign="top"><td><code class="r">img</code></td>
 <td>
-<p>Raster* object.</p>
+<p>SpatRaster object.</p>
 </td></tr>
 <tr valign="top"><td><code class="r">nSamples</code></td>
 <td>
@@ -83,7 +83,7 @@ unsuperClass(
 </td></tr>
 <tr valign="top"><td><code class="r">...</code></td>
 <td>
-<p>further arguments to be passed to <a href="https://www.rdocumentation.org/packages/raster/help/writeRaster">writeRaster</a>, e.g. filename</p>
+<p>further arguments to be passed to <a href="https://www.rdocumentation.org/packages/terra/help/writeRaster">writeRaster</a>, e.g. filename</p>
 </td></tr>
 </table>
 
@@ -93,7 +93,7 @@ unsuperClass(
 <p>Clustering is done using <code class="r"><a href="https://www.rdocumentation.org/packages/stats/help/kmeans">kmeans</a></code>. This can be done for all pixels of the image (<code class="r">clusterMap=FALSE</code>), however this can be slow and is
 not memory safe. Therefore if you have large raster data (&gt; memory), as is typically the case with remote sensing imagery it is advisable to choose clusterMap=TRUE (the default).
 This means that a kmeans cluster model is calculated based on a random subset of pixels (<code class="r">nSamples</code>). Then the distance of *all* pixels to the cluster centers 
-is calculated in a stepwise fashion using <code class="r"><a href="https://www.rdocumentation.org/packages/raster/help/predict">predict</a></code>. Class assignment is based on minimum euclidean distance to the cluster centers.   
+is calculated in a stepwise fashion using <code class="r"><a href="https://www.rdocumentation.org/packages/terra/help/predict">predict</a></code>. Class assignment is based on minimum euclidean distance to the cluster centers.
 </p>
 <p>The solution of the kmeans algorithm often depends on the initial configuration of class centers which is chosen randomly. 
 Therefore, kmeans is usually run with multiple random starting configurations in order to find a convergent solution from different starting configurations.
@@ -104,15 +104,15 @@ The <code class="r">nStarts</code> argument allows to specify how many random st
 <h3>Value</h3>
 
 <p>Returns an RStoolbox::unsuperClass object, which is a list containing the kmeans model ($model) and the raster map ($map).
-For output = &quot;classes&quot;, $map contains a RasterLayer with discrete classes (kmeans clusters); for output = &quot;distances&quot; $map contains 
-a RasterBrick, with 'nClasses' layers, where each layer maps the euclidean distance to the corresponding class centroid.
+For output = &quot;classes&quot;, $map contains a SpatRaster with discrete classes (kmeans clusters); for output = &quot;distances&quot; $map contains
+a SpatRaster, with 'nClasses' layers, where each layer maps the euclidean distance to the corresponding class centroid.
 </p>
 
 
 <h3>Examples</h3>
 
-<pre><code class="r">library(raster)
-input &lt;- brick(system.file(&quot;external/rlogo.grd&quot;, package=&quot;raster&quot;))
+<pre><code class="r">library(terra)
+input &lt;- brick(system.file(&quot;external/rlogo.grd&quot;, package=&quot;terra&quot;))
 
 ## Plot 
 olpar &lt;- par(no.readonly = TRUE) # back-up par
@@ -144,7 +144,7 @@ unC
 #&gt; 
 #&gt; *************** Map ******************
 #&gt; $map
-#&gt; class      : RasterLayer 
+#&gt; class      : SpatRaster
 #&gt; dimensions : 77, 101, 7777  (nrow, ncol, ncell)
 #&gt; resolution : 1, 1  (x, y)
 #&gt; extent     : 0, 101, 0, 77  (xmin, xmax, ymin, ymax)
@@ -185,7 +185,7 @@ unC
 #&gt; 
 #&gt; *************** Map ******************
 #&gt; $map
-#&gt; class      : RasterBrick 
+#&gt; class      : SpatRaster
 #&gt; dimensions : 77, 101, 7777, 3  (nrow, ncol, ncell, nlayers)
 #&gt; resolution : 1, 1  (x, y)
 #&gt; extent     : 0, 101, 0, 77  (xmin, xmax, ymin, ymax)

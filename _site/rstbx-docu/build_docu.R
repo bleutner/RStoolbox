@@ -33,7 +33,7 @@ knit_rd2 <- function(pkg, path = ".", links =  tools::findHTMLlinks(pkg), frame 
         included <- c("/base/", "/boot/", "/class/", "/cluster/", "/codetools/", 
                 "/compiler/", "/datasets/", "/foreign/", "/graphics/", "/grDevices/", 
                 "/grid/", "/KernSmooth/", "/lattice/", "/MASS/", "/Matrix/", 
-                "/methods/", "/mgcv/", "/nlme/", "/nnet/", "/parallel/", "/rpart/", 
+                "/methods/", "/mgcv/", "/nlme/", "/nnet/", "/rpart/",
                 "/spatial/", "/splines/", "/stats/", "/stats4/", "/survival/", 
                 "/tcltk/", "/tools/", "/utils/")
         

@@ -46,11 +46,11 @@ topCor(
 <table summary="R argblock">
 <tr valign="top"><td><code class="r">img</code></td>
 <td>
-<p>Raster*. Imagery to correct</p>
+<p>SpatRaster. Imagery to correct</p>
 </td></tr>
 <tr valign="top"><td><code class="r">dem</code></td>
 <td>
-<p>Raster*. Either a digital elevation model as a RasterLayer or a RasterStack/Brick with pre-calculated slope and aspect (see <a href="https://www.rdocumentation.org/packages/raster/help/terrain">terrain</a>) in which case the layers must be named 'slope' and 'aspect'. 
+<p>SpatRaster. Either a digital elevation model as a RasterLayer or a RasterStack/Brick with pre-calculated slope and aspect (see <a href="https://www.rdocumentation.org/packages/raster/help/terrain">terrain</a>) in which case the layers must be named 'slope' and 'aspect'.
 Must have the same dimensions as <code class="r">img</code>.</p>
 </td></tr>
 <tr valign="top"><td><code class="r">metaData</code></td>
@@ -67,7 +67,7 @@ Must have the same dimensions as <code class="r">img</code>.</p>
 </td></tr>
 <tr valign="top"><td><code class="r">stratImg</code></td>
 <td>
-<p>RasterLayer to define strata, e.g. NDVI. Or the string 'slope' in which case stratification will be on <code class="r">nStrat</code> slope classes. Only relevant if <code class="r">method = 'minnaert'</code>.</p>
+<p>SpatRaster to define strata, e.g. NDVI. Or the string 'slope' in which case stratification will be on <code class="r">nStrat</code> slope classes. Only relevant if <code class="r">method = 'minnaert'</code>.</p>
 </td></tr>
 <tr valign="top"><td><code class="r">nStrat</code></td>
 <td>
@@ -75,11 +75,11 @@ Must have the same dimensions as <code class="r">img</code>.</p>
 </td></tr>
 <tr valign="top"><td><code class="r">illu</code></td>
 <td>
-<p>Raster*. Optional pre-calculated ilumination map. Run topCor with method=&quot;illu&quot; to calculate an ilumination map</p>
+<p>SpatRaster. Optional pre-calculated ilumination map. Run topCor with method=&quot;illu&quot; to calculate an ilumination map</p>
 </td></tr>
 <tr valign="top"><td><code class="r">...</code></td>
 <td>
-<p>arguments passed to <code class="r"><a href="https://www.rdocumentation.org/packages/raster/help/writeRaster">writeRaster</a></code></p>
+<p>arguments passed to <code class="r"><a href="https://www.rdocumentation.org/packages/terra/help/writeRaster">writeRaster</a></code></p>
 </td></tr>
 </table>
 

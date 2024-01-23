@@ -37,11 +37,11 @@ rescaleImage(x, y, xmin, xmax, ymin, ymax, forceMinMax = FALSE)
 <table summary="R argblock">
 <tr valign="top"><td><code class="r">x</code></td>
 <td>
-<p>Raster* object. Image to normalise.</p>
+<p>SpatRaster object. Image to normalise.</p>
 </td></tr>
 <tr valign="top"><td><code class="r">y</code></td>
 <td>
-<p>Raster* object. Reference image. Optional. Used to extract min and max values if ymin or ymax are missing.</p>
+<p>SpatRaster object. Reference image. Optional. Used to extract min and max values if ymin or ymax are missing.</p>
 </td></tr>
 <tr valign="top"><td><code class="r">xmin</code></td>
 <td>
@@ -75,7 +75,7 @@ encompass this entire range. By providing xmin = -1 and xmax = 1 the values can 
 
 <h3>Value</h3>
 
-<p>Returns a Raster* object of the same dimensions as the input raster <code class="r">x</code> but shifted and stretched to the new limits.
+<p>Returns a SpatRaster object of the same dimensions as the input raster <code class="r">x</code> but shifted and stretched to the new limits.
 </p>
 
 
@@ -93,15 +93,15 @@ lsat2 &lt;- lsat - 1000
 lsat2
 </code></pre>
 
-<pre><code class="r">#&gt; class      : RasterBrick 
+<pre><code class="r">#&gt; class      : SpatRaster
 #&gt; dimensions : 310, 287, 88970, 7  (nrow, ncol, ncell, nlayers)
 #&gt; resolution : 30, 30  (x, y)
-#&gt; extent     : 619395, 628005, -419505, -410205  (xmin, xmax, ymin, ymax)
+#&gt; ext        : 619395, 628005, -419505, -410205  (xmin, xmax, ymin, ymax)
 #&gt; crs        : +proj=utm +zone=22 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 
 #&gt; source     : memory
 #&gt; names      : B1_dn, B2_dn, B3_dn, B4_dn, B5_dn, B6_dn, B7_dn 
-#&gt; min values :  -946,  -982,  -989,  -996,  -998,  -869,  -999 
-#&gt; max values :  -815,  -913,  -908,  -873,  -852,  -854,  -921
+#&gt; min        :  -946,  -982,  -989,  -996,  -998,  -869,  -999
+#&gt; max        :  -815,  -913,  -908,  -873,  -852,  -854,  -921
 </code></pre>
 
 <pre><code class="r">## Rescale lsat2 to match original lsat value range
@@ -109,15 +109,15 @@ lsat2_rescaled &lt;- rescaleImage(lsat2, lsat)
 lsat2_rescaled
 </code></pre>
 
-<pre><code class="r">#&gt; class      : RasterBrick 
+<pre><code class="r">#&gt; class      : SpatRaster
 #&gt; dimensions : 310, 287, 88970, 7  (nrow, ncol, ncell, nlayers)
 #&gt; resolution : 30, 30  (x, y)
-#&gt; extent     : 619395, 628005, -419505, -410205  (xmin, xmax, ymin, ymax)
+#&gt; ext        : 619395, 628005, -419505, -410205  (xmin, xmax, ymin, ymax)
 #&gt; crs        : +proj=utm +zone=22 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 
 #&gt; source     : memory
 #&gt; names      : B1_dn, B2_dn, B3_dn, B4_dn, B5_dn, B6_dn, B7_dn 
-#&gt; min values :    54,    18,    11,     4,     2,   131,     1 
-#&gt; max values :   185,    87,    92,   127,   148,   146,    79
+#&gt; min        :    54,    18,    11,     4,     2,   131,     1
+#&gt; max        :   185,    87,    92,   127,   148,   146,    79
 </code></pre>
 
 <pre><code class="r">## Rescale lsat to value range [0,1]
@@ -125,15 +125,15 @@ lsat2_unity &lt;- rescaleImage(lsat2, ymin = 0, ymax = 1)
 lsat2_unity
 </code></pre>
 
-<pre><code class="r">#&gt; class      : RasterBrick 
+<pre><code class="r">#&gt; class      : SpatRaster
 #&gt; dimensions : 310, 287, 88970, 7  (nrow, ncol, ncell, nlayers)
 #&gt; resolution : 30, 30  (x, y)
-#&gt; extent     : 619395, 628005, -419505, -410205  (xmin, xmax, ymin, ymax)
+#&gt; ext        : 619395, 628005, -419505, -410205  (xmin, xmax, ymin, ymax)
 #&gt; crs        : +proj=utm +zone=22 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 
 #&gt; source     : memory
 #&gt; names      : B1_dn, B2_dn, B3_dn, B4_dn, B5_dn, B6_dn, B7_dn 
-#&gt; min values :     0,     0,     0,     0,     0,     0,     0 
-#&gt; max values :     1,     1,     1,     1,     1,     1,     1
+#&gt; min        :     0,     0,     0,     0,     0,     0,     0
+#&gt; max        :     1,     1,     1,     1,     1,     1,     1
 </code></pre>
 
 

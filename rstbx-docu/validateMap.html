@@ -43,11 +43,11 @@ validateMap(
 <table summary="R argblock">
 <tr valign="top"><td><code class="r">map</code></td>
 <td>
-<p>RasterLayer. The classified map.</p>
+<p>SpatRaster The classified map.</p>
 </td></tr>
 <tr valign="top"><td><code class="r">valData</code></td>
 <td>
-<p>sf or sp object with validation data (POLYGONs or POINTs).</p>
+<p>sf object with validation data (POLYGONs or POINTs).</p>
 </td></tr>
 <tr valign="top"><td><code class="r">responseCol</code></td>
 <td>
@@ -72,7 +72,7 @@ validateMap(
 
 <pre><code class="r">## Not run: 
 ## library(caret)
-## library(raster)
+## library(terra)
 ## 
 ## ## Training data
 ## data(lsat)

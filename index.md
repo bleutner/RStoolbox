@@ -11,8 +11,7 @@ tagline: Supporting tagline
 #### The Package
 **RStoolbox** is a R package providing a wide range of tools for your every-day remote sensing processing needs. 
 The available toolset covers many aspects from data import, pre-processing, data analysis, image classification and graphical display. 
-RStoolbox builds upon the raster package, which makes it suitable for processing large data-sets even on smaller workstations. 
-Moreover in most parts decent support for parallel processing is implemented. The package is published under GPL3.
+RStoolbox builds upon the raster package, which makes it suitable for processing large data-sets even on smaller workstations. The package is published under GPL3.
    
    
 #### Installing RStoolbox

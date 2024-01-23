@@ -37,7 +37,7 @@ tasseledCap(img, sat, ...)
 <table summary="R argblock">
 <tr valign="top"><td><code class="r">img</code></td>
 <td>
-<p>RasterBrick or RasterStack. Input image. Band order must correspond to sensor specifications (see Details and Examples)</p>
+<p>SpatRaster. Input image. Band order must correspond to sensor specifications (see Details and Examples)</p>
 </td></tr>
 <tr valign="top"><td><code class="r">sat</code></td>
 <td>
@@ -107,7 +107,7 @@ Required bands are:
 
 <h3>Value</h3>
 
-<p>Returns a RasterBrick with the thee bands: brigthness, greenness, and (soil) wetness.
+<p>Returns a SpatRaster with the thee bands: brigthness, greenness, and (soil) wetness.
 </p>
 
 
@@ -131,7 +131,7 @@ Required bands are:
 
 <h3>Examples</h3>
 
-<pre><code class="r">library(raster)
+<pre><code class="r">library(terra)
 data(lsat)
 
 ## Run tasseled cap (exclude thermal band 6)
@@ -139,15 +139,15 @@ lsat_tc &lt;- tasseledCap(lsat[[c(1:5,7)]], sat = &quot;Landsat5TM&quot;)
 lsat_tc
 </code></pre>
 
-<pre><code class="r">#&gt; class      : RasterBrick 
+<pre><code class="r">#&gt; class      : SpatRaster
 #&gt; dimensions : 310, 287, 88970, 3  (nrow, ncol, ncell, nlayers)
 #&gt; resolution : 30, 30  (x, y)
-#&gt; extent     : 619395, 628005, -419505, -410205  (xmin, xmax, ymin, ymax)
+#&gt; ext        : 619395, 628005, -419505, -410205  (xmin, xmax, ymin, ymax)
 #&gt; crs        : +proj=utm +zone=22 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 
 #&gt; source     : memory
 #&gt; names      : brightness, greenness,  wetness 
-#&gt; min values :    33.0776,  -21.2454,  10.9682 
-#&gt; max values :   254.0931,   69.6422, 122.4285
+#&gt; min        :    33.0776,  -21.2454,  10.9682
+#&gt; max        :   254.0931,   69.6422, 122.4285
 </code></pre>
 
 <pre><code class="r">plot(lsat_tc)

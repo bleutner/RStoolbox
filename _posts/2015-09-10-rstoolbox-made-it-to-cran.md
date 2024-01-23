@@ -62,7 +62,7 @@ This initial release of RStoolbox ships with the following functions and data-se
 
 *   `sam`: spectral angle mapper
 
-*   `rasterPCA`: principal components transform for raster data
+*   `rasterPCA`: principal components transform for SpatRaster data
 
 *   `rasterCVA`: change vector analysis
 
@@ -73,15 +73,15 @@ This initial release of RStoolbox ships with the following functions and data-se
 *   `fCover`: fractional cover of coarse resolution imagery based on high resolution classificaton
 
 ### Data Display with ggplot2
-*   `fortify.raster`: data.frame from raster (subsampled) for plotting
+*   `fortify.SpatRaster`: data.frame from terra (subsampled) for plotting
 
-*   `ggR`: single raster layer plotting with ggplot2
+*   `ggR`: single or multiple SpatRaster layer plotting with ggplot2
 
 *   `ggRGB`: efficient plotting of remote sensing imagery in RGB with ggplot2
 
 ### Example Data Sets
 
-*   `rlogo`: the r logo as raster brick
+*   `rlogo`: the r logo as SpatRaster
 
 *   `lsat`: subset of a Landsat 5 TM scene
 

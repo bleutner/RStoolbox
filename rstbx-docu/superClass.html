@@ -56,15 +56,15 @@ superClass(
 <table summary="R argblock">
 <tr valign="top"><td><code class="r">img</code></td>
 <td>
-<p>terra::SpatRast or raster::Raster* object. Typically remote sensing imagery, which is to be classified.</p>
+<p>terra::SpatRaster object. Typically remote sensing imagery, which is to be classified.</p>
 </td></tr>
 <tr valign="top"><td><code class="r">trainData</code></td>
 <td>
-<p>sf or sp spatial vector data containing the training locations (POINTs,or POLYGONs).</p>
+<p>sf spatial vector data containing the training locations (POINTs,or POLYGONs).</p>
 </td></tr>
 <tr valign="top"><td><code class="r">valData</code></td>
 <td>
-<p>Ssf or sp spatial vector data containing the validation locations (POINTs,or POLYGONs) (optional).</p>
+<p>Ssf spatial vector data containing the validation locations (POINTs,or POLYGONs) (optional).</p>
 </td></tr>
 <tr valign="top"><td><code class="r">responseCol</code></td>
 <td>
@@ -222,7 +222,7 @@ otherwise it will be performed on a per-pixel basis.
 <pre><code class="r">library(caret)
 library(randomForest)
 library(e1071)
-library(raster)
+library(terra)
 data(rlogo)
 train &lt;- readRDS(system.file(&quot;external/trainingPoints.rds&quot;, package=&quot;RStoolbox&quot;))
 
@@ -275,7 +275,7 @@ SC
 #&gt; 
 #&gt; *************** Map ******************
 #&gt; $map
-#&gt; class      : RasterLayer 
+#&gt; class      : SpatRaster
 #&gt; dimensions : 77, 101, 7777  (nrow, ncol, ncell)
 #&gt; resolution : 1, 1  (x, y)
 #&gt; extent     : 0, 101, 0, 77  (xmin, xmax, ymin, ymax)

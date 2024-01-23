@@ -36,7 +36,7 @@ sam(img, em, angles = FALSE, ...)
 <table summary="R argblock">
 <tr valign="top"><td><code class="r">img</code></td>
 <td>
-<p>RasterBrick or RasterStack. Remote sensing imagery (usually hyperspectral)</p>
+<p>SpatRaster. Remote sensing imagery (usually hyperspectral)</p>
 </td></tr>
 <tr valign="top"><td><code class="r">em</code></td>
 <td>
@@ -44,11 +44,11 @@ sam(img, em, angles = FALSE, ...)
 </td></tr>
 <tr valign="top"><td><code class="r">angles</code></td>
 <td>
-<p>Logical. If <code class="r">TRUE</code> a RasterBrick containing each one layer per endmember will be returned containing the spectral angles.</p>
+<p>Logical. If <code class="r">TRUE</code> a SpatRaster containing each one layer per endmember will be returned containing the spectral angles.</p>
 </td></tr>
 <tr valign="top"><td><code class="r">...</code></td>
 <td>
-<p>further arguments to be passed to <code class="r"><a href="https://www.rdocumentation.org/packages/raster/help/writeRaster">writeRaster</a></code></p>
+<p>further arguments to be passed to <code class="r"><a href="https://www.rdocumentation.org/packages/terra/help/writeRaster">writeRaster</a></code></p>
 </td></tr>
 </table>
 
@@ -63,14 +63,14 @@ In a second step one can the go ahead an enforce thresholds of maximum angles or
 
 <h3>Value</h3>
 
-<p>RasterBrick or RasterLayer
+<p>SpatRaster
 If <code class="r">angles = FALSE</code> a single Layer will be returned in which each pixel is assigned to the closest endmember class (integer pixel values correspond to row order of <code class="r">em</code>.
 </p>
 
 
 <h3>Examples</h3>
 
-<pre><code class="r">library(raster)
+<pre><code class="r">library(terra)
 library(ggplot2)
 ## Load example data-set
 data(lsat) 
