@@ -8,6 +8,9 @@ RStoolbox is an R package providing a wide range of tools for your every-day rem
 
 For more details have a look at the [functions overview](http://bleutner.github.io/RStoolbox/rstbx-docu/RStoolbox.html).
 
+:construction: It is recommended to use the GitHub version of RStoolbox at the moment
+since there will be fixes over the next weeks :construction:
+
 ## Installation
 The package is available on CRAN and can be installed as usual via
 
