@@ -305,7 +305,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
             probInd <- 1
         }
 
-        ## Use this, once terra is mature enough        
+        ## Use this, once terra is mature enough
         # nc <- .getNCores()
         # progress <- if(verbose)  2 else 1
         # if(is.null(filename)) filename<-""
@@ -316,7 +316,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
         progress <- if(verbose) "text" else "none"
         wrArgs <- list(filename = filename, progress = progress, datatype = dataType, overwrite = overwrite)
         wrArgs$filename <- filename ## remove filename from args if is.null(filename) --> standard writeRaster handling applies
-        spatPred <- .paraRasterFun(img, rasterFun=terra::predict, args = list(model=caretModel, type = predType, index = probInd), wrArgs = wrArgs)
+        spatPred <- .paraRasterFun(img, rasterFun=terra::predict, args = list(model=caretModel, type = predType, index = probInd, na.rm = T), wrArgs = wrArgs)
         if(predType != "prob")
           names(spatPred) <- responseCol
 
@@ -527,35 +527,10 @@ predict.superClass <- function(object, img, predType = "raw", filename = NULL, d
     
     wrArgs          <- c(list(...), list(filename = filename, datatype = datatype))
     wrArgs$filename <- filename ## remove filename from args if is.null(filename) --> standard writeRaster handling applies
-    .paraRasterFun(img, rasterFun=terra::predict, args = list(model=model, type = predType, index = probInd), wrArgs = wrArgs)
+    print(img)
+    .paraRasterFun(img, rasterFun=terra::predict, args = list(model=model, type = predType, index = probInd, na.rm = TRUE), wrArgs = wrArgs)
     
 }
-predict.superClass <- function(object, img, predType = "raw", filename = NULL, datatype = "INT2U", ...){
-    stopifnot(inherits(object, c("RStoolbox", "superClass")))
-
-    ## extract model (avoid copying entire object to SOCK clusters in .paraRasterFun - I think / not validated)
-    model <- object$model
-    img <- .toTerra(img)
-    if(predType == "prob") {
-        py<-img[1:2]
-        py[]<-1
-        ddd <- predict(model, py, type="prob")
-        probInd <- 1:ncol(ddd)
-    } else {
-        probInd <- 1
-    }
-
-    ## Still waiting for terra to mature
-    #    wrArgs   <- c(list(...), list( datatype = datatype))
-    #    spatPred <- terra::predict(img, model=caretModel, type = predType, index = probInd, cpkgs = c("caret"),
-    #            filename = filename , overwrite = overwrite, cores = nc,  wopt = wrArgs)
-
-    wrArgs          <- c(list(...), list(filename = filename, datatype = datatype))
-    wrArgs$filename <- filename ## remove filename from args if is.null(filename) --> standard writeRaster handling applies
-    .paraRasterFun(img, rasterFun=terra::predict, args = list(model=model, type = predType, index = probInd), wrArgs = wrArgs)
-
-}
-
 
 #' @method print superClass
 #' @export 
