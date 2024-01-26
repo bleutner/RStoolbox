@@ -1,22 +1,27 @@
----
-layout: docu
-title: ' Save and Read RStoolbox Classification Results '
-fun:  saveRSTBX 
-package:  RStoolbox 
-header: Pages
-group: navigation
----
-{% include JB/setup %}
- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Save and Read RStoolbox Classification Results</title>
+<!DOCTYPE html><html><head><title>R: Save and Read RStoolbox Classification Results</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css">
+<script type="text/javascript">
+const macros = { "\\R": "\\textsf{R}", "\\code": "\\texttt"};
+function processMathHTML() {
+    var l = document.getElementsByClassName('reqn');
+    for (let e of l) { katex.render(e.textContent, e, { throwOnError: false, macros }); }
+    return;
+}</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"
+    onload="processMathHTML();"></script>
 <link rel="stylesheet" type="text/css" href="R.css" />
 
-                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
-                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
-                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
-                            <script>hljs.initHighlightingOnLoad();</script>
-                            </head><body><div class="container">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head><body><div class="container">
+
+<table style="width: 100%;"><tr><td>saveRSTBX {RStoolbox}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Save and Read RStoolbox Classification Results</h2>
 
 <h3>Description</h3>
 
@@ -27,29 +32,28 @@ file. Useful to archive the fitted models.
 
 <h3>Usage</h3>
 
-<pre>
-saveRSTBX(x, filename, format = "raster", ...)
+<pre><code class='language-R'>saveRSTBX(x, filename, format = "raster", ...)
 
 readRSTBX(filename)
-</pre>
+</code></pre>
 
 
 <h3>Arguments</h3>
 
-<table summary="R argblock">
-<tr valign="top"><td><code class="r">x</code></td>
+<table>
+<tr style="vertical-align: top;"><td><code>x</code></td>
 <td>
 <p>RStoolbox object of classes c(&quot;fCover&quot;, &quot;rasterPCA&quot;, &quot;superClass&quot;, &quot;unsuperClass&quot;)</p>
 </td></tr>
-<tr valign="top"><td><code class="r">filename</code></td>
+<tr style="vertical-align: top;"><td><code>filename</code></td>
 <td>
 <p>Character. Path and filename. Any file extension will be ignored.</p>
 </td></tr>
-<tr valign="top"><td><code class="r">format</code></td>
+<tr style="vertical-align: top;"><td><code>format</code></td>
 <td>
 <p>Character. Driver to use for the raster file</p>
 </td></tr>
-<tr valign="top"><td><code class="r">...</code></td>
+<tr style="vertical-align: top;"><td><code>...</code></td>
 <td>
 <p>further arguments passed to writeRaster</p>
 </td></tr>
@@ -68,10 +72,10 @@ b) the raster file (depending on the driver you choose this can be more than two
 
 
 <ul>
-<li> <p><code class="r">saveRSTBX</code>: Save RStoolbox object to file
+<li> <p><code>saveRSTBX()</code>: Save RStoolbox object to file
 </p>
 </li>
-<li> <p><code class="r">readRSTBX</code>: Read files saved with saveRSTBX
+<li> <p><code>readRSTBX()</code>: Read files saved with saveRSTBX
 </p>
 </li></ul>
 
@@ -91,23 +95,24 @@ This is because x$map is a SpatRaster object and hence contains only a static li
 
 <h3>Examples</h3>
 
-<pre><code class="r">## Not run: 
-## input &lt;- brick(system.file(&quot;external/rlogo.grd&quot;, package=&quot;raster&quot;))
-## ## Create filename
-## file  &lt;- paste0(tempdir(), &quot;/test&quot;, runif(1))
-## ## Run PCA
-## rpc   &lt;- rasterPCA(input, nSample = 100)
-## ## Save object
-## saveRSTBX(rpc, filename=file)
-## ## Which files were written?
-## list.files(tempdir(), pattern = basename(file))
-## ## Re-read files
-## re_rpc &lt;- readRSTBX(file)
-## ## Remove files 
-## file.remove(list.files(tempdir(), pattern = basename(file), full = TRUE))
+<pre><code class="language-r">## Not run: 
+##D input &lt;- rlogo
+##D ## Create filename
+##D file  &lt;- paste0(tempdir(), &quot;/test&quot;, runif(1))
+##D ## Run PCA
+##D rpc   &lt;- rasterPCA(input, nSample = 100)
+##D ## Save object
+##D saveRSTBX(rpc, filename=file)
+##D ## Which files were written?
+##D list.files(tempdir(), pattern = basename(file))
+##D ## Re-read files
+##D re_rpc &lt;- readRSTBX(file)
+##D ## Remove files
+##D file.remove(list.files(tempdir(), pattern = basename(file), full = TRUE))
 ## End(Not run)
 </code></pre>
 
 
-<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.3.0 <a href="index.html">Index</a>]</div>
-</div></body></html>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.4.0 <a href="00Index.html">Index</a>]</div>
+</div>
+</body></html>

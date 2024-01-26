@@ -2,14 +2,12 @@
 	font-family: "Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Arial, sans-serif;
 	font-size: 14px;
 }
-/*
 body {
   padding: 0 5px; 
   margin: 0 auto; 
   width: 80%;
-  max-width: 60em; 
+  max-width: 60em; /* 960px */
 }
-
 
 h1, h2, h3, h4, h5, h6 {
 	color: #666;
@@ -31,7 +29,7 @@ h3 {
 	padding-left: 5px;
 	font-variant: small-caps;
 }
-*/
+
 p img {
 	display: block;
 	margin: auto;

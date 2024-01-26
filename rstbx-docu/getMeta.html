@@ -1,22 +1,27 @@
----
-layout: docu
-title: ' Extract bandwise information from ImageMetaData '
-fun:  getMeta 
-package:  RStoolbox 
-header: Pages
-group: navigation
----
-{% include JB/setup %}
- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Extract bandwise information from ImageMetaData</title>
+<!DOCTYPE html><html><head><title>R: Extract bandwise information from ImageMetaData</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css">
+<script type="text/javascript">
+const macros = { "\\R": "\\textsf{R}", "\\code": "\\texttt"};
+function processMathHTML() {
+    var l = document.getElementsByClassName('reqn');
+    for (let e of l) { katex.render(e.textContent, e, { throwOnError: false, macros }); }
+    return;
+}</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"
+    onload="processMathHTML();"></script>
 <link rel="stylesheet" type="text/css" href="R.css" />
 
-                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
-                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
-                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
-                            <script>hljs.initHighlightingOnLoad();</script>
-                            </head><body><div class="container">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head><body><div class="container">
+
+<table style="width: 100%;"><tr><td>getMeta {RStoolbox}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Extract bandwise information from ImageMetaData</h2>
 
 <h3>Description</h3>
 
@@ -27,23 +32,22 @@ Intended for use with imagery which was imported using stackMeta. Will return pa
 
 <h3>Usage</h3>
 
-<pre>
-getMeta(img, metaData, what)
-</pre>
+<pre><code class='language-R'>getMeta(img, metaData, what)
+</code></pre>
 
 
 <h3>Arguments</h3>
 
-<table summary="R argblock">
-<tr valign="top"><td><code class="r">img</code></td>
+<table>
+<tr style="vertical-align: top;"><td><code>img</code></td>
 <td>
-<p>Raster* or character vector with band names.</p>
+<p>SpatRaster or character vector with band names.</p>
 </td></tr>
-<tr valign="top"><td><code class="r">metaData</code></td>
+<tr style="vertical-align: top;"><td><code>metaData</code></td>
 <td>
 <p>ImageMetaData or path to meta data file.</p>
 </td></tr>
-<tr valign="top"><td><code class="r">what</code></td>
+<tr style="vertical-align: top;"><td><code>what</code></td>
 <td>
 <p>Character. Parameter to extract. Either data descriptors, or conversion parameters (see Details for options)</p>
 </td></tr>
@@ -52,12 +56,12 @@ getMeta(img, metaData, what)
 
 <h3>Details</h3>
 
-<p>Possible metadata parameters (<code class="r">what</code> argument):
+<p>Possible metadata parameters (<code>what</code> argument):
 </p>
 <p>Data descriptors
 </p>
 
-<table summary="Rd table">
+<table>
 <tr>
  <td style="text-align: left;">
 'FILES' </td><td style="text-align: left;">  </td>
@@ -100,7 +104,7 @@ getMeta(img, metaData, what)
 <p>Conversion parameters
 </p>
 
-<table summary="Rd table">
+<table>
 <tr>
  <td style="text-align: left;">
 'CALRAD' </td><td style="text-align: left;"> Conversion parameters from DN to radiance </td>
@@ -124,69 +128,59 @@ getMeta(img, metaData, what)
 
 <h3>Value</h3>
 
-<p>If <code class="r">what</code> is one of <code class="r">c('CALRAD', 'CALBT', 'CALREF')</code> a data.frame is returned with bands in rows (order corresponding to <code class="r">img</code> band order). 
+<p>If <code>what</code> is one of <code>c('CALRAD', 'CALBT', 'CALREF')</code> a data.frame is returned with bands in rows (order corresponding to <code>img</code> band order). 
 Otherwise a named numeric vector with the corresponding parameter is returned (layernames as names).
 </p>
 
 
 <h3>Examples</h3>
 
-<pre><code class="r">## Import example data
+<pre><code class="language-r">## Import example data
 mtlFile  &lt;- system.file(&quot;external/landsat/LT52240631988227CUB02_MTL.txt&quot;, package=&quot;RStoolbox&quot;)
 meta &lt;- readMeta(mtlFile)
-lsat &lt;- stackMeta(mtlFile)
+lsat_t &lt;- stackMeta(mtlFile)
 
 ## Get integer scale factors
-getMeta(lsat, metaData = meta, what = &quot;SCALE_FACTOR&quot;)
+getMeta(lsat_t, metaData = meta, what = &quot;SCALE_FACTOR&quot;)
 </code></pre>
-
-<pre><code class="r">#&gt; B1_dn B2_dn B3_dn B4_dn B5_dn B6_dn B7_dn 
+<pre><code>#&gt; B1_dn B2_dn B3_dn B4_dn B5_dn B6_dn B7_dn 
 #&gt;     1     1     1     1     1     1     1
 </code></pre>
-
-<pre><code class="r">## Conversion factors for brightness temperature
+<pre><code class="language-r">## Conversion factors for brightness temperature
 getMeta(&quot;B6_dn&quot;, metaData = meta, what = &quot;CALBT&quot;)
 </code></pre>
-
-<pre><code class="r">#&gt;           K1      K2
+<pre><code>#&gt;           K1      K2
 #&gt; B6_dn 607.76 1260.56
 </code></pre>
-
-<pre><code class="r">## Conversion factors to top-of-atmosphere radiance
+<pre><code class="language-r">## Conversion factors to top-of-atmosphere radiance
 ## Band order not corresponding to metaData order
-getMeta(lsat[[5:1]], metaData = meta, what = &quot;CALRAD&quot;)
+getMeta(lsat_t[[5:1]], metaData = meta, what = &quot;CALRAD&quot;)
 </code></pre>
-
-<pre><code class="r">#&gt;         offset  gain
+<pre><code>#&gt;         offset  gain
 #&gt; B5_dn -0.49035 0.120
 #&gt; B4_dn -2.38602 0.876
 #&gt; B3_dn -2.21398 1.044
 #&gt; B2_dn -4.16220 1.322
 #&gt; B1_dn -2.19134 0.671
 </code></pre>
-
-<pre><code class="r">## Get integer scale factors
-getMeta(lsat, metaData = meta, what = &quot;SCALE_FACTOR&quot;)
+<pre><code class="language-r">## Get integer scale factors
+getMeta(lsat_t, metaData = meta, what = &quot;SCALE_FACTOR&quot;)
 </code></pre>
-
-<pre><code class="r">#&gt; B1_dn B2_dn B3_dn B4_dn B5_dn B6_dn B7_dn 
+<pre><code>#&gt; B1_dn B2_dn B3_dn B4_dn B5_dn B6_dn B7_dn 
 #&gt;     1     1     1     1     1     1     1
 </code></pre>
-
-<pre><code class="r">## Get file basenames
-getMeta(lsat, metaData = meta, what = &quot;FILES&quot;)
+<pre><code class="language-r">## Get file basenames
+getMeta(lsat_t, metaData = meta, what = &quot;FILES&quot;)
 </code></pre>
-
-<pre><code class="r">#&gt;                          B1_dn                          B2_dn 
-#&gt; &quot;LT52240631988227CUB02_B1.TIF&quot; &quot;LT52240631988227CUB02_B2.TIF&quot; 
-#&gt;                          B3_dn                          B4_dn 
-#&gt; &quot;LT52240631988227CUB02_B3.TIF&quot; &quot;LT52240631988227CUB02_B4.TIF&quot; 
-#&gt;                          B5_dn                          B6_dn 
-#&gt; &quot;LT52240631988227CUB02_B5.TIF&quot; &quot;LT52240631988227CUB02_B6.TIF&quot; 
+<pre><code>#&gt;                          B1_dn                          B2_dn                          B3_dn 
+#&gt; &quot;LT52240631988227CUB02_B1.TIF&quot; &quot;LT52240631988227CUB02_B2.TIF&quot; &quot;LT52240631988227CUB02_B3.TIF&quot; 
+#&gt;                          B4_dn                          B5_dn                          B6_dn 
+#&gt; &quot;LT52240631988227CUB02_B4.TIF&quot; &quot;LT52240631988227CUB02_B5.TIF&quot; &quot;LT52240631988227CUB02_B6.TIF&quot; 
 #&gt;                          B7_dn 
 #&gt; &quot;LT52240631988227CUB02_B7.TIF&quot;
 </code></pre>
 
 
-<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.3.0 <a href="index.html">Index</a>]</div>
-</div></body></html>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.4.0 <a href="00Index.html">Index</a>]</div>
+</div>
+</body></html>

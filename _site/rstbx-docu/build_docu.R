@@ -92,7 +92,7 @@ knit_rd2 <- function(pkg, path = ".", links =  tools::findHTMLlinks(pkg), frame 
         
         ## Fix bottom index link
         indlink <- grep(">Index</a>", txt)
-        txt[indlink] <- gsub("00Index.html", "index.html", txt[indlink])
+        txt[indlink] <- gsub("../../rstbx-docu/00Index.html", "index.html", txt[indlink])
         
         ## Remove dontshow sections
         nosho <- grep("## Don&#39;t show:", txt)
@@ -134,8 +134,8 @@ knit_rd2 <- function(pkg, path = ".", links =  tools::findHTMLlinks(pkg), frame 
     markdown::markdownToHTML(text = paste(toc, collapse = '\n'), output = '00frame_toc.html',
             title = paste('R Documentation of', pkg),
             options = NULL, extensions = NULL, stylesheet = 'R.css')
-    txt = readLines(file.path(find.package(pkg), 'html', '00Index.html'))
-    unlink('00Index.html')
+    txt = readLines(file.path(find.package(pkg), 'html', '../../rstbx-docu/00Index.html'))
+    unlink('../../rstbx-docu/00Index.html')
     
     # fix external links in index
     # index <- gsub('../../../doc/html/', 'http://stat.ethz.ch/R-manual/R-devel/doc/html/', txt, fixed = TRUE)

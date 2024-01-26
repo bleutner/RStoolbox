@@ -1,55 +1,60 @@
----
-layout: docu
-title: ' Import separate Landsat files into single stack '
-fun:  stackMeta 
-package:  RStoolbox 
-header: Pages
-group: navigation
----
-{% include JB/setup %}
- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Import separate Landsat files into single stack</title>
+<!DOCTYPE html><html><head><title>R: Import separate Landsat files into single stack</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css">
+<script type="text/javascript">
+const macros = { "\\R": "\\textsf{R}", "\\code": "\\texttt"};
+function processMathHTML() {
+    var l = document.getElementsByClassName('reqn');
+    for (let e of l) { katex.render(e.textContent, e, { throwOnError: false, macros }); }
+    return;
+}</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"
+    onload="processMathHTML();"></script>
 <link rel="stylesheet" type="text/css" href="R.css" />
 
-                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
-                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
-                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
-                            <script>hljs.initHighlightingOnLoad();</script>
-                            </head><body><div class="container">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head><body><div class="container">
+
+<table style="width: 100%;"><tr><td>stackMeta {RStoolbox}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Import separate Landsat files into single stack</h2>
 
 <h3>Description</h3>
 
-<p>Reads Landsat MTL or XML metadata files and loads single Landsat Tiffs into a SpatRaster.
+<p>Reads Landsat MTL or XML metadata files and loads single Landsat Tiffs into a rasterStack.
 Be aware that by default stackMeta() does NOT import panchromatic bands nor thermal bands with resolutions != 30m.
 </p>
 
 
 <h3>Usage</h3>
 
-<pre>
-stackMeta(file, quantity = "all", category = "image", allResolutions = FALSE)
-</pre>
+<pre><code class='language-R'>stackMeta(file, quantity = "all", category = "image", allResolutions = FALSE)
+</code></pre>
 
 
 <h3>Arguments</h3>
 
-<table summary="R argblock">
-<tr valign="top"><td><code class="r">file</code></td>
+<table>
+<tr style="vertical-align: top;"><td><code>file</code></td>
 <td>
 <p>Character. Path to Landsat MTL metadata (*_MTL.txt) file or an Landsat CDR xml metadata file (*.xml).</p>
 </td></tr>
-<tr valign="top"><td><code class="r">quantity</code></td>
+<tr style="vertical-align: top;"><td><code>quantity</code></td>
 <td>
 <p>Character vector. Which quantity should be returned. Options: digital numbers ('dn'), top of atmosphere reflectance ('tre'), at surface reflectance ('sre'), brightness temperature ('bt'), spectral index ('index'), all quantities ('all').</p>
 </td></tr>
-<tr valign="top"><td><code class="r">category</code></td>
+<tr style="vertical-align: top;"><td><code>category</code></td>
 <td>
 <p>Character vector. Which category of data to return. Options 'image': image data, 'pan': panchromatic image, 'index': multiband indices, 'qa' quality flag bands, 'all': all categories.</p>
 </td></tr>
-<tr valign="top"><td><code class="r">allResolutions</code></td>
+<tr style="vertical-align: top;"><td><code>allResolutions</code></td>
 <td>
-<p>Logical. if <code class="r">TRUE</code> a list will be returned with length = unique spatial resolutions.</p>
+<p>Logical. if <code>TRUE</code> a list will be returned with length = unique spatial resolutions.
+This argument was introduced to maintain backward compatibility and will be switched to TRUE in an upcoming release. Please base all new code on terra.</p>
 </td></tr>
 </table>
 
@@ -57,7 +62,7 @@ stackMeta(file, quantity = "all", category = "image", allResolutions = FALSE)
 <h3>Value</h3>
 
 <p>Returns one single SpatRaster comprising all requested bands.
-If <code class="r">allResolutions = TRUE</code> *and* there are different resolution layers (e.g. a 15m panchromatic band along wit 30m imagery) a list of SpatRaster will be returned.
+If <code>allResolutions = TRUE</code> *and* there are different resolution layers (e.g. a 15m panchromatic band along wit 30m imagery) a list of RasterStacks will be returned.
 </p>
 
 
@@ -70,20 +75,56 @@ Note that nowadays the USGS uses cubic convolution to resample the TIR bands to 
 
 <h3>Examples</h3>
 
-<pre><code class="r">## Example metadata file (MTL)
+<pre><code class="language-r">## Example metadata file (MTL)
 mtlFile  &lt;- system.file(&quot;external/landsat/LT52240631988227CUB02_MTL.txt&quot;, package=&quot;RStoolbox&quot;)
 
 ## Read metadata
 metaData &lt;- readMeta(mtlFile)
 summary(metaData)
 </code></pre>
-
-<pre><code class="r">#&gt; Scene:      LT52240631988227CUB02 
+<pre><code>#&gt; Scene:      LT52240631988227CUB02 
 #&gt; Satellite:  LANDSAT5 
 #&gt; Sensor:     TM 
 #&gt; Date:       1988-08-14 
 #&gt; Path/Row:   224/63 
-#&gt; Projection: +proj=utm +zone=22 +datum=WGS84 +units=m +no_defs
+#&gt; Projection: +proj=utm +zone=22 +units=m +datum=WGS84 +ellips=WGS84 
+#&gt; Scene:      PROJCRS[&quot;unknown&quot;,
+#&gt;     BASEGEOGCRS[&quot;unknown&quot;,
+#&gt;         DATUM[&quot;World Geodetic System 1984&quot;,
+#&gt;             ELLIPSOID[&quot;WGS 84&quot;,6378137,298.257223563,
+#&gt;                 LENGTHUNIT[&quot;metre&quot;,1]],
+#&gt;             ID[&quot;EPSG&quot;,6326]],
+#&gt;         PRIMEM[&quot;Greenwich&quot;,0,
+#&gt;             ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],
+#&gt;             ID[&quot;EPSG&quot;,8901]]],
+#&gt;     CONVERSION[&quot;UTM zone 22N&quot;,
+#&gt;         METHOD[&quot;Transverse Mercator&quot;,
+#&gt;             ID[&quot;EPSG&quot;,9807]],
+#&gt;         PARAMETER[&quot;Latitude of natural origin&quot;,0,
+#&gt;             ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],
+#&gt;             ID[&quot;EPSG&quot;,8801]],
+#&gt;         PARAMETER[&quot;Longitude of natural origin&quot;,-51,
+#&gt;             ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],
+#&gt;             ID[&quot;EPSG&quot;,8802]],
+#&gt;         PARAMETER[&quot;Scale factor at natural origin&quot;,0.9996,
+#&gt;             SCALEUNIT[&quot;unity&quot;,1],
+#&gt;             ID[&quot;EPSG&quot;,8805]],
+#&gt;         PARAMETER[&quot;False easting&quot;,500000,
+#&gt;             LENGTHUNIT[&quot;metre&quot;,1],
+#&gt;             ID[&quot;EPSG&quot;,8806]],
+#&gt;         PARAMETER[&quot;False northing&quot;,0,
+#&gt;             LENGTHUNIT[&quot;metre&quot;,1],
+#&gt;             ID[&quot;EPSG&quot;,8807]],
+#&gt;         ID[&quot;EPSG&quot;,16022]],
+#&gt;     CS[Cartesian,2],
+#&gt;         AXIS[&quot;(E)&quot;,east,
+#&gt;             ORDER[1],
+#&gt;             LENGTHUNIT[&quot;metre&quot;,1,
+#&gt;                 ID[&quot;EPSG&quot;,9001]]],
+#&gt;         AXIS[&quot;(N)&quot;,north,
+#&gt;             ORDER[2],
+#&gt;             LENGTHUNIT[&quot;metre&quot;,1,
+#&gt;                 ID[&quot;EPSG&quot;,9001]]]]
 #&gt; 
 #&gt; Data:
 #&gt;                              FILES QUANTITY CATEGORY
@@ -96,25 +137,28 @@ summary(metaData)
 #&gt; B7_dn LT52240631988227CUB02_B7.TIF       dn    image
 #&gt; 
 #&gt; Available calibration parameters (gain and offset):
-#&gt;  dn -&gt; radiance (toa)
-#&gt;  dn -&gt; brightness temperature (toa)
+#&gt; 	dn -&gt; radiance (toa)
+#&gt; 	dn -&gt; brightness temperature (toa)
 </code></pre>
-
-<pre><code class="r">## Load rasters based on metadata file
+<pre><code class="language-r">## Load rasters based on metadata file
 lsat     &lt;- stackMeta(mtlFile)
 lsat
 </code></pre>
-
-<pre><code class="r">#&gt; class      : SpatRaster
-#&gt; dimensions : 310, 287, 88970, 7  (nrow, ncol, ncell, nlayers)
-#&gt; resolution : 30, 30  (x, y)
-#&gt; ext        : 619395, 628005, -419505, -410205  (xmin, xmax, ymin, ymax)
-#&gt; crs        : +proj=utm +zone=22 +datum=WGS84 +units=m +no_defs 
-#&gt; names      : B1_dn, B2_dn, B3_dn, B4_dn, B5_dn, B6_dn, B7_dn 
-#&gt; min        :    54,    18,    11,     4,     2,   131,     1
-#&gt; max        :   185,    87,    92,   127,   148,   146,    79
+<pre><code>#&gt; class       : SpatRaster 
+#&gt; dimensions  : 310, 287, 7  (nrow, ncol, nlyr)
+#&gt; resolution  : 30, 30  (x, y)
+#&gt; extent      : 619395, 628005, -419505, -410205  (xmin, xmax, ymin, ymax)
+#&gt; coord. ref. : WGS 84 / UTM zone 22N (EPSG:32622) 
+#&gt; sources     : LT52240631988227CUB02_B1.TIF  
+#&gt;               LT52240631988227CUB02_B2.TIF  
+#&gt;               LT52240631988227CUB02_B3.TIF  
+#&gt;               ... and 4 more source(s)
+#&gt; names       : B1_dn, B2_dn, B3_dn, B4_dn, B5_dn, B6_dn, ... 
+#&gt; min values  :    54,    18,    11,     4,     2,   131, ... 
+#&gt; max values  :   185,    87,    92,   127,   148,   146, ...
 </code></pre>
 
 
-<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.3.0 <a href="index.html">Index</a>]</div>
-</div></body></html>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.4.0 <a href="00Index.html">Index</a>]</div>
+</div>
+</body></html>

@@ -1,22 +1,27 @@
----
-layout: docu
-title: ' Topographic Illumination Correction '
-fun:  topCor 
-package:  RStoolbox 
-header: Pages
-group: navigation
----
-{% include JB/setup %}
- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Topographic Illumination Correction</title>
+<!DOCTYPE html><html><head><title>R: Topographic Illumination Correction</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css">
+<script type="text/javascript">
+const macros = { "\\R": "\\textsf{R}", "\\code": "\\texttt"};
+function processMathHTML() {
+    var l = document.getElementsByClassName('reqn');
+    for (let e of l) { katex.render(e.textContent, e, { throwOnError: false, macros }); }
+    return;
+}</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"
+    onload="processMathHTML();"></script>
 <link rel="stylesheet" type="text/css" href="R.css" />
 
-                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
-                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
-                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
-                            <script>hljs.initHighlightingOnLoad();</script>
-                            </head><body><div class="container">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head><body><div class="container">
+
+<table style="width: 100%;"><tr><td>topCor {RStoolbox}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Topographic Illumination Correction</h2>
 
 <h3>Description</h3>
 
@@ -26,8 +31,7 @@ group: navigation
 
 <h3>Usage</h3>
 
-<pre>
-topCor(
+<pre><code class='language-R'>topCor(
   img,
   dem,
   metaData,
@@ -38,48 +42,48 @@ topCor(
   illu,
   ...
 )
-</pre>
+</code></pre>
 
 
 <h3>Arguments</h3>
 
-<table summary="R argblock">
-<tr valign="top"><td><code class="r">img</code></td>
+<table>
+<tr style="vertical-align: top;"><td><code>img</code></td>
 <td>
 <p>SpatRaster. Imagery to correct</p>
 </td></tr>
-<tr valign="top"><td><code class="r">dem</code></td>
+<tr style="vertical-align: top;"><td><code>dem</code></td>
 <td>
-<p>SpatRaster. Either a digital elevation model as a RasterLayer or a RasterStack/Brick with pre-calculated slope and aspect (see <a href="https://www.rdocumentation.org/packages/raster/help/terrain">terrain</a>) in which case the layers must be named 'slope' and 'aspect'.
-Must have the same dimensions as <code class="r">img</code>.</p>
+<p>SpatRaster. Either a digital elevation model as a RasterLayer or a RasterStack/Brick with pre-calculated slope and aspect (see <a href="../../terra/help/terrain.html">terrain</a>) in which case the layers must be named 'slope' and 'aspect'.
+Must have the same dimensions as <code>img</code>.</p>
 </td></tr>
-<tr valign="top"><td><code class="r">metaData</code></td>
+<tr style="vertical-align: top;"><td><code>metaData</code></td>
 <td>
-<p>Character, ImageMetaData. Either a path to a Landsat meta-data file (MTL) or an ImageMetaData object (see <a href="readMeta.html">readMeta</a>)</p>
+<p>Character, ImageMetaData. Either a path to a Landsat meta-data file (MTL) or an ImageMetaData object (see <a href="../../RStoolbox/help/readMeta.html">readMeta</a>)</p>
 </td></tr>
-<tr valign="top"><td><code class="r">solarAngles</code></td>
+<tr style="vertical-align: top;"><td><code>solarAngles</code></td>
 <td>
 <p>Numeric vector containing sun azimuth and sun zenith (in radians and in that order). Not needed if metaData is provided</p>
 </td></tr>
-<tr valign="top"><td><code class="r">method</code></td>
+<tr style="vertical-align: top;"><td><code>method</code></td>
 <td>
 <p>Character. One of c(&quot;cos&quot;, &quot;avgcos&quot;, &quot;minnaert&quot;, &quot;C&quot;, &quot;stat&quot;, &quot;illu&quot;). Choosing 'illu' will return only the local illumination map.</p>
 </td></tr>
-<tr valign="top"><td><code class="r">stratImg</code></td>
+<tr style="vertical-align: top;"><td><code>stratImg</code></td>
 <td>
-<p>SpatRaster to define strata, e.g. NDVI. Or the string 'slope' in which case stratification will be on <code class="r">nStrat</code> slope classes. Only relevant if <code class="r">method = 'minnaert'</code>.</p>
+<p>RasterLayer or SpatRaster to define strata, e.g. NDVI. Or the string 'slope' in which case stratification will be on <code>nStrat</code> slope classes. Only relevant if <code>method = 'minnaert'</code>.</p>
 </td></tr>
-<tr valign="top"><td><code class="r">nStrat</code></td>
+<tr style="vertical-align: top;"><td><code>nStrat</code></td>
 <td>
-<p>Integer. Number of bins or quantiles to stratify by. If a bin has less than 50 samples it will be merged with the next bin. Only relevant if <code class="r">method = 'minnaert'</code>.</p>
+<p>Integer. Number of bins or quantiles to stratify by. If a bin has less than 50 samples it will be merged with the next bin. Only relevant if <code>method = 'minnaert'</code>.</p>
 </td></tr>
-<tr valign="top"><td><code class="r">illu</code></td>
+<tr style="vertical-align: top;"><td><code>illu</code></td>
 <td>
 <p>SpatRaster. Optional pre-calculated ilumination map. Run topCor with method=&quot;illu&quot; to calculate an ilumination map</p>
 </td></tr>
-<tr valign="top"><td><code class="r">...</code></td>
+<tr style="vertical-align: top;"><td><code>...</code></td>
 <td>
-<p>arguments passed to <code class="r"><a href="https://www.rdocumentation.org/packages/terra/help/writeRaster">writeRaster</a></code></p>
+<p>arguments passed to <code><a href="../../terra/help/writeRaster.html">writeRaster</a></code></p>
 </td></tr>
 </table>
 
@@ -88,9 +92,15 @@ Must have the same dimensions as <code class="r">img</code>.</p>
 
 <p>For detailed discussion of the various approaches please see Riano et al. (2003).
 </p>
-<p>The minnaert correction can be stratified for different landcover characteristics. If <code class="r">stratImg = 'slope'</code> the analysis is stratified by the slope, 
-i.e. the slope values are divided into <code class="r">nStrat</code> classes and the correction coefficient k is calculated and applied separately for each slope class.
-An alternative could be to stratify by a vegetation index in which case an additional raster layer has to be provided via the <code class="r">stratImg</code> argument.
+<p>The minnaert correction can be stratified for different landcover characteristics. If <code>stratImg = 'slope'</code> the analysis is stratified by the slope, 
+i.e. the slope values are divided into <code>nStrat</code> classes and the correction coefficient k is calculated and applied separately for each slope class.
+An alternative could be to stratify by a vegetation index in which case an additional raster layer has to be provided via the <code>stratImg</code> argument.
+</p>
+
+
+<h3>Value</h3>
+
+<p>SpatRaster
 </p>
 
 
@@ -102,19 +112,36 @@ An alternative could be to stratify by a vegetation index in which case an addit
 
 <h3>Examples</h3>
 
-<pre><code class="r">## Load example data
+<pre><code class="language-r">## Load example data
 metaData &lt;- system.file(&quot;external/landsat/LT52240631988227CUB02_MTL.txt&quot;, package=&quot;RStoolbox&quot;)
 metaData &lt;- readMeta(metaData)
-lsat     &lt;- stackMeta(metaData) 
-data(srtm)
 
 ## Minnaert correction, solar angles from metaData
 lsat_minnaert &lt;- topCor(lsat, dem = srtm, metaData = metaData, method = &quot;minnaert&quot;)
-
-## C correction, solar angles provided manually
+</code></pre>
+<pre><code>#&gt; 09:17:30 | Calculate slope and aspect
+</code></pre>
+<pre><code>#&gt; 09:17:30 | Calculate illumination map
+</code></pre>
+<pre><code>#&gt; 09:17:30 | Correct imagery
+</code></pre>
+<pre><code>#&gt; 09:17:30 | Estimate coefficients
+</code></pre>
+<pre><code class="language-r">## C correction, solar angles provided manually
 lsat_C &lt;- topCor(lsat, dem = srtm, solarAngles = c(1.081533, 0.7023922), method = &quot;C&quot;)
+</code></pre>
+<pre><code>#&gt; 09:17:31 | Calculate slope and aspect
+</code></pre>
+<pre><code>#&gt; 09:17:31 | Calculate illumination map
+</code></pre>
+<pre><code>#&gt; 09:17:31 | Correct imagery
+</code></pre>
+<pre><code>#&gt; 09:17:31 | Estimate coefficients
+</code></pre>
+<pre><code>#&gt; Warning: [*] CRS do not match
 </code></pre>
 
 
-<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.3.0 <a href="index.html">Index</a>]</div>
-</div></body></html>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.4.0 <a href="00Index.html">Index</a>]</div>
+</div>
+</body></html>

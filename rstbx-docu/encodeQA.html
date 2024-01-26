@@ -1,35 +1,39 @@
----
-layout: docu
-title: ' Encode QA Conditions to Integers '
-fun:  encodeQA 
-package:  RStoolbox 
-header: Pages
-group: navigation
----
-{% include JB/setup %}
- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Encode QA Conditions to Integers</title>
+<!DOCTYPE html><html><head><title>R: Encode QA Conditions to Integers</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css">
+<script type="text/javascript">
+const macros = { "\\R": "\\textsf{R}", "\\code": "\\texttt"};
+function processMathHTML() {
+    var l = document.getElementsByClassName('reqn');
+    for (let e of l) { katex.render(e.textContent, e, { throwOnError: false, macros }); }
+    return;
+}</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"
+    onload="processMathHTML();"></script>
 <link rel="stylesheet" type="text/css" href="R.css" />
 
-                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
-                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
-                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
-                            <script>hljs.initHighlightingOnLoad();</script>
-                            </head><body><div class="container">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head><body><div class="container">
+
+<table style="width: 100%;"><tr><td>encodeQA {RStoolbox}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Encode QA Conditions to Integers</h2>
 
 <h3>Description</h3>
 
 <p>Intended for use with Landsat 16-bit QA bands. Converts pixel quality flags from human readable to integer, which can then be used to 
 subset a QA image. Please be aware of the default settings which differ for different parameters. 
-Depending on, which <code class="r">sensor</code> and <code class="r">legacy</code> is selected, some quality parameters are not used, since the sequences of available bitwise quality designations differ per sensor and collection.
+Depending on, which <code>sensor</code> and <code>legacy</code> is selected, some quality parameters are not used, since the sequences of available bitwise quality designations differ per sensor and collection.
 </p>
 
 
 <h3>Usage</h3>
 
-<pre>
-encodeQA(
+<pre><code class='language-R'>encodeQA(
   fill = "no",
   terrainOcclusion = "no",
   radSaturation = "na",
@@ -44,63 +48,63 @@ encodeQA(
   sensor = "OLI",
   legacy = "collection1"
 )
-</pre>
+</code></pre>
 
 
 <h3>Arguments</h3>
 
-<table summary="R argblock">
-<tr valign="top"><td><code class="r">fill</code></td>
+<table>
+<tr style="vertical-align: top;"><td><code>fill</code></td>
 <td>
-<p>Designated fill. Options: <code class="r">c("yes", "no", "all")</code>.</p>
+<p>Designated fill. Options: <code>c("yes", "no", "all")</code>.</p>
 </td></tr>
-<tr valign="top"><td><code class="r">terrainOcclusion</code></td>
+<tr style="vertical-align: top;"><td><code>terrainOcclusion</code></td>
 <td>
-<p>Terrain induced occlusion. Options: <code class="r">c("yes", "no", "all")</code>.</p>
+<p>Terrain induced occlusion. Options: <code>c("yes", "no", "all")</code>.</p>
 </td></tr>
-<tr valign="top"><td><code class="r">radSaturation</code></td>
+<tr style="vertical-align: top;"><td><code>radSaturation</code></td>
 <td>
-<p>Number of bands that contain radiometric saturation. Options: <code class="r">c("na", "low", "med", "high", "all")</code> for no bands, 1-2 bands, 3-4 bands, 5 or more bands contain saturation.</p>
+<p>Number of bands that contain radiometric saturation. Options: <code>c("na", "low", "med", "high", "all")</code> for no bands, 1-2 bands, 3-4 bands, 5 or more bands contain saturation.</p>
 </td></tr>
-<tr valign="top"><td><code class="r">cloudMask</code></td>
+<tr style="vertical-align: top;"><td><code>cloudMask</code></td>
 <td>
-<p>Cloud mask. Options: <code class="r">c("yes", "no", "all")</code>.</p>
+<p>Cloud mask. Options: <code>c("yes", "no", "all")</code>.</p>
 </td></tr>
-<tr valign="top"><td><code class="r">cloud</code></td>
+<tr style="vertical-align: top;"><td><code>cloud</code></td>
 <td>
-<p>Cloud confidence. Options: <code class="r">c("na", "low", "med", "high", "all")</code>.</p>
+<p>Cloud confidence. Options: <code>c("na", "low", "med", "high", "all")</code>.</p>
 </td></tr>
-<tr valign="top"><td><code class="r">cloudShadow</code></td>
+<tr style="vertical-align: top;"><td><code>cloudShadow</code></td>
 <td>
-<p>Cloud shadow confidence. Options: <code class="r">c("yes", "no", "all")</code>.</p>
+<p>Cloud shadow confidence. Options: <code>c("yes", "no", "all")</code>.</p>
 </td></tr>
-<tr valign="top"><td><code class="r">snow</code></td>
+<tr style="vertical-align: top;"><td><code>snow</code></td>
 <td>
-<p>Snow / ice confidence.  Options: <code class="r">c("na", "low", "med", "high", "all")</code>.</p>
+<p>Snow / ice confidence.  Options: <code>c("na", "low", "med", "high", "all")</code>.</p>
 </td></tr>
-<tr valign="top"><td><code class="r">cirrus</code></td>
+<tr style="vertical-align: top;"><td><code>cirrus</code></td>
 <td>
-<p>Cirrus confidence.  Options: <code class="r">c("na", "low", "med", "high", "all")</code>.</p>
+<p>Cirrus confidence.  Options: <code>c("na", "low", "med", "high", "all")</code>.</p>
 </td></tr>
-<tr valign="top"><td><code class="r">droppedPixel</code></td>
+<tr style="vertical-align: top;"><td><code>droppedPixel</code></td>
 <td>
-<p>Dropped pixel. Options: <code class="r">c("yes", "no", "all")</code>.</p>
+<p>Dropped pixel. Options: <code>c("yes", "no", "all")</code>.</p>
 </td></tr>
-<tr valign="top"><td><code class="r">water</code></td>
+<tr style="vertical-align: top;"><td><code>water</code></td>
 <td>
-<p>Water confidence. Options: <code class="r">c("na", "low", "med", "high", "all")</code>.</p>
+<p>Water confidence. Options: <code>c("na", "low", "med", "high", "all")</code>.</p>
 </td></tr>
-<tr valign="top"><td><code class="r">droppedFrame</code></td>
+<tr style="vertical-align: top;"><td><code>droppedFrame</code></td>
 <td>
-<p>Dropped frame. Options: <code class="r">c("yes", "no", "all")</code>.</p>
+<p>Dropped frame. Options: <code>c("yes", "no", "all")</code>.</p>
 </td></tr>
-<tr valign="top"><td><code class="r">sensor</code></td>
+<tr style="vertical-align: top;"><td><code>sensor</code></td>
 <td>
-<p>Sensor to encode. Options: <code class="r">c("OLI", "TIRS", "ETM+", "TM", "MSS")</code>.</p>
+<p>Sensor to encode. Options: <code>c("OLI", "TIRS", "ETM+", "TM", "MSS")</code>.</p>
 </td></tr>
-<tr valign="top"><td><code class="r">legacy</code></td>
+<tr style="vertical-align: top;"><td><code>legacy</code></td>
 <td>
-<p>Encoding systematic Options: <code class="r">c("collection1", "pre_collection")</code>. Default is &quot;collection1&quot; for the Landsat Collection 1 8-bit quality designations. Use &quot;pre_collection&quot; for imagery downloaded before the Collection 1 quality designations were introduced</p>
+<p>Encoding systematic Options: <code>c("collection1", "pre_collection")</code>. Default is &quot;collection1&quot; for the Landsat Collection 1 8-bit quality designations. Use &quot;pre_collection&quot; for imagery downloaded before the Collection 1 quality designations were introduced</p>
 </td></tr>
 </table>
 
@@ -119,18 +123,18 @@ encodeQA(
 
 <h3>References</h3>
 
-<p><a href="https://www.usgs.gov/landsat-missions/landsat-collection-1-level-1-quality-assessment-band">https://www.usgs.gov/landsat-missions/landsat-collection-1-level-1-quality-assessment-band</a> for Collection 1 quality designations (<code class="r">legacy = "collection1"</code>)
+<p><a href="https://www.usgs.gov/landsat-missions/landsat-collection-1-level-1-quality-assessment-band">https://www.usgs.gov/landsat-missions/landsat-collection-1-level-1-quality-assessment-band</a> for Collection 1 quality designations (<code>legacy = "collection1"</code>)
 </p>
 
 
 <h3>Examples</h3>
 
-<pre><code class="r">encodeQA(snow = &quot;low&quot;, cirrus = c(&quot;med&quot;, &quot;high&quot;), cloud = &quot;high&quot;)
+<pre><code class="language-r">encodeQA(snow = &quot;low&quot;, cirrus = c(&quot;med&quot;, &quot;high&quot;), cloud = &quot;high&quot;)
+</code></pre>
+<pre><code>#&gt; [1] 23136 23264 23392 23520 23152 23280 23408 23536
 </code></pre>
 
-<pre><code class="r">#&gt; [1] 23136 23264 23392 23520 23152 23280 23408 23536
-</code></pre>
 
-
-<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.3.0 <a href="index.html">Index</a>]</div>
-</div></body></html>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.4.0 <a href="00Index.html">Index</a>]</div>
+</div>
+</body></html>

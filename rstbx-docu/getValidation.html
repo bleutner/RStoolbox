@@ -1,22 +1,27 @@
----
-layout: docu
-title: ' Extract validation results from superClass objects '
-fun:  getValidation 
-package:  RStoolbox 
-header: Pages
-group: navigation
----
-{% include JB/setup %}
- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Extract validation results from superClass objects</title>
+<!DOCTYPE html><html><head><title>R: Extract validation results from superClass objects</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css">
+<script type="text/javascript">
+const macros = { "\\R": "\\textsf{R}", "\\code": "\\texttt"};
+function processMathHTML() {
+    var l = document.getElementsByClassName('reqn');
+    for (let e of l) { katex.render(e.textContent, e, { throwOnError: false, macros }); }
+    return;
+}</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"
+    onload="processMathHTML();"></script>
 <link rel="stylesheet" type="text/css" href="R.css" />
 
-                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
-                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
-                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
-                            <script>hljs.initHighlightingOnLoad();</script>
-                            </head><body><div class="container">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head><body><div class="container">
+
+<table style="width: 100%;"><tr><td>getValidation {RStoolbox}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Extract validation results from superClass objects</h2>
 
 <h3>Description</h3>
 
@@ -26,23 +31,22 @@ group: navigation
 
 <h3>Usage</h3>
 
-<pre>
-getValidation(x, from = "testset", metrics = "overall")
-</pre>
+<pre><code class='language-R'>getValidation(x, from = "testset", metrics = "overall")
+</code></pre>
 
 
 <h3>Arguments</h3>
 
-<table summary="R argblock">
-<tr valign="top"><td><code class="r">x</code></td>
+<table>
+<tr style="vertical-align: top;"><td><code>x</code></td>
 <td>
 <p>superClass object or caret::confusionMatrix</p>
 </td></tr>
-<tr valign="top"><td><code class="r">from</code></td>
+<tr style="vertical-align: top;"><td><code>from</code></td>
 <td>
 <p>Character. 'testset' extracts the results from independent validation with testset. 'cv' extracts cross-validation results.</p>
 </td></tr>
-<tr valign="top"><td><code class="r">metrics</code></td>
+<tr style="vertical-align: top;"><td><code>metrics</code></td>
 <td>
 <p>Character. Only relevant in classification mode (ignored for regression models). 
 Select 'overall' for overall accuracy metrics, 'classwise' for classwise metrics, 
@@ -60,48 +64,114 @@ If metrics = 'confmat' or 'caret' will return a table or the full caret::confusi
 
 <h3>Examples</h3>
 
-<pre><code class="r">library(pls)
+<pre><code class="language-r">library(pls)
 ## Fit classifier (splitting training into 70% training data, 30% validation data)
 train &lt;- readRDS(system.file(&quot;external/trainingPoints.rds&quot;, package=&quot;RStoolbox&quot;))
-SC   &lt;- superClass(rlogo, trainData = train, responseCol = &quot;class&quot;, 
+SC   &lt;- superClass(rlogo, trainData = train, responseCol = &quot;class&quot;,
                     model=&quot;pls&quot;, trainPartition = 0.7)
-## Independent testset-validation
+</code></pre>
+<pre><code>#&gt; 09:17:00 | Begin sampling training data
+</code></pre>
+<pre><code>#&gt; 09:17:00 | Starting to fit model
+</code></pre>
+<pre><code>#&gt; 09:17:00 | Starting spatial predict
+</code></pre>
+<pre><code>#&gt; 09:17:00 | Begin validation
+</code></pre>
+<pre><code>#&gt; ******************** Model summary ********************
+</code></pre>
+<pre><code>#&gt; Partial Least Squares 
+#&gt; 
+#&gt; 21 samples
+#&gt;  3 predictor
+#&gt;  3 classes: 'A', 'B', 'C' 
+#&gt; 
+#&gt; No pre-processing
+#&gt; Resampling: Cross-Validated (5 fold) 
+#&gt; Summary of sample sizes: 16, 17, 16, 17, 18 
+#&gt; Resampling results across tuning parameters:
+#&gt; 
+#&gt;   ncomp  Accuracy   Kappa    
+#&gt;   1      0.6733333  0.5000000
+#&gt;   2      0.8600000  0.7633987
+#&gt; 
+#&gt; Accuracy was used to select the optimal model using the largest value.
+#&gt; The final value used for the model was ncomp = 2.
+#&gt; [[1]]
+#&gt;   TrainAccuracy TrainKappa method
+#&gt; 1          0.86  0.7633987    pls
+#&gt; 
+#&gt; [[2]]
+#&gt; Cross-Validated (5 fold) Confusion Matrix 
+#&gt; 
+#&gt; (entries are average cell counts across resamples)
+#&gt;  
+#&gt;           Reference
+#&gt; Prediction   A   B   C
+#&gt;          A 1.4 0.6 0.0
+#&gt;          B 0.0 0.8 0.0
+#&gt;          C 0.0 0.0 1.4
+#&gt;                             
+#&gt;  Accuracy (average) : 0.8571
+</code></pre>
+<pre><code>#&gt; ******************** Validation summary ********************
+</code></pre>
+<pre><code>#&gt; Confusion Matrix and Statistics
+#&gt; 
+#&gt;           Reference
+#&gt; Prediction A B C
+#&gt;          A 3 1 0
+#&gt;          B 0 2 0
+#&gt;          C 0 0 3
+#&gt; 
+#&gt; Overall Statistics
+#&gt;                                           
+#&gt;                Accuracy : 0.8889          
+#&gt;                  95% CI : (0.5175, 0.9972)
+#&gt;     No Information Rate : 0.3333          
+#&gt;     P-Value [Acc &gt; NIR] : 0.0009653       
+#&gt;                                           
+#&gt;                   Kappa : 0.8333          
+#&gt;                                           
+#&gt;  Mcnemar's Test P-Value : NA              
+#&gt; 
+#&gt; Statistics by Class:
+#&gt; 
+#&gt;                      Class: A Class: B Class: C
+#&gt; Sensitivity            1.0000   0.6667   1.0000
+#&gt; Specificity            0.8333   1.0000   1.0000
+#&gt; Pos Pred Value         0.7500   1.0000   1.0000
+#&gt; Neg Pred Value         1.0000   0.8571   1.0000
+#&gt; Prevalence             0.3333   0.3333   0.3333
+#&gt; Detection Rate         0.3333   0.2222   0.3333
+#&gt; Detection Prevalence   0.4444   0.2222   0.3333
+#&gt; Balanced Accuracy      0.9167   0.8333   1.0000
+</code></pre>
+<pre><code class="language-r">## Independent testset-validation
 getValidation(SC)
 </code></pre>
-
-<pre><code class="r">#&gt;   model validation  Accuracy     Kappa AccuracyLower AccuracyUpper AccuracyNull
-#&gt; 1   pls    testset 0.8888889 0.8333333     0.5175035     0.9971909    0.3333333
-#&gt;   AccuracyPValue McnemarPValue
-#&gt; 1      0.0009653           NaN
+<pre><code>#&gt;   model validation  Accuracy     Kappa AccuracyLower AccuracyUpper AccuracyNull AccuracyPValue McnemarPValue
+#&gt; 1   pls    testset 0.8888889 0.8333333     0.5175035     0.9971909    0.3333333      0.0009653           NaN
 </code></pre>
-
-<pre><code class="r">getValidation(SC, metrics = &quot;classwise&quot;)
+<pre><code class="language-r">getValidation(SC, metrics = &quot;classwise&quot;)
 </code></pre>
-
-<pre><code class="r">#&gt;   model validation class Sensitivity Specificity Pos.Pred.Value Neg.Pred.Value
-#&gt; 1   pls    testset     A   1.0000000   0.8333333           0.75      1.0000000
-#&gt; 2   pls    testset     B   0.6666667   1.0000000           1.00      0.8571429
-#&gt; 3   pls    testset     C   1.0000000   1.0000000           1.00      1.0000000
-#&gt;   Precision    Recall        F1 Prevalence Detection.Rate Detection.Prevalence
-#&gt; 1      0.75 1.0000000 0.8571429  0.3333333      0.3333333            0.4444444
-#&gt; 2      1.00 0.6666667 0.8000000  0.3333333      0.2222222            0.2222222
-#&gt; 3      1.00 1.0000000 1.0000000  0.3333333      0.3333333            0.3333333
-#&gt;   Balanced.Accuracy
-#&gt; 1         0.9166667
-#&gt; 2         0.8333333
-#&gt; 3         1.0000000
+<pre><code>#&gt;   model validation class Sensitivity Specificity Pos.Pred.Value Neg.Pred.Value Precision    Recall        F1
+#&gt; 1   pls    testset     A   1.0000000   0.8333333           0.75      1.0000000      0.75 1.0000000 0.8571429
+#&gt; 2   pls    testset     B   0.6666667   1.0000000           1.00      0.8571429      1.00 0.6666667 0.8000000
+#&gt; 3   pls    testset     C   1.0000000   1.0000000           1.00      1.0000000      1.00 1.0000000 1.0000000
+#&gt;   Prevalence Detection.Rate Detection.Prevalence Balanced.Accuracy
+#&gt; 1  0.3333333      0.3333333            0.4444444         0.9166667
+#&gt; 2  0.3333333      0.2222222            0.2222222         0.8333333
+#&gt; 3  0.3333333      0.3333333            0.3333333         1.0000000
 </code></pre>
-
-<pre><code class="r">## Cross-validation based 
+<pre><code class="language-r">## Cross-validation based 
 getValidation(SC, from = &quot;cv&quot;)
 </code></pre>
-
-<pre><code class="r">#&gt;   model validation  Accuracy     Kappa AccuracyLower AccuracyUpper AccuracyNull
-#&gt; 1   pls         cv 0.8571429 0.7857143      0.636576      0.969511    0.3333333
-#&gt;   AccuracyPValue McnemarPValue
-#&gt; 1   1.101588e-06           NaN
+<pre><code>#&gt;   model validation  Accuracy     Kappa AccuracyLower AccuracyUpper AccuracyNull AccuracyPValue McnemarPValue
+#&gt; 1   pls         cv 0.8571429 0.7857143      0.636576      0.969511    0.3333333   1.101588e-06           NaN
 </code></pre>
 
 
-<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.3.0 <a href="index.html">Index</a>]</div>
-</div></body></html>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.4.0 <a href="00Index.html">Index</a>]</div>
+</div>
+</body></html>

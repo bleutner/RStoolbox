@@ -1,0 +1,54 @@
+<!DOCTYPE html><html><head><title>R: Pipe operator</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css">
+<script type="text/javascript">
+const macros = { "\\R": "\\textsf{R}", "\\code": "\\texttt"};
+function processMathHTML() {
+    var l = document.getElementsByClassName('reqn');
+    for (let e of l) { katex.render(e.textContent, e, { throwOnError: false, macros }); }
+    return;
+}</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"
+    onload="processMathHTML();"></script>
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table style="width: 100%;"><tr><td>%&gt;% {RStoolbox}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Pipe operator</h2>
+
+<h3>Description</h3>
+
+<p>See <code>magrittr::<a href="../../magrittr/help/pipe.html">%&gt;%</a></code> for details.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre><code class='language-R'>lhs %&gt;% rhs
+</code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;"><td><code>lhs</code></td>
+<td>
+<p>A value or the magrittr placeholder.</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>rhs</code></td>
+<td>
+<p>A function call using the magrittr semantics.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>The result of calling 'rhs(lhs)'.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.4.0 <a href="00Index.html">Index</a>]</div>
+</div>
+</body></html>

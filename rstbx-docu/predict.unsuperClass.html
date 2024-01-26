@@ -1,22 +1,27 @@
----
-layout: docu
-title: ' Predict a raster map based on a unsuperClass model fit. '
-fun:  predict.unsuperClass 
-package:  RStoolbox 
-header: Pages
-group: navigation
----
-{% include JB/setup %}
- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Predict a raster map based on a unsuperClass model fit.</title>
+<!DOCTYPE html><html><head><title>R: Predict a raster map based on a unsuperClass model fit.</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css">
+<script type="text/javascript">
+const macros = { "\\R": "\\textsf{R}", "\\code": "\\texttt"};
+function processMathHTML() {
+    var l = document.getElementsByClassName('reqn');
+    for (let e of l) { katex.render(e.textContent, e, { throwOnError: false, macros }); }
+    return;
+}</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"
+    onload="processMathHTML();"></script>
 <link rel="stylesheet" type="text/css" href="R.css" />
 
-                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
-                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
-                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
-                            <script>hljs.initHighlightingOnLoad();</script>
-                            </head><body><div class="container">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head><body><div class="container">
+
+<table style="width: 100%;"><tr><td>predict.unsuperClass {RStoolbox}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Predict a raster map based on a unsuperClass model fit.</h2>
 
 <h3>Description</h3>
 
@@ -27,46 +32,55 @@ Useful if you want to apply a kmeans model of scene A to scene B.
 
 <h3>Usage</h3>
 
-<pre>
-## S3 method for class 'unsuperClass'
+<pre><code class='language-R'>## S3 method for class 'unsuperClass'
 predict(object, img, output = "classes", ...)
-</pre>
+</code></pre>
 
 
 <h3>Arguments</h3>
 
-<table summary="R argblock">
-<tr valign="top"><td><code class="r">object</code></td>
+<table>
+<tr style="vertical-align: top;"><td><code>object</code></td>
 <td>
 <p>unsuperClass object</p>
 </td></tr>
-<tr valign="top"><td><code class="r">img</code></td>
+<tr style="vertical-align: top;"><td><code>img</code></td>
 <td>
-<p>SpatRaster object. Layernames must correspond to layernames used to train the superClass model, i.e. layernames in the original raster image.</p>
+<p>Raster object. Layernames must correspond to layernames used to train the superClass model, i.e. layernames in the original raster image.</p>
 </td></tr>
-<tr valign="top"><td><code class="r">output</code></td>
+<tr style="vertical-align: top;"><td><code>output</code></td>
 <td>
 <p>Character. Either 'classes' (kmeans class; default) or 'distances' (euclidean distance to each cluster center).</p>
 </td></tr>
-<tr valign="top"><td><code class="r">...</code></td>
+<tr style="vertical-align: top;"><td><code>...</code></td>
 <td>
-<p>further arguments to be passed to <a href="https://www.rdocumentation.org/packages/raster/help/writeRaster">writeRaster</a>, e.g. filename</p>
+<p>further arguments to be passed to <a href="../../terra/help/writeRaster.html">writeRaster</a>, e.g. filename</p>
 </td></tr>
 </table>
 
 
+<h3>Value</h3>
+
+<p>Returns a raster with the K-means distances base on your object passed in the arguments.
+</p>
+
+
 <h3>Examples</h3>
 
-<pre><code class="r">## Load training data
-data(rlogo)
+<pre><code class="language-r">## Load training data
 
 ## Perform unsupervised classification
 uc  &lt;- unsuperClass(rlogo, nClasses = 10)
-
-## Apply the model to another raster
+</code></pre>
+<pre><code>#&gt; 09:17:16 | Starting kmeans fitting
+</code></pre>
+<pre><code>#&gt; 09:17:17 | Starting spatial prediction
+</code></pre>
+<pre><code class="language-r">## Apply the model to another raster
 map &lt;- predict(uc, rlogo)
 </code></pre>
 
 
-<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.3.0 <a href="index.html">Index</a>]</div>
-</div></body></html>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.4.0 <a href="00Index.html">Index</a>]</div>
+</div>
+</body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html><head><title>R: Set global options for RStoolbox</title>
+<!DOCTYPE html><html><head><title>R: Fortify method for classes from the terra package.</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css">
@@ -19,41 +19,54 @@ function processMathHTML() {
 <script>hljs.initHighlightingOnLoad();</script>
 </head><body><div class="container">
 
-<table style="width: 100%;"><tr><td>rsOpts {RStoolbox}</td><td style="text-align: right;">R Documentation</td></tr></table>
+<table style="width: 100%;"><tr><td>fortifySpatRaster {RStoolbox}</td><td style="text-align: right;">R Documentation</td></tr></table>
 
-<h2>Set global options for RStoolbox</h2>
+<h2>Fortify method for classes from the terra package.</h2>
 
 <h3>Description</h3>
 
-<p>shortcut to options(RStoolbox.*)
+<p>Fortify method for classes from the terra package.
 </p>
 
 
 <h3>Usage</h3>
 
-<pre><code class='language-R'>rsOpts(verbose)
+<pre><code class='language-R'>fortifySpatRaster(x, maxpixels = 50000)
 </code></pre>
 
 
 <h3>Arguments</h3>
 
 <table>
-<tr style="vertical-align: top;"><td><code>verbose</code></td>
+<tr style="vertical-align: top;"><td><code>x</code></td>
 <td>
-<p>Logical. If <code>TRUE</code> many functions will print status messages about the current processing step. By default verbose mode is disabled.</p>
+<p><code>SpatRaster</code> object to convert into a dataframe.</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>maxpixels</code></td>
+<td>
+<p>Integer. Maximum number of pixels to sample</p>
 </td></tr>
 </table>
 
 
 <h3>Value</h3>
 
-<p>No return, just a setter for the verbosiness of the RStoolbox package
+<p>Returns a data.frame with coordinates (x,y) and corresponding raster values.
 </p>
 
 
 <h3>Examples</h3>
 
-<pre><code class="language-r">rsOpts(verbose=TRUE)
+<pre><code class="language-r">r_df &lt;- fortifySpatRaster(rlogo)
+head(r_df)
+</code></pre>
+<pre><code>#&gt;     x    y red green blue
+#&gt; 1 0.5 76.5 255   255  255
+#&gt; 2 1.5 76.5 255   255  255
+#&gt; 3 2.5 76.5 255   255  255
+#&gt; 4 3.5 76.5 255   255  255
+#&gt; 5 4.5 76.5 255   255  255
+#&gt; 6 5.5 76.5 255   255  255
 </code></pre>
 
 

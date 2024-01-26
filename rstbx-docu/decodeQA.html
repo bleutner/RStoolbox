@@ -1,22 +1,27 @@
----
-layout: docu
-title: ' Decode QA flags to bit-words '
-fun:  decodeQA 
-package:  RStoolbox 
-header: Pages
-group: navigation
----
-{% include JB/setup %}
- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Decode QA flags to bit-words</title>
+<!DOCTYPE html><html><head><title>R: Decode QA flags to bit-words</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css">
+<script type="text/javascript">
+const macros = { "\\R": "\\textsf{R}", "\\code": "\\texttt"};
+function processMathHTML() {
+    var l = document.getElementsByClassName('reqn');
+    for (let e of l) { katex.render(e.textContent, e, { throwOnError: false, macros }); }
+    return;
+}</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"
+    onload="processMathHTML();"></script>
 <link rel="stylesheet" type="text/css" href="R.css" />
 
-                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
-                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
-                            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
-                            <script>hljs.initHighlightingOnLoad();</script>
-                            </head><body><div class="container">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head><body><div class="container">
+
+<table style="width: 100%;"><tr><td>decodeQA {RStoolbox}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Decode QA flags to bit-words</h2>
 
 <h3>Description</h3>
 
@@ -26,35 +31,40 @@ group: navigation
 
 <h3>Usage</h3>
 
-<pre>
-decodeQA(x)
-</pre>
+<pre><code class='language-R'>decodeQA(x)
+</code></pre>
 
 
 <h3>Arguments</h3>
 
-<table summary="R argblock">
-<tr valign="top"><td><code class="r">x</code></td>
+<table>
+<tr style="vertical-align: top;"><td><code>x</code></td>
 <td>
 <p>Integer (16bit)</p>
 </td></tr>
 </table>
 
 
+<h3>Value</h3>
+
+<p>Returns the decoded QA values from an integer
+</p>
+
+
 <h3>See Also</h3>
 
-<p><a href="encodeQA.html">encodeQA</a>
+<p><a href="../../RStoolbox/help/encodeQA.html">encodeQA</a>
 </p>
 
 
 <h3>Examples</h3>
 
-<pre><code class="r">decodeQA(53248)
+<pre><code class="language-r">decodeQA(53248)
+</code></pre>
+<pre><code>#&gt; [1] &quot;1101000000000000&quot;
 </code></pre>
 
-<pre><code class="r">#&gt; [1] &quot;1101000000000000&quot;
-</code></pre>
 
-
-<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.3.0 <a href="index.html">Index</a>]</div>
-</div></body></html>
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.4.0 <a href="00Index.html">Index</a>]</div>
+</div>
+</body></html>
