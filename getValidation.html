@@ -1,0 +1,113 @@
+<!DOCTYPE html><html><head><title>R: Extract validation results from superClass objects</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css">
+<script type="text/javascript">
+const macros = { "\\R": "\\textsf{R}", "\\code": "\\texttt"};
+function processMathHTML() {
+    var l = document.getElementsByClassName('reqn');
+    for (let e of l) { katex.render(e.textContent, e, { throwOnError: false, macros }); }
+    return;
+}</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"
+    onload="processMathHTML();"></script>
+<link rel="stylesheet" type="text/css" href="R.css" />
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head><body><div class="container">
+
+<table style="width: 100%;"><tr><td>getValidation {RStoolbox}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Extract validation results from superClass objects</h2>
+
+<h3>Description</h3>
+
+<p>Extract validation results from superClass objects
+</p>
+
+
+<h3>Usage</h3>
+
+<pre><code class='language-R'>getValidation(x, from = "testset", metrics = "overall")
+</code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;"><td><code>x</code></td>
+<td>
+<p>superClass object or caret::confusionMatrix</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>from</code></td>
+<td>
+<p>Character. 'testset' extracts the results from independent validation with testset. 'cv' extracts cross-validation results.</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>metrics</code></td>
+<td>
+<p>Character. Only relevant in classification mode (ignored for regression models). 
+Select 'overall' for overall accuracy metrics, 'classwise' for classwise metrics, 
+'confmat' for the confusion matrix itself and 'caret' to return the whole caret::confusionMatrix object.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Returns a data.frame with validation results. 
+If metrics = 'confmat' or 'caret' will return a table or the full caret::confusionMatrix object, respectively.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class="language-r">library(pls)
+</code></pre>
+<pre><code>## Warning: package 'pls' was built under R version 4.2.3
+</code></pre>
+<pre><code>## 
+## Attaching package: 'pls'
+</code></pre>
+<pre><code>## The following object is masked from 'package:caret':
+## 
+##     R2
+</code></pre>
+<pre><code>## The following object is masked from 'package:stats':
+## 
+##     loadings
+</code></pre>
+<pre><code class="language-r">## Fit classifier (splitting training into 70% training data, 30% validation data)
+train &lt;- readRDS(system.file(&quot;external/trainingPoints.rds&quot;, package=&quot;RStoolbox&quot;))
+SC   &lt;- superClass(rlogo, trainData = train, responseCol = &quot;class&quot;,
+                    model=&quot;pls&quot;, trainPartition = 0.7)
+## Independent testset-validation
+getValidation(SC)
+</code></pre>
+<pre><code>##   model validation  Accuracy     Kappa AccuracyLower AccuracyUpper AccuracyNull AccuracyPValue McnemarPValue
+## 1   pls    testset 0.7777778 0.6666667     0.3999064      0.971855    0.3333333    0.008281258           NaN
+</code></pre>
+<pre><code class="language-r">getValidation(SC, metrics = &quot;classwise&quot;)
+</code></pre>
+<pre><code>##   model validation class Sensitivity Specificity Pos.Pred.Value Neg.Pred.Value Precision    Recall   F1
+## 1   pls    testset     A   1.0000000   0.6666667            0.6           1.00       0.6 1.0000000 0.75
+## 2   pls    testset     B   0.3333333   1.0000000            1.0           0.75       1.0 0.3333333 0.50
+## 3   pls    testset     C   1.0000000   1.0000000            1.0           1.00       1.0 1.0000000 1.00
+##   Prevalence Detection.Rate Detection.Prevalence Balanced.Accuracy
+## 1  0.3333333      0.3333333            0.5555556         0.8333333
+## 2  0.3333333      0.1111111            0.1111111         0.6666667
+## 3  0.3333333      0.3333333            0.3333333         1.0000000
+</code></pre>
+<pre><code class="language-r">## Cross-validation based 
+getValidation(SC, from = &quot;cv&quot;)
+</code></pre>
+<pre><code>##   model validation  Accuracy     Kappa AccuracyLower AccuracyUpper AccuracyNull AccuracyPValue McnemarPValue
+## 1   pls         cv 0.9047619 0.8571429     0.6962256     0.9882507    0.3333333   8.441398e-08           NaN
+</code></pre>
+
+
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.4.0 <a href="00Index.html">Index</a>]</div>
+</div>
+</body></html>

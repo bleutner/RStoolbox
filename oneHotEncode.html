@@ -1,0 +1,102 @@
+<!DOCTYPE html><html><head><title>R: One-hot encode a raster or vector</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css">
+<script type="text/javascript">
+const macros = { "\\R": "\\textsf{R}", "\\code": "\\texttt"};
+function processMathHTML() {
+    var l = document.getElementsByClassName('reqn');
+    for (let e of l) { katex.render(e.textContent, e, { throwOnError: false, macros }); }
+    return;
+}</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"
+    onload="processMathHTML();"></script>
+<link rel="stylesheet" type="text/css" href="R.css" />
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head><body><div class="container">
+
+<table style="width: 100%;"><tr><td>oneHotEncode {RStoolbox}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>One-hot encode a raster or vector</h2>
+
+<h3>Description</h3>
+
+<p>Splits a categorical raster layer (or a vector) into a multilayer raster (or matrix).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre><code class='language-R'>oneHotEncode(img, classes, background = 0, foreground = 1, na.rm = FALSE, ...)
+</code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;"><td><code>img</code></td>
+<td>
+<p>RasterLayer or SpatRaster or integer/numeric vector containing multiple classes</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>classes</code></td>
+<td>
+<p>integer: vector of classes which should be extracted</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>background</code></td>
+<td>
+<p>integer: background value (default = 0)</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>foreground</code></td>
+<td>
+<p>integer: foreground value (default = 1)</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>na.rm</code></td>
+<td>
+<p>logical: if <code>TRUE</code>, <code>NA</code>s will be coerced to the <code>background</code> value.</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>...</code></td>
+<td>
+<p>further arguments passed to <a href="../../terra/help/writeRaster.html">writeRaster</a>. Ignored if img is not a SpatRaster, but a numeric/integer vector or matrix</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A SpatRaster with as many layers as there are classes.
+Pixels matching the class of interest are set to 1, backround values by default are set to 0 (see background argument)
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class="language-r">## No test: 
+sc &lt;- unsuperClass(rlogo, nClasses = 3)
+
+## one-hot encode 
+sc_oneHot &lt;- oneHotEncode(sc$map, classes = c(1,2,3))
+
+## check results
+sc_oneHot
+</code></pre>
+<pre><code>## class       : SpatRaster 
+## dimensions  : 77, 101, 3  (nrow, ncol, nlyr)
+## resolution  : 1, 1  (x, y)
+## extent      : 0, 101, 0, 77  (xmin, xmax, ymin, ymax)
+## coord. ref. : +proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs 
+## source(s)   : memory
+## names       : c_1, c_2, c_3 
+## min values  :   0,   0,   0 
+## max values  :   1,   1,   1
+</code></pre>
+<pre><code class="language-r">## End(No test)
+</code></pre>
+
+
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.4.0 <a href="00Index.html">Index</a>]</div>
+</div>
+</body></html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html><html><head><title>R: Classify Landsat QA bands</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css">
+<script type="text/javascript">
+const macros = { "\\R": "\\textsf{R}", "\\code": "\\texttt"};
+function processMathHTML() {
+    var l = document.getElementsByClassName('reqn');
+    for (let e of l) { katex.render(e.textContent, e, { throwOnError: false, macros }); }
+    return;
+}</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"
+    onload="processMathHTML();"></script>
+<link rel="stylesheet" type="text/css" href="R.css" />
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head><body><div class="container">
+
+<table style="width: 100%;"><tr><td>classifyQA {RStoolbox}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Classify Landsat QA bands</h2>
+
+<h3>Description</h3>
+
+<p>extracts five classes from QA band: background, cloud, cirrus, snow and water.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre><code class='language-R'>classifyQA(
+  img,
+  type = c("background", "cloud", "cirrus", "snow", "water"),
+  confLayers = FALSE,
+  sensor = "OLI",
+  legacy = "collection1",
+  ...
+)
+</code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;"><td><code>img</code></td>
+<td>
+<p>RasterLayer or SpatRaster. Landsat 8 OLI QA band.</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>type</code></td>
+<td>
+<p>Character. Classes which should be returned. One or more of c(&quot;background&quot;, &quot;cloud&quot;, &quot;cirrus&quot;,&quot;snow&quot;, &quot;water&quot;).</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>confLayers</code></td>
+<td>
+<p>Logical. Return one layer per class classified by confidence levels, i.e. cloud:low, cloud:med, cloud:high.</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>sensor</code></td>
+<td>
+<p>Sensor to encode. Options: <code>c("OLI", "TIRS", "ETM+", "TM", "MSS")</code>.</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>legacy</code></td>
+<td>
+<p>Encoding systematic Options: <code>c("collection1", "pre_collection")</code>. Default is &quot;collection1&quot; for the Landsat Collection 1 8-bit quality designations. Use &quot;pre_collection&quot; for imagery downloaded before the Collection 1 quality designations were introduced</p>
+</td></tr>
+<tr style="vertical-align: top;"><td><code>...</code></td>
+<td>
+<p>further arguments passed to <a href="../../terra/help/writeRaster.html">writeRaster</a></p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>By default each class is queried for *high* confidence. See <a href="../../RStoolbox/help/encodeQA.html">encodeQA</a> for details. To return the different confidence levels per condition use <code>confLayers=TRUE</code>.
+This approach corresponds to the way LandsatLook Quality Images are produced by the USGS.
+</p>
+
+
+<h3>Value</h3>
+
+<p>Returns a SpatRaster with maximal five classes:
+</p>
+
+<table>
+<tr>
+ <td style="text-align: right;">
+class </td><td style="text-align: right;"> value </td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+background </td><td style="text-align: right;"> 1L </td>
+</tr>
+<tr>
+ <td style="text-align: right;"> 
+cloud  </td><td style="text-align: right;"> 2L </td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+cirrus </td><td style="text-align: right;"> 3L </td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+snow   </td><td style="text-align: right;"> 4L </td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+water  </td><td style="text-align: right;"> 5L </td>
+</tr>
+<tr>
+ <td style="text-align: right;"> 
+</td>
+</tr>
+
+</table>
+
+<p>Values outside of these classes are returned as NA.
+If <code>confLayers = TRUE</code> then a RasterStack with one layer per condition (except 'background') is returned, whereby each layer contains the confidence level of the condition.
+</p>
+
+<table>
+<tr>
+ <td style="text-align: right;">
+Confidence </td><td style="text-align: right;"> value </td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+low    </td><td style="text-align: right;"> 1L </td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+med    </td><td style="text-align: right;"> 2L </td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+high   </td><td style="text-align: right;"> 3L </td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+</td>
+</tr>
+
+</table>
+
+
+
+<h3>See Also</h3>
+
+<p><a href="../../RStoolbox/help/encodeQA.html">encodeQA</a> <a href="../../RStoolbox/help/decodeQA.html">decodeQA</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class="language-r">library(terra)
+</code></pre>
+<pre><code>## Warning: package 'terra' was built under R version 4.2.3
+</code></pre>
+<pre><code>## terra 1.7.65
+</code></pre>
+<pre><code class="language-r">qa &lt;- rast(ncol = 100, nrow=100, val = sample(1:2^14,  10000))
+
+## QA classes
+qacs &lt;- classifyQA(img = qa)
+## Confidence levels
+qacs_conf &lt;- classifyQA(img = qa, confLayers = TRUE)
+</code></pre>
+
+
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.4.0 <a href="00Index.html">Index</a>]</div>
+</div>
+</body></html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html><html><head><title>R: Read ENVI spectral libraries</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css">
+<script type="text/javascript">
+const macros = { "\\R": "\\textsf{R}", "\\code": "\\texttt"};
+function processMathHTML() {
+    var l = document.getElementsByClassName('reqn');
+    for (let e of l) { katex.render(e.textContent, e, { throwOnError: false, macros }); }
+    return;
+}</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"
+    onload="processMathHTML();"></script>
+<link rel="stylesheet" type="text/css" href="R.css" />
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head><body><div class="container">
+
+<table style="width: 100%;"><tr><td>readSLI {RStoolbox}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Read ENVI spectral libraries</h2>
+
+<h3>Description</h3>
+
+<p>read/write support for ENVI spectral libraries
+</p>
+
+
+<h3>Usage</h3>
+
+<pre><code class='language-R'>readSLI(path)
+</code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;"><td><code>path</code></td>
+<td>
+<p>Path to spectral library file with ending .sli.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>ENVI spectral libraries consist of a binary data file (.sli) and a corresponding header (.hdr, or .sli.hdr) file.
+</p>
+
+
+<h3>Value</h3>
+
+<p>The spectral libraries are read into a data.frame. The first column contains the wavelengths and the remaining columns contain the spectra.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../RStoolbox/help/writeSLI.html">writeSLI</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class="language-r">## Example data
+sliFile &lt;- system.file(&quot;external/vegSpec.sli&quot;, package=&quot;RStoolbox&quot;)
+sliTmpFile &lt;- paste0(tempdir(),&quot;/vegetationSpectra.sli&quot;) 
+
+## Read spectral library
+sli &lt;- readSLI(sliFile)
+head(sli)
+</code></pre>
+<pre><code>##   wavelength veg_stressed   veg_vital
+## 1        350  0.008958003 0.008836994
+## 2        351  0.008910760 0.008909440
+## 3        352  0.008874181 0.008972186
+## 4        353  0.008847097 0.009025744
+## 5        354  0.008829174 0.009071405
+## 6        355  0.008819440 0.009109739
+</code></pre>
+<pre><code class="language-r">plot(sli[,1:2], col = &quot;orange&quot;, type = &quot;l&quot;)
+lines(sli[,c(1,3)], col = &quot;green&quot;)
+</code></pre>
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-1" /></p>
+<pre><code class="language-r">## Write to binary spectral library
+writeSLI(sli, path = sliTmpFile)
+</code></pre>
+
+
+<hr /><div style="text-align: center;">[Package <em>RStoolbox</em> version 0.4.0 <a href="00Index.html">Index</a>]</div>
+</div>
+</body></html>
