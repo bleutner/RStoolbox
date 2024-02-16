@@ -62,7 +62,7 @@
 #' @importFrom grDevices hsv
 #' @useDynLib RStoolbox
 #' @importFrom Rcpp sourceCpp
-#' @docType _PACKAGE
+#' @docType package
 #' @name RStoolbox
 NULL
 
@@ -113,4 +113,16 @@ NULL
 #' @name sen2
 #' @examples
 #' ggRGB(sen2, r=4, g=3, b=2, stretch = "lin")
+NULL
+
+#' SRTM scene for the sen2 exemplary scene
+#'
+#' DEM for the Sentinel 2 example area taken from SRTM v4
+#'
+#' @usage srtm_sen2
+#' @docType data
+#' @keywords datasets
+#' @name srtm_sen2
+#' @examples
+#' ggR(srtm_sen2)
 NULL
