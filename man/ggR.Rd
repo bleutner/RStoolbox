@@ -22,7 +22,7 @@ ggR(
 )
 }
 \arguments{
-\item{img}{raster}
+\item{img}{SpatRaster}
 
 \item{layer}{Character or numeric. Layername or number. Can be more than one layer, in which case each layer is plotted in a subplot.}
 

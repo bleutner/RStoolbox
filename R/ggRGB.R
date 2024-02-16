@@ -4,7 +4,7 @@
 #' 
 #' Functionality is based on \code{\link[terra]{plotRGB}} from the raster package.
 #' 
-#' @param img RasterStack or RasterBrick
+#' @param img SpatRaster
 #' @param r Integer or character. Red layer in x. Can be set to \code{NULL}, in which case the red channel will be set to zero.
 #' @param g Integer or character. Green layer in x. Can be set to \code{NULL}, in which case the green channel will be set to zero.
 #' @param b Integer or character. Blue layer in x. Can be set to \code{NULL}, in which case the blue channel will be set to zero.

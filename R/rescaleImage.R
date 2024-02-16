@@ -8,7 +8,7 @@
 #' By providing `xmin = -1` and `xmax = 1` the values can be rescaled to any other range,
 #' e.g. 1 to 100 while comparability to other rescaled NDVI scenes is retained. 
 #' 
-#' @param x patRaster or numeric vector. Image to normalise.
+#' @param x SpatRaster or numeric vector. Image to normalise.
 #' @param y SpatRaster or numeric vector. Reference image. Optional. Used to extract min and max values if ymin or ymax are missing.
 #' @param xmin Numeric. Min value of x. Either a single value or one value per layer in x. If xmin is not provided it will be extracted from x.
 #' @param xmax Numeric. Max value of x. Either a single value or one value per layer in x. If xmax is not provided it will be extracted from x.

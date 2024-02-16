@@ -25,7 +25,7 @@ ggRGB(
 )
 }
 \arguments{
-\item{img}{RasterStack or RasterBrick}
+\item{img}{SpatRaster}
 
 \item{r}{Integer or character. Red layer in x. Can be set to \code{NULL}, in which case the red channel will be set to zero.}
 

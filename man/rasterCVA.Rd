@@ -7,9 +7,9 @@
 rasterCVA(x, y, tmf = NULL, nct = NULL, ...)
 }
 \arguments{
-\item{x}{RasterBrick or RasterStack or SpatRaster with two layers. This will be the reference/origin for the change calculations. Both rasters (y and y) need to correspond to each other, i.e. same resolution, extent and origin.}
+\item{x}{SpatRaster with two layers. This will be the reference/origin for the change calculations. Both rasters (y and y) need to correspond to each other, i.e. same resolution, extent and origin.}
 
-\item{y}{RasterBrick or RasterStack or SpatRaster with two layers. Both rasters (y and y) need to correspond to each other, i.e. same resolution, extent and origin.}
+\item{y}{SpatRaster with two layers. Both rasters (y and y) need to correspond to each other, i.e. same resolution, extent and origin.}
 
 \item{tmf}{Numeric. Threshold median factor (optional). Used to calculate a threshold magnitude for which pixels are considered stable, i.e. no change. Calculated as \code{tmf * mean(magnitude[magnitude > 0])}.}
 

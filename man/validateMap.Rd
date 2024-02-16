@@ -14,7 +14,7 @@ validateMap(
 )
 }
 \arguments{
-\item{map}{RasterLayer or SpatRaster. The classified map.}
+\item{map}{SpatRaster. The classified map.}
 
 \item{valData}{sf object with validation data (POLYGONs or POINTs).}
 
@@ -37,7 +37,7 @@ library(caret)
 library(terra)
 
 ## Training data
-poly     <- readRDS(system.file("external/trainingPolygons.rds", package="RStoolbox"))
+poly     <- readRDS(system.file("external/trainingPolygons_lsat.rds", package="RStoolbox"))
 
 ## Split training data in training and validation set (50\%-50\%)
 splitIn   <- createDataPartition(poly$class, p = .5)[[1]]

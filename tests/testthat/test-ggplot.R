@@ -4,7 +4,7 @@ library(terra)
 test_that("ggR returns proper ggplot2 classes or data.frames", {
   suppressWarnings({
     tests  <- expand.grid(forceCat = c(TRUE, FALSE), anno = c(TRUE, FALSE), ggLayer = c(TRUE, FALSE), ggObj = c(TRUE,FALSE))
-    builds <- lapply(1:nrow(tests), function(i) ggR(rlogo, forceCat = tests$forceCat[i], ggObj = tests$ggObj[i], geom_raster = !tests$anno[i], ggLayer = tests$ggLayer[i]))
+    builds <- lapply(seq_len(nrow(tests)), function(i) ggR(rlogo, forceCat = tests$forceCat[i], ggObj = tests$ggObj[i], geom_raster = !tests$anno[i], ggLayer = tests$ggLayer[i]))
     tinfo  <- paste0("forceCat=", tests[,1], ", anno=", tests[,2], ", ggLayer=", tests[,3], ", ggObj=", tests[,4])
 
     ## Annotation vs geom_raster
@@ -13,7 +13,7 @@ test_that("ggR returns proper ggplot2 classes or data.frames", {
     ## ggLayers
     if(!inherits(builds[[which(with(tests, ggObj & ggLayer))[1]]], "ggproto")){
       ## Current ggplot2 release version
-      for(s in which(with(tests, ggObj & ggLayer))) expect_is(builds[[s]], c("proto"), info = tinfo[s])
+      for(s in which(with(tests, ggObj & ggLayer))) expect_is(builds[[s]], "proto", info = tinfo[s])
       for(s in which(with(tests, ggObj & ggLayer & anno)))  expect_equal(builds[[s]]$geom$objname, "raster_ann", info = tinfo[s])
       for(s in which(with(tests, ggObj & ggLayer & !anno))) expect_equal(builds[[s]]$geom$objname, "raster", info = tinfo[s])
     } else {
@@ -60,7 +60,7 @@ test_that("ggR works with single valued rasters", {
 test_that("ggRGB returns proper ggplot2 classes or data.frames", {
 
   tests  <- expand.grid(anno = c(TRUE, FALSE), ggLayer = c(TRUE, FALSE), ggObj = c(TRUE,FALSE), stretch=c("sqrt", "hist", "log", "lin"))
-  builds <- lapply(1:nrow(tests), function(i) ggRGB(rlogo, ggObj = tests$ggObj[i], geom_raster = !tests$anno[i], ggLayer = tests$ggLayer[i], stretch = tests$stretch[i] ))
+  builds <- lapply(seq_len(nrow(tests)), function(i) ggRGB(rlogo, ggObj = tests$ggObj[i], geom_raster = !tests$anno[i], ggLayer = tests$ggLayer[i], stretch = tests$stretch[i] ))
   tinfo <- paste0("anno=", tests$anno, ", ggLayer=", tests$ggLayer, ", ggObj=", tests$ggObj)
 
   ## Stand-alone
@@ -69,7 +69,7 @@ test_that("ggRGB returns proper ggplot2 classes or data.frames", {
   ## ggLayers
   if(!inherits(builds[[which(with(tests, ggObj & ggLayer))[1]]], "ggproto")){
     ## Current ggplot2 release version
-    for(s in which(with(tests, ggObj & ggLayer))) expect_is(builds[[s]], c("proto"), info = tinfo[s])
+    for(s in which(with(tests, ggObj & ggLayer))) expect_is(builds[[s]], "proto", info = tinfo[s])
     for(s in which(with(tests, ggObj & ggLayer & anno)))  expect_equal(builds[[s]]$geom$objname, "raster_ann", info = tinfo[s])
     for(s in which(with(tests, ggObj & ggLayer & !anno))) expect_equal(builds[[s]]$geom$objname, "raster", info = tinfo[s])
   } else {

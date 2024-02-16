@@ -18,9 +18,9 @@ histMatch(
 )
 }
 \arguments{
-\item{x}{RasterLayer or SpatRaster. Source raster which is to be modified.}
+\item{x}{SpatRaster. Source raster which is to be modified.}
 
-\item{ref}{RasterLayer or SpatRaster. Reference raster, to which x will be matched.}
+\item{ref}{SpatRaster. Reference raster, to which x will be matched.}
 
 \item{xmask}{RasterLayer or SpatRaster. Mask layer for \code{x} to exclude pixels which might distort the histogram, i.e. are not present in \code{ref}. Any NA pixel in \code{xmask} will be ignored (\code{maskvalue = NA}).}
 

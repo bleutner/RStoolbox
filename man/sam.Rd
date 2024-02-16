@@ -7,7 +7,7 @@
 sam(img, em, angles = FALSE, ...)
 }
 \arguments{
-\item{img}{RasterBrick or RasterStack or SpatRaster. Remote sensing imagery.}
+\item{img}{SpatRaster. Remote sensing imagery.}
 
 \item{em}{Matrix or data.frame with endmembers. Each row should contain the endmember spectrum of a class, i.e. columns correspond to bands in \code{img}. It is reccomended to set the rownames to class names.}
 

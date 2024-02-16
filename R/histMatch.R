@@ -3,8 +3,8 @@
 #' Performs image to image contrast adjustments based on histogram matching using empirical cumulative
 #'  distribution functions from both images.
 #' 
-#' @param x RasterLayer or SpatRaster. Source raster which is to be modified.
-#' @param ref RasterLayer or SpatRaster. Reference raster, to which x will be matched.
+#' @param x SpatRaster. Source raster which is to be modified.
+#' @param ref SpatRaster. Reference raster, to which x will be matched.
 #' @param xmask RasterLayer or SpatRaster. Mask layer for \code{x} to exclude pixels which might distort the histogram, i.e. are not present in \code{ref}. Any NA pixel in \code{xmask} will be ignored (\code{maskvalue = NA}).
 #' @param refmask RasterLayer or SpatRaster. Mask layer for \code{ref}. Any NA pixel in \code{refmask} will be ignored (\code{maskvalue = NA}).
 #' @param nSamples Integer. Number of random samples from each image to build the histograms.

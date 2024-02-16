@@ -70,7 +70,7 @@
 #' library(randomForest)
 #' library(e1071)
 #' library(terra)
-#' train <- readRDS(system.file("external/trainingPoints.rds", package="RStoolbox"))
+#' train <- readRDS(system.file("external/trainingPoints_lsat.rds", package="RStoolbox"))
 #' 
 #' ## Plot training data
 #' olpar <- par(no.readonly = TRUE) # back-up par
@@ -498,7 +498,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 #' @export 
 #' @examples 
 #' ## Load training data
-#' train <- readRDS(system.file("external/trainingPoints.rds", package="RStoolbox"))
+#' train <- readRDS(system.file("external/trainingPoints_lsat.rds", package="RStoolbox"))
 #' 
 #' ## Fit classifier 
 #' SC       <- superClass(rlogo, trainData = train, responseCol = "class",
@@ -527,7 +527,6 @@ predict.superClass <- function(object, img, predType = "raw", filename = NULL, d
     
     wrArgs          <- c(list(...), list(filename = filename, datatype = datatype))
     wrArgs$filename <- filename ## remove filename from args if is.null(filename) --> standard writeRaster handling applies
-    print(img)
     .paraRasterFun(img, rasterFun=terra::predict, args = list(model=model, type = predType, index = probInd, na.rm = TRUE), wrArgs = wrArgs)
     
 }

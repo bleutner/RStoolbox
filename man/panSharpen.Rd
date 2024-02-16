@@ -7,9 +7,9 @@
 panSharpen(img, pan, r, g, b, pc = 1, method = "brovey", norm = TRUE)
 }
 \arguments{
-\item{img}{RasterLayer or SpatRaster. Coarse resolution multispectral image}
+\item{img}{SpatRaster. Coarse resolution multispectral image}
 
-\item{pan}{RasterLayer or SpatRaster. High resolution image, typically panchromatic.}
+\item{pan}{SpatRaster. High resolution image, typically panchromatic.}
 
 \item{r}{Character or Integer. Red band in \code{img}. Only relevant if \code{method!='pca'}}
 
