@@ -7,7 +7,7 @@
 rasterEntropy(img, ...)
 }
 \arguments{
-\item{img}{RasterStack or RasterBrick or SpatRaster}
+\item{img}{SpatRaster}
 
 \item{...}{additional arguments passed to writeRaster}
 }

@@ -3,7 +3,7 @@
 #' Calculates brightness, greenness and wetness from multispectral imagery.
 #' Currently implemented Landsat 4 TM, Landsat 5 TM, Landsat 7ETM+, Landsat 8 OLI, MODIS, QuickBird, Spot5 and RapidEye.
 #' 
-#' @param img RasterBrick or RasterStack or SpatRaster. Input image. Band order must correspond to sensor specifications (see Details and Examples)
+#' @param img SpatRaster. Input image. Band order must correspond to sensor specifications (see Details and Examples)
 #' @param sat Character. Sensor; one of: c("Landsat4TM", "Landsat5TM", "Landsat7ETM", "Landsat8OLI", "MODIS", "QuickBird", "Spot5", "RapidEye"). Case is irrelevant.
 #' @param ... Further arguments passed to writeRaster.
 #' @export 

@@ -15,9 +15,9 @@ pifMatch(
 )
 }
 \arguments{
-\item{img}{RasterStack or RasterBrick or SpatRaster. Image to be adjusted.}
+\item{img}{SpatRaster. Image to be adjusted.}
 
-\item{ref}{RasterStack or RasterBrick or SpatRaster. Reference image.}
+\item{ref}{SpatRaster. Reference image.}
 
 \item{method}{Method to calculate pixel similarity. Options: euclidean distance ('ed'), spectral angle ('sam') or pearson correlation coefficient ('cor').}
 

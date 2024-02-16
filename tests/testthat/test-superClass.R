@@ -9,7 +9,7 @@ lsat_t <- lsat
 lsat_t <- lsat_t[[1:4]]
 ## Set-up test data
 set.seed(1)
-poly     <- readRDS(system.file("external/trainingPolygons.rds", package="RStoolbox"))
+poly     <- readRDS(system.file("external/trainingPolygons_lsat.rds", package="RStoolbox"))
 poly$res <- as.numeric(poly$class)
 poly <- st_as_sf(poly)
 pts <- st_join(st_as_sf(st_sample(poly, 100, type = "regular")), poly)

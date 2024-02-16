@@ -117,7 +117,7 @@ library(caret)
 library(randomForest)
 library(e1071)
 library(terra)
-train <- readRDS(system.file("external/trainingPoints.rds", package="RStoolbox"))
+train <- readRDS(system.file("external/trainingPoints_lsat.rds", package="RStoolbox"))
 
 ## Plot training data
 olpar <- par(no.readonly = TRUE) # back-up par

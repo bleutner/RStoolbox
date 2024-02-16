@@ -4,7 +4,7 @@ lsat_t <- lsat_t[[1:4]]
 
 ## Set-up test data
 set.seed(1)
-poly     <- readRDS(system.file("external/trainingPolygons.rds", package="RStoolbox"))
+poly     <- readRDS(system.file("external/trainingPolygons_lsat.rds", package="RStoolbox"))
 poly$classNum <- as.numeric(poly$class)
 
 sc <- superClass(lsat_t, trainData = poly, nSamples = 50, responseCol = "class", model = "mlc", trainPartition = 0.7, predict = TRUE)

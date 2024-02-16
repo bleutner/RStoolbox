@@ -57,7 +57,7 @@
 }
 
 #' Run raster functions
-#' @param SpatRaster Object
+#' @param raster SpatRaster
 #' @param rasterFun function. E.g. predict, calc, overlay 
 #' @param args list. arguments to be passed to rasterFun.
 #' @param wrArgs arguments to be passed to rasterFun, typically to writeRaster

@@ -7,7 +7,7 @@
 tasseledCap(img, sat, ...)
 }
 \arguments{
-\item{img}{RasterBrick or RasterStack or SpatRaster. Input image. Band order must correspond to sensor specifications (see Details and Examples)}
+\item{img}{SpatRaster. Input image. Band order must correspond to sensor specifications (see Details and Examples)}
 
 \item{sat}{Character. Sensor; one of: c("Landsat4TM", "Landsat5TM", "Landsat7ETM", "Landsat8OLI", "MODIS", "QuickBird", "Spot5", "RapidEye"). Case is irrelevant.}
 

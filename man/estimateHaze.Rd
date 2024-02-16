@@ -14,7 +14,7 @@ estimateHaze(
 )
 }
 \arguments{
-\item{x}{RasterLayer or SpatRaster or a previous result from \code{estimateHaze} with \code{returnTables = TRUE} from which to estimate haze}
+\item{x}{SpatRaster or a previous result from \code{estimateHaze} with \code{returnTables = TRUE} from which to estimate haze}
 
 \item{hazeBands}{Integer or Character. Band number or bandname from which to estimate atmospheric haze (optional if x contains only one layer)}
 
