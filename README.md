@@ -3,10 +3,11 @@
 [![CI](https://github.com/bleutner/RStoolbox/actions/workflows/rcmdcheck.yaml/badge.svg)](https://github.com/bleutner/RStoolbox/actions/workflows/rcmdcheck.yaml)
 [![CRAN version](https://www.r-pkg.org/badges/version/RStoolbox)](https://CRAN.R-project.org/package=RStoolbox)
 [![codecov](https://codecov.io/gh/bleutner/RStoolbox/branch/master/graph/badge.svg)](https://app.codecov.io/gh/bleutner/RStoolbox)
+[![Downloads](http://cranlogs.r-pkg.org/badges/RStoolbox)](https://www.r-pkg.org:443/pkg/RStoolbox)
 
 RStoolbox is an R package providing a wide range of tools for your every-day remote sensing processing needs. The available tool-set covers many aspects from data import, pre-processing, data analysis, image classification and graphical display. RStoolbox builds upon the terra package, which makes it suitable for processing large data-sets even on smaller workstations.
 
-For more details have a look at the [functions overview](http://bleutner.github.io/RStoolbox/rstbx-docu/RStoolbox.html).
+For more details have a look at the [functions overview](http://bleutner.github.io/RStoolbox/RStoolbox.html).
 
 :construction: It is recommended to use the GitHub version of RStoolbox at the moment
 since there will be fixes over the next weeks :construction:
