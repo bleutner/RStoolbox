@@ -12,6 +12,6 @@ Subset of Landsat 5 TM Scene: LT52240631988227CUB02
 Contains all seven bands in DN format.
 }
 \examples{
-ggRGB(lsat, stretch = "lin")
+ggRGB(lsat, stretch = "sqrt")
 }
 \keyword{datasets}

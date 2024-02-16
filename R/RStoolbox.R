@@ -62,7 +62,7 @@
 #' @importFrom grDevices hsv
 #' @useDynLib RStoolbox
 #' @importFrom Rcpp sourceCpp
-#' @docType package
+#' @docType _PACKAGE
 #' @name RStoolbox
 NULL
 
@@ -100,5 +100,17 @@ NULL
 #' @keywords datasets
 #' @name lsat
 #' @examples
-#' ggRGB(lsat, stretch = "lin")
+#' ggRGB(lsat, stretch = "sqrt")
+NULL
+
+#' Sentinel 2 MSI L2A Scene
+#'
+#' Contains all 13 bands in already converted spectral reflectances
+#'
+#' @usage sen2
+#' @docType data
+#' @keywords datasets
+#' @name sen2
+#' @examples
+#' ggRGB(sen2, r=4, g=3, b=2, stretch = "lin")
 NULL

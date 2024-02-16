@@ -2,7 +2,7 @@
 #' 
 #' Splits a categorical raster layer (or a vector) into a multilayer raster (or matrix).
 #' 
-#' @param img RasterLayer or SpatRaster or integer/numeric vector containing multiple classes
+#' @param img SpatRaster or integer/numeric vector containing multiple classes
 #' @param classes integer: vector of classes which should be extracted
 #' @param background integer: background value (default = 0)
 #' @param foreground integer: foreground value (default = 1)

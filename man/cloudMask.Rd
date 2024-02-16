@@ -15,7 +15,7 @@ cloudMask(
 )
 }
 \arguments{
-\item{x}{RasterBrick or RasterStack or SpatRaster with reflectance and brightness temperature OR the mask of a previous run of \code{cloudMask} with \code{returnDiffLayer=TRUE}.}
+\item{x}{SpatRaster with reflectance and brightness temperature OR the mask of a previous run of \code{cloudMask} with \code{returnDiffLayer=TRUE}.}
 
 \item{threshold}{Numeric. cloud detection threshold. If not provided it will be guessed. Everything *below* this threshold will be considered a cloud pixel (unless it is removed by filtering afterwards).}
 

@@ -2,7 +2,7 @@
 #' 
 #' extracts five classes from QA band: background, cloud, cirrus, snow and water.
 #' 
-#' @param img RasterLayer or SpatRaster. Landsat 8 OLI QA band.
+#' @param img SpatRaster. Landsat 8 OLI QA band.
 #' @param type Character. Classes which should be returned. One or more of c("background", "cloud", "cirrus","snow", "water").
 #' @param confLayers Logical. Return one layer per class classified by confidence levels, i.e. cloud:low, cloud:med, cloud:high.
 #' @param ... further arguments passed to \link[terra]{writeRaster}

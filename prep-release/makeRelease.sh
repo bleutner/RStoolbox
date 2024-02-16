@@ -32,7 +32,7 @@ Rscript -e "library(devtools); library(methods); document(); install()"
 
 
 ## Re-build example data
-tmstr=$(git log -1 --format=%ct data/ inst/external/trainingPoints.rds inst/external/landsat/)
+tmstr=$(git log -1 --format=%ct data/ inst/external/trainingPoints_lsat.rds inst/external/landsat/)
 texmpl=$(git log example-data -1  --format=%ct)
 if [ $(( tmstr > texmpl )) -eq 0 ]
 then
@@ -45,7 +45,7 @@ then
 
     ## Back to master
     git checkout master
-    git checkout example-data data/rlogo.rda data/srtm.rda  data/lsat.rda inst/external/landsat inst/external/trainingPolygons.rds
+    git checkout example-data data/rlogo.rda data/srtm.rda  data/lsat.rda inst/external/landsat inst/external/trainingPolygons_lsat.rds
     Rscript -e "library(devtools); library(methods); document()"
     git commit -a -m "Automatic commit: Pull example data from branch example-data"
 else 

@@ -3,8 +3,8 @@
 #' Calculates angle and magnitude of change vectors. 
 #' Dimensionality is limited to two bands per image. 
 #' 
-#' @param x RasterBrick or RasterStack or SpatRaster with two layers. This will be the reference/origin for the change calculations. Both rasters (y and y) need to correspond to each other, i.e. same resolution, extent and origin.
-#' @param y RasterBrick or RasterStack or SpatRaster with two layers. Both rasters (y and y) need to correspond to each other, i.e. same resolution, extent and origin.
+#' @param x SpatRaster with two layers. This will be the reference/origin for the change calculations. Both rasters (y and y) need to correspond to each other, i.e. same resolution, extent and origin.
+#' @param y SpatRaster with two layers. Both rasters (y and y) need to correspond to each other, i.e. same resolution, extent and origin.
 #' @param tmf Numeric. Threshold median factor (optional). Used to calculate a threshold magnitude for which pixels are considered stable, i.e. no change. Calculated as \code{tmf * mean(magnitude[magnitude > 0])}.
 #' @param nct Numeric. No-change threshold (optional). Alternative to \code{tmf}. Sets an absolute threshold. Change magnitudes below \code{nct} are considered stable and set to NA.
 #' @param ... further arguments passed to writeRaster

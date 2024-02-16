@@ -7,7 +7,7 @@
 oneHotEncode(img, classes, background = 0, foreground = 1, na.rm = FALSE, ...)
 }
 \arguments{
-\item{img}{RasterLayer or SpatRaster or integer/numeric vector containing multiple classes}
+\item{img}{SpatRaster or integer/numeric vector containing multiple classes}
 
 \item{classes}{integer: vector of classes which should be extracted}
 

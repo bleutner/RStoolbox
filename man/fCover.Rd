@@ -22,9 +22,9 @@ fCover(
 )
 }
 \arguments{
-\item{classImage}{high resolution RasterLayer or SpatRaster containing a landcover classification, e.g. as obtained by \link{superClass}.}
+\item{classImage}{high resolution SpatRaster containing a landcover classification, e.g. as obtained by \link{superClass}.}
 
-\item{predImage}{coarse resolution RasterLayer or SpatRaster for which fractional cover will be estimated.}
+\item{predImage}{coarse resolution SpatRaster for which fractional cover will be estimated.}
 
 \item{nSamples}{Integer. Number of pixels to sample from predImage to train the regression model}
 

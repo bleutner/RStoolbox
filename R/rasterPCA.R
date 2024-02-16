@@ -1,6 +1,6 @@
 #' Principal Component Analysis for Rasters
 #' 
-#' Calculates R-mode PCA for RasterBricks or RasterStacks and returns a RasterBrick with multiple layers of PCA scores. 
+#' Calculates R-mode PCA for SpatRasters and returns a SpatRaster with multiple layers of PCA scores.
 #' 
 #' Internally rasterPCA relies on the use of \link[stats]{princomp} (R-mode PCA). If nSamples is given the PCA will be calculated
 #' based on a random sample of pixels and then predicted for the full raster. If nSamples is NULL then the covariance matrix will be calculated
@@ -14,7 +14,7 @@
 #' Standardised PCA (SPCA) can be useful if imagery or bands of different dynamic ranges are combined. SPC uses the correlation matrix instead of the covariance matrix, which
 #' has the same effect as using normalised bands of unit variance. 
 #' 
-#' @param img RasterLayer or SpatRaster.
+#' @param img SpatRaster.
 #' @param nSamples Integer or NULL. Number of pixels to sample for PCA fitting. If NULL, all pixels will be used.
 #' @param nComp Integer. Number of PCA components to return.
 #' @param spca Logical. If \code{TRUE}, perform standardized PCA. Corresponds to centered and scaled input image. This is usually beneficial for equal weighting of all layers. (\code{FALSE} by default)

@@ -2,7 +2,7 @@
 #' 
 #' Plot single layer imagery in grey-scale. Can be used with a SpatRaster.
 #' 
-#' @param img raster
+#' @param img SpatRaster
 #' @param layer Character or numeric. Layername or number. Can be more than one layer, in which case each layer is plotted in a subplot.
 #' @param maxpixels Integer. Maximal number of pixels to sample.
 #' @param ext Extent object to crop the image

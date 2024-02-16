@@ -7,7 +7,7 @@
 mesma(img, em, method = "NNLS", iterate = 400, tolerance = 1e-08, ..., verbose)
 }
 \arguments{
-\item{img}{RasterLayer or RasterBrick or SpatRaster. Remote sensing imagery (usually hyperspectral).}
+\item{img}{SpatRaster. Remote sensing imagery (usually hyperspectral).}
 
 \item{em}{Matrix or data.frame with spectral endmembers. Rows represent a single endmember of a class, columns represent the spectral bands (i.e. columns correspond to number of bands in \code{img}). Number of rows needs to be > 1.}
 

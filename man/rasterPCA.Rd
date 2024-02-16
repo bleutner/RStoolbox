@@ -14,7 +14,7 @@ rasterPCA(
 )
 }
 \arguments{
-\item{img}{RasterLayer or SpatRaster.}
+\item{img}{SpatRaster.}
 
 \item{nSamples}{Integer or NULL. Number of pixels to sample for PCA fitting. If NULL, all pixels will be used.}
 
@@ -31,7 +31,7 @@ Takes effect only if nSamples is NULL.}
 Returns a named list containing the PCA model object ($model) and a SpatRaster with the principal component layers ($object).
 }
 \description{
-Calculates R-mode PCA for RasterBricks or RasterStacks and returns a RasterBrick with multiple layers of PCA scores.
+Calculates R-mode PCA for SpatRasters and returns a SpatRaster with multiple layers of PCA scores.
 }
 \details{
 Internally rasterPCA relies on the use of \link[stats]{princomp} (R-mode PCA). If nSamples is given the PCA will be calculated

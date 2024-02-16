@@ -3,8 +3,8 @@
 #' provides different methods for pan sharpening a coarse resolution (typically multispectral) image with 
 #' a higher reolution panchromatic image. Values of the pan-chromatic and multispectral images must be of the same scale, (e.g. from 0:1, or all DNs from 0:255)
 #' 
-#' @param img RasterLayer or SpatRaster. Coarse resolution multispectral image
-#' @param pan RasterLayer or SpatRaster. High resolution image, typically panchromatic.
+#' @param img SpatRaster. Coarse resolution multispectral image
+#' @param pan SpatRaster. High resolution image, typically panchromatic.
 #' @param method Character. Choose method from c("pca", "ihs", "brovey").
 #' @param r Character or Integer. Red band in \code{img}. Only relevant if \code{method!='pca'}
 #' @param g Character or Integer. Green band in \code{img}. Only relevant if \code{method!='pca'}

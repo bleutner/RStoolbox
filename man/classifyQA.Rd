@@ -14,7 +14,7 @@ classifyQA(
 )
 }
 \arguments{
-\item{img}{RasterLayer or SpatRaster. Landsat 8 OLI QA band.}
+\item{img}{SpatRaster. Landsat 8 OLI QA band.}
 
 \item{type}{Character. Classes which should be returned. One or more of c("background", "cloud", "cirrus","snow", "water").}
 

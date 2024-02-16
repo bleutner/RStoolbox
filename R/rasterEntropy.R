@@ -5,7 +5,7 @@
 #' 
 #' Entropy is calculated as -sum(p log(p)); p being the class frequency per pixel.
 #' 
-#' @param img RasterStack or RasterBrick or SpatRaster
+#' @param img SpatRaster
 #' @param ... additional arguments passed to writeRaster
 #' @return
 #' SpatRaster "entropy"
