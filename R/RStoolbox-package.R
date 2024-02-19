@@ -46,6 +46,9 @@
 #' \item \code{\link{ggRGB}}: efficient plotting of remote sensing imagery in RGB with ggplot2
 #' }
 #'
+#' @keywords earth-observation, remote-sensing, spatial-data-analysis
+#' "RStoolbox"
+#'
 #' @import sf terra
 #' @importFrom exactextractr exact_extract
 #' @importFrom lifecycle is_present deprecate_warn deprecated
@@ -62,7 +65,6 @@
 #' @importFrom grDevices hsv
 #' @useDynLib RStoolbox
 #' @importFrom Rcpp sourceCpp
-#' @docType package
 #' @name RStoolbox
 NULL
 

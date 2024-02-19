@@ -318,7 +318,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
         wrArgs$filename <- filename ## remove filename from args if is.null(filename) --> standard writeRaster handling applies
         spatPred <- .paraRasterFun(img, rasterFun=terra::predict, args = list(model=caretModel, type = predType, index = probInd, na.rm = T), wrArgs = wrArgs)
         if(predType != "prob")
-          names(spatPred) <- responseCol
+          names(spatPred) <- paste0(responseCol, "_supervised")
 
     } else {
         spatPred <- "No map was produced (predict = FALSE)."
@@ -528,7 +528,7 @@ predict.superClass <- function(object, img, predType = "raw", filename = NULL, d
     wrArgs          <- c(list(...), list(filename = filename, datatype = datatype))
     wrArgs$filename <- filename ## remove filename from args if is.null(filename) --> standard writeRaster handling applies
     .paraRasterFun(img, rasterFun=terra::predict, args = list(model=model, type = predType, index = probInd, na.rm = TRUE), wrArgs = wrArgs)
-    
+
 }
 
 #' @method print superClass

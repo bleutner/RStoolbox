@@ -144,13 +144,12 @@ test_that("terra inputs",{
         })
 #
 if (identical(Sys.getenv("NOT_CRAN"), "true") ) {
-    ## Tiny raster bug caused superClass to fail when predictions were written to .grd file 
-#	test_that("NA in raster remains NA",{
-#				expect_is(sc <- superClass(lsNA, trainData = pts, responseCol = "class", model = "rf",
-#                                filename = rasterTmpFile(), trainPartition = 0.7, predict = TRUE), "superClass")
-#				expect_equal(sum(is.na(sc$map[1:100,])), 100*ncol(lsNA))
-#				expect_false(anyNA(sc$map[101:nrow(lsNA),]))
-#			})
+    test_that("NA in raster remains NA",{
+        expect_is(sc <- superClass(lsNA, trainData = pts, responseCol = "class", model = "rf",
+                         filename = .terraTmpFile(), trainPartition = 0.7, predict = TRUE), "superClass")
+        expect_equal(sum(is.na(sc$map[1:100,])), 100*ncol(lsNA))
+        expect_false(anyNA(sc$map[101:nrow(lsNA),]))
+    })
     
     ## Checks after clipping 
     test_that("fails if no validation points remain after clipping",{
@@ -163,5 +162,4 @@ if (identical(Sys.getenv("NOT_CRAN"), "true") ) {
     test_that("projection mismatch errors", 
             expect_error(superClass(lsat_t, trainData = poly, responseCol = "class"), "must have the same projection")
     )
-#	
 }

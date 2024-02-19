@@ -103,11 +103,12 @@ unsuperClass <- function(img, nSamples = 10000, nClasses = 5, nStarts = 25, nIte
   } else {
     out   <- app(img, fun = function(x, kmeans= model){
       predKmeansCpp(x, centers=kmeans$centers, returnDistances)}, ...)
-    names(out) <- if(returnDistances) paste0("dist_c", 1:nClasses) else "class"
+    names(out) <- if(returnDistances) paste0("dist_c", 1:nClasses) else "class_unsupervised"
   }
   
   model$cluster <- NULL
   structure(list(call = match.call(), model = model, map = out), class = c("unsuperClass", "RStoolbox"))
+
 }
 
 
