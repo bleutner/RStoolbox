@@ -15,7 +15,7 @@
 #' @param verbose Logical. Prints progress messages during execution.
 #' @param ... further arguments passed to \link[terra]{writeRaster}.
 #' 
-#' @return SpatRaster. The object will contain one band per endmember, with each value representing the estimated presence probability of the endmember per pixel (0 to 1), and an RMSE band.
+#' @return SpatRaster. The object will contain one band per class, with each value representing the estimated probability of the endmember per pixel (0 to 1), and an RMSE band.
 #' 
 #' @details Argument \code{em} determines whether an SMA (each row representing a single endmember per class) or a MESMA (multiple endmembers per class differentiate using the \code{class} column) is computed.
 #' If multiple endmembers per class are provided, \code{mesma} will compute a number of SMA (determined by argument \code{n_models}) for multiple endmember combinations drawn from \code{em} and will select the best fit per pixel based on the lowest RMSE.
