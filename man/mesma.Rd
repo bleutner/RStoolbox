@@ -4,12 +4,22 @@
 \alias{mesma}
 \title{Multiple Endmember Spectral Mixture Analysis (Spectral Unmixing)}
 \usage{
-mesma(img, em, method = "NNLS", iterate = 400, tolerance = 1e-08, ..., verbose)
+mesma(
+  img,
+  em,
+  method = "NNLS",
+  iterate = 400,
+  tolerance = 1e-08,
+  n_models = 5,
+  sum_to_one = TRUE,
+  ...,
+  verbose
+)
 }
 \arguments{
 \item{img}{SpatRaster. Remote sensing imagery (usually hyperspectral).}
 
-\item{em}{Matrix or data.frame with spectral endmembers. Rows represent a single endmember of a class, columns represent the spectral bands (i.e. columns correspond to number of bands in \code{img}). Number of rows needs to be > 1.}
+\item{em}{Matrix or data.frame with spectral endmembers. Columns represent the spectral bands (i.e. columns correspond to number of bands in \code{img}). Rows represent either a single endmember of a class (SMA) or multiple endmember of a class (MESMA), if a column with name \code{class} is present, containing the class name each endmember belongs to, e.g. "water" or "land". See details below. Number of rows needs to be > 1.}
 
 \item{method}{Character. Select an unmixing method. Currently, only "NNLS" is implemented. Default is "NNLS".
 \itemize{
@@ -20,6 +30,10 @@ mesma(img, em, method = "NNLS", iterate = 400, tolerance = 1e-08, ..., verbose)
 
 \item{tolerance}{Numeric. Tolerance limit representing a nearly zero minimal number. Default is 1e-8.}
 
+\item{n_models}{Logical. Only applies if \code{em} contains column \code{class}. Defines how many endmember combinations should be picked. Maximum is the minimum number of endmembers of a class. Defaults to 5.}
+
+\item{sum_to_one}{Logical. Defines whether a sum-to-one constraint should be applied so that probabilities of endmember classes sum to one (a constraint not covered by NNLS). Defaults to \code{TRUE}. To get actual NNLS results, change to \code{FALSE}.}
+
 \item{...}{further arguments passed to \link[terra]{writeRaster}.}
 
 \item{verbose}{Logical. Prints progress messages during execution.}
@@ -28,32 +42,49 @@ mesma(img, em, method = "NNLS", iterate = 400, tolerance = 1e-08, ..., verbose)
 SpatRaster. The object will contain one band per endmember, with each value representing the estimated presence probability of the endmember per pixel (0 to 1), and an RMSE band.
 }
 \description{
-\code{mesma} performs a multiple endmember spectral mixture analysis on a multiband raster image.
+\code{mesma} performs a spectral mixture anlylsis (SMA) or multiple endmember spectral mixture analysis (MESMA) on a multiband raster image.
+}
+\details{
+Argument \code{em} determines whether an SMA (each row representing a single endmember per class) or a MESMA (multiple endmembers per class differentiate using the \code{class} column) is computed.
+If multiple endmembers per class are provided, \code{mesma} will compute a number of SMA (determined by argument \code{n_models}) for multiple endmember combinations drawn from \code{em} and will select the best fit per pixel based on the lowest RMSE.
 }
 \note{
-Depending on \code{iterate} and \code{tolerance} settings, the sum of estimated presence probabilites per pixel varies around 1.
+Depending on \code{iterate} and \code{tolerance} settings and the selected endmembers, the sum of estimated presence probabilities per pixel varies around 1. NNLS does not account for
 }
 \examples{
 
-#load packages
-library(terra)
 library(RStoolbox)
+library(terra)
 
+#  to perform a SMA, use a single endmember per class, row by row:
+em <- data.frame(lsat[c(5294, 47916)])
+rownames(em) <- c("forest", "water")
 
-#make up some endmember spectra: water and land
-em_names <- c("water", "land")
-pts <- data.frame(class=em_names, cell = c(47916,5294))
-em <- lsat[pts$cell]
-rownames(em) <- em_names
+# umix the lsat image
+probs <- mesma(img = lsat, em = em)
+plot(probs)
 
-#unmix the image for water and land
-probs <- mesma(lsat, em, method = "NNLS")
+# to perform a MESMA, use multiple endmembers per class, differntiating them
+# by a column named 'class':
+em <- rbind(
+  data.frame(lsat[c(4155, 17018, 53134, 69487, 83704)], class = "forest"),
+  data.frame(lsat[c(22742, 25946, 38617, 59632, 67313)], class = "water")
+)
 
-#take a look
-terra::hist(probs$water)
-terra::plot(probs$water, col = c("white","blue"))
-terra::hist(probs$land)
-terra::plot(probs$land, col = c("white","brown"))
+# unmix the lsat image
+probs <- mesma(img = lsat, em = em)
+plot(probs)
+
+# MESMA can also be performed on more than two endmember classes:
+em <- rbind(
+  data.frame(lsat[c(4155, 17018, 53134, 69487, 83704)], class = "forest"),
+  data.frame(lsat[c(22742, 25946, 38617, 59632, 67313)], class = "water"),
+  data.frame(lsat[c(4330, 1762, 1278, 1357, 17414)], class = "shortgrown")
+)
+
+# unmix the lsat image
+probs <- mesma(img = lsat, em = em, trunc_prob = F)
+plot(probs)
 
 }
 \references{
