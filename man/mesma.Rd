@@ -19,7 +19,7 @@ mesma(
 \arguments{
 \item{img}{SpatRaster. Remote sensing imagery (usually hyperspectral).}
 
-\item{em}{Matrix or data.frame with spectral endmembers. Columns represent the spectral bands (i.e. columns correspond to number of bands in \code{img}). Rows represent either a single endmember of a class (SMA) or multiple endmember of a class (MESMA), if a column with name \code{class} is present, containing the class name each endmember belongs to, e.g. "water" or "land". See details below. Number of rows needs to be > 1.}
+\item{em}{Matrix or data.frame with spectral endmembers. Columns represent the spectral bands (i.e. columns correspond to number of bands in \code{img}). Rows represent either a single endmember per class (SMA) or multiple endmembers per class (MESMA), if a column with name \code{class} is present, containing the class name each endmember belongs to, e.g. "water" or "land". See details below. Number of rows needs to be > 1.}
 
 \item{method}{Character. Select an unmixing method. Currently, only "NNLS" is implemented. Default is "NNLS".
 \itemize{
@@ -83,7 +83,7 @@ em <- rbind(
 )
 
 # unmix the lsat image
-probs <- mesma(img = lsat, em = em, trunc_prob = F)
+probs <- mesma(img = lsat, em = em)
 plot(probs)
 
 }

@@ -96,18 +96,20 @@ mesma <- function(img, em, method = "NNLS", iterate = 400, tolerance = 0.0000000
   if(length(em[,1]) < 2){
     stop("'em' must contain at least two endmembers (number of rows in 'em').")
   }
-  em_check <- em[colnames(em)[colnames(em) != "class"]]
+  em_check <- em[,which(colnames(em) != "class")]
   if(length(em_check[1,]) != nlyr(img)){
     stop("'em' and 'img' have different numbers of spectral features (number of columns in 'em', excluding column 'class'). Both need to represent the same number of spectral bands for equal spectral resolutions/ranges.")
   }
   
   # MESMA or SMA?
+  em <- as.data.frame(em) # safer for ow but generally unnecessary as we go back to matrix before nnls
   if(!is.null(em$class)){
     classes <- unique(em$class)
     # check n_models
     n_em_cl <- min(sapply(classes, function(x) nrow(em[em$class == x,]), USE.NAMES = F))
     if(n_em_cl < n_models){
       warning(paste0("'n_models' cannot be larger than the minimum number of provided endmembers per class. Setting 'n_models' to ", n_em_cl, "."))
+      n_models <- n_em_cl
     }
     .vMessage(paste0("Found column 'class' in 'em', creating endmember combinations using 'n_models = ", n_models, "'...")) 
     
