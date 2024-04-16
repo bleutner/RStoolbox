@@ -39,7 +39,7 @@ mesma(
 \item{verbose}{Logical. Prints progress messages during execution.}
 }
 \value{
-SpatRaster. The object will contain one band per endmember, with each value representing the estimated presence probability of the endmember per pixel (0 to 1), and an RMSE band.
+SpatRaster. The object will contain one band per class, with each value representing the estimated probability of the endmember per pixel (0 to 1), and an RMSE band.
 }
 \description{
 \code{mesma} performs a spectral mixture anlylsis (SMA) or multiple endmember spectral mixture analysis (MESMA) on a multiband raster image.
