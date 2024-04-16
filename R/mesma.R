@@ -11,16 +11,16 @@
 #' @param iterate Integer. Set maximum iteration per pixel. Processing time could increase the more iterations are made possible. Default is 400.
 #' @param tolerance Numeric. Tolerance limit representing a nearly zero minimal number. Default is 1e-8. 
 #' @param n_models Logical. Only applies if \code{em} contains column \code{class}. Defines how many endmember combinations should be picked. Maximum is the minimum number of endmembers of a class. Defaults to 5.
-#' @param sum_to_one Logical. Defines whether a sum-to-one constraint should be applied so that probabilities of endmember classes sum to one (a constraint not covered by NNLS). Defaults to \code{TRUE}. To get actual NNLS results, change to \code{FALSE}.
+#' @param sum_to_one Logical. Defines whether a sum-to-one constraint should be applied so that probabilities of endmember classes sum to one (a constraint not covered by NNLS) to be interpretable as fractions. Defaults to \code{TRUE}. To get actual NNLS results, change to \code{FALSE}.
 #' @param verbose Logical. Prints progress messages during execution.
 #' @param ... further arguments passed to \link[terra]{writeRaster}.
 #' 
-#' @return SpatRaster. The object will contain one band per class, with each value representing the estimated probability of the endmember per pixel (0 to 1), and an RMSE band.
+#' @return SpatRaster. The object will contain one band per class, with each value representing the estimated probability of the respective endmember class per pixel, and an RMSE band. If \code{sum_to_one} is \code{TRUE} (default), values of the class bands can be interpreted as fractions per endmember class (0 to 1).
 #' 
 #' @details Argument \code{em} determines whether an SMA (each row representing a single endmember per class) or a MESMA (multiple endmembers per class differentiate using the \code{class} column) is computed.
 #' If multiple endmembers per class are provided, \code{mesma} will compute a number of SMA (determined by argument \code{n_models}) for multiple endmember combinations drawn from \code{em} and will select the best fit per pixel based on the lowest RMSE.
 #' 
-#' @note Depending on \code{iterate} and \code{tolerance} settings and the selected endmembers, the sum of estimated presence probabilities per pixel varies around 1. NNLS does not account for
+#' @note Depending on \code{iterate} and \code{tolerance} settings and the selected endmembers, the sum of estimated probabilities per pixel varies around 1. NNLS does not account for a sum-to-one constraint. Use \code{sum_to_one} to sum to one post-NNLS.
 #' 
 #' @references Franc, V., Hlaváč, V., & Navara, M. (2005). Sequential coordinate-wise algorithm for the non-negative least squares problem. In: International Conference on Computer Analysis of Images and Patterns (pp. 407-414). Berlin, Heidelberg.
 #' 
