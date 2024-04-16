@@ -32,14 +32,14 @@ mesma(
 
 \item{n_models}{Logical. Only applies if \code{em} contains column \code{class}. Defines how many endmember combinations should be picked. Maximum is the minimum number of endmembers of a class. Defaults to 5.}
 
-\item{sum_to_one}{Logical. Defines whether a sum-to-one constraint should be applied so that probabilities of endmember classes sum to one (a constraint not covered by NNLS). Defaults to \code{TRUE}. To get actual NNLS results, change to \code{FALSE}.}
+\item{sum_to_one}{Logical. Defines whether a sum-to-one constraint should be applied so that probabilities of endmember classes sum to one (a constraint not covered by NNLS) to be interpretable as fractions. Defaults to \code{TRUE}. To get actual NNLS results, change to \code{FALSE}.}
 
 \item{...}{further arguments passed to \link[terra]{writeRaster}.}
 
 \item{verbose}{Logical. Prints progress messages during execution.}
 }
 \value{
-SpatRaster. The object will contain one band per endmember, with each value representing the estimated presence probability of the endmember per pixel (0 to 1), and an RMSE band.
+SpatRaster. The object will contain one band per class, with each value representing the estimated probability of the respective endmember class per pixel, and an RMSE band. If \code{sum_to_one} is \code{TRUE} (default), values of the class bands can be interpreted as fractions per endmember class (0 to 1).
 }
 \description{
 \code{mesma} performs a spectral mixture anlylsis (SMA) or multiple endmember spectral mixture analysis (MESMA) on a multiband raster image.
@@ -49,7 +49,7 @@ Argument \code{em} determines whether an SMA (each row representing a single end
 If multiple endmembers per class are provided, \code{mesma} will compute a number of SMA (determined by argument \code{n_models}) for multiple endmember combinations drawn from \code{em} and will select the best fit per pixel based on the lowest RMSE.
 }
 \note{
-Depending on \code{iterate} and \code{tolerance} settings and the selected endmembers, the sum of estimated presence probabilities per pixel varies around 1. NNLS does not account for
+Depending on \code{iterate} and \code{tolerance} settings and the selected endmembers, the sum of estimated probabilities per pixel varies around 1. NNLS does not account for a sum-to-one constraint. Use \code{sum_to_one} to sum to one post-NNLS.
 }
 \examples{
 
