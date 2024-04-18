@@ -1,0 +1,25 @@
+url: https://bleutner.github.io/RStoolbox/
+
+template:
+  bootstrap: 5
+
+development:
+  mode: release
+
+home:
+  links:
+  - text: Find out more about our work
+    href: http://remote-sensing.org
+
+navbar:
+  #type: inverse
+  left:
+    - text: "News"
+      href: news/index.html
+    - text: "Functions"
+      href: reference/index.html
+  
+  right:
+    - icon: fa-github fa-lg fab
+      href: http://www.github.com/bleutner
+  

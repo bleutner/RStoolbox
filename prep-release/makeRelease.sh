@@ -52,14 +52,14 @@ else
     echo "Example data already up-to-date."    
 fi
 
-## Website
-echo -e "\n**********************************************************"
-echo "Build website documentation ******************************"
-echo "**********************************************************"
-git checkout gh-pages
-Rscript rstbx-docu/build_docu.R
-git commit -a -m "Automatic commit: Update gh-pages package documentation"
-git checkout master
+# ## Website ()
+# echo -e "\n**********************************************************"
+# echo "Build website documentation ******************************"
+# echo "**********************************************************"
+# git checkout gh-pages
+# Rscript rstbx-docu/build_docu.R
+# git commit -a -m "Automatic commit: Update gh-pages package documentation"
+# git checkout master
 
 echo -e "\n**********************************************************"
 echo "R CMD check **********************************************"
