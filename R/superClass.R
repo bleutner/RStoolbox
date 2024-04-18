@@ -66,6 +66,7 @@
 #' @seealso \code{\link[caret]{train}} 
 #' @export
 #' @examples 
+#' library(RStoolbox)
 #' library(caret)
 #' library(randomForest)
 #' library(e1071)

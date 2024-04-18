@@ -1,4 +1,6 @@
-# RStoolbox 0.4.1
+# RStoolbox 1.0.0
+Minor changes before major release
+
 ## New:
 * `mesma()` now better differentiates SMA and MESMA: For single endmember unmixing, each supplied endmember represents a class to unmix (row by row). For multiple endmemeber unmixing, the column `class` can be used to group endmembers by class. If multiple endmembers per class are provided, `mesma()` will compute a number of SMA (determined through the new argument `n_models`) for multiple endmember combinations drawn from endmembers and will select the best fit per pixel based on the lowest RMSE. See `?mesma` for details (fixes #57, reported by @ytarazona)
 
@@ -6,7 +8,19 @@
 * `mesma()` now implements the sum to one constraint by default (argument `sum_to_one`) (fixes #62, reported by @michaeldorman)
 * added a new example to `mesma()` to reflect the changes
 
+# RStoolbox 0.4.0
+Rewrite of `RStoolbox`, migration from `raster` to `terra`
+
+## New:
+
+*to be added*
+
+## Changes:
+
+*to be added*
+
 # RStoolbox 0.3.0
+
 ## New:
 * `rasterCVA()` by default no longer enforces a minimal change magnitude (can still be accomplished with the `tmf` argument).
    Also a new argument `nct` allows to fix this threshold to a user selected value instead of deriving it based on the median of the observed change magnitudes. 
