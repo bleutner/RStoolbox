@@ -45,17 +45,30 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.1" id="rstoolbox-041">RStoolbox 0.4.1<a class="anchor" aria-label="anchor" href="#rstoolbox-041"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.0.0" id="rstoolbox-100">RStoolbox 1.0.0<a class="anchor" aria-label="anchor" href="#rstoolbox-100"></a></h2>
+<p>Minor changes before major release</p>
 <div class="section level3">
-<h3 id="new-0-4-1">New:<a class="anchor" aria-label="anchor" href="#new-0-4-1"></a></h3>
+<h3 id="new-1-0-0">New:<a class="anchor" aria-label="anchor" href="#new-1-0-0"></a></h3>
 <ul><li>
 <code><a href="../reference/mesma.html">mesma()</a></code> now better differentiates SMA and MESMA: For single endmember unmixing, each supplied endmember represents a class to unmix (row by row). For multiple endmemeber unmixing, the column <code>class</code> can be used to group endmembers by class. If multiple endmembers per class are provided, <code><a href="../reference/mesma.html">mesma()</a></code> will compute a number of SMA (determined through the new argument <code>n_models</code>) for multiple endmember combinations drawn from endmembers and will select the best fit per pixel based on the lowest RMSE. See <code><a href="../reference/mesma.html">?mesma</a></code> for details (fixes <a href="https://github.com/bleutner/RStoolbox/issues/57" class="external-link">#57</a>, reported by <a href="https://github.com/ytarazona" class="external-link">@ytarazona</a>)</li></ul></div>
 <div class="section level3">
-<h3 id="changes-0-4-1">Changes:<a class="anchor" aria-label="anchor" href="#changes-0-4-1"></a></h3>
+<h3 id="changes-1-0-0">Changes:<a class="anchor" aria-label="anchor" href="#changes-1-0-0"></a></h3>
 <ul><li>
 <code><a href="../reference/mesma.html">mesma()</a></code> now implements the sum to one constraint by default (argument <code>sum_to_one</code>) (fixes <a href="https://github.com/bleutner/RStoolbox/issues/62" class="external-link">#62</a>, reported by <a href="https://github.com/michaeldorman" class="external-link">@michaeldorman</a>)</li>
 <li>added a new example to <code><a href="../reference/mesma.html">mesma()</a></code> to reflect the changes</li>
 </ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.4.0" id="rstoolbox-040">RStoolbox 0.4.0<a class="anchor" aria-label="anchor" href="#rstoolbox-040"></a></h2><p class="text-muted">CRAN release: 2024-01-17</p>
+<p>Rewrite of <code>RStoolbox</code>, migration from <code>raster</code> to <code>terra</code></p>
+<div class="section level3">
+<h3 id="new-0-4-0">New:<a class="anchor" aria-label="anchor" href="#new-0-4-0"></a></h3>
+<p><em>to be added</em></p>
+</div>
+<div class="section level3">
+<h3 id="changes-0-4-0">Changes:<a class="anchor" aria-label="anchor" href="#changes-0-4-0"></a></h3>
+<p><em>to be added</em></p>
+</div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="rstoolbox-030">RStoolbox 0.3.0<a class="anchor" aria-label="anchor" href="#rstoolbox-030"></a></h2><p class="text-muted">CRAN release: 2022-03-07</p>
