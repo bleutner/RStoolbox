@@ -113,6 +113,7 @@ otherwise it will be performed on a per-pixel basis.
 }
 }
 \examples{
+library(RStoolbox)
 library(caret)
 library(randomForest)
 library(e1071)

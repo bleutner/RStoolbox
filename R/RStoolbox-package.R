@@ -6,7 +6,7 @@
 #'  
 #' \itemize{
 #'  \item \code{\link{readMeta}}:  import Landsat metadata from MTL or XML files
-#'  \item \code{\link{stackMeta}}, \code{\link{getMeta}: load Landsat bands based on metadata
+#'  \item \code{\link{stackMeta}}, \code{\link{getMeta}}: load Landsat bands based on metadata
 #'  \item \code{\link{readSLI} & \link{writeSLI}}: read and write ENVI spectral libraries
 #'  \item \code{\link{saveRSTBX} & \link{readRSTBX}}: save and re-import RStoolbox classification objects (model and map)
 #'  \item \code{\link{readEE}}: import and tidy EarthExplorer search results
@@ -19,7 +19,7 @@
 #'  \item \code{\link{topCor}}: topographic illumination correction
 #'  \item \code{\link{cloudMask} & \link{cloudShadowMask}}: mask clouds and cloud shadows in Landsat or other imagery which comes with a thermal band
 #'  \item \code{\link{classifyQA}}: extract layers from Landsat 8 QA bands, e.g. cloud confidence
-#'  \item \code{\link{encodeQA}} & \link{decodeQA}}: encode/decode Landsat 16-bit QA bands.
+#'  \item \code{\link{encodeQA} & \link{decodeQA}}: encode/decode Landsat 16-bit QA bands.
 #'  \item \code{\link{rescaleImage}}: rescale image to match min/max from another image or a specified min/max range
 #'  \item \code{\link{normImage}}: normalize imagery by centering and scaling
 #'  \item \code{\link{oneHotEncode}}: one-hot encode a raster or vector

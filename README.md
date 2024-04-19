@@ -12,22 +12,28 @@ For more details have a look at the [functions overview](https://bleutner.github
 ## Installation
 The package is available on CRAN and can be installed as usual via
 
-    install.packages("RStoolbox")
-
+```R
+install.packages("RStoolbox")
+```
 
 To install the latest version from GitHub you need to have r-base-dev (Linux) or Rtools (Windows) installed.
 Then run the following lines:
 
-    library(devtools)
-    install_github("bleutner/RStoolbox")
+```R
+library(devtools)
+install_github("bleutner/RStoolbox")
+```
     
 ## Get started
 
-*to be added*
+`RStoolbox` implements a variety of remote sensing methods and workflows. Below are a few examples to get started. Further examples can be found in the [documentation of the respective functions](https://bleutner.github.io/RStoolbox/reference/index.html).
 
-### Example 1
+### Example 1: Classifications
 
-*to be added*
+The example below shows an unsupervised classification workflow:
+
+```R
+
 
 ### Example 2
 
