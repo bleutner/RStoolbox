@@ -1,4 +1,4 @@
- # RStoolbox <img src="man/figures/logo.png" align="right" width="150" />
+# RStoolbox <img src="man/figures/logo.png" align="right" width="150" />
 
 [![CI](https://github.com/bleutner/RStoolbox/actions/workflows/rcmdcheck.yaml/badge.svg)](https://github.com/bleutner/RStoolbox/actions/workflows/rcmdcheck.yaml)
 [![CRAN version](https://www.r-pkg.org/badges/version/RStoolbox)](https://CRAN.R-project.org/package=RStoolbox)
