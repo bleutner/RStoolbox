@@ -85,22 +85,171 @@
 <div class="section level2">
 <h2 id="get-started">Get started<a class="anchor" aria-label="anchor" href="#get-started"></a>
 </h2>
-<p><code>RStoolbox</code> implements a variety of remote sensing methods and workflows. Below are a few examples to get started. Further examples can be found in the <a href="https://bleutner.github.io/RStoolbox/reference/index.html">documentation of the respective functions</a>.</p>
+<p><code>RStoolbox</code> implements a variety of <a href="https://bleutner.github.io/RStoolbox/reference/RStoolbox.html">remote sensing methods and workflows</a>. Below are a few examples to get started. Further examples can be found in the <a href="https://bleutner.github.io/RStoolbox/reference/index.html">documentation of the respective functions</a>.</p>
 <div class="section level3">
 <h3 id="example-1-classifications">Example 1: Classifications<a class="anchor" aria-label="anchor" href="#example-1-classifications"></a>
 </h3>
-<p>The example below shows an unsupervised classification workflow:</p>
-<p>```R</p>
+<p>The example below shows an unsupervised classification workflow based on <em>kmeans</em> clustering:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bleutner.github.io/RStoolbox/">RStoolbox</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># unsupervised classification with 3 classes</span></span>
+<span><span class="va">uc</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/unsuperClass.html">unsuperClass</a></span><span class="op">(</span><span class="va">lsat</span>, nClasses <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># plot result using ggplot</span></span>
+<span><span class="fu"><a href="reference/ggR.html">ggR</a></span><span class="op">(</span><span class="va">uc</span><span class="op">$</span><span class="va">map</span>, geom_raster <span class="op">=</span> <span class="cn">T</span>, forceCat <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_fill_manual</span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"darkgreen"</span>, <span class="st">"blue"</span>, <span class="st">"sandybrown"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="https://i.imgur.com/aUqzcxV.png"><!-- --></p>
+<p>If training data are available, e.g. labeled polygons, <code>RStoolbox</code> can be used to conduct a supervised classification. The workflow below employs <em>randomForest</em> to train a classification model:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bleutner.github.io/RStoolbox/">RStoolbox</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/topepo/caret/" class="external-link">caret</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.stat.berkeley.edu/~breiman/RandomForests/" class="external-link">randomForest</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># example: training data from digitized polygons</span></span>
+<span><span class="va">train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/serialize.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"external/trainingPolygons_lsat.rds"</span>, package<span class="op">=</span><span class="st">"RStoolbox"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># plot input data</span></span>
+<span><span class="fu"><a href="reference/ggRGB.html">ggRGB</a></span><span class="op">(</span><span class="va">lsat</span>, r <span class="op">=</span> <span class="fl">3</span>, g <span class="op">=</span> <span class="fl">2</span>, b<span class="op">=</span><span class="fl">1</span>, stretch <span class="op">=</span> <span class="st">"lin"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">train</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">class</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Coordinate system already present. Adding new coordinate system, which will</span></span>
+<span><span class="co">#&gt; replace the existing one.</span></span></code></pre></div>
+<p><img src="https://i.imgur.com/yhLQh7O.png"><!-- --></p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># fit random forest (splitting training into 70\% training data, 30\% validation data)</span></span>
+<span><span class="va">sc</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/superClass.html">superClass</a></span><span class="op">(</span><span class="va">lsat</span>, trainData <span class="op">=</span> <span class="va">train</span>, responseCol <span class="op">=</span> <span class="st">"class"</span>,</span>
+<span>                 model <span class="op">=</span> <span class="st">"rf"</span>, tuneLength <span class="op">=</span> <span class="fl">1</span>, trainPartition <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># print model performance and confusion matrix</span></span>
+<span><span class="va">sc</span><span class="op">$</span><span class="va">modelFit</span></span>
+<span><span class="co">#&gt; [[1]]</span></span>
+<span><span class="co">#&gt;   TrainAccuracy TrainKappa method</span></span>
+<span><span class="co">#&gt; 1     0.9992293  0.9988032     rf</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[2]]</span></span>
+<span><span class="co">#&gt; Cross-Validated (5 fold) Confusion Matrix </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; (entries are average cell counts across resamples)</span></span>
+<span><span class="co">#&gt;  </span></span>
+<span><span class="co">#&gt;             Reference</span></span>
+<span><span class="co">#&gt; Prediction   cleared fallen_dry forest water</span></span>
+<span><span class="co">#&gt;   cleared      141.6        0.0    0.0   0.0</span></span>
+<span><span class="co">#&gt;   fallen_dry     0.0       22.0    0.0   0.0</span></span>
+<span><span class="co">#&gt;   forest         0.4        0.0  255.0   0.0</span></span>
+<span><span class="co">#&gt;   water          0.0        0.0    0.0  99.4</span></span>
+<span><span class="co">#&gt;                             </span></span>
+<span><span class="co">#&gt;  Accuracy (average) : 0.9992</span></span>
+<span></span>
+<span><span class="co"># plotting: convert class IDs to class labels (factorize) and plot</span></span>
+<span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/is.bool.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">sc</span><span class="op">$</span><span class="va">map</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/factors.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>ID <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, class_supervised <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/factors.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">train</span><span class="op">$</span><span class="va">class</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/ggR.html">ggR</a></span><span class="op">(</span><span class="va">r</span>, geom_raster <span class="op">=</span> <span class="cn">T</span>, forceCat <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"yellow"</span>, <span class="st">"sandybrown"</span>, <span class="st">"darkgreen"</span>, <span class="st">"blue"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="https://i.imgur.com/uYgRj03.png"><!-- --></p>
+<p><sup>Created on 2024-04-19 with <a href="https://reprex.tidyverse.org" class="external-link">reprex v2.1.0</a></sup></p>
 </div>
 <div class="section level3">
-<h3 id="example-2">Example 2<a class="anchor" aria-label="anchor" href="#example-2"></a>
+<h3 id="example-2-spectral-unmixing">Example 2: Spectral Unmixing<a class="anchor" aria-label="anchor" href="#example-2-spectral-unmixing"></a>
 </h3>
-<p><em>to be added</em></p>
+<p><code>RStoolbox</code> offers spectral unmixing by implementing the Multiple Endmember Spectral Mixture Analysis (MESMA) approach for estimating fractions of spectral classes, such as spectra of surfaces or materials, on a sub-pixel scale. The following workflow shows a simple Spectral Mixture Analysis (SMA) with single endmembers per class:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bleutner.github.io/RStoolbox/">RStoolbox</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#  to perform a SMA, use a single endmember per class, row by row:</span></span>
+<span><span class="va">em</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">lsat</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5294</span>, <span class="fl">47916</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">em</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"forest"</span>, <span class="st">"water"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># umix the lsat image</span></span>
+<span><span class="va">probs</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mesma.html">mesma</a></span><span class="op">(</span>img <span class="op">=</span> <span class="va">lsat</span>, em <span class="op">=</span> <span class="va">em</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">probs</span><span class="op">)</span></span></code></pre></div>
+<p><img src="https://i.imgur.com/OqZVYc2.png"><!-- --></p>
+<p>Instead, one can define multiple endmembers per class to conduct a Multiple Endmember Spectral Mixture Analysis (MESMA):</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bleutner.github.io/RStoolbox/">RStoolbox</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># to perform a MESMA, use multiple endmembers per class, differntiating them</span></span>
+<span><span class="co"># by a column named 'class':</span></span>
+<span><span class="va">em</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">lsat</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4155</span>, <span class="fl">17018</span>, <span class="fl">53134</span>, <span class="fl">69487</span>, <span class="fl">83704</span><span class="op">)</span><span class="op">]</span>, class <span class="op">=</span> <span class="st">"forest"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">lsat</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">22742</span>, <span class="fl">25946</span>, <span class="fl">38617</span>, <span class="fl">59632</span>, <span class="fl">67313</span><span class="op">)</span><span class="op">]</span>, class <span class="op">=</span> <span class="st">"water"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># unmix the lsat image</span></span>
+<span><span class="va">probs</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mesma.html">mesma</a></span><span class="op">(</span>img <span class="op">=</span> <span class="va">lsat</span>, em <span class="op">=</span> <span class="va">em</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">probs</span><span class="op">)</span></span></code></pre></div>
+<p><img src="https://i.imgur.com/0PQGZa2.png"><!-- --></p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># MESMA can also be performed on more than two endmember classes:</span></span>
+<span><span class="va">em</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">lsat</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4155</span>, <span class="fl">17018</span>, <span class="fl">53134</span>, <span class="fl">69487</span>, <span class="fl">83704</span><span class="op">)</span><span class="op">]</span>, class <span class="op">=</span> <span class="st">"forest"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">lsat</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">22742</span>, <span class="fl">25946</span>, <span class="fl">38617</span>, <span class="fl">59632</span>, <span class="fl">67313</span><span class="op">)</span><span class="op">]</span>, class <span class="op">=</span> <span class="st">"water"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">lsat</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4330</span>, <span class="fl">1762</span>, <span class="fl">1278</span>, <span class="fl">1357</span>, <span class="fl">17414</span><span class="op">)</span><span class="op">]</span>, class <span class="op">=</span> <span class="st">"shortgrown"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># unmix the lsat image</span></span>
+<span><span class="va">probs</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mesma.html">mesma</a></span><span class="op">(</span>img <span class="op">=</span> <span class="va">lsat</span>, em <span class="op">=</span> <span class="va">em</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">probs</span><span class="op">)</span></span></code></pre></div>
+<p><img src="https://i.imgur.com/a7QACjl.png"><!-- --></p>
 </div>
 <div class="section level3">
-<h3 id="example-3">Example 3<a class="anchor" aria-label="anchor" href="#example-3"></a>
+<h3 id="example-3-cloud-masking">Example 3: Cloud Masking<a class="anchor" aria-label="anchor" href="#example-3-cloud-masking"></a>
 </h3>
-<p><em>to be added</em></p>
+<p><code>RStoolbox</code> comes with a suite of pre-processing functions, including <code>cloudMask</code> to identify clouds in optical satellite imagery:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># lsat example scene, with two tiny clouds in the east</span></span>
+<span><span class="fu"><a href="reference/ggRGB.html">ggRGB</a></span><span class="op">(</span><span class="va">lsat</span>, stretch <span class="op">=</span> <span class="st">"lin"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="https://i.imgur.com/NJ86OKE.png"><!-- --></p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># calculate cloud index</span></span>
+<span><span class="va">cldmsk</span>    <span class="op">&lt;-</span> <span class="fu"><a href="reference/cloudMask.html">cloudMask</a></span><span class="op">(</span><span class="va">lsat</span>, blue <span class="op">=</span> <span class="fl">1</span>, tir <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/ggR.html">ggR</a></span><span class="op">(</span><span class="va">cldmsk</span>, <span class="fl">2</span>, geom_raster <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> </span></code></pre></div>
+<p><img src="https://i.imgur.com/bvgUd74.png"><!-- --></p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># mask by threshold, region-growing around the core cloud pixels</span></span>
+<span><span class="va">cldmsk_final</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cloudMask.html">cloudMask</a></span><span class="op">(</span><span class="va">cldmsk</span>, threshold <span class="op">=</span> <span class="fl">0.1</span>, buffer <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="co">## plot cloudmask </span></span>
+<span><span class="fu"><a href="reference/ggRGB.html">ggRGB</a></span><span class="op">(</span><span class="va">lsat</span>, stretch <span class="op">=</span> <span class="st">"lin"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="reference/ggR.html">ggR</a></span><span class="op">(</span><span class="va">cldmsk_final</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, ggLayer <span class="op">=</span> <span class="cn">TRUE</span>, forceCat <span class="op">=</span> <span class="cn">TRUE</span>, geom_raster <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"red"</span><span class="op">)</span>, na.value <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Removed 88752 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; (`geom_raster()`).</span></span></code></pre></div>
+<p><img src="https://i.imgur.com/wwjXK3v.png"><!-- --></p>
+</div>
+<div class="section level3">
+<h3 id="example-4-radiometric-and-atmospheric-correction">Example 4: Radiometric and atmospheric correction<a class="anchor" aria-label="anchor" href="#example-4-radiometric-and-atmospheric-correction"></a>
+</h3>
+<p>With <code>radCor</code>, users can compute radiometric and simple atmospheric corrections (based on dark object substraction):</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># import Landsat meta data</span></span>
+<span><span class="va">mtlFile</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"external/landsat/LT52240631988227CUB02_MTL.txt"</span>, package<span class="op">=</span><span class="st">"RStoolbox"</span><span class="op">)</span></span>
+<span><span class="va">metaData</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/readMeta.html">readMeta</a></span><span class="op">(</span><span class="va">mtlFile</span><span class="op">)</span></span>
+<span><span class="va">lsat_t</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/stackMeta.html">stackMeta</a></span><span class="op">(</span><span class="va">mtlFile</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># convert DN to top of atmosphere reflectance and brightness temperature</span></span>
+<span><span class="va">lsat_ref</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/radCor.html">radCor</a></span><span class="op">(</span><span class="va">lsat_t</span>, metaData <span class="op">=</span> <span class="va">metaData</span>, method <span class="op">=</span> <span class="st">"apref"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># correct DN to at-surface-reflecatance with DOS (Chavez decay model)</span></span>
+<span><span class="va">lsat_sref</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/radCor.html">radCor</a></span><span class="op">(</span><span class="va">lsat_t</span>, metaData <span class="op">=</span> <span class="va">metaData</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># correct DN to at-surface-reflecatance with simple DOS and automatic haze estimation</span></span>
+<span><span class="va">hazeDN</span>    <span class="op">&lt;-</span> <span class="fu"><a href="reference/estimateHaze.html">estimateHaze</a></span><span class="op">(</span><span class="va">lsat_t</span>, hazeBands <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, darkProp <span class="op">=</span> <span class="fl">0.01</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">lsat_sref</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/radCor.html">radCor</a></span><span class="op">(</span><span class="va">lsat_t</span>, metaData <span class="op">=</span> <span class="va">metaData</span>, method <span class="op">=</span> <span class="st">"sdos"</span>,</span>
+<span>                    hazeValues <span class="op">=</span> <span class="va">hazeDN</span>, hazeBands <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># plot result</span></span>
+<span><span class="fu"><a href="reference/ggRGB.html">ggRGB</a></span><span class="op">(</span><span class="va">lsat_sref</span>, r <span class="op">=</span> <span class="fl">3</span>, g <span class="op">=</span> <span class="fl">2</span>, b <span class="op">=</span> <span class="fl">1</span>, stretch <span class="op">=</span> <span class="st">"lin"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="https://i.imgur.com/IEi9own.png"><!-- --></p>
+<p><sup>Created on 2024-04-19 with <a href="https://reprex.tidyverse.org" class="external-link">reprex v2.1.0</a></sup></p>
 </div>
 </div>
 
