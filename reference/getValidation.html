@@ -91,33 +91,19 @@ If metrics = 'confmat' or 'caret' will return a table or the full caret::confusi
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     loadings</span>
 <span class="r-in"><span><span class="co">## Fit classifier (splitting training into 70\% training data, 30\% validation data)</span></span></span>
 <span class="r-in"><span><span class="va">train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/serialize.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"external/trainingPoints_lsat.rds"</span>, package<span class="op">=</span><span class="st">"RStoolbox"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>cannot open compressed file '', probable reason 'No such file or directory'</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in gzfile(file, "rb"):</span> cannot open the connection</span>
 <span class="r-in"><span><span class="va">SC</span>   <span class="op">&lt;-</span> <span class="fu"><a href="superClass.html">superClass</a></span><span class="op">(</span><span class="va">rlogo</span>, trainData <span class="op">=</span> <span class="va">train</span>, responseCol <span class="op">=</span> <span class="st">"class"</span>,</span></span>
 <span class="r-in"><span>                    model<span class="op">=</span><span class="st">"pls"</span>, trainPartition <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in UseMethod("st_geometry"):</span> no applicable method for 'st_geometry' applied to an object of class "function"</span>
 <span class="r-in"><span><span class="co">## Independent testset-validation</span></span></span>
 <span class="r-in"><span><span class="fu">getValidation</span><span class="op">(</span><span class="va">SC</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   model validation  Accuracy     Kappa AccuracyLower AccuracyUpper AccuracyNull</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   pls    testset 0.8888889 0.8333333     0.5175035     0.9971909    0.3333333</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   AccuracyPValue McnemarPValue</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1      0.0009653           NaN</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'SC' not found</span>
 <span class="r-in"><span><span class="fu">getValidation</span><span class="op">(</span><span class="va">SC</span>, metrics <span class="op">=</span> <span class="st">"classwise"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   model validation class Sensitivity Specificity Pos.Pred.Value Neg.Pred.Value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   pls    testset     A   1.0000000   0.8333333           0.75      1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   pls    testset     B   0.6666667   1.0000000           1.00      0.8571429</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3   pls    testset     C   1.0000000   1.0000000           1.00      1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Precision    Recall        F1 Prevalence Detection.Rate Detection.Prevalence</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1      0.75 1.0000000 0.8571429  0.3333333      0.3333333            0.4444444</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2      1.00 0.6666667 0.8000000  0.3333333      0.2222222            0.2222222</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3      1.00 1.0000000 1.0000000  0.3333333      0.3333333            0.3333333</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Balanced.Accuracy</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1         0.9166667</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2         0.8333333</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3         1.0000000</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'SC' not found</span>
 <span class="r-in"><span><span class="co">## Cross-validation based </span></span></span>
 <span class="r-in"><span><span class="fu">getValidation</span><span class="op">(</span><span class="va">SC</span>, from <span class="op">=</span> <span class="st">"cv"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   model validation  Accuracy     Kappa AccuracyLower AccuracyUpper AccuracyNull</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   pls         cv 0.8571429 0.7857143      0.636576      0.969511    0.3333333</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   AccuracyPValue McnemarPValue</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   1.101588e-06           NaN</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'SC' not found</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
