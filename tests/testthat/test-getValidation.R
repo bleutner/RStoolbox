@@ -1,7 +1,7 @@
 context("getValidation")
 suppressPackageStartupMessages(library("randomForest"))
 
-train <- readRDS(system.file("external/trainingPoints_lsat.rds", package="RStoolbox"))
+train <- readRDS(system.file("external/trainingPoints_rlogo.rds", package="RStoolbox"))
 train$num <- rnorm(nrow(train))
 class   <- superClass(rlogo, trainData = train, responseCol = "class", tuneLength = 1, trainPartition = 0.7, predict = FALSE)
 reg     <- superClass(rlogo, trainData = train, responseCol = "num", tuneLength = 1, trainPartition = 0.7, predict = FALSE, mode = "regression")

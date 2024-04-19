@@ -32,7 +32,7 @@ Rscript -e "library(devtools); library(methods); document(); install()"
 
 
 ## Re-build example data
-tmstr=$(git log -1 --format=%ct data/ inst/external/trainingPoints_lsat.rds inst/external/landsat/)
+tmstr=$(git log -1 --format=%ct data/ inst/external/trainingPoints_rlogo.rds inst/external/landsat/)
 texmpl=$(git log example-data -1  --format=%ct)
 if [ $(( tmstr > texmpl )) -eq 0 ]
 then

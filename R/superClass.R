@@ -71,7 +71,7 @@
 #' library(randomForest)
 #' library(e1071)
 #' library(terra)
-#' train <- readRDS(system.file("external/trainingPoints_lsat.rds", package="RStoolbox"))
+#' train <- readRDS(system.file("external/trainingPoints_rlogo.rds", package="RStoolbox"))
 #' 
 #' ## Plot training data
 #' olpar <- par(no.readonly = TRUE) # back-up par
@@ -499,7 +499,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 #' @export 
 #' @examples 
 #' ## Load training data
-#' train <- readRDS(system.file("external/trainingPoints_lsat.rds", package="RStoolbox"))
+#' train <- readRDS(system.file("external/trainingPoints_rlogo.rds", package="RStoolbox"))
 #' 
 #' ## Fit classifier 
 #' SC       <- superClass(rlogo, trainData = train, responseCol = "class",
