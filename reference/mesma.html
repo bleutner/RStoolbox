@@ -146,6 +146,7 @@ If multiple endmembers per class are provided, <code>mesma</code> will compute a
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># to perform a MESMA, use multiple endmembers per class, differntiating them</span></span></span>
 <span class="r-in"><span><span class="co"># by a column named 'class':</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span><span class="va">em</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">lsat</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4155</span>, <span class="fl">17018</span>, <span class="fl">53134</span>, <span class="fl">69487</span>, <span class="fl">83704</span><span class="op">)</span><span class="op">]</span>, class <span class="op">=</span> <span class="st">"forest"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">lsat</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">22742</span>, <span class="fl">25946</span>, <span class="fl">38617</span>, <span class="fl">59632</span>, <span class="fl">67313</span><span class="op">)</span><span class="op">]</span>, class <span class="op">=</span> <span class="st">"water"</span><span class="op">)</span></span></span>
@@ -154,7 +155,6 @@ If multiple endmembers per class are provided, <code>mesma</code> will compute a
 <span class="r-in"><span><span class="co"># unmix the lsat image</span></span></span>
 <span class="r-in"><span><span class="va">probs</span> <span class="op">&lt;-</span> <span class="fu">mesma</span><span class="op">(</span>img <span class="op">=</span> <span class="va">lsat</span>, em <span class="op">=</span> <span class="va">em</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">probs</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="mesma-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># MESMA can also be performed on more than two endmember classes:</span></span></span>
 <span class="r-in"><span><span class="va">em</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span></span></span>
@@ -166,7 +166,7 @@ If multiple endmembers per class are provided, <code>mesma</code> will compute a
 <span class="r-in"><span><span class="co"># unmix the lsat image</span></span></span>
 <span class="r-in"><span><span class="va">probs</span> <span class="op">&lt;-</span> <span class="fu">mesma</span><span class="op">(</span>img <span class="op">=</span> <span class="va">lsat</span>, em <span class="op">=</span> <span class="va">em</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">probs</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="mesma-3.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
