@@ -9,15 +9,10 @@ Minor changes before major release
 * added a new example to `mesma()` to reflect the changes
 
 # RStoolbox 0.4.0
-Rewrite of `RStoolbox`, migration from `raster` to `terra`
+Rewrite of `RStoolbox`, migration from `raster` to `terra` and `sp` to `sf`
 
-## New:
-
-*to be added*
-
-## Changes:
-
-*to be added*
+## Fixes:
+* `superClass()` unable to predict when there is NA in raster data (closes #102, reported by @bappa10085)
 
 # RStoolbox 0.3.0
 
