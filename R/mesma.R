@@ -43,9 +43,10 @@
 #' # umix the lsat image
 #' probs <- mesma(img = lsat, em = em)
 #' plot(probs)
-#' 
+#'
 #' # to perform a MESMA, use multiple endmembers per class, differntiating them
 #' # by a column named 'class':
+#' \dontrun{
 #' em <- rbind(
 #'   data.frame(lsat[c(4155, 17018, 53134, 69487, 83704)], class = "forest"),
 #'   data.frame(lsat[c(22742, 25946, 38617, 59632, 67313)], class = "water")
@@ -65,6 +66,7 @@
 #' # unmix the lsat image
 #' probs <- mesma(img = lsat, em = em)
 #' plot(probs)
+#' }
 
 #' 
 #' @importFrom terra which.min rast selectRange nlyr
