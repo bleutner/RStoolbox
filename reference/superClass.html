@@ -213,9 +213,7 @@ otherwise it will be performed on a per-pixel basis.</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     interpolate</span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/serialize.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"external/trainingPoints_lsat.rds"</span>, package<span class="op">=</span><span class="st">"RStoolbox"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>cannot open compressed file '', probable reason 'No such file or directory'</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in gzfile(file, "rb"):</span> cannot open the connection</span>
+<span class="r-in"><span><span class="va">train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/serialize.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"external/trainingPoints_rlogo.rds"</span>, package<span class="op">=</span><span class="st">"RStoolbox"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Plot training data</span></span></span>
 <span class="r-in"><span><span class="va">olpar</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>no.readonly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># back-up par</span></span></span>
@@ -223,23 +221,132 @@ otherwise it will be performed on a per-pixel basis.</p></li>
 <span class="r-in"><span><span class="va">colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"yellow"</span>, <span class="st">"green"</span>, <span class="st">"deeppink"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plotRGB.html" class="external-link">plotRGB</a></span><span class="op">(</span><span class="va">rlogo</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">train</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span>  <span class="va">colors</span><span class="op">[</span><span class="va">train</span><span class="op">$</span><span class="va">class</span><span class="op">]</span>, pch <span class="op">=</span> <span class="fl">19</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> Please use column names for `x`</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Fit classifier (splitting training into 70\% training data, 30\% validation data)</span></span></span>
 <span class="r-in"><span><span class="va">SC</span>       <span class="op">&lt;-</span> <span class="fu">superClass</span><span class="op">(</span><span class="va">rlogo</span>, trainData <span class="op">=</span> <span class="va">train</span>, responseCol <span class="op">=</span> <span class="st">"class"</span>,</span></span>
 <span class="r-in"><span>model <span class="op">=</span> <span class="st">"rf"</span>, tuneLength <span class="op">=</span> <span class="fl">1</span>, trainPartition <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in UseMethod("st_geometry"):</span> no applicable method for 'st_geometry' applied to an object of class "function"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:31:03 | Begin sampling training data</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:31:03 | Starting to fit model</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:31:04 | Starting spatial predict</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:31:04 | Begin validation</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ******************** Model summary ********************</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Random Forest </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21 samples</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  3 predictor</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  3 classes: 'A', 'B', 'C' </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> No pre-processing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resampling: Cross-Validated (5 fold) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Summary of sample sizes: 16, 16, 18, 17, 17 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Resampling results:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Accuracy  Kappa</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1         1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tuning parameter 'mtry' was held constant at a value of 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   TrainAccuracy TrainKappa method</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1             1          1     rf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cross-Validated (5 fold) Confusion Matrix </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (entries are average cell counts across resamples)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           Reference</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Prediction   A   B   C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          A 1.4 0.0 0.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          B 0.0 1.4 0.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          C 0.0 0.0 1.4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Accuracy (average) : 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ******************** Validation summary ********************</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Confusion Matrix and Statistics</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           Reference</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Prediction A B C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          A 3 0 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          B 0 3 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          C 0 0 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Overall Statistics</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                Accuracy : 1          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  95% CI : (0.6637, 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     No Information Rate : 0.3333     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     P-Value [Acc &gt; NIR] : 5.081e-05  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   Kappa : 1          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Mcnemar's Test P-Value : NA         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Statistics by Class:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      Class: A Class: B Class: C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sensitivity            1.0000   1.0000   1.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Specificity            1.0000   1.0000   1.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Pos Pred Value         1.0000   1.0000   1.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Neg Pred Value         1.0000   1.0000   1.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Prevalence             0.3333   0.3333   0.3333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Detection Rate         0.3333   0.3333   0.3333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Detection Prevalence   0.3333   0.3333   0.3333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Balanced Accuracy      1.0000   1.0000   1.0000</span>
 <span class="r-in"><span><span class="va">SC</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'SC' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> superClass results</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ************ Validation **************</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $validation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Confusion Matrix and Statistics</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           Reference</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Prediction A B C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          A 3 0 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          B 0 3 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          C 0 0 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Overall Statistics</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                Accuracy : 1          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  95% CI : (0.6637, 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     No Information Rate : 0.3333     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     P-Value [Acc &gt; NIR] : 5.081e-05  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   Kappa : 1          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Mcnemar's Test P-Value : NA         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Statistics by Class:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      Class: A Class: B Class: C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sensitivity            1.0000   1.0000   1.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Specificity            1.0000   1.0000   1.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Pos Pred Value         1.0000   1.0000   1.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Neg Pred Value         1.0000   1.0000   1.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Prevalence             0.3333   0.3333   0.3333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Detection Rate         0.3333   0.3333   0.3333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Detection Prevalence   0.3333   0.3333   0.3333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Balanced Accuracy      1.0000   1.0000   1.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> *************** Map ******************</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $map</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dimensions  : 77, 101, 1  (nrow, ncol, nlyr)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 1, 1  (x, y)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> extent      : 0, 101, 0, 77  (xmin, xmax, ymin, ymax)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : +proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> source(s)   : memory</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> name        : class_supervised </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> min value   :                1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max value   :                3 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Plots</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">SC</span><span class="op">$</span><span class="va">map</span>, col <span class="op">=</span> <span class="va">colors</span>, legend <span class="op">=</span> <span class="cn">FALSE</span>, axes <span class="op">=</span> <span class="cn">FALSE</span>, box <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'plot': object 'SC' not found</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>, legend <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/factors.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">train</span><span class="op">$</span><span class="va">class</span><span class="op">)</span>, fill <span class="op">=</span> <span class="va">colors</span> , title <span class="op">=</span> <span class="st">"Classes"</span>, </span></span>
 <span class="r-in"><span>horiz <span class="op">=</span> <span class="cn">TRUE</span>,  bty <span class="op">=</span> <span class="st">"n"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in (function (cond) .Internal(C_tryCatchHelper(addr, 1L, cond)))(structure(list(message = "object of type 'closure' is not subsettable",     call = train$class, object = function (x, ...)     {        UseMethod("train")    }), class = c("notSubsettableError", "error", "condition"))):</span> error in evaluating the argument 'x' in selecting a method for function 'levels': object of type 'closure' is not subsettable</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span><span class="va">olpar</span><span class="op">)</span> <span class="co"># reset par</span></span></span>
 <span class="r-plt img"><img src="superClass-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span><span class="va">olpar</span><span class="op">)</span> <span class="co"># reset par</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

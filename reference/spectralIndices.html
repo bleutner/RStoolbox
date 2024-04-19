@@ -203,10 +203,10 @@ The last column shows exemplarily which Landsat 5 TM bands correspond to which w
 <span class="r-in"><span><span class="co">## Convert DNs to reflectance (required to calculate EVI and EVI2)</span></span></span>
 <span class="r-in"><span><span class="va">mtlFile</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"external/landsat/LT52240631988227CUB02_MTL.txt"</span>, package<span class="op">=</span><span class="st">"RStoolbox"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">lsat_ref</span> <span class="op">&lt;-</span> <span class="fu"><a href="radCor.html">radCor</a></span><span class="op">(</span><span class="va">lsat</span>, <span class="va">mtlFile</span>, method <span class="op">=</span> <span class="st">"apref"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:09:19 | Bands to convert to reflectance: B1_dn, B2_dn, B3_dn, B4_dn, B5_dn, B7_dn</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:09:19 | Thermal bands to convert to brightness temperature: B6_dn</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:09:19 | Processing thermal band(s)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:09:19 | Processing radiance / reflectance</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:30:58 | Bands to convert to reflectance: B1_dn, B2_dn, B3_dn, B4_dn, B5_dn, B7_dn</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:30:58 | Thermal bands to convert to brightness temperature: B6_dn</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:30:58 | Processing thermal band(s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:30:58 | Processing radiance / reflectance</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">SI</span> <span class="op">&lt;-</span> <span class="fu">spectralIndices</span><span class="op">(</span><span class="va">lsat_ref</span>, red <span class="op">=</span> <span class="st">"B3_tre"</span>, nir <span class="op">=</span> <span class="st">"B4_tre"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">SI</span><span class="op">)</span></span></span>
