@@ -1,5 +1,5 @@
 # RStoolbox 1.0.0
-Minor changes before major release
+Updating MESMA, minor changes before major release
 
 ## New:
 * `mesma()` now better differentiates SMA and MESMA: For single endmember unmixing, each supplied endmember represents a class to unmix (row by row). For multiple endmemeber unmixing, the column `class` can be used to group endmembers by class. If multiple endmembers per class are provided, `mesma()` will compute a number of SMA (determined through the new argument `n_models`) for multiple endmember combinations drawn from endmembers and will select the best fit per pixel based on the lowest RMSE. See `?mesma` for details (fixes #57, reported by @ytarazona)
