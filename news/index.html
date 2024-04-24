@@ -46,11 +46,12 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.0" id="rstoolbox-100">RStoolbox 1.0.0<a class="anchor" aria-label="anchor" href="#rstoolbox-100"></a></h2>
-<p>Minor changes before major release</p>
+<p>Updating MESMA, minor changes before major release</p>
 <div class="section level3">
 <h3 id="new-1-0-0">New:<a class="anchor" aria-label="anchor" href="#new-1-0-0"></a></h3>
 <ul><li>
-<code><a href="../reference/mesma.html">mesma()</a></code> now better differentiates SMA and MESMA: For single endmember unmixing, each supplied endmember represents a class to unmix (row by row). For multiple endmemeber unmixing, the column <code>class</code> can be used to group endmembers by class. If multiple endmembers per class are provided, <code><a href="../reference/mesma.html">mesma()</a></code> will compute a number of SMA (determined through the new argument <code>n_models</code>) for multiple endmember combinations drawn from endmembers and will select the best fit per pixel based on the lowest RMSE. See <code><a href="../reference/mesma.html">?mesma</a></code> for details (fixes <a href="https://github.com/bleutner/RStoolbox/issues/57" class="external-link">#57</a>, reported by <a href="https://github.com/ytarazona" class="external-link">@ytarazona</a>)</li></ul></div>
+<code><a href="../reference/mesma.html">mesma()</a></code> now better differentiates SMA and MESMA: For single endmember unmixing, each supplied endmember represents a class to unmix (row by row). For multiple endmemeber unmixing, the column <code>class</code> can be used to group endmembers by class. If multiple endmembers per class are provided, <code><a href="../reference/mesma.html">mesma()</a></code> will compute a number of SMA (determined through the new argument <code>n_models</code>) for multiple endmember combinations drawn from endmembers and will select the best fit per pixel based on the lowest RMSE. See <code><a href="../reference/mesma.html">?mesma</a></code> for details (fixes <a href="https://github.com/bleutner/RStoolbox/issues/57" class="external-link">#57</a>, reported by <a href="https://github.com/ytarazona" class="external-link">@ytarazona</a>)</li>
+</ul></div>
 <div class="section level3">
 <h3 id="changes-1-0-0">Changes:<a class="anchor" aria-label="anchor" href="#changes-1-0-0"></a></h3>
 <ul><li>
@@ -62,9 +63,18 @@
 <h2 class="pkg-version" data-toc-text="0.4.0" id="rstoolbox-040">RStoolbox 0.4.0<a class="anchor" aria-label="anchor" href="#rstoolbox-040"></a></h2><p class="text-muted">CRAN release: 2024-01-17</p>
 <p>Rewrite of <code>RStoolbox</code>, migration from <code>raster</code> to <code>terra</code> and <code>sp</code> to <code>sf</code></p>
 <div class="section level3">
+<h3 id="new-0-4-0">New:<a class="anchor" aria-label="anchor" href="#new-0-4-0"></a></h3>
+<ul><li>RStoolbox moved on from the outdated <code>sp</code> and <code>raster</code> packages to <code>sf</code> and <code>terra</code> to ensure long term support of the tools.</li>
+<li>Thrown out unnecessary libraries</li>
+</ul></div>
+<div class="section level3">
 <h3 id="fixes-0-4-0">Fixes:<a class="anchor" aria-label="anchor" href="#fixes-0-4-0"></a></h3>
 <ul><li>
-<code><a href="../reference/superClass.html">superClass()</a></code> unable to predict when there is NA in raster data (closes <a href="https://github.com/bleutner/RStoolbox/issues/102" class="external-link">#102</a>, reported by <a href="https://github.com/bappa10085" class="external-link">@bappa10085</a>)</li></ul></div>
+<code><a href="../reference/rasterPCA.html">rasterPCA()</a></code>: Fixed a bug that caused the method and its unit tests to fail on Linux due to a corrupted covariance matrix calculated previously with <code><a href="https://rspatial.github.io/terra/reference/layerCor.html" class="external-link">terra::layerCor()</a></code>
+</li>
+<li>
+<code><a href="../reference/superClass.html">superClass()</a></code> unable to predict when there is NA in raster data (closes <a href="https://github.com/bleutner/RStoolbox/issues/102" class="external-link">#102</a>, reported by <a href="https://github.com/bappa10085" class="external-link">@bappa10085</a>)</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="rstoolbox-030">RStoolbox 0.3.0<a class="anchor" aria-label="anchor" href="#rstoolbox-030"></a></h2><p class="text-muted">CRAN release: 2022-03-07</p>
@@ -79,7 +89,8 @@
 </ul></div>
 <div class="section level3">
 <h3 id="changes-0-3-0">Changes:<a class="anchor" aria-label="anchor" href="#changes-0-3-0"></a></h3>
-<ul><li>arguments <code>master</code> and <code>slave</code> in <code><a href="../reference/coregisterImages.html">coregisterImages()</a></code> were deprecated in favor of <code>ref</code> and <code>img</code>, respectively (closes <a href="https://github.com/bleutner/RStoolbox/issues/63" class="external-link">#63</a>, suggested by <a href="https://github.com/MatthiasSiewert" class="external-link">@MatthiasSiewert</a>)</li></ul></div>
+<ul><li>arguments <code>master</code> and <code>slave</code> in <code><a href="../reference/coregisterImages.html">coregisterImages()</a></code> were deprecated in favor of <code>ref</code> and <code>img</code>, respectively (closes <a href="https://github.com/bleutner/RStoolbox/issues/63" class="external-link">#63</a>, suggested by <a href="https://github.com/MatthiasSiewert" class="external-link">@MatthiasSiewert</a>)</li>
+</ul></div>
 <div class="section level3">
 <h3 id="fixes-0-3-0">Fixes:<a class="anchor" aria-label="anchor" href="#fixes-0-3-0"></a></h3>
 <ul><li>
@@ -99,12 +110,14 @@
 <h2 class="pkg-version" data-toc-text="0.2.6" id="rstoolbox-026">RStoolbox 0.2.6<a class="anchor" aria-label="anchor" href="#rstoolbox-026"></a></h2><p class="text-muted">CRAN release: 2019-07-23</p>
 <div class="section level3">
 <h3 id="new-0-2-6">New:<a class="anchor" aria-label="anchor" href="#new-0-2-6"></a></h3>
-<ul><li>added several Sentinel-2 optimized spectral indices relying on red-edge bands:<ul><li>red-edge inflection point (REIP),</li>
+<ul><li>added several Sentinel-2 optimized spectral indices relying on red-edge bands:
+<ul><li>red-edge inflection point (REIP),</li>
 <li>normalized difference red-edge indices (NDREI1, NDREI2),</li>
 <li>green-band chlorophyll index (CLG), red-edge chlorophyll index (CLRE)</li>
 <li>Modified Chlorophyll Absorption Ratio Index (MCARI)</li>
 <li>MERIS Terrestrial Chlorophyll Index (MTCI)</li>
-</ul></li></ul></div>
+</ul></li>
+</ul></div>
 <div class="section level3">
 <h3 id="fixes-0-2-6">Fixes:<a class="anchor" aria-label="anchor" href="#fixes-0-2-6"></a></h3>
 <ul><li>
@@ -116,7 +129,8 @@
 </ul></div>
 <div class="section level3">
 <h3 id="changes-0-2-6">Changes:<a class="anchor" aria-label="anchor" href="#changes-0-2-6"></a></h3>
-<ul><li>modified readSLI label parsing. Internal white space is now converted to underscores (<a href="https://github.com/bleutner/RStoolbox/issues/52" class="external-link">#52</a>)</li></ul></div>
+<ul><li>modified readSLI label parsing. Internal white space is now converted to underscores (<a href="https://github.com/bleutner/RStoolbox/issues/52" class="external-link">#52</a>)</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.4" id="rstoolbox-024">RStoolbox 0.2.4<a class="anchor" aria-label="anchor" href="#rstoolbox-024"></a></h2><p class="text-muted">CRAN release: 2019-01-08</p>
@@ -131,35 +145,42 @@
 </ul></div>
 <div class="section level3">
 <h3 id="changes-0-2-4">Changes:<a class="anchor" aria-label="anchor" href="#changes-0-2-4"></a></h3>
-<ul><li>all <code><a href="../reference/radCor.html">radCor()</a></code> DOS methods now work for Landsat 8 OLI</li></ul></div>
+<ul><li>all <code><a href="../reference/radCor.html">radCor()</a></code> DOS methods now work for Landsat 8 OLI</li>
+</ul></div>
 <div class="section level3">
 <h3 id="fixes-0-2-4">Fixes:<a class="anchor" aria-label="anchor" href="#fixes-0-2-4"></a></h3>
-<ul><li>fix <code><a href="../reference/unsuperClass.html">unsuperClass()</a></code> for algorithms other than Hartigan-Wong (reported by Alex Ilich)</li></ul></div>
+<ul><li>fix <code><a href="../reference/unsuperClass.html">unsuperClass()</a></code> for algorithms other than Hartigan-Wong (reported by Alex Ilich)</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.2" id="rstoolbox-022">RStoolbox 0.2.2<a class="anchor" aria-label="anchor" href="#rstoolbox-022"></a></h2>
 <div class="section level3">
 <h3 id="new-0-2-2">New:<a class="anchor" aria-label="anchor" href="#new-0-2-2"></a></h3>
-<ul><li>added <code><a href="../reference/tasseledCap.html">tasseledCap()</a></code> coefficients for Quickbird, Spot5 and RapidEye</li></ul></div>
+<ul><li>added <code><a href="../reference/tasseledCap.html">tasseledCap()</a></code> coefficients for Quickbird, Spot5 and RapidEye</li>
+</ul></div>
 <div class="section level3">
 <h3 id="changes-0-2-2">Changes:<a class="anchor" aria-label="anchor" href="#changes-0-2-2"></a></h3>
 <ul><li>
-<code><a href="../reference/readEE.html">readEE()</a></code> ‘Date’ column is now returned as POSIXct instead of POSIXlt</li></ul></div>
+<code><a href="../reference/readEE.html">readEE()</a></code> ‘Date’ column is now returned as POSIXct instead of POSIXlt</li>
+</ul></div>
 <div class="section level3">
 <h3 id="fixes-0-2-2">Fixes:<a class="anchor" aria-label="anchor" href="#fixes-0-2-2"></a></h3>
-<ul><li>corrected <code><a href="../reference/tasseledCap.html">tasseledCap()</a></code> coefficient for Landsat 5 TM (<a href="https://github.com/bleutner/RStoolbox/issues/40" class="external-link">#40</a>, reported by <a href="https://github.com/philipperufin" class="external-link">@philipperufin</a>)</li></ul></div>
+<ul><li>corrected <code><a href="../reference/tasseledCap.html">tasseledCap()</a></code> coefficient for Landsat 5 TM (<a href="https://github.com/bleutner/RStoolbox/issues/40" class="external-link">#40</a>, reported by <a href="https://github.com/philipperufin" class="external-link">@philipperufin</a>)</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.1" id="rstoolbox-021">RStoolbox 0.2.1<a class="anchor" aria-label="anchor" href="#rstoolbox-021"></a></h2><p class="text-muted">CRAN release: 2018-04-09</p>
 <div class="section level3">
 <h3 id="fixes-0-2-1">Fixes:<a class="anchor" aria-label="anchor" href="#fixes-0-2-1"></a></h3>
-<ul><li>fixed non-portable c++ headers</li></ul></div>
+<ul><li>fixed non-portable c++ headers</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="rstoolbox-020">RStoolbox 0.2.0<a class="anchor" aria-label="anchor" href="#rstoolbox-020"></a></h2><p class="text-muted">CRAN release: 2018-04-05</p>
 <div class="section level3">
 <h3 id="new-0-2-0">New:<a class="anchor" aria-label="anchor" href="#new-0-2-0"></a></h3>
-<ul><li>function <code><a href="../reference/mesma.html">mesma()</a></code> for spectral unmixing (<a href="https://github.com/bleutner/RStoolbox/issues/33" class="external-link">#33</a>, provided by Jakob Schwalb-Willmann)</li></ul></div>
+<ul><li>function <code><a href="../reference/mesma.html">mesma()</a></code> for spectral unmixing (<a href="https://github.com/bleutner/RStoolbox/issues/33" class="external-link">#33</a>, provided by Jakob Schwalb-Willmann)</li>
+</ul></div>
 <div class="section level3">
 <h3 id="fixes-0-2-0">Fixes:<a class="anchor" aria-label="anchor" href="#fixes-0-2-0"></a></h3>
 <ul><li>improved NA handling and faster implementation of mlc classifier (<a href="https://github.com/bleutner/RStoolbox/issues/32" class="external-link">#32</a>, pull request by Neal Fultz)</li>
@@ -170,7 +191,8 @@
 <h2 class="pkg-version" data-toc-text="0.1.10" id="rstoolbox-0110">RStoolbox 0.1.10<a class="anchor" aria-label="anchor" href="#rstoolbox-0110"></a></h2><p class="text-muted">CRAN release: 2017-11-10</p>
 <div class="section level3">
 <h3 id="fixes-0-1-10">Fixes:<a class="anchor" aria-label="anchor" href="#fixes-0-1-10"></a></h3>
-<ul><li>fix tests for upcoming raster version</li></ul></div>
+<ul><li>fix tests for upcoming raster version</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.9" id="rstoolbox-019">RStoolbox 0.1.9<a class="anchor" aria-label="anchor" href="#rstoolbox-019"></a></h2><p class="text-muted">CRAN release: 2017-08-28</p>
@@ -192,7 +214,8 @@
 </ul></div>
 <div class="section level3">
 <h3 id="fixes-0-1-8">Fixes:<a class="anchor" aria-label="anchor" href="#fixes-0-1-8"></a></h3>
-<ul><li>update <code><a href="../reference/readEE.html">readEE()</a></code> to deal with new EarthExplorer export columns (reported by Christian Bauer)</li></ul></div>
+<ul><li>update <code><a href="../reference/readEE.html">readEE()</a></code> to deal with new EarthExplorer export columns (reported by Christian Bauer)</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.7" id="rstoolbox-017">RStoolbox 0.1.7<a class="anchor" aria-label="anchor" href="#rstoolbox-017"></a></h2><p class="text-muted">CRAN release: 2017-01-10</p>
@@ -232,7 +255,8 @@
 <h2 class="pkg-version" data-toc-text="0.1.6" id="rstoolbox-016">RStoolbox 0.1.6<a class="anchor" aria-label="anchor" href="#rstoolbox-016"></a></h2><p class="text-muted">CRAN release: 2016-11-07</p>
 <div class="section level3">
 <h3 id="fixes-0-1-6">Fixes:<a class="anchor" aria-label="anchor" href="#fixes-0-1-6"></a></h3>
-<ul><li>fix import issue: replace deprecated export from caret</li></ul></div>
+<ul><li>fix import issue: replace deprecated export from caret</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.5" id="rstoolbox-015">RStoolbox 0.1.5<a class="anchor" aria-label="anchor" href="#rstoolbox-015"></a></h2><p class="text-muted">CRAN release: 2016-10-06</p>
