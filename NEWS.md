@@ -11,11 +11,11 @@ Updating MESMA, minor changes before major release
 # RStoolbox 0.4.0
 Rewrite of `RStoolbox`, migration from `raster` to `terra` and `sp` to `sf`
 
-# New:
+## New:
 * RStoolbox moved on from the outdated `sp` and `raster` packages to `sf` and `terra` to ensure long term support of the tools.
 * Thrown out unnecessary libraries
 
-# Fixes:
+## Fixes:
 * `rasterPCA()`: Fixed a bug that caused the method and its unit tests to fail on Linux due to a corrupted covariance matrix calculated previously with `terra::layerCor()`
 * `superClass()` unable to predict when there is NA in raster data (closes #102, reported by @bappa10085)
 
