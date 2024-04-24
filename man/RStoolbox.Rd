@@ -64,7 +64,7 @@ The RStoolbox package provides a set of functions which simplify performing stan
 }
 }
 
-\keyword{"RStoolbox"}
-\keyword{earth-observation,}
-\keyword{remote-sensing,}
-\keyword{spatial-data-analysis}
+\concept{earth-observation}
+\concept{remote-sensing}
+\concept{spatial-data-analysis
+"RStoolbox"}

@@ -52,7 +52,9 @@
 #' \item \code{\link{ggRGB}}: efficient plotting of remote sensing imagery in RGB with ggplot2
 #' }
 #'
-#' @keywords earth-observation, remote-sensing, spatial-data-analysis
+#' @concept earth-observation
+#' @concept remote-sensing
+#' @concept spatial-data-analysis
 #' "RStoolbox"
 #'
 #' @import sf terra
