@@ -18,3 +18,4 @@ revdep
 ^\.github$
 ^logo\.png$
 ^CRAN-SUBMISSION$
+_pkgdown.yml
