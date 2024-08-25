@@ -255,7 +255,78 @@
 #' On package startup
 #' @noRd 
 .onLoad <- function(libname, pkgname){
+
+    .IDXDB <- list(
+        CLG = list(c("Gitelson2003", "Green-band Chlorophyll Index"),
+                function(redEdge3, green) {redEdge3/green - 1}),
+        CLRE = list(c("Gitelson2003", "Red-edge-band Chlorophyll Index"),
+                function(redEdge3, redEdge1) {redEdge3/redEdge1 - 1}),
+        CTVI = list(c("Perry1984", "Corrected Transformed Vegetation Index"),
+                function(red, nir) {(NDVI+.5)/sqrt(abs(NDVI+.5))} ),
+        DVI = list(c("Richardson1977", "Difference Vegetation Index"),
+                function(red, nir) {s*nir-red}),
+        EVI = list(c("Huete1999", "Enhanced Vegetation Index"),
+                function(red, nir, blue) {G * ((nir - red) / (nir + C1 * red - C2 * blue + L_evi))}),
+        EVI2 = list(c("Jiang 2008", "Two-band Enhanced Vegetation Index"),
+                function(red, nir) {G * (nir-red)/(nir + 2.4*red +1)}),
+        GEMI = list(c("Pinty1992", "Global Environmental Monitoring Index"),
+                function(red, nir) {(((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5) ) / (nir + red + 0.5)) * (1 - ((((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5) ) / (nir + red + 0.5)) * 0.25)) - ((red - 0.125) / (1 - red))}),
+        GNDVI = list(c("Gitelson1998", "Green Normalised Difference Vegetation Index" ),
+                function(green, nir) {(nir-green)/(nir+green)}),
+		KNDVI = list(c("Camps-Valls2021", "Kernel Normalised Difference Vegetation Index"),
+				function(red, nir) {tanh(((nir-red)/(nir+red)))^2}),
+        MCARI = list(c("Daughtery2000", "Modified Chlorophyll Absorption Ratio Index" ),
+                function(green, red, redEdge1) {((redEdge1-red)-(redEdge1-green))*(redEdge1/red)}),
+        MNDWI = list(c("Xu2006", "Modified Normalised Difference Water Index"),
+                function(green, swir2) {(green-swir2) / (green+swir2)}),
+        MSAVI = list(c("Qi1994", "Modified Soil Adjusted Vegetation Index" ),
+                function(red, nir) {nir + 0.5 - (0.5 * sqrt((2 * nir + 1)^2 - 8 * (nir - (2 * red))))}),
+        MSAVI2 = list(c("Qi1994", "Modified Soil Adjusted Vegetation Index 2" ),
+                function(red, nir) {(2 * (nir + 1) - sqrt((2 * nir + 1)^2 - 8 * (nir - red))) / 2}),
+        MTCI = list(c("DashAndCurran2004", "MERIS Terrestrial Chlorophyll Index"),
+                function(red, redEdge1, redEdge2) {(redEdge2-redEdge1)/(redEdge1-red)}),
+        NBRI = list(c("Garcia1991", "Normalised Burn Ratio Index"),
+                function(nir, swir3) { (nir - swir3) / (nir + swir3)}),
+        NDREI1 = list(c("GitelsonAndMerzlyak1994", "Normalised Difference Red Edge Index 1"),
+                function(redEdge2, redEdge1) {(redEdge2-redEdge1)/(redEdge2+redEdge1)}),
+        NDREI2 = list(c("Barnes2000", "Normalised Difference Red Edge Index 2"),
+                function(redEdge3, redEdge1) {(redEdge3-redEdge1)/(redEdge3+redEdge1)}),
+        NDVI = list(c("Rouse1974", "Normalised Difference Vegetation Index"),
+                function(red, nir) {(nir-red)/(nir+red)}),
+        NDVIC = list(c("Nemani1993", "Corrected Normalised Difference Vegetation Index" ),
+                function(red, nir, swir2) {(nir-red)/(nir+red)*(1-((swir2 - swir2ccc)/(swir2coc-swir2ccc)))}),
+        NDWI = list(c("McFeeters1996", "Normalised Difference Water Index"),
+                function(green, nir) {(green - nir)/(green + nir)}),
+        NDWI2 = list(c("Gao1996", "Normalised Difference Water Index"),
+                function(nir, swir2) {(nir - swir2)/(nir + swir2)}),
+        NRVI = list(c("Baret1991", "Normalised Ratio Vegetation Index" ),
+                function(red, nir) {(red/nir - 1)/(red/nir + 1)}),
+        REIP = list(c("GuyotAndBarnet1988", "Red Edge Inflection Point"),
+                function(red, redEdge1, redEdge2, redEdge3) {0.705+0.35*((red+redEdge3)/(2-redEdge1))/(redEdge2-redEdge1)}),
+        RVI = list(c("", "Ratio Vegetation Index"),
+                function(red, nir) {red/nir}),
+        SATVI = list(c("Marsett2006", "Soil Adjusted Total Vegetation Index"),
+                function(red, swir2, swir3) {(swir2 - red) / (swir2 + red + L) * (1 + L) - (swir3 / 2)}),
+        SAVI = list(c("Huete1988", "Soil Adjusted Vegetation Index"),
+                function(red, nir) {(nir - red) * (1+L) / (nir + red + L)}),
+        SLAVI = list(c("Lymburger2000", "Specific Leaf Area Vegetation Index"),
+                function(red, nir, swir2) {nir / (red + swir2)}),
+        SR = list(c("Birth1968", "Simple Ratio Vegetation Index"),
+                function(red, nir) {nir / red}),
+        TTVI = list(c("Thiam1997", "Thiam's Transformed Vegetation Index"),
+                function(red, nir) {sqrt(abs((nir-red)/(nir+red) + 0.5))}),
+        TVI = list(c("Deering1975", "Transformed Vegetation Index"),
+                function(red, nir) {sqrt((nir-red)/(nir+red)+0.5)}),
+        WDVI = list(c("Richardson1977", "Weighted Difference Vegetation Index"),
+                function(red, nir) {nir - s * red}),
+        CUSTOM = list(c("Mueller2024", "Super custom index"),
+                      function(red) {blue + red}),
+        CUSTOM2 = list(c("Mueller2024", "Super custom index 2"),
+                      function(red) {red * red})
+    )
+
     if(is.null(getOption("RStoolbox.verbose")))  options(RStoolbox.verbose = FALSE)
+    if(is.null(getOption("RStoolbox.idxdb")))  options(RStoolbox.idxdb = .IDXDB)
 }
 
 #' Init verbosity within functions 
@@ -270,6 +341,18 @@
     options(RStoolbox.verbose = verbose)
 }
 
+
+#' Init spectralIndices within the index DB
+#'
+#' will restore global options after function has been called
+#' @param spectralIndices List
+#' @keywords internal
+#' @noRd
+.initIDXdb <- function(idxdb){
+    idxbg <- force(getOption("RStoolbox.idxdb"))
+    do.call("on.exit", list(substitute(options(RStoolbox.idxdb = idxbg))), envir=parent.frame())
+    options(RStoolbox.idxdb = idxdb)
+}
  
  
 #' Clean up on package unload
@@ -400,4 +483,10 @@
   # Return the full path to the temporary file
   full_path <- file.path(temp_dir, filename)
   return(full_path)
+}
+
+.with_env <- function(f) {
+    stopifnot(is.function(f))
+    environment(f) <- new.env()
+    f
 }

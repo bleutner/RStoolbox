@@ -10,7 +10,7 @@ mesma(
   method = "NNLS",
   iterate = 400,
   tolerance = 1e-08,
-  n_models = 5,
+  n_models = NULL,
   sum_to_one = TRUE,
   ...,
   verbose
@@ -30,7 +30,7 @@ mesma(
 
 \item{tolerance}{Numeric. Tolerance limit representing a nearly zero minimal number. Default is 1e-8.}
 
-\item{n_models}{Logical. Only applies if \code{em} contains column \code{class}. Defines how many endmember combinations should be picked. Maximum is the minimum number of endmembers of a class. Defaults to 5.}
+\item{n_models}{Logical. Only applies if \code{em} contains column \code{class}. Defines how many endmember combinations should be picked. Maximum is the minimum number of endmembers of a class. Defaults to the amount of rows of em.}
 
 \item{sum_to_one}{Logical. Defines whether a sum-to-one constraint should be applied so that probabilities of endmember classes sum to one (a constraint not covered by NNLS) to be interpretable as fractions. Defaults to \code{TRUE}. To get actual NNLS results, change to \code{FALSE}.}
 

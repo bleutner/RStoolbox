@@ -4,10 +4,12 @@
 \alias{rsOpts}
 \title{Set global options for RStoolbox}
 \usage{
-rsOpts(verbose)
+rsOpts(verbose = NULL, idxdb = NULL)
 }
 \arguments{
 \item{verbose}{Logical. If \code{TRUE} many functions will print status messages about the current processing step. By default verbose mode is disabled.}
+
+\item{idxdb}{List. The list conatins the formal calculation of spectral indices. Modify this list to pipe your own spectral index through the internal C++ calculation of RStoolbox. Call \code{.initIDXdb} to reset the list.}
 }
 \value{
 No return, just a setter for the verbosiness of the RStoolbox package

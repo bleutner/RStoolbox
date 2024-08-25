@@ -10,7 +10,7 @@
 #' }
 #' @param iterate Integer. Set maximum iteration per pixel. Processing time could increase the more iterations are made possible. Default is 400.
 #' @param tolerance Numeric. Tolerance limit representing a nearly zero minimal number. Default is 1e-8. 
-#' @param n_models Logical. Only applies if \code{em} contains column \code{class}. Defines how many endmember combinations should be picked. Maximum is the minimum number of endmembers of a class. Defaults to 5.
+#' @param n_models Logical. Only applies if \code{em} contains column \code{class}. Defines how many endmember combinations should be picked. Maximum is the minimum number of endmembers of a class. Defaults to the amount of rows of em.
 #' @param sum_to_one Logical. Defines whether a sum-to-one constraint should be applied so that probabilities of endmember classes sum to one (a constraint not covered by NNLS) to be interpretable as fractions. Defaults to \code{TRUE}. To get actual NNLS results, change to \code{FALSE}.
 #' @param verbose Logical. Prints progress messages during execution.
 #' @param ... further arguments passed to \link[terra]{writeRaster}.
@@ -72,7 +72,7 @@
 #' @importFrom terra which.min rast selectRange nlyr
 #' @export
 #' 
-mesma <- function(img, em, method = "NNLS", iterate = 400, tolerance = 0.00000001, n_models = 5, sum_to_one = TRUE, ..., verbose){
+mesma <- function(img, em, method = "NNLS", iterate = 400, tolerance = 0.00000001, n_models = NULL, sum_to_one = TRUE, ..., verbose){
   img <- .toTerra(img)
   ## messages
   if(!missing("verbose")) .initVerbose(verbose)
@@ -88,6 +88,18 @@ mesma <- function(img, em, method = "NNLS", iterate = 400, tolerance = 0.0000000
   }
   if(anyNA(em)){
     stop("'em' is not allowed to contain NA values. Spectra must be consistent.")
+  }
+
+  # check for n_models
+  if(is.null(n_models)){
+    n_models <- nrow(em)
+    if(is.null(n_models) || n_models < 1){
+      stop("Could not find rows with 'em', however, it must contain at least one.")
+    }
+  }else{
+    if(!is.integer(n_models)){
+      stop("'n_models' needs to be an 'integer' object.")
+    }
   }
   
   method <- toupper(method) 
@@ -170,4 +182,18 @@ mesma <- function(img, em, method = "NNLS", iterate = 400, tolerance = 0.0000000
   
   ## return brick
   return(probs)
+}
+
+
+test <- function(){
+  devtools::load_all()
+
+  em <- rbind(
+    data.frame(lsat[c(4155 , 17018 , 53134)], class="forest"),
+    data.frame(lsat[c(22742 , 25946 , 38617)], class="water"),
+    data.frame(lsat[c(4330 , 1762, 1278)], class="shortgrown")
+  )
+
+  fracs <- mesma(lsat, em)
+
 }
