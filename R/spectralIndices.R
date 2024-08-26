@@ -49,7 +49,8 @@
 #' idxdb <- getOption("RStoolbox.idxdb")
 #'
 #' # Cutomize the RStoolbox index-database and overwrite the option
-#' cdb <- c(idxdb, CUSTOM = list( list(c("Mueller2024", "Super custom index"), function(blue, red) {blue + red})))
+#' cdb <- c(idxdb, CUSTOM = list( list(c("Mueller2024", "Super custom index"),
+#'         function(blue, red) {blue + red})))
 #' rsOpts(idxdb = cdb)
 #'
 #' # Calculate the custom index, (also together with the provided ones)
