@@ -36,7 +36,10 @@ extern "C" {
 typedef struct te_expr {
     int type;
     union {double value; const double *bound; const void *function;};
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
     void *parameters[];
+#pragma GCC diagnostic pop
 } te_expr;
 
 
@@ -71,9 +74,6 @@ te_expr *te_compile(const char *expression, const te_variable *variables, int va
 
 /* Evaluates the expression. */
 double te_eval(const te_expr *n);
-
-/* Prints debugging information on the syntax tree. */
-void te_print(const te_expr *n);
 
 /* Frees the expression. */
 /* This is safe to call on NULL pointers. */
