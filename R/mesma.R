@@ -90,17 +90,11 @@ mesma <- function(img, em, method = "NNLS", iterate = 400, tolerance = 0.0000000
     stop("'em' is not allowed to contain NA values. Spectra must be consistent.")
   }
 
-  # check for n_models
-  if(is.null(n_models)){
-    n_models <- nrow(em)
-    if(is.null(n_models) || n_models < 1){
-      stop("Could not find rows with 'em', however, it must contain at least one.")
-    }
-  }else{
-    if(!is.integer(n_models)){
-      stop("'n_models' needs to be an 'integer' object.")
-    }
+  # Check for n_models type
+  if(!is.null(n_models) && !is.numeric(n_models)){
+    stop("'n_models' needs to be an 'numeric' object.")
   }
+
   
   method <- toupper(method) 
   meth_avail <- c("NNLS") #available methods
@@ -127,6 +121,11 @@ mesma <- function(img, em, method = "NNLS", iterate = 400, tolerance = 0.0000000
     classes <- unique(em$class)
     # check n_models
     n_em_cl <- min(sapply(classes, function(x) nrow(em[em$class == x,]), USE.NAMES = F))
+
+    if(is.null(n_models)){
+      n_models <- n_em_cl
+    }
+
     if(n_em_cl < n_models){
       warning(paste0("'n_models' cannot be larger than the minimum number of provided endmembers per class. Setting 'n_models' to ", n_em_cl, "."))
       n_models <- n_em_cl
@@ -182,18 +181,4 @@ mesma <- function(img, em, method = "NNLS", iterate = 400, tolerance = 0.0000000
   
   ## return brick
   return(probs)
-}
-
-
-test <- function(){
-  devtools::load_all()
-
-  em <- rbind(
-    data.frame(lsat[c(4155 , 17018 , 53134)], class="forest"),
-    data.frame(lsat[c(22742 , 25946 , 38617)], class="water"),
-    data.frame(lsat[c(4330 , 1762, 1278)], class="shortgrown")
-  )
-
-  fracs <- mesma(lsat, em)
-
 }

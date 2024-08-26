@@ -1,6 +1,6 @@
 #' Spectral Indices
 #' 
-#' Calculate a suite of multispectral indices such as NDVI, SAVI etc. in an efficient way.
+#' Calculate a suite of multispectral indices such as NDVI, SAVI etc. in an efficient way via C++.
 #' 
 #' @param img SpatRaster. Typically remote sensing imagery, which is to be classified.
 #' @param blue Character or integer. Blue band. 
@@ -23,7 +23,7 @@
 #' @param coefs List of coefficients (see Details).  
 #' @param ... further arguments such as filename etc. passed to \link[terra]{writeRaster}
 #' @return  SpatRaster
-#' @template spectralIndices_table 
+#' @template spectralIndices_table
 #' @export
 #' @examples
 #' library(ggplot2)
@@ -43,6 +43,17 @@
 #' 
 #' SI <- spectralIndices(lsat_ref, red = "B3_tre", nir = "B4_tre")
 #' plot(SI)
+#'
+#' ## Custom Spectral Index Calculation (beta) (supports only bands right now...)
+#' # Get all indices
+#' idxdb <- getOption("RStoolbox.idxdb")
+#'
+#' # Cutomize the RStoolbox index-database and overwrite the option
+#' cdb <- c(idxdb, CUSTOM = list( list(c("Mueller2024", "Super custom index"), function(blue, red) {blue + red})))
+#' rsOpts(idxdb = cdb)
+#'
+#' # Calculate the custom index, (also together with the provided ones)
+#' custom_ind <- spectralIndices(lsat, blue = 1, red = 3, nir = 4, indices = c("NDVI", "CUSTOM"))
 #' }
 spectralIndices <- function(img,
         blue=NULL, green=NULL, red=NULL, nir = NULL, 
@@ -50,7 +61,6 @@ spectralIndices <- function(img,
         swir1 = NULL, swir2 =NULL, swir3 = NULL,
         scaleFactor = 1, skipRefCheck = FALSE, indices=NULL, index = NULL, maskLayer = NULL, maskValue = 1,
         coefs = list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5, s = 1, swir2ccc = NULL, swir2coc = NULL),
-        expression=NULL,
         ... ) {
     # TODO: soil line estimator
     
@@ -222,13 +232,3 @@ extract_function_string <- function(fn) {
 # BANDSdb <- lapply(lapply(.IDXdb,"[[", 2), function(x) names(formals(x)))
 .IDXdbFormulae <- lapply(.IDXdb,"[[",2)
 .IDX.REFdb <- lapply(.IDXdb,"[[",1)
-
-
-test <- function (){
-    devtools::load_all()
-
-    idxdb <- getOption("RStoolbox.idxdb")
-
-    print(RStoolbox::spectralIndices(lsat, blue = 1, red = 3, indices = c("CUSTOM", "CUSTOM2")))
-
-}

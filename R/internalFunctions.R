@@ -256,6 +256,16 @@
 #' @noRd 
 .onLoad <- function(libname, pkgname){
 
+    L <- 0.5
+    G <- 2.5
+    L_evi <- 1
+    C1 <- 6
+    C2 <- 7.5
+    s <- 1
+    swir2ccc <- NULL
+    swir2coc <- NULL
+    NDVI <- NULL
+
     .IDXDB <- list(
         CLG = list(c("Gitelson2003", "Green-band Chlorophyll Index"),
                 function(redEdge3, green) {redEdge3/green - 1}),
@@ -318,11 +328,7 @@
         TVI = list(c("Deering1975", "Transformed Vegetation Index"),
                 function(red, nir) {sqrt((nir-red)/(nir+red)+0.5)}),
         WDVI = list(c("Richardson1977", "Weighted Difference Vegetation Index"),
-                function(red, nir) {nir - s * red}),
-        CUSTOM = list(c("Mueller2024", "Super custom index"),
-                      function(red) {blue + red}),
-        CUSTOM2 = list(c("Mueller2024", "Super custom index 2"),
-                      function(red) {red * red})
+                function(red, nir) {nir - s * red})
     )
 
     if(is.null(getOption("RStoolbox.verbose")))  options(RStoolbox.verbose = FALSE)
@@ -483,10 +489,4 @@
   # Return the full path to the temporary file
   full_path <- file.path(temp_dir, filename)
   return(full_path)
-}
-
-.with_env <- function(f) {
-    stopifnot(is.function(f))
-    environment(f) <- new.env()
-    f
 }
