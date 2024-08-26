@@ -42,6 +42,7 @@ For log = natural log uncomment the next line. */
 #include <stdio.h>
 #include <ctype.h>
 #include <limits.h>
+#include <R.h>
 
 #ifndef NAN
 #define NAN (0.0/0.0)
@@ -87,8 +88,9 @@ typedef struct state {
 static te_expr *new_expr(const int type, const te_expr *parameters[]) {
     const int arity = ARITY(type);
     const int psize = sizeof(void*) * arity;
-    const int size = (sizeof(te_expr) - sizeof(void*)) + psize + (IS_CLOSURE(type) ? sizeof(void*) : 0);
+    const int size = sizeof(te_expr) + psize + (IS_CLOSURE(type) ? sizeof(void*) : 0);
     te_expr *ret = malloc(size);
+
     CHECK_NULL(ret);
 
     memset(ret, 0, size);
@@ -701,34 +703,4 @@ double te_interp(const char *expression, int *error) {
         ret = NAN;
     }
     return ret;
-}
-
-static void pn (const te_expr *n, int depth) {
-    int i, arity;
-    printf("%*s", depth, "");
-
-    switch(TYPE_MASK(n->type)) {
-    case TE_CONSTANT: printf("%f\n", n->value); break;
-    case TE_VARIABLE: printf("bound %p\n", n->bound); break;
-
-    case TE_FUNCTION0: case TE_FUNCTION1: case TE_FUNCTION2: case TE_FUNCTION3:
-    case TE_FUNCTION4: case TE_FUNCTION5: case TE_FUNCTION6: case TE_FUNCTION7:
-    case TE_CLOSURE0: case TE_CLOSURE1: case TE_CLOSURE2: case TE_CLOSURE3:
-    case TE_CLOSURE4: case TE_CLOSURE5: case TE_CLOSURE6: case TE_CLOSURE7:
-         arity = ARITY(n->type);
-         printf("f%d", arity);
-         for(i = 0; i < arity; i++) {
-             printf(" %p", n->parameters[i]);
-         }
-         printf("\n");
-         for(i = 0; i < arity; i++) {
-             pn(n->parameters[i], depth + 1);
-         }
-         break;
-    }
-}
-
-
-void te_print(const te_expr *n) {
-    pn(n, 0);
 }
