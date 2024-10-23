@@ -26,26 +26,12 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/bleutner/RStoolbox/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/bleutner/RStoolbox/blob/v1.0.1/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.0.1" id="rstoolbox-101">RStoolbox 1.0.1<a class="anchor" aria-label="anchor" href="#rstoolbox-101"></a></h2>
-<p>Changes for publication in MEE</p>
-<div class="section level3">
-<h3 id="new-1-0-1">New:<a class="anchor" aria-label="anchor" href="#new-1-0-1"></a></h3>
-<ul><li>
-<code><a href="../reference/spectralIndices.html">spectralIndices()</a></code> can now be customized. We made the indices available as an editable option in the RStoolbox package as suggested by a reviewer. Users now can append a custom index to it that will be then calculated via the C++ plus within spectralIndices.cpp.</li>
-</ul></div>
-<div class="section level3">
-<h3 id="changes-1-0-1">Changes:<a class="anchor" aria-label="anchor" href="#changes-1-0-1"></a></h3>
-<ul><li>
-<code><a href="../reference/mesma.html">mesma()</a></code> now does not throw an error anymore when given no models and the default value was too high</li>
-</ul></div>
-</div>
-    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.0" id="rstoolbox-100">RStoolbox 1.0.0<a class="anchor" aria-label="anchor" href="#rstoolbox-100"></a></h2><p class="text-muted">CRAN release: 2024-04-25</p>
-<p>Minor changes before major release</p>
+<p>Updating MESMA, minor changes before major release</p>
 <div class="section level3">
 <h3 id="new-1-0-0">New:<a class="anchor" aria-label="anchor" href="#new-1-0-0"></a></h3>
 <ul><li>
@@ -61,6 +47,19 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.0" id="rstoolbox-040">RStoolbox 0.4.0<a class="anchor" aria-label="anchor" href="#rstoolbox-040"></a></h2><p class="text-muted">CRAN release: 2024-01-17</p>
 <p>Rewrite of <code>RStoolbox</code>, migration from <code>raster</code> to <code>terra</code> and <code>sp</code> to <code>sf</code></p>
+<div class="section level3">
+<h3 id="new-0-4-0">New:<a class="anchor" aria-label="anchor" href="#new-0-4-0"></a></h3>
+<ul><li>RStoolbox moved on from the outdated <code>sp</code> and <code>raster</code> packages to <code>sf</code> and <code>terra</code> to ensure long term support of the tools.</li>
+<li>Thrown out unnecessary libraries</li>
+</ul></div>
+<div class="section level3">
+<h3 id="fixes-0-4-0">Fixes:<a class="anchor" aria-label="anchor" href="#fixes-0-4-0"></a></h3>
+<ul><li>
+<code><a href="../reference/rasterPCA.html">rasterPCA()</a></code>: Fixed a bug that caused the method and its unit tests to fail on Linux due to a corrupted covariance matrix calculated previously with <code><a href="https://rspatial.github.io/terra/reference/layerCor.html" class="external-link">terra::layerCor()</a></code>
+</li>
+<li>
+<code><a href="../reference/superClass.html">superClass()</a></code> unable to predict when there is NA in raster data (closes <a href="https://github.com/bleutner/RStoolbox/issues/102" class="external-link">#102</a>, reported by <a href="https://github.com/bappa10085" class="external-link">@bappa10085</a>)</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="rstoolbox-030">RStoolbox 0.3.0<a class="anchor" aria-label="anchor" href="#rstoolbox-030"></a></h2><p class="text-muted">CRAN release: 2022-03-07</p>
