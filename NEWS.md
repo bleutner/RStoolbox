@@ -8,25 +8,25 @@ Changes for publication in MEE
 * `mesma()` now does not throw an error anymore when given no models and the default value was too high
 
 # RStoolbox 1.0.0
-Updating MESMA, minor changes before major release
+Minor changes before major release
 
 ## New:
-* `mesma()` now better differentiates SMA and MESMA: For single endmember unmixing, each supplied endmember represents a class to unmix (row by row). For multiple endmemeber unmixing, the column `class` can be used to group endmembers by class. If multiple endmembers per class are provided, `mesma()` will compute a number of SMA (determined through the new argument `n_models`) for multiple endmember combinations drawn from endmembers and will select the best fit per pixel based on the lowest RMSE. See `?mesma` for details (fixes #57, reported by @Anonymous)
+* `mesma()` now better differentiates SMA and MESMA: For single endmember unmixing, each supplied endmember represents a class to unmix (row by row). For multiple endmemeber unmixing, the column `class` can be used to group endmembers by class. If multiple endmembers per class are provided, `mesma()` will compute a number of SMA (determined through the new argument `n_models`) for multiple endmember combinations drawn from endmembers and will select the best fit per pixel based on the lowest RMSE. See `?mesma` for details (fixes #57, reported by @ytarazona)
 
 ## Changes:
-* `mesma()` now implements the sum to one constraint by default (argument `sum_to_one`) (fixes #62, reported by @Anonymous)
+* `mesma()` now implements the sum to one constraint by default (argument `sum_to_one`) (fixes #62, reported by @michaeldorman)
 * added a new example to `mesma()` to reflect the changes
 
 # RStoolbox 0.4.0
 Rewrite of `RStoolbox`, migration from `raster` to `terra` and `sp` to `sf`
 
-## New:
+# New:
 * RStoolbox moved on from the outdated `sp` and `raster` packages to `sf` and `terra` to ensure long term support of the tools.
 * Thrown out unnecessary libraries
 
-## Fixes:
+# Fixes:
 * `rasterPCA()`: Fixed a bug that caused the method and its unit tests to fail on Linux due to a corrupted covariance matrix calculated previously with `terra::layerCor()`
-* `superClass()` unable to predict when there is NA in raster data (closes #102, reported by @Anonymous)
+* `superClass()` unable to predict when there is NA in raster data (closes #102, reported by @bappa10085)
 
 # RStoolbox 0.3.0
 
@@ -34,19 +34,19 @@ Rewrite of `RStoolbox`, migration from `raster` to `terra` and `sp` to `sf`
 * `rasterCVA()` by default no longer enforces a minimal change magnitude (can still be accomplished with the `tmf` argument).
    Also a new argument `nct` allows to fix this threshold to a user selected value instead of deriving it based on the median of the observed change magnitudes. 
 * `unsuperClass()` has a new argument `output` which allows to return the distances to all cluster centers as raster layers, instead of the class itself 
-* added spectral index kNDVI in `spectralIndices()` as suggested by Anonymous (0000)
+* added spectral index kNDVI in `spectralIndices()` as suggested by Camps-Valls et al (2021)
 * added support for `terra::SpatRast` objects throughout RStoolbox (as alternative to `raster` objects). Note: internal functionality is still based on `raster`.
 
 ## Changes:
-* arguments `master` and `slave` in `coregisterImages()` were deprecated in favor of `ref` and `img`, respectively (closes #63, suggested by @Anonymous)
+* arguments `master` and `slave` in `coregisterImages()` were deprecated in favor of `ref` and `img`, respectively (closes #63, suggested by @MatthiasSiewert)
 
 ## Fixes:
 * `rasterCVA()` estimates median values now for entire rasters and not per chunk
 * `cloudMask()` now returns NA for non-clouds instead of NaN
-* `topCor()` now works for tiny rasters as well (fixes #55, reported by @Anonymous) 
-* `rasterPCA()` now correctly considers the number observations in face of missing values (fixes #79, reported by @Anonymous)
-* `superClass()` now accepts different geometries for trainData and valData (fixes #73, suggested by @Anonymous)
-* fix `readMeta()` for MTL files delivered with Landsat collection data (fixes #71, reported by @Anonymous et al.)
+* `topCor()` now works for tiny rasters as well (fixes #55, reported by @latenooker) 
+* `rasterPCA()` now correctly considers the number observations in face of missing values (fixes #79, reported by @andliszmmu)
+* `superClass()` now accepts different geometries for trainData and valData (fixes #73, suggested by @Silviculturalist)
+* fix `readMeta()` for MTL files delivered with Landsat collection data (fixes #71, reported by @jkoellin et al.)
 
 # RStoolbox 0.2.6
 
@@ -59,11 +59,11 @@ Rewrite of `RStoolbox`, migration from `raster` to `terra` and `sp` to `sf`
    - MERIS Terrestrial Chlorophyll Index (MTCI)
 
 ## Fixes: 
-* `readSLI()` and `writeSLI()` now handle endian of binary spectral libraries correctly (#47, fix contributed by @Anonymous)
-* fix calculation of prediction probabilities in `superClass()`(reported by Anonymous)
+* `readSLI()` and `writeSLI()` now handle endian of binary spectral libraries correctly (#47, fix contributed by @aloboa)
+* fix calculation of prediction probabilities in `superClass()`(reported by Benson Kemboi)
 * adapt to raster 2.9.5 API changes
-* fix order of thermal calibration coefficients for Landsat 8 L1 MTL metadata in `readMeta` (reported by Anonymous)
-* fixed an issue where `readSLI()` did not find header files with dots in pathnames (#51, reported by @Anonymous)
+* fix order of thermal calibration coefficients for Landsat 8 L1 MTL metadata in `readMeta` (reported by Xiaoma Li)
+* fixed an issue where `readSLI()` did not find header files with dots in pathnames (#51, reported by @aloboa)
 
 ## Changes:
 * modified readSLI label parsing. Internal white space is now converted to underscores (#52)
@@ -83,7 +83,7 @@ Rewrite of `RStoolbox`, migration from `raster` to `terra` and `sp` to `sf`
 * all `radCor()` DOS methods now work for Landsat 8 OLI
 
 ## Fixes:
-* fix `unsuperClass()` for algorithms other than Hartigan-Wong (reported by Anonymous)
+* fix `unsuperClass()` for algorithms other than Hartigan-Wong (reported by Alex Ilich)
 
 # RStoolbox 0.2.2
 
@@ -94,7 +94,7 @@ Rewrite of `RStoolbox`, migration from `raster` to `terra` and `sp` to `sf`
 * `readEE()` 'Date' column is now returned as POSIXct instead of POSIXlt
 
 ## Fixes:
-* corrected `tasseledCap()` coefficient for Landsat 5 TM (#40, reported by @Anonymous)
+* corrected `tasseledCap()` coefficient for Landsat 5 TM (#40, reported by @philipperufin)
 
 
 # RStoolbox 0.2.1
@@ -105,10 +105,10 @@ Rewrite of `RStoolbox`, migration from `raster` to `terra` and `sp` to `sf`
 # RStoolbox 0.2.0
 
 ## New:
-* function `mesma()` for spectral unmixing (#33, provided by Anonymous)
+* function `mesma()` for spectral unmixing (#33, provided by Jakob Schwalb-Willmann)
 
 ## Fixes: 
-* improved NA handling and faster implementation of mlc classifier (#32, pull request by Anonymous)
+* improved NA handling and faster implementation of mlc classifier (#32, pull request by Neal Fultz)
 * adapt to upcoming caret version (new constraint caret >= 6.0-79)
 
 
@@ -122,18 +122,18 @@ Rewrite of `RStoolbox`, migration from `raster` to `terra` and `sp` to `sf`
 ## Fixes:
 * adapt to new caret version
 * fix `readEE()` for new EarthExplorer formats
-* corrected sign of greenness `tasseledCap()` coefficient for Landsat5 TM band 1 (reported by Anonymous)
+* corrected sign of greenness `tasseledCap()` coefficient for Landsat5 TM band 1 (reported by Thomas Day)
 * adapt `readMeta()` and `stackMeta()` to new Landsat collection 1 metadata
 
 # RStoolbox 0.1.8
 
 ## New:
 * `spectralIndices()` can now apply a mask internally, e.g. to exclude cloud pixels. New arguments are: 
-   `maskLayer` and `maskValue` (suggested by Anonymous).   
+   `maskLayer` and `maskValue` (suggested by Andrea Hess).   
 * added spectral index GNDWI   
 
 ## Fixes: 
-* update `readEE()` to deal with new EarthExplorer export columns (reported by Anonymous)
+* update `readEE()` to deal with new EarthExplorer export columns (reported by Christian Bauer)
 
 # RStoolbox 0.1.7
 
@@ -152,11 +152,11 @@ Rewrite of `RStoolbox`, migration from `raster` to `terra` and `sp` to `sf`
    The actual calculations were correct, but the naming was off. 
    
 ## Fixes:
-* fix `ggR()` and `ggRGB()` in  annotation mode (default). No image was drawn and excessive memory allocation requested (= RStudio crash) (reported by Anonymous)
-* fix `spectralIndices()` documentation for NDWI. Formula was based on McFeeters1996 but attributed to Gao1996. Now there is NDWI (McFeeters) and NDWI2 (Gao) (reported by Anonymous)
-* `estimateHaze()` now ensures correct histogram order, which could be off when raster had to read from disk (reported by Anonymous).   
+* fix `ggR()` and `ggRGB()` in  annotation mode (default). No image was drawn and excessive memory allocation requested (= RStudio crash) (reported by Christian Walther)
+* fix `spectralIndices()` documentation for NDWI. Formula was based on McFeeters1996 but attributed to Gao1996. Now there is NDWI (McFeeters) and NDWI2 (Gao) (reported by Christian Bauer)
+* `estimateHaze()` now ensures correct histogram order, which could be off when raster had to read from disk (reported by Xavier Bailleau).   
 * `readMeta()` now makes concise bandnames also for Landsat Collection MTL files.
-* fix `radCor()` for Landsat 4 TM (reported by Anonymous)
+* fix `radCor()` for Landsat 4 TM (reported by Thomas Day)
 * `classifyQA()` confidence layer for type='water' now correctly returns only confidence levels in [1,3] 
 * enable reading ENVI plot files in ASCII mode with `readSLI()`
 
@@ -173,15 +173,15 @@ Deprecated:
 ## Changes:
 * If the bandSet argument in `radCor()` is used to process only a subset of bands it will no longer return unprocessed bands along with processed bands. Instead only processed bands are returned.
 * By default `superClass()` will now use dataType = 'INT2S' for classification maps to avoid issues with raster NA handling in INT1U
-* Allow reading and importing from Landsat MSS MTL files with `readMeta()` and `stackMeta()` (@Anonymous, #7)
+* Allow reading and importing from Landsat MSS MTL files with `readMeta()` and `stackMeta()` (@aszeitz, #7)
 
 ## Fixes:
-* fix readMeta time-stamp conversion now correctly set to GMT time (@Anonymous, #12)
+* fix readMeta time-stamp conversion now correctly set to GMT time (@mraraju, #12)
 * radCor caused R to crash if bandSet was a single band 
 * fix single RasterLayer capability for superClass
-* spectralIndices now calculates *all* documented indices if specified to do so (@Anonymous, #6)
+* spectralIndices now calculates *all* documented indices if specified to do so (@mej1d1, #6)
 * unsuperClass predicted map now handles NAs properly
-* pifMatch did not return adjusted image (@Anonymous, #13)
+* pifMatch did not return adjusted image (@tmb3006, #13)
 
 Deprecated:
 * argument `norm` was dropped from rasterPCA, because it was effectively a duplicate of the standardized pca (spca) argument in the same function.
@@ -190,21 +190,21 @@ Deprecated:
 
 ## New:
 * new function `validateMap()` for assessing map accuracy separately from model fitting, e.g. after majority or MMU filtering
-* new function `getValidation()` to extract specific validation results of superClass objects (proposed by Anonymous)
-* new spectral index NDVIc (proposed by Anonymous)
+* new function `getValidation()` to extract specific validation results of superClass objects (proposed by James Duffy)
+* new spectral index NDVIc (proposed by Jeff Evans)
 * new argument scaleFactor for `spectralIndices()` for calculation of EVI/EVI2 based on scaled reflectance values. 
-* implemented dark object subtraction radCor(..,method='sdos') for Landsat 8 data (@Anonymous, #4)
+* implemented dark object subtraction radCor(..,method='sdos') for Landsat 8 data (@BayAludra, #4)
 
 ## Changes:
 * superClass based on polygons now considers only pixels which have their center coordinate within a polygon  
-* rasterCVA now returns angles from 0 to 360° instead of 0:45 by quadrant (reported by Anonymous)
-* improved dark object DN estimation based on maximum slope of the histogram in `estimateHaze()` (@Anonymous, #4)
+* rasterCVA now returns angles from 0 to 360° instead of 0:45 by quadrant (reported by Martin Wegmann)
+* improved dark object DN estimation based on maximum slope of the histogram in `estimateHaze()` (@BayAludra, #4)
 
 ## Fixes:
-* superClass failed when neither valData or trainPartition was specified. regression introduced in 0.1.3 (reported by Anonymous)
+* superClass failed when neither valData or trainPartition was specified. regression introduced in 0.1.3 (reported by Anna Stephani)
 * spectralIndices valid value range of EVI/EVI2 now [-1,1]
 * radCor returned smallest integer instead of NA for some NA pixels
-* fix 'sdos' for non-contiguous bands in radCor (@Anonymous, #4)
+* fix 'sdos' for non-contiguous bands in radCor (@BayAludra, #4)
 
 
 # RStoolbox 0.1.3
