@@ -1,159 +1,55 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/404.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/index.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/ImageMetaData.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/RStoolbox.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/classifyQA.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/cloudMask.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/cloudShadowMask.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/coregisterImages.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/decodeQA.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/encodeQA.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/estimateHaze.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/fCover.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/fortifySpatRaster.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/getMeta.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/getValidation.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/ggR.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/ggRGB.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/histMatch.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/lsat.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/mesma.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/normImage.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/oneHotEncode.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/panSharpen.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/pifMatch.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/pipe.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/predict.unsuperClass.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/radCor.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/rasterCVA.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/rasterEntropy.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/rasterPCA.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/readEE.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/readMeta.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/readSLI.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/rescaleImage.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/rlogo.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/rsOpts.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/sam.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/saveRSTBX.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/sen2.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/spectralIndices.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/srtm.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/srtm_sen2.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/stackMeta.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/superClass.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/tasseledCap.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/topCor.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/unsuperClass.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/validateMap.html</loc>
-  </url>
-  <url>
-    <loc>https://bleutner.github.io/RStoolbox/reference/writeSLI.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://bleutner.github.io/RStoolbox/404.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/authors.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/index.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/news/index.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/ImageMetaData.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/RStoolbox.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/classifyQA.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/cloudMask.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/cloudShadowMask.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/coregisterImages.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/decodeQA.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/encodeQA.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/estimateHaze.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/fCover.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/fortifySpatRaster.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/getMeta.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/getValidation.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/ggR.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/ggRGB.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/histMatch.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/index.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/lsat.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/mesma.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/normImage.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/oneHotEncode.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/panSharpen.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/pifMatch.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/pipe.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/predict.unsuperClass.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/radCor.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/rasterCVA.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/rasterEntropy.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/rasterPCA.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/readEE.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/readMeta.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/readSLI.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/rescaleImage.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/rlogo.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/rsOpts.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/sam.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/saveRSTBX.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/sen2.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/spectralIndices.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/srtm.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/srtm_sen2.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/stackMeta.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/superClass.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/tasseledCap.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/topCor.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/unsuperClass.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/validateMap.html</loc></url>
+<url><loc>https://bleutner.github.io/RStoolbox/reference/writeSLI.html</loc></url>
 </urlset>
+
