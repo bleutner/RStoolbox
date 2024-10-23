@@ -49,7 +49,7 @@ specSimC <- function(x, em) {
     .Call('_RStoolbox_specSimC', PACKAGE = 'RStoolbox', x, em)
 }
 
-spectralIndicesCpp <- function(x, indices, redBand, blueBand, greenBand, nirBand, redEdge1Band, redEdge2Band, redEdge3Band, swir1Band, swir2Band, swir3Band, maskLayer, maskValue, L, s, G, C1, C2, Levi, swir2ccc, swir2cdiff, sf) {
-    .Call('_RStoolbox_spectralIndicesCpp', PACKAGE = 'RStoolbox', x, indices, redBand, blueBand, greenBand, nirBand, redEdge1Band, redEdge2Band, redEdge3Band, swir1Band, swir2Band, swir3Band, maskLayer, maskValue, L, s, G, C1, C2, Levi, swir2ccc, swir2cdiff, sf)
+spectralIndicesCpp <- function(x, indices, redBand, blueBand, greenBand, nirBand, redEdge1Band, redEdge2Band, redEdge3Band, swir1Band, swir2Band, swir3Band, maskLayer, maskValue, L, s, G, C1, C2, Levi, swir2ccc, swir2cdiff, sf, formulas) {
+    .Call('_RStoolbox_spectralIndicesCpp', PACKAGE = 'RStoolbox', x, indices, redBand, blueBand, greenBand, nirBand, redEdge1Band, redEdge2Band, redEdge3Band, swir1Band, swir2Band, swir3Band, maskLayer, maskValue, L, s, G, C1, C2, Levi, swir2ccc, swir2cdiff, sf, formulas)
 }
 

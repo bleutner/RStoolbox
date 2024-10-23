@@ -87,6 +87,7 @@ A superClass object (effectively a list) containing:
 Supervised classification both for classification and regression mode based on vector training data (points or polygons).
 }
 \details{
+Note that superClass automatically loads the lattice and randomForest package.
 SuperClass performs the following steps:
 
 \enumerate{

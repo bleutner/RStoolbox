@@ -1,6 +1,6 @@
 #' Spectral Indices
 #' 
-#' Calculate a suite of multispectral indices such as NDVI, SAVI etc. in an efficient way.
+#' Calculate a suite of multispectral indices such as NDVI, SAVI etc. in an efficient way via C++.
 #' 
 #' @param img SpatRaster. Typically remote sensing imagery, which is to be classified.
 #' @param blue Character or integer. Blue band. 
@@ -23,7 +23,7 @@
 #' @param coefs List of coefficients (see Details).  
 #' @param ... further arguments such as filename etc. passed to \link[terra]{writeRaster}
 #' @return  SpatRaster
-#' @template spectralIndices_table 
+#' @template spectralIndices_table
 #' @export
 #' @examples
 #' library(ggplot2)
@@ -43,12 +43,24 @@
 #' 
 #' SI <- spectralIndices(lsat_ref, red = "B3_tre", nir = "B4_tre")
 #' plot(SI)
+#'
+#' ## Custom Spectral Index Calculation (beta) (supports only bands right now...)
+#' # Get all indices
+#' idxdb <- getOption("RStoolbox.idxdb")
+#'
+#' # Customize the RStoolbox index-database and overwrite the option
+#' cdb <- c(idxdb, CUSTOM = list( list(c("Mueller2024", "Super custom index"),
+#'         function(blue, red) {blue + red})))
+#' rsOpts(idxdb = cdb)
+#'
+#' # Calculate the custom index, (also together with the provided ones)
+#' custom_ind <- spectralIndices(lsat, blue = 1, red = 3, nir = 4, indices = c("NDVI", "CUSTOM"))
 #' }
 spectralIndices <- function(img,
         blue=NULL, green=NULL, red=NULL, nir = NULL, 
         redEdge1 = NULL, redEdge2 = NULL, redEdge3 = NULL, 
         swir1 = NULL, swir2 =NULL, swir3 = NULL,
-        scaleFactor = 1, skipRefCheck = FALSE,   indices=NULL, index = NULL, maskLayer = NULL, maskValue = 1,
+        scaleFactor = 1, skipRefCheck = FALSE, indices=NULL, index = NULL, maskLayer = NULL, maskValue = 1,
         coefs = list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5, s = 1, swir2ccc = NULL, swir2coc = NULL),
         ... ) {
     # TODO: soil line estimator
@@ -69,9 +81,10 @@ spectralIndices <- function(img,
     # mir2  | midwave infra-red    |  4500  -   5000 nm 
     # TIR1  | thermal infra-red    |  8000  -   9500 nm
     # TIR2  | thermal infra-red    | 10000  - 140000 nm
-    ##    
+    ##
+
 	img <- .toTerra(img)
-	if(!is.null(maskLayer)) maskLayer <- .toTerra(maskLayer)
+    if(!is.null(maskLayer)) maskLayer <- .toTerra(maskLayer)
     if(!is.null(index)) indices <- index  ## argument translation for convenience
     if("LSWI" %in% toupper(indices)) stop("LSWI has been deprecated. Use NDWI2 instead; it is identical.")
     if(!is.null(swir1)) stop(paste0("Currently there is no spectral index requiring swir1.", 
@@ -85,9 +98,13 @@ spectralIndices <- function(img,
     if(any(!implem)) warning("Non-implemented coefficients are ignored: ", paste0(names(coefs)[!implem], collapse=", "),
                 "\nimplemented coefficients are: ", paste0(names(defaultCoefs), collapse = ", "))
     coefs <- c(coefs, defaultCoefs[setdiff(names(defaultCoefs), names(coefs))])
-    
+
+    # Update bandsdb
+    idxdb <- getOption("RStoolbox.idxdb")
+    BANDSdb <- lapply(lapply(idxdb,"[[", 2), function(x) names(formals(x)))
+
     ## Check indices
-    ind <- if(is.null(indices)) names(BANDSdb) else indices <- toupper(indices)  
+    ind <- if(is.null(indices)) names(BANDSdb) else indices <- toupper(indices)
     if((is.null(coefs$swir2ccc) | is.null(coefs$swir2coc))) {
         if(!is.null(indices) & ("NDVIC" %in% ind)) warning("NDVIc can only be calculated if swir2ccc and swir2coc coefficients are provided.", call. = FALSE)  
         coefs$swir2ccc <- 0  ## dummy, cant pass NULL to spectralIndicesCpp
@@ -168,11 +185,9 @@ spectralIndices <- function(img,
     filename <- if("filename" %in% names(wopt)) wopt$filename else ""
     overwrite <- if("overwrite" %in% names(wopt)) wopt$overwrite else FALSE
     wopt[c("filename","overwrite")] <- NULL
-    
-    
+
     # Perform calculations 
     indexMagic <- terra::app(img[[bandsCalc]], fun = function(m) {
-                        
                         spectralIndicesCpp(
                                 x = m,
                                 indices   = canCalc,
@@ -190,7 +205,8 @@ spectralIndices <- function(img,
                                 maskValue = maskValue,
                                 L = coefs[["L"]],  G = coefs[["G"]], Levi = coefs[["L_evi"]], 
                                 C1 = coefs[["C1"]], C2 = coefs[["C2"]], s = coefs[["s"]],
-                                swir2ccc = coefs[["swir2ccc"]], swir2cdiff = coefs[["swir2cdiff"]], sf = scaleFactor
+                                swir2ccc = coefs[["swir2ccc"]], swir2cdiff = coefs[["swir2cdiff"]], sf = scaleFactor,
+                                formulas = as.vector(unlist(lapply(idxdb[canCalc], FUN = extract_function_string)))
                         )},
                      wopt=wopt, filename = filename, overwrite = overwrite) 
     
@@ -199,77 +215,21 @@ spectralIndices <- function(img,
     return(indexMagic)
 }
 
+extract_function_string <- function(fn) {
+    function_body <- body(fn[[2]])
+    function_string <- deparse(function_body)
+    function_string <- paste(function_string, collapse = "")
+    function_string <- gsub("\\s+", "", function_string)
+    function_string <- gsub("[{}]", "", function_string)
+    return(function_string)
+}
+
 ## NOT USED FOR CALCULATIONS ONLY FOR DOCUMENTATION
 ## SEE /src/spectraIndices.cpp for calculations
 #' Database of spectral indices
 #' @keywords internal
-#' @noRd 
-.IDXdb <- list(
-        CLG = list(c("Gitelson2003", "Green-band Chlorophyll Index"), 
-                function(redEdge3, green) {redEdge3/green - 1}),
-        CLRE = list(c("Gitelson2003", "Red-edge-band Chlorophyll Index"),
-                function(redEdge3, redEdge1) {redEdge3/redEdge1 - 1}),
-        CTVI = list(c("Perry1984", "Corrected Transformed Vegetation Index"), 
-                function(red, nir) {(NDVI+.5)/sqrt(abs(NDVI+.5))} ),
-        DVI = list(c("Richardson1977", "Difference Vegetation Index"), 
-                function(red, nir) {s*nir-red}), 
-        EVI = list(c("Huete1999", "Enhanced Vegetation Index"), 
-                function(red, nir, blue) {G * ((nir - red) / (nir + C1 * red - C2 * blue + L_evi))}),
-        EVI2 = list(c("Jiang 2008", "Two-band Enhanced Vegetation Index"),
-                function(red, nir) {G * (nir-red)/(nir + 2.4*red +1)}), 
-        GEMI = list(c("Pinty1992", "Global Environmental Monitoring Index"), 
-                function(red, nir) {(((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5) ) / (nir + red + 0.5)) * (1 - ((((nir^2 - red^2) * 2 + (nir * 1.5) + (red * 0.5) ) / (nir + red + 0.5)) * 0.25)) - ((red - 0.125) / (1 - red))}), 
-        GNDVI = list(c("Gitelson1998", "Green Normalised Difference Vegetation Index" ),
-                function(green, nir) {(nir-green)/(nir+green)}),
-		KNDVI = list(c("Camps-Valls2021", "Kernel Normalised Difference Vegetation Index"), 
-				function(red, nir) {tanh(((nir-red)/(nir+red)))^2}), 
-        MCARI = list(c("Daughtery2000", "Modified Chlorophyll Absorption Ratio Index" ), 
-                function(green, red, redEdge1) {((redEdge1-red)-(redEdge1-green))*(redEdge1/red)}), 
-        MNDWI = list(c("Xu2006", "Modified Normalised Difference Water Index"), 
-                function(green, swir2) {(green-swir2) / (green+swir2)}), 
-        MSAVI = list(c("Qi1994", "Modified Soil Adjusted Vegetation Index" ), 
-                function(red, nir) {nir + 0.5 - (0.5 * sqrt((2 * nir + 1)^2 - 8 * (nir - (2 * red))))}), 
-        MSAVI2 = list(c("Qi1994", "Modified Soil Adjusted Vegetation Index 2" ), 
-                function(red, nir) {(2 * (nir + 1) - sqrt((2 * nir + 1)^2 - 8 * (nir - red))) / 2}), 
-        MTCI = list(c("DashAndCurran2004", "MERIS Terrestrial Chlorophyll Index"),
-                function(red, redEdge1, redEdge2) {(redEdge2-redEdge1)/(redEdge1-red)}), 
-        NBRI = list(c("Garcia1991", "Normalised Burn Ratio Index"), 
-                function(nir, swir3) { (nir - swir3) / (nir + swir3)}), 
-        NDREI1 = list(c("GitelsonAndMerzlyak1994", "Normalised Difference Red Edge Index 1"), 
-                function(redEdge2, redEdge1) {(redEdge2-redEdge1)/(redEdge2+redEdge1)}),
-        NDREI2 = list(c("Barnes2000", "Normalised Difference Red Edge Index 2"), 
-                function(redEdge3, redEdge1) {(redEdge3-redEdge1)/(redEdge3+redEdge1)}), 
-        NDVI = list(c("Rouse1974", "Normalised Difference Vegetation Index"), 
-                function(red, nir) {(nir-red)/(nir+red)}), 
-        NDVIC = list(c("Nemani1993", "Corrected Normalised Difference Vegetation Index" ), 
-                function(red, nir, swir2) {(nir-red)/(nir+red)*(1-((swir2 - swir2ccc)/(swir2coc-swir2ccc)))}), 
-        NDWI = list(c("McFeeters1996", "Normalised Difference Water Index"), 
-                function(green, nir) {(green - nir)/(green + nir)}), 
-        NDWI2 = list(c("Gao1996", "Normalised Difference Water Index"), 
-                function(nir, swir2) {(nir - swir2)/(nir + swir2)}), 
-        NRVI = list(c("Baret1991", "Normalised Ratio Vegetation Index" ), 
-                function(red, nir) {(red/nir - 1)/(red/nir + 1)}),
-        REIP = list(c("GuyotAndBarnet1988", "Red Edge Inflection Point"),
-                function(red, redEdge1, redEdge2, redEdge3) {0.705+0.35*((red+redEdge3)/(2-redEdge1))/(redEdge2-redEdge1)}), 
-        RVI = list(c("", "Ratio Vegetation Index"), 
-                function(red, nir) {red/nir}),
-        SATVI = list(c("Marsett2006", "Soil Adjusted Total Vegetation Index"), 
-                function(red, swir2, swir3) {(swir2 - red) / (swir2 + red + L) * (1 + L) - (swir3 / 2)}), 
-        SAVI = list(c("Huete1988", "Soil Adjusted Vegetation Index"),
-                function(red, nir) {(nir - red) * (1+L) / (nir + red + L)}), 
-        SLAVI = list(c("Lymburger2000", "Specific Leaf Area Vegetation Index"),
-                function(red, nir, swir2) {nir / (red + swir2)}), 
-        SR = list(c("Birth1968", "Simple Ratio Vegetation Index"), 
-                function(red, nir) {nir / red}), 
-        TTVI = list(c("Thiam1997", "Thiam's Transformed Vegetation Index"), 
-                function(red, nir) {sqrt(abs((nir-red)/(nir+red) + 0.5))}), 
-        TVI = list(c("Deering1975", "Transformed Vegetation Index"), 
-                function(red, nir) {sqrt((nir-red)/(nir+red)+0.5)}), 
-        WDVI = list(c("Richardson1977", "Weighted Difference Vegetation Index"), 
-                function(red, nir) {nir - s * red})
-)
-
-
-BANDSdb <- lapply(lapply(.IDXdb,"[[", 2), function(x) names(formals(x))) 
+#' @noRd
+.IDXdb <- getOption("RStoolbox.idxdb")
+# BANDSdb <- lapply(lapply(.IDXdb,"[[", 2), function(x) names(formals(x)))
 .IDXdbFormulae <- lapply(.IDXdb,"[[",2)
 .IDX.REFdb <- lapply(.IDXdb,"[[",1)
