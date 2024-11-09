@@ -167,8 +167,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // spectralIndicesCpp
-NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices, const int redBand, const int blueBand, const int greenBand, const int nirBand, const int redEdge1Band, const int redEdge2Band, const int redEdge3Band, const int swir1Band, const int swir2Band, const int swir3Band, int maskLayer, const int maskValue, const double L, const double s, const double G, const double C1, const double C2, double Levi, const double swir2ccc, const double swir2cdiff, const double sf);
-RcppExport SEXP _RStoolbox_spectralIndicesCpp(SEXP xSEXP, SEXP indicesSEXP, SEXP redBandSEXP, SEXP blueBandSEXP, SEXP greenBandSEXP, SEXP nirBandSEXP, SEXP redEdge1BandSEXP, SEXP redEdge2BandSEXP, SEXP redEdge3BandSEXP, SEXP swir1BandSEXP, SEXP swir2BandSEXP, SEXP swir3BandSEXP, SEXP maskLayerSEXP, SEXP maskValueSEXP, SEXP LSEXP, SEXP sSEXP, SEXP GSEXP, SEXP C1SEXP, SEXP C2SEXP, SEXP LeviSEXP, SEXP swir2cccSEXP, SEXP swir2cdiffSEXP, SEXP sfSEXP) {
+NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices, const int redBand, const int blueBand, const int greenBand, const int nirBand, const int redEdge1Band, const int redEdge2Band, const int redEdge3Band, const int swir1Band, const int swir2Band, const int swir3Band, int maskLayer, const int maskValue, const double L, const double s, const double G, const double C1, const double C2, double Levi, const double swir2ccc, const double swir2cdiff, const double sf, CharacterVector formulas);
+RcppExport SEXP _RStoolbox_spectralIndicesCpp(SEXP xSEXP, SEXP indicesSEXP, SEXP redBandSEXP, SEXP blueBandSEXP, SEXP greenBandSEXP, SEXP nirBandSEXP, SEXP redEdge1BandSEXP, SEXP redEdge2BandSEXP, SEXP redEdge3BandSEXP, SEXP swir1BandSEXP, SEXP swir2BandSEXP, SEXP swir3BandSEXP, SEXP maskLayerSEXP, SEXP maskValueSEXP, SEXP LSEXP, SEXP sSEXP, SEXP GSEXP, SEXP C1SEXP, SEXP C2SEXP, SEXP LeviSEXP, SEXP swir2cccSEXP, SEXP swir2cdiffSEXP, SEXP sfSEXP, SEXP formulasSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -195,7 +195,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type swir2ccc(swir2cccSEXP);
     Rcpp::traits::input_parameter< const double >::type swir2cdiff(swir2cdiffSEXP);
     Rcpp::traits::input_parameter< const double >::type sf(sfSEXP);
-    rcpp_result_gen = Rcpp::wrap(spectralIndicesCpp(x, indices, redBand, blueBand, greenBand, nirBand, redEdge1Band, redEdge2Band, redEdge3Band, swir1Band, swir2Band, swir3Band, maskLayer, maskValue, L, s, G, C1, C2, Levi, swir2ccc, swir2cdiff, sf));
+    Rcpp::traits::input_parameter< CharacterVector >::type formulas(formulasSEXP);
+    rcpp_result_gen = Rcpp::wrap(spectralIndicesCpp(x, indices, redBand, blueBand, greenBand, nirBand, redEdge1Band, redEdge2Band, redEdge3Band, swir1Band, swir2Band, swir3Band, maskLayer, maskValue, L, s, G, C1, C2, Levi, swir2ccc, swir2cdiff, sf, formulas));
     return rcpp_result_gen;
 END_RCPP
 }

@@ -1,5 +1,14 @@
+# RStoolbox 1.0.1
+Changes for publication in MEE
+
+## New:
+* `spectralIndices()` can now be customized. We made the indices available as an editable option in the RStoolbox package as suggested by a reviewer. Users now can append a custom index to it that will be then calculated via the C++ plus within spectralIndices.cpp.
+
+## Changes:
+* `mesma()` now does not throw an error anymore when given no models and the default value was too high
+
 # RStoolbox 1.0.0
-Updating MESMA, minor changes before major release
+Minor changes before major release
 
 ## New:
 * `mesma()` now better differentiates SMA and MESMA: For single endmember unmixing, each supplied endmember represents a class to unmix (row by row). For multiple endmemeber unmixing, the column `class` can be used to group endmembers by class. If multiple endmembers per class are provided, `mesma()` will compute a number of SMA (determined through the new argument `n_models`) for multiple endmember combinations drawn from endmembers and will select the best fit per pixel based on the lowest RMSE. See `?mesma` for details (fixes #57, reported by @ytarazona)
@@ -11,11 +20,11 @@ Updating MESMA, minor changes before major release
 # RStoolbox 0.4.0
 Rewrite of `RStoolbox`, migration from `raster` to `terra` and `sp` to `sf`
 
-## New:
+# New:
 * RStoolbox moved on from the outdated `sp` and `raster` packages to `sf` and `terra` to ensure long term support of the tools.
 * Thrown out unnecessary libraries
 
-## Fixes:
+# Fixes:
 * `rasterPCA()`: Fixed a bug that caused the method and its unit tests to fail on Linux due to a corrupted covariance matrix calculated previously with `terra::layerCor()`
 * `superClass()` unable to predict when there is NA in raster data (closes #102, reported by @bappa10085)
 

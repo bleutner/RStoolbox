@@ -71,7 +71,7 @@ If there are invalid reflectances, e.g. clouds with reflectance > 1 this check w
 SpatRaster
 }
 \description{
-Calculate a suite of multispectral indices such as NDVI, SAVI etc. in an efficient way.
+Calculate a suite of multispectral indices such as NDVI, SAVI etc. in an efficient way via C++.
 }
 \details{
 \code{spectralIndices} calculates all indices in one go in C++,  which is more efficient than calculating each index separately (for large rasters).
@@ -124,5 +124,17 @@ lsat_ref <- radCor(lsat, mtlFile, method = "apref")
 
 SI <- spectralIndices(lsat_ref, red = "B3_tre", nir = "B4_tre")
 plot(SI)
+
+## Custom Spectral Index Calculation (beta) (supports only bands right now...)
+# Get all indices
+idxdb <- getOption("RStoolbox.idxdb")
+
+# Cutomize the RStoolbox index-database and overwrite the option
+cdb <- c(idxdb, CUSTOM = list( list(c("Mueller2024", "Super custom index"),
+        function(blue, red) {blue + red})))
+rsOpts(idxdb = cdb)
+
+# Calculate the custom index, (also together with the provided ones)
+custom_ind <- spectralIndices(lsat, blue = 1, red = 3, nir = 4, indices = c("NDVI", "CUSTOM"))
 }
 }

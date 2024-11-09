@@ -1,6 +1,10 @@
 #include<Rcpp.h>
+#include <string>
+#include <vector>
+#include "tinyexpr.h"
 
 using namespace Rcpp;
+using namespace std;
 
 //[[Rcpp::export]]
 NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
@@ -9,7 +13,8 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 		const int swir1Band, const int swir2Band, const int swir3Band,
 		int maskLayer, const int maskValue,
 		const double L,  const double s, const double G, const double C1,
-		const double C2, double Levi, const double swir2ccc, const double swir2cdiff, const double sf) {
+		const double C2, double Levi, const double swir2ccc, const double swir2cdiff, const double sf,
+		CharacterVector formulas) {
 
 	const int nind = indices.size();
 	const int nsamp = x.nrow();
@@ -17,7 +22,7 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 
 	NumericMatrix out(nsamp, nind);
 	NumericVector blue, green, red, redEdge1, redEdge2, redEdge3, nir, swir1, swir2, swir3;
-		
+
 	// Apply mask layer
 	if(!IntegerVector::is_na(maskLayer)){
 		maskLayer-=1 ;
@@ -234,6 +239,83 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
 		else if(indices[j] == "WDVI") {
 			out(_,j) = nir - s * red;
 			out(_,j) = ifelse(is_na(out(_,j)), NA_REAL, out(_,j));
+		}
+		else {
+		    std::string formula = Rcpp::as<std::string>(formulas[j]);
+		    //std::string formula = "red * red";
+
+		    size_t vec_size = 0;
+            bool red_present = formula.find("red") != std::string::npos;
+            bool blue_present = formula.find("blue") != std::string::npos;
+            bool green_present = formula.find("green") != std::string::npos;
+            bool redEdge1_present = formula.find("redEdge1") != std::string::npos;
+            bool redEdge2_present = formula.find("redEdge2") != std::string::npos;
+            bool redEdge3_present = formula.find("redEdge3") != std::string::npos;
+            bool nir_present = formula.find("nir") != std::string::npos;
+            bool swir1_present = formula.find("swir1") != std::string::npos;
+            bool swir2_present = formula.find("swir2") != std::string::npos;
+            bool swir3_present = formula.find("swir3") != std::string::npos;
+
+		    if (red_present) vec_size = red.size();
+            else if (blue_present) vec_size = blue.size();
+            else if (green_present) vec_size = green.size();
+            else if (redEdge1_present) vec_size = redEdge1.size();
+            else if (redEdge2_present) vec_size = redEdge2.size();
+            else if (redEdge3_present) vec_size = redEdge3.size();
+            else if (nir_present) vec_size = nir.size();
+            else if (swir1_present) vec_size = swir1.size();
+            else if (swir2_present) vec_size = swir2.size();
+            else if (swir3_present) vec_size = swir3.size();
+            else {
+                Rcpp::stop("No valid variable found in the formula.");
+            }
+
+		    std::vector<double> result(vec_size);
+
+            std::vector<te_variable> vars;
+
+            std::vector<std::string> valid_var_names = {
+                "blue", "green", "red", "redEdge1", "redEdge2", "redEdge3", "nir", "swri1", "swir2", "swir3"
+            };
+            std::vector<double> var_stores(valid_var_names.size());
+
+            for (size_t s = 0; s < valid_var_names.size(); ++s) {
+                if(formula.find(valid_var_names[s]) != std::string::npos){
+                    vars.push_back({valid_var_names[s].c_str(), &var_stores[s]});
+                }
+            }
+
+            int err;
+            te_expr* expr = te_compile(formula.c_str(), vars.data(), vars.size(), &err);
+
+            if (expr) {
+                try {
+                    for (size_t i = 0; i < vec_size; ++i) {
+                        if (red_present) var_stores[std::distance(valid_var_names.begin(), std::find(valid_var_names.begin(), valid_var_names.end(), "red"))] = red[i];
+                        if (blue_present) var_stores[std::distance(valid_var_names.begin(), std::find(valid_var_names.begin(), valid_var_names.end(), "blue"))] = blue[i];
+                        if (green_present) var_stores[std::distance(valid_var_names.begin(), std::find(valid_var_names.begin(), valid_var_names.end(), "green"))] = green[i];
+                        if (redEdge1_present) var_stores[std::distance(valid_var_names.begin(), std::find(valid_var_names.begin(), valid_var_names.end(), "redEdge1"))] = redEdge1[i];
+                        if (redEdge2_present) var_stores[std::distance(valid_var_names.begin(), std::find(valid_var_names.begin(), valid_var_names.end(), "redEdge2"))] = redEdge2[i];
+                        if (redEdge3_present) var_stores[std::distance(valid_var_names.begin(), std::find(valid_var_names.begin(), valid_var_names.end(), "redEdge3"))] = redEdge3[i];
+                        if (nir_present) var_stores[std::distance(valid_var_names.begin(), std::find(valid_var_names.begin(), valid_var_names.end(), "nir"))] = nir[i];
+                        if (swir1_present) var_stores[std::distance(valid_var_names.begin(), std::find(valid_var_names.begin(), valid_var_names.end(), "swir1"))] = swir1[i];
+                        if (swir2_present) var_stores[std::distance(valid_var_names.begin(), std::find(valid_var_names.begin(), valid_var_names.end(), "swir2"))] = swir2[i];
+                        if (swir3_present) var_stores[std::distance(valid_var_names.begin(), std::find(valid_var_names.begin(), valid_var_names.end(), "swir3"))] = swir3[i];
+
+                        result[i] = te_eval(expr);
+                    }
+                } catch (...) {
+                    Rcpp::stop("Error occurred during evaluation. Ensure all required variables are provided.");
+                }
+
+                te_free(expr);
+            } else {
+                Rcpp::stop("Failed to parse the formula. Error code: " + std::to_string(err));
+            }
+
+            Rcpp::NumericVector r_result(result.begin(), result.end());
+            out(_,j) = r_result;
+
 		}
 
 	}

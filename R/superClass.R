@@ -23,7 +23,8 @@
 #' @param verbose Logical. prints progress and statistics during execution
 #' @param overwrite logical. Overwrite spatial prediction raster if it already exists.
 #' @param ... further arguments to be passed to \code{\link[caret]{train}}
-#' @details 
+#' @details
+#' Note that superClass automatically loads the lattice and randomForest package.
 #' SuperClass performs the following steps:
 #' 
 #' \enumerate{
