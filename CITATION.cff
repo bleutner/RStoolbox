@@ -17,7 +17,7 @@ title: "RStoolbox: An R package for Remote Sensing Data Analysis"
 version: 1.0.1
 doi: 10.1111/2041-210X.14451
 url: "https://github.com/bleutner/RStoolbox"
-year: = 2024
+year: 2024
 preferred-citation:
   type: article
   authors:
@@ -36,4 +36,4 @@ preferred-citation:
   doi: "10.1111/2041-210X.14451"
   journal: "Methods in Ecology and Evolution"
   title: "RStoolbox: An R package for Remote Sensing Data Analysis"
-  year: = 2024
+  year: 2024
