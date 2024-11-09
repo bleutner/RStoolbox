@@ -3,5 +3,6 @@ bibentry(
   title    = "RStoolbox: An R package for Remote Sensing Data Analysis",
   author   = "Konstantin Müller and Jakob Schwalb-Willmann and Martin Wegmann and Benjamin Leutner",
   journal  = "Methods in Ecology and Evolution",
-  doi      = "10.1111/2041-210X.14451"
+  doi      = "10.1111/2041-210X.14451",
+  year     = "2024"
 )
