@@ -45,6 +45,12 @@ jobs:
           use-public-rspm: true
           Ncpus: '2'
 
+      - name: Install system dependencies (Linux only)
+        if: runner.os != 'windows'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgfortran5 build-essential
+
       - name: Install dependencies (Win)
         if: runner.os == 'windows'
         uses: r-lib/actions/setup-r-dependencies@v2
