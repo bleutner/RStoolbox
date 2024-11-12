@@ -45,12 +45,6 @@ jobs:
           use-public-rspm: true
           Ncpus: '2'
 
-      - name: Install system dependencies (Linux only)
-        if: runner.os != 'windows'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgfortran5 build-essential
-
       - name: Install dependencies (Win)
         if: runner.os == 'windows'
         uses: r-lib/actions/setup-r-dependencies@v2
@@ -63,7 +57,7 @@ jobs:
         if: runner.os != 'windows'
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck, cran/randomForest@4.6-14, cran/XML@3.99-0.8
+          extra-packages: any::rcmdcheck, cran/randomForest, cran/XML
           needs: check
           error_on: ${{ env.RCMDCHECK_ERROR_ON || 'error,warning' }}
 
