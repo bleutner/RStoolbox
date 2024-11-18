@@ -1,3 +1,5 @@
+citHeader("Please cite RStoolbox, e.g. when you use it in projects or publications:")
+
 bibentry(
   bibtype  = "Article",
   title    = "RStoolbox: An R package for Remote Sensing Data Analysis",

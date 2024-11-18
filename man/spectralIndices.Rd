@@ -129,7 +129,7 @@ plot(SI)
 # Get all indices
 idxdb <- getOption("RStoolbox.idxdb")
 
-# Cutomize the RStoolbox index-database and overwrite the option
+# Customize the RStoolbox index-database and overwrite the option
 cdb <- c(idxdb, CUSTOM = list( list(c("Mueller2024", "Super custom index"),
         function(blue, red) {blue + red})))
 rsOpts(idxdb = cdb)
