@@ -42,6 +42,7 @@ For log = natural log uncomment the next line. */
 #include <stdio.h>
 #include <ctype.h>
 #include <limits.h>
+#include <R.h>
 
 #ifndef NAN
 #define NAN (0.0/0.0)

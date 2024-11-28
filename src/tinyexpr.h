@@ -36,10 +36,7 @@ extern "C" {
 typedef struct te_expr {
     int type;
     union {double value; const double *bound; const void *function;};
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpedantic"
     void *parameters[];
-#pragma GCC diagnostic pop
 } te_expr;
 
 
