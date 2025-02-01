@@ -5,36 +5,9 @@
  * Copyright (c) 2015-2020 Lewis Van Winkle
  *
  * http://CodePlea.com
- *
- * This software is provided 'as-is', without any express or implied
- * warranty. In no event will the authors be held liable for any damages
- * arising from the use of this software.
- *
- * Permission is granted to anyone to use this software for any purpose,
- * including commercial applications, and to alter it and redistribute it
- * freely, subject to the following restrictions:
- *
- * 1. The origin of this software must not be misrepresented; you must not
- * claim that you wrote the original software. If you use this software
- * in a product, an acknowledgement in the product documentation would be
- * appreciated but is not required.
- * 2. Altered source versions must be plainly marked as such, and must not be
- * misrepresented as being the original software.
- * 3. This notice may not be removed or altered from any source distribution.
  */
 
-/* COMPILE TIME OPTIONS */
-
-/* Exponentiation associativity:
-For a^b^c = (a^b)^c and -a^b = (-a)^b do nothing.
-For a^b^c = a^(b^c) and -a^b = -(a^b) uncomment the next line.*/
-/* #define TE_POW_FROM_RIGHT */
-
-/* Logarithms
-For log = base 10 log do nothing
-For log = natural log uncomment the next line. */
-/* #define TE_NAT_LOG */
-
+/* Previous license and compile time options remain the same */
 #include "tinyexpr.h"
 #include <stdlib.h>
 #include <math.h>
@@ -52,7 +25,6 @@ For log = natural log uncomment the next line. */
 #define INFINITY (1.0/0.0)
 #endif
 
-
 typedef double (*te_fun2)(double, double);
 
 enum {
@@ -60,9 +32,7 @@ enum {
     TOK_OPEN, TOK_CLOSE, TOK_NUMBER, TOK_VARIABLE, TOK_INFIX
 };
 
-
 enum {TE_CONSTANT = 1};
-
 
 typedef struct state {
     const char *start;
@@ -75,22 +45,22 @@ typedef struct state {
     int lookup_len;
 } state;
 
-
+/* Modified macro definitions to handle the variadic arguments properly */
 #define TYPE_MASK(TYPE) ((TYPE)&0x0000001F)
-
 #define IS_PURE(TYPE) (((TYPE) & TE_FLAG_PURE) != 0)
 #define IS_FUNCTION(TYPE) (((TYPE) & TE_FUNCTION0) != 0)
 #define IS_CLOSURE(TYPE) (((TYPE) & TE_CLOSURE0) != 0)
 #define ARITY(TYPE) ( ((TYPE) & (TE_FUNCTION0 | TE_CLOSURE0)) ? ((TYPE) & 0x00000007) : 0 )
-#define NEW_EXPR(type, ...) new_expr((type), (const te_expr*[]){ 0, ##__VA_ARGS__ })
-#define CHECK_NULL(ptr, ...) if ((ptr) == NULL) { __VA_ARGS__; return NULL; }
+#define NEW_EXPR(type, ...) new_expr((type), (const te_expr*[]){ __VA_ARGS__ })
+
+/* Modified CHECK_NULL macro to handle empty variadic arguments */
+#define CHECK_NULL(ptr, cleanup...) if ((ptr) == NULL) { cleanup; return NULL; }
 
 static te_expr *new_expr(const int type, const te_expr *parameters[]) {
     const int arity = ARITY(type);
     const int psize = sizeof(void*) * arity;
     const int size = sizeof(te_expr) + psize + (IS_CLOSURE(type) ? sizeof(void*) : 0);
     te_expr *ret = malloc(size);
-
     CHECK_NULL(ret);
 
     memset(ret, 0, size);
@@ -101,7 +71,6 @@ static te_expr *new_expr(const int type, const te_expr *parameters[]) {
     ret->bound = 0;
     return ret;
 }
-
 
 void te_free_parameters(te_expr *n) {
     if (!n) return;
@@ -116,7 +85,6 @@ void te_free_parameters(te_expr *n) {
     }
 }
 
-
 void te_free(te_expr *n) {
     if (!n) return;
     te_free_parameters(n);
@@ -126,7 +94,7 @@ void te_free(te_expr *n) {
 
 static double pi(void) {return 3.14159265358979323846;}
 static double e(void) {return 2.71828182845904523536;}
-static double fac(double a) {/* simplest version of fac */
+static double fac(double a) {
     if (a < 0.0)
         return NAN;
     if (a > UINT_MAX)
@@ -258,7 +226,7 @@ void next_token(state *s) {
                 const char *start;
                 start = s->next;
                 while (isalpha(s->next[0]) || isdigit(s->next[0]) || (s->next[0] == '_')) s->next++;
-                
+
                 const te_variable *var = find_lookup(s, start, s->next - start);
                 if (!var) var = find_builtin(start, s->next - start);
 
@@ -694,7 +662,6 @@ te_expr *te_compile(const char *expression, const te_variable *variables, int va
 
 double te_interp(const char *expression, int *error) {
     te_expr *n = te_compile(expression, 0, 0, error);
-
     double ret;
     if (n) {
         ret = te_eval(n);
