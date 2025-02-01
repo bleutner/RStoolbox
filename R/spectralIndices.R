@@ -46,6 +46,7 @@
 #'
 #' ## Custom Spectral Index Calculation (beta) (supports only bands right now...)
 #' # Get all indices
+#' # Supports: Parentheses (), Addition +, Subtraction -, Multiplication *, Division /
 #' idxdb <- getOption("RStoolbox.idxdb")
 #'
 #' # Customize the RStoolbox index-database and overwrite the option
@@ -175,7 +176,7 @@ spectralIndices <- function(img,
         bandsCalc[["mask"]] <- which(names(img) == "mask") 
     }
     potArgs <- c(potArgs, "mask")
-    
+
     
     ## Adjust layer argument so that the first layer we use is now layer 1, etc.
     ## This way we don't have to sample the whole stack if we only need a few layers

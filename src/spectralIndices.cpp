@@ -1,10 +1,125 @@
 #include<Rcpp.h>
 #include <string>
 #include <vector>
-#include "tinyexpr.h"
 
 using namespace Rcpp;
 using namespace std;
+
+unordered_map<string, vector<double>> variables;
+
+void setVariable(const string &name, const NumericVector &rcppVec) {
+    variables[name] = vector<double>(rcppVec.begin(), rcppVec.end()); // Convert and assign
+}
+
+// Token types
+enum TokenType { NUMBER, VARIABLE, OPERATOR, LPAREN, RPAREN, END };
+
+struct Token {
+    TokenType type;
+    string value;
+};
+
+// Tokenizer
+class Tokenizer {
+    string expr;
+    size_t pos;
+public:
+    Tokenizer(const string &expression) : expr(expression), pos(0) {}
+
+    Token nextToken() {
+        while (pos < expr.size() && isspace(expr[pos])) pos++;
+        if (pos >= expr.size()) return {END, ""};
+
+        if (isdigit(expr[pos]) || expr[pos] == '.') {
+            size_t start = pos;
+            while (pos < expr.size() && (isdigit(expr[pos]) || expr[pos] == '.')) pos++;
+            return {NUMBER, expr.substr(start, pos - start)};
+        }
+
+        if (isalpha(expr[pos])) {
+            size_t start = pos;
+            while (pos < expr.size() && isalnum(expr[pos])) pos++;
+            return {VARIABLE, expr.substr(start, pos - start)};
+        }
+
+        if (strchr("+-*/()", expr[pos])) {
+            return {expr[pos] == '(' ? LPAREN : expr[pos] == ')' ? RPAREN : OPERATOR, string(1, expr[pos++])};
+        }
+
+        throw runtime_error("Unexpected character in expression");
+    }
+};
+
+// Expression Evaluator
+class Evaluator {
+    Tokenizer tokenizer;
+    Token currentToken;
+
+    void nextToken() { currentToken = tokenizer.nextToken(); }
+
+    vector<double> getValue() {
+        if (currentToken.type == NUMBER) {
+            double val = stod(currentToken.value);
+            nextToken();
+            return vector<double>(variables.begin()->second.size(), val);
+        }
+        if (currentToken.type == VARIABLE) {
+            if (variables.find(currentToken.value) == variables.end())
+                throw runtime_error("Unknown variable: " + currentToken.value);
+            vector<double> val = variables[currentToken.value];
+            nextToken();
+            return val;
+        }
+        throw runtime_error("Expected number or variable");
+    }
+
+    vector<double> factor() {
+        if (currentToken.type == LPAREN) {
+            nextToken();
+            vector<double> result = expression();
+            if (currentToken.type != RPAREN)
+                throw runtime_error("Mismatched parentheses");
+            nextToken();
+            return result;
+        }
+        return getValue();
+    }
+
+    vector<double> term() {
+        vector<double> result = factor();
+        while (currentToken.type == OPERATOR && (currentToken.value == "*" || currentToken.value == "/")) {
+            string op = currentToken.value;
+            nextToken();
+            vector<double> right = factor();
+            for (size_t i = 0; i < result.size(); i++) {
+                if (op == "*") result[i] *= right[i];
+                else if (op == "/") {
+                    if (right[i] == 0) throw runtime_error("Division by zero");
+                    result[i] /= right[i];
+                }
+            }
+        }
+        return result;
+    }
+
+    vector<double> expression() {
+        vector<double> result = term();
+        while (currentToken.type == OPERATOR && (currentToken.value == "+" || currentToken.value == "-")) {
+            string op = currentToken.value;
+            nextToken();
+            vector<double> right = term();
+            for (size_t i = 0; i < result.size(); i++) {
+                if (op == "+") result[i] += right[i];
+                else result[i] -= right[i];
+            }
+        }
+        return result;
+    }
+
+public:
+    Evaluator(const string &expr) : tokenizer(expr) { nextToken(); }
+    vector<double> eval() { return expression(); }
+};
 
 //[[Rcpp::export]]
 NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
@@ -270,50 +385,21 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
                 Rcpp::stop("No valid variable found in the formula.");
             }
 
-		    std::vector<double> result(vec_size);
-
-            std::vector<te_variable> vars;
+            std::vector<double> vars;
 
             std::vector<std::string> valid_var_names = {
                 "blue", "green", "red", "redEdge1", "redEdge2", "redEdge3", "nir", "swri1", "swir2", "swir3"
             };
-            std::vector<double> var_stores(valid_var_names.size());
 
-            for (size_t s = 0; s < valid_var_names.size(); ++s) {
-                if(formula.find(valid_var_names[s]) != std::string::npos){
-                    vars.push_back({valid_var_names[s].c_str(), &var_stores[s]});
-                }
-            }
+		    std::vector<double> result(vec_size);
 
-            int err;
-            te_expr* expr = te_compile(formula.c_str(), vars.data(), vars.size(), &err);
+            setVariable("blue", blue);
+            setVariable("red", red);
 
-            if (expr) {
-                try {
-                    for (size_t i = 0; i < vec_size; ++i) {
-                        if (red_present) var_stores[std::distance(valid_var_names.begin(), std::find(valid_var_names.begin(), valid_var_names.end(), "red"))] = red[i];
-                        if (blue_present) var_stores[std::distance(valid_var_names.begin(), std::find(valid_var_names.begin(), valid_var_names.end(), "blue"))] = blue[i];
-                        if (green_present) var_stores[std::distance(valid_var_names.begin(), std::find(valid_var_names.begin(), valid_var_names.end(), "green"))] = green[i];
-                        if (redEdge1_present) var_stores[std::distance(valid_var_names.begin(), std::find(valid_var_names.begin(), valid_var_names.end(), "redEdge1"))] = redEdge1[i];
-                        if (redEdge2_present) var_stores[std::distance(valid_var_names.begin(), std::find(valid_var_names.begin(), valid_var_names.end(), "redEdge2"))] = redEdge2[i];
-                        if (redEdge3_present) var_stores[std::distance(valid_var_names.begin(), std::find(valid_var_names.begin(), valid_var_names.end(), "redEdge3"))] = redEdge3[i];
-                        if (nir_present) var_stores[std::distance(valid_var_names.begin(), std::find(valid_var_names.begin(), valid_var_names.end(), "nir"))] = nir[i];
-                        if (swir1_present) var_stores[std::distance(valid_var_names.begin(), std::find(valid_var_names.begin(), valid_var_names.end(), "swir1"))] = swir1[i];
-                        if (swir2_present) var_stores[std::distance(valid_var_names.begin(), std::find(valid_var_names.begin(), valid_var_names.end(), "swir2"))] = swir2[i];
-                        if (swir3_present) var_stores[std::distance(valid_var_names.begin(), std::find(valid_var_names.begin(), valid_var_names.end(), "swir3"))] = swir3[i];
+            Evaluator evaluator(formula.c_str());
+            vector<double> true_result = evaluator.eval();
 
-                        result[i] = te_eval(expr);
-                    }
-                } catch (...) {
-                    Rcpp::stop("Error occurred during evaluation. Ensure all required variables are provided.");
-                }
-
-                te_free(expr);
-            } else {
-                Rcpp::stop("Failed to parse the formula. Error code: " + std::to_string(err));
-            }
-
-            Rcpp::NumericVector r_result(result.begin(), result.end());
+            Rcpp::NumericVector r_result(true_result.begin(), true_result.end());
             out(_,j) = r_result;
 
 		}
