@@ -1,3 +1,9 @@
+# RStoolbox 1.0.2
+Changes for publication in MEE (2)
+
+## Changes:
+* `spectralIndices()` rolled back to a minimal version of the customizing option for the `spectralIndices` function. Supported functionalities are addition, subtraction, multiplication, division, and parentheses. This is due warnings for the Mac M1 on CRAN. We will implement more functionalities soon again as, e.g., `abs()`, `exp()`, ...
+
 # RStoolbox 1.0.1
 Changes for publication in MEE
 
