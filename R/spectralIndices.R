@@ -88,10 +88,6 @@ spectralIndices <- function(img,
     if(!is.null(maskLayer)) maskLayer <- .toTerra(maskLayer)
     if(!is.null(index)) indices <- index  ## argument translation for convenience
     if("LSWI" %in% toupper(indices)) stop("LSWI has been deprecated. Use NDWI2 instead; it is identical.")
-    if(!is.null(swir1)) stop(paste0("Currently there is no spectral index requiring swir1.", 
-                        "\nIn case you were using spectralIndices from a previous version of RStoolbox with the swir1 argument,",
-                        "\nplease note that there has been naming correction. Former swir1 is now swir2 and former swir2 is now swir3.",
-                        "\nsee: news(package='RStoolbox')"), call.=FALSE)
     
     ## Coefficients
     defaultCoefs <- list(L = 0.5,  G = 2.5, L_evi = 1,  C1 = 6,  C2 = 7.5, s = 1, swir2ccc = NULL, swir2coc = NULL)     

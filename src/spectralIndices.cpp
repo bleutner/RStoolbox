@@ -388,13 +388,21 @@ NumericMatrix spectralIndicesCpp(NumericMatrix x, CharacterVector indices,
             std::vector<double> vars;
 
             std::vector<std::string> valid_var_names = {
-                "blue", "green", "red", "redEdge1", "redEdge2", "redEdge3", "nir", "swri1", "swir2", "swir3"
+                "blue", "green", "red", "redEdge1", "redEdge2", "redEdge3", "nir", "swir1", "swir2", "swir3"
             };
 
 		    std::vector<double> result(vec_size);
 
             setVariable("blue", blue);
+            setVariable("green", green);
             setVariable("red", red);
+            setVariable("redEdge1", redEdge1);
+            setVariable("redEdge2", redEdge2);
+            setVariable("redEdge3", redEdge3);
+            setVariable("nir", nir);
+            setVariable("swir1", swir1);
+            setVariable("swir2", swir2);
+            setVariable("swir3", swir3);
 
             Evaluator evaluator(formula.c_str());
             vector<double> true_result = evaluator.eval();
