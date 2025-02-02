@@ -73,6 +73,25 @@ test_that("excercise all indices", {
   
 
 
+idxdb <- getOption("RStoolbox.idxdb")
+cdb <- c(
+  idxdb,
+  CUSTOM = list(list(c("Mueller2024", "Super custom index"), function(red) {red * 0})),
+  CUSTOM2 = list(list(c("Mueller2024", "Super custom index"), function(swir1) {swir1 - swir1}))
+)
+rsOpts(idxdb = cdb)
+
+test_that("custom spectral index",{
+  expect_equal(
+    unique(values(spectralIndices(lsat, red = 3, indices = "CUSTOM"))),
+    as.matrix(data.frame(CUSTOM=0)))
+  expect_equal(
+    unique(values(spectralIndices(lsat, swir1 = 5, indices = "CUSTOM2"))),
+    as.matrix(data.frame(CUSTOM2=0))
+  )
+})
+
+
 
 ## Check for duplicate indices
 #tmat <- do.call(rbind, lapply(1:ncol(k), function(i){colSums(k[,i]-k, na.rm = T)==0}))
