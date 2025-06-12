@@ -96,10 +96,10 @@ coregisterImages <- function(img, ref, shift = 3, shiftInc = 1, nSamples = 100,
       terra::spatSample(ref, size = nSamples, ext = .getExtentOverlap(minex, maxex) * .9, xy = TRUE)
     )
 
-    mmin <- min(values(ref))
-    mmax <- max(values(ref))
-    smin <- min(values(img))
-    smax <- max(values(img))
+    mmin <- min(values(ref, na.rm=T))
+    mmax <- max(values(ref, na.rm=T))
+    smin <- min(values(img, na.rm=T))
+    smax <- max(values(img, na.rm=T))
 
     xy <- XYimgs[,c(1,2)]
     me <- XYimgs[,-c(1,2)]
