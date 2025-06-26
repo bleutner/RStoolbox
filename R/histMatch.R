@@ -53,10 +53,11 @@
 #' par(opar)
 histMatch <- function(x, ref, xmask = NULL, refmask = NULL, nSamples = 1e5, intersectOnly = TRUE, paired = TRUE,
                       forceInteger = FALSE, returnFunctions = FALSE, ...) {
-  nSamples <- min(ncell(ref), nSamples, ncell(ref))
-
   x <- .toTerra(x)
   ref <- .toTerra(ref)
+
+  nSamples <- min(ncell(x), nSamples, ncell(ref))
+
   ## Define intersecting extent if required. Returns NULL if FALSE
   ext <- if (paired | intersectOnly) intersect(ext(x), ext(ref))
   if (paired & is.null(ext)) {
