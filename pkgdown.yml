@@ -2,7 +2,7 @@ pandoc: 3.1.11
 pkgdown: 2.1.3
 pkgdown_sha: ~
 articles: {}
-last_built: 2025-06-29T12:59Z
+last_built: 2025-06-29T13:08Z
 urls:
   reference: https://bleutner.github.io/RStoolbox/reference
   article: https://bleutner.github.io/RStoolbox/articles

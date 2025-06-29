@@ -48,6 +48,7 @@
 <span>  model <span class="op">=</span> <span class="st">"rf"</span>,</span>
 <span>  tuneLength <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>  kfold <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  sampling <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  minDist <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  mode <span class="op">=</span> <span class="st">"classification"</span>,</span>
 <span>  predict <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -105,6 +106,10 @@
 
 <dt id="arg-kfold">kfold<a class="anchor" aria-label="anchor" href="#arg-kfold"></a></dt>
 <dd><p>Integer. Number of cross-validation resamples during model tuning.</p></dd>
+
+
+<dt id="arg-sampling">sampling<a class="anchor" aria-label="anchor" href="#arg-sampling"></a></dt>
+<dd><p>Character. Describes the type of additional sampling that is conducted after resampling (usually to resolve class imbalances), from caret. Currently supported are <code>up</code>, <code>down</code>, <code>smote</code>, and <code>rose</code>. Note, that <code>smote</code> requires the packages <code>themis</code> and <code>rose</code> the package <code>ROSE</code>. Latter is noly for binary classification problems.</p></dd>
 
 
 <dt id="arg-mindist">minDist<a class="anchor" aria-label="anchor" href="#arg-mindist"></a></dt>
@@ -211,10 +216,10 @@ otherwise it will be performed on a per-pixel basis.</p></li>
 <span class="r-in"><span><span class="co">## Fit classifier (splitting training into 70\% training data, 30\% validation data)</span></span></span>
 <span class="r-in"><span><span class="va">SC</span>       <span class="op">&lt;-</span> <span class="fu">superClass</span><span class="op">(</span><span class="va">rlogo</span>, trainData <span class="op">=</span> <span class="va">train</span>, responseCol <span class="op">=</span> <span class="st">"class"</span>,</span></span>
 <span class="r-in"><span>model <span class="op">=</span> <span class="st">"rf"</span>, tuneLength <span class="op">=</span> <span class="fl">1</span>, trainPartition <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:00:07 | Begin sampling training data</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:00:07 | Starting to fit model</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:00:08 | Starting spatial predict</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:00:08 | Begin validation</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:09:46 | Begin sampling training data</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:09:46 | Starting to fit model</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:09:47 | Starting spatial predict</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:09:47 | Begin validation</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ******************** Model summary ********************</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Random Forest </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
