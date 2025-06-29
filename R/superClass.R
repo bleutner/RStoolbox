@@ -13,6 +13,7 @@
 #' @param model Character. Which model to use. See \link[caret]{train} for options. Defaults to randomForest ('rf'). In addition to the standard caret models, a maximum likelihood classification is available via \code{model = 'mlc'}. 
 #' @param tuneLength Integer. Number of levels for each tuning parameter (see \link[caret]{train} for details).
 #' @param kfold Integer. Number of cross-validation resamples during model tuning.
+#' @param sampling Character. Describes the type of additional sampling that is conducted after resampling (usually to resolve class imbalances), from caret. Currently supported are \code{up}, \code{down}, \code{smote}, and \code{rose}. Note, that \code{smote} requires the packages \code{themis} and \code{rose} the package \code{ROSE}. Latter is noly for binary classification problems.
 #' @param minDist Numeric. Minumum distance between training and validation data,
 #'  e.g. \code{minDist=1} clips validation polygons to ensure a minimal distance of one pixel (pixel size according to \code{img}) to the next training polygon. 
 #' Requires all data to carry valid projection information.
@@ -93,7 +94,7 @@
 #' par(olpar) # reset par
 superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
         nSamples = 1000, nSamplesV = 1000, polygonBasedCV = FALSE, trainPartition = NULL,
-        model = "rf", tuneLength = 3,  kfold = 5,
+        model = "rf", tuneLength = 3,  kfold = 5, sampling = NULL,
         minDist = 2,  mode = "classification", predict = TRUE, predType = "raw",
         filename = NULL, verbose,
         overwrite = TRUE, ...) {
@@ -287,7 +288,7 @@ superClass <- function(img, trainData, valData = NULL, responseCol = NULL,
 
     caretModel     <- train(response ~ ., data = dataSet, method = model, tuneLength = tuneLength,
             trControl = trainControl(method = "cv", classProbs = {predType=="prob"},
-                    number = kfold, index = indexIn, savePredictions = "final"), ...)
+                    number = kfold, index = indexIn, savePredictions = "final", sampling = sampling), ...)
     modelFit <- getTrainPerf(caretModel)
     
     dataType <- NULL

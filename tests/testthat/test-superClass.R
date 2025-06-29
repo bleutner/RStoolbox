@@ -163,3 +163,25 @@ if (identical(Sys.getenv("NOT_CRAN"), "true") ) {
             expect_error(superClass(lsat_t, trainData = poly, responseCol = "class"), "must have the same projection")
     )
 }
+
+test_that("sampling option", {
+  train <- readRDS(system.file("external/trainingPoints_rlogo.rds", package="RStoolbox"))
+  
+  train_rose <- readRDS(system.file("external/trainingPolygons_lsat.rds", package="RStoolbox"))
+  train_rose <- train_rose[train_rose$class == "forest" | train_rose$class == "water", ]
+  train_rose$class <- factor(as.character(train_rose$class))
+  
+  for (sm in c("up", "down")) {
+    expect_is(sc <- superClass(rlogo, trainData = train, responseCol = "class",
+                         model = "rf", tuneLength = 1, trainPartition = 0.7, sampling = sm), "superClass")
+    expect(!any(is.na(values(sc$map))), "Found na value on valid superClass while testing sampling methods")
+  }
+  
+  expect_warning(superClass(rlogo, trainData = train, responseCol = "class",
+                               model = "rf", tuneLength = 1, trainPartition = 0.7, sampling = "smote"), "Not enough observations.*to perform SMOTE")
+  
+  expect_is(sc <- superClass(lsat, trainData = train_rose, responseCol = "class",
+                             model = "rf", tuneLength = 1, trainPartition = 0.7, sampling = "rose"), "superClass")
+  expect(!any(is.na(values(sc$map))), "Found na value on valid superClass while testing rose-sampling")
+  
+})
