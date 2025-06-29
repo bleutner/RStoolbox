@@ -4,6 +4,8 @@ suppressPackageStartupMessages(library(sf))
 suppressPackageStartupMessages(library(pls))
 suppressPackageStartupMessages(library(randomForest))
 suppressPackageStartupMessages(library(caret))
+suppressPackageStartupMessages(library(themis))
+suppressPackageStartupMessages(library(ROSE))
 
 lsat_t <- lsat
 lsat_t <- lsat_t[[1:4]]

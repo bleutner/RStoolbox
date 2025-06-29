@@ -16,6 +16,7 @@ superClass(
   model = "rf",
   tuneLength = 3,
   kfold = 5,
+  sampling = NULL,
   minDist = 2,
   mode = "classification",
   predict = TRUE,
@@ -48,6 +49,8 @@ superClass(
 \item{tuneLength}{Integer. Number of levels for each tuning parameter (see \link[caret]{train} for details).}
 
 \item{kfold}{Integer. Number of cross-validation resamples during model tuning.}
+
+\item{sampling}{Character. Describes the type of additional sampling that is conducted after resampling (usually to resolve class imbalances), from caret. Currently supported are \code{up}, \code{down}, \code{smote}, and \code{rose}. Note, that \code{smote} requires the packages \code{themis} and \code{rose} the package \code{ROSE}. Latter is noly for binary classification problems.}
 
 \item{minDist}{Numeric. Minumum distance between training and validation data,
  e.g. \code{minDist=1} clips validation polygons to ensure a minimal distance of one pixel (pixel size according to \code{img}) to the next training polygon. 

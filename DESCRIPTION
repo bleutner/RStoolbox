@@ -39,7 +39,9 @@ Suggests:
     e1071,
     gridExtra,
     pls,
-    testthat
+    testthat,
+    themis,
+    ROSE
 LinkingTo: Rcpp,
     RcppArmadillo
 License: GPL (>=3)
