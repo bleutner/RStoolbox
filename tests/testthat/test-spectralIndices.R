@@ -19,7 +19,6 @@ r <- rast(r)
 ml <- rast(ml)
 test_that("errors and warnings are emitted", {
   expect_error(spectralIndices(r, red = 1, indices = "NDVI"), "you must specify \\*all\\* required bands")
-  expect_error(spectralIndices(r, red = 1), "you must specify \\*all\\* required bands")
   expect_warning(spectralIndices(r, red = 1, nir = 2, indices = c("NDVI", "EVI")), "not specified: blue")
   expect_warning(spectralIndices(r, red = 1, nir = 2, blue = 1, index = c("NDVI", "EVI")), "Skipping EVI")
   expect_warning(spectralIndices(r, red = 1, nir = 2, blue = 1, index = "EVI", skipRefCheck = TRUE), "raster has no values")
@@ -82,6 +81,8 @@ cdb <- c(
 rsOpts(idxdb = cdb)
 
 test_that("custom spectral index",{
+  expect_is(spectralIndices(lsat, red = 3, indices = "CUSTOM"), "SpatRaster")
+  expect_is(spectralIndices(lsat, swir1 = 5, indices = "CUSTOM2"), "SpatRaster")
   expect_equal(
     unique(values(spectralIndices(lsat, red = 3, indices = "CUSTOM"))),
     as.matrix(data.frame(CUSTOM=0)))

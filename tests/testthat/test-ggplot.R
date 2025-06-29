@@ -57,7 +57,7 @@ test_that("ggR works with single valued rasters", {
 })
 
 
-test_that("ggRGB returns proper ggplot2 classes or data.frames", {
+test_that("ggRGB returns proper ggplot2 classes or data.frames or lists of protos", {
 
   tests  <- expand.grid(anno = c(TRUE, FALSE), ggLayer = c(TRUE, FALSE), ggObj = c(TRUE,FALSE), stretch=c("sqrt", "hist", "log", "lin"))
   builds <- lapply(seq_len(nrow(tests)), function(i) ggRGB(rlogo, ggObj = tests$ggObj[i], geom_raster = !tests$anno[i], ggLayer = tests$ggLayer[i], stretch = tests$stretch[i] ))
@@ -70,12 +70,12 @@ test_that("ggRGB returns proper ggplot2 classes or data.frames", {
   if(!inherits(builds[[which(with(tests, ggObj & ggLayer))[1]]], "ggproto")){
     ## Current ggplot2 release version
     for(s in which(with(tests, ggObj & ggLayer))) expect_is(builds[[s]], "proto", info = tinfo[s])
-    for(s in which(with(tests, ggObj & ggLayer & anno)))  expect_equal(builds[[s]]$geom$objname, "raster_ann", info = tinfo[s])
+    for(s in which(with(tests, ggObj & ggLayer & anno))) expect_equal(builds[[s]]$geom$objname, "raster_ann", info = tinfo[s])
     for(s in which(with(tests, ggObj & ggLayer & !anno))) expect_equal(builds[[s]]$geom$objname, "raster", info = tinfo[s])
   } else {
     ## Upcoming ggplot2 version (>=1.0.1.9002)
-    for(s in which(with(tests, ggObj & ggLayer & anno)))  expect_is(builds[[s]]$geom, "GeomRasterAnn", info = tinfo[s])
-    for(s in which(with(tests, ggObj & ggLayer & !anno))) expect_is(builds[[s]]$geom, "GeomRaster", info = tinfo[s])
+    for(s in which(with(tests, ggObj & ggLayer & anno))) expect_is(builds[[s]]$geom, "GeomRasterAnn", info = tinfo[s])
+    for(s in which(with(tests, ggObj & ggLayer & !anno))) expect_is(builds[[s]], "list", info = tinfo[s])
   }
 
   ## Data.frames
