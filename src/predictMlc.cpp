@@ -21,9 +21,8 @@ for(int c = 0; c < nclasses; c++){
      }
 }
 
-arma::uword index;
 for(int s = 0; s < ns; s++){
-	out.submat(s, 1, s, nclasses).max(index);
+  arma::uword index = out.submat(s, 1, s, nclasses).index_max();
 	out(s,0) = index + 1;
 }
 
