@@ -30,7 +30,7 @@ mesma(
 
 \item{tolerance}{Numeric. Tolerance limit representing a nearly zero minimal number. Default is 1e-8.}
 
-\item{n_models}{Logical. Only applies if \code{em} contains column \code{class}. Defines how many endmember combinations should be picked. Maximum is the minimum number of endmembers of a class. Defaults to the amount of rows of em.}
+\item{n_models}{Logical. Only applies if \code{em} contains column \code{class}. Defines how many endmember combinations should be picked. Maximum is the number of possible endmember combinations (see details). Defaults to the maximum possible endmember combinations calculated from \code{em}.}
 
 \item{sum_to_one}{Logical. Defines whether a sum-to-one constraint should be applied so that probabilities of endmember classes sum to one (a constraint not covered by NNLS) to be interpretable as fractions. Defaults to \code{TRUE}. To get actual NNLS results, change to \code{FALSE}.}
 
@@ -46,7 +46,8 @@ SpatRaster. The object will contain one band per class, with each value represen
 }
 \details{
 Argument \code{em} determines whether an SMA (each row representing a single endmember per class) or a MESMA (multiple endmembers per class differentiate using the \code{class} column) is computed.
-If multiple endmembers per class are provided, \code{mesma} will compute a number of SMA (determined by argument \code{n_models}) for multiple endmember combinations drawn from \code{em} and will select the best fit per pixel based on the lowest RMSE, based on the MESMA approach proposed by Roberts et al. (1998).
+If multiple endmembers per class are provided, \code{mesma} will compute a number of SMA (determined by argument \code{n_models}) for multiple selected endmember combinations drawn from \code{em} and will select the best fit per pixel based on the lowest RMSE, based on the MESMA approach proposed by Roberts et al. (1998).
+For this,  \code{mesma} computes all possible combinations of endmembers in  \code{em}, than uses all of them unless a lower number of endmember combinations is set through argument \code{n_models}. \code{n_models} cannot be larger than the maximum number of possible endmember combinations in \code{em}. \code{mesma} always uses those combinations where the number of unique endmembers used is maximal first.
 }
 \note{
 Depending on \code{iterate} and \code{tolerance} settings and the selected endmembers, the sum of estimated probabilities per pixel varies around 1. NNLS does not account for a sum-to-one constraint. Use \code{sum_to_one} to sum to one post-NNLS.

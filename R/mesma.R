@@ -10,7 +10,7 @@
 #' }
 #' @param iterate Integer. Set maximum iteration per pixel. Processing time could increase the more iterations are made possible. Default is 400.
 #' @param tolerance Numeric. Tolerance limit representing a nearly zero minimal number. Default is 1e-8. 
-#' @param n_models Logical. Only applies if \code{em} contains column \code{class}. Defines how many endmember combinations should be picked. Maximum is the minimum number of endmembers of a class. Defaults to the amount of rows of em.
+#' @param n_models Logical. Only applies if \code{em} contains column \code{class}. Defines how many endmember combinations should be picked. Maximum is the number of possible endmember combinations (see details). Defaults to the maximum possible endmember combinations calculated from \code{em}.
 #' @param sum_to_one Logical. Defines whether a sum-to-one constraint should be applied so that probabilities of endmember classes sum to one (a constraint not covered by NNLS) to be interpretable as fractions. Defaults to \code{TRUE}. To get actual NNLS results, change to \code{FALSE}.
 #' @param verbose Logical. Prints progress messages during execution.
 #' @param ... further arguments passed to \link[terra]{writeRaster}.
@@ -18,7 +18,8 @@
 #' @return SpatRaster. The object will contain one band per class, with each value representing the estimated probability of the respective endmember class per pixel, and an RMSE band. If \code{sum_to_one} is \code{TRUE} (default), values of the class bands can be interpreted as fractions per endmember class (0 to 1).
 #' 
 #' @details Argument \code{em} determines whether an SMA (each row representing a single endmember per class) or a MESMA (multiple endmembers per class differentiate using the \code{class} column) is computed.
-#' If multiple endmembers per class are provided, \code{mesma} will compute a number of SMA (determined by argument \code{n_models}) for multiple endmember combinations drawn from \code{em} and will select the best fit per pixel based on the lowest RMSE, based on the MESMA approach proposed by Roberts et al. (1998).
+#' If multiple endmembers per class are provided, \code{mesma} will compute a number of SMA (determined by argument \code{n_models}) for multiple selected endmember combinations drawn from \code{em} and will select the best fit per pixel based on the lowest RMSE, based on the MESMA approach proposed by Roberts et al. (1998).
+#' For this,  \code{mesma} computes all possible combinations of endmembers in  \code{em}, than uses all of them unless a lower number of endmember combinations is set through argument \code{n_models}. \code{n_models} cannot be larger than the maximum number of possible endmember combinations in \code{em}. \code{mesma} always uses those combinations where the number of unique endmembers used is maximal first.
 #' 
 #' @note Depending on \code{iterate} and \code{tolerance} settings and the selected endmembers, the sum of estimated probabilities per pixel varies around 1. NNLS does not account for a sum-to-one constraint. Use \code{sum_to_one} to sum to one post-NNLS.
 #' 
@@ -121,23 +122,35 @@ mesma <- function(img, em, method = "NNLS", iterate = 400, tolerance = 0.0000000
     classes <- unique(em$class)
     # check n_models
     n_em_cl <- min(sapply(classes, function(x) nrow(em[em$class == x,]), USE.NAMES = F))
-
-    if(is.null(n_models)){
-      n_models <- n_em_cl
-    }
-
-    if(n_em_cl < n_models){
-      warning(paste0("'n_models' cannot be larger than the minimum number of provided endmembers per class. Setting 'n_models' to ", n_em_cl, "."))
-      n_models <- n_em_cl
-    }
     .vMessage(paste0("Found column 'class' in 'em', creating endmember combinations using 'n_models = ", n_models, "'...")) 
     
     # create endmember combinations
-    em_combo <- data.frame(lapply(classes, function(x) sample((1:nrow(em))[em$class == x], n_models)))
+    em_combo <- do.call(expand.grid, lapply(classes, function(x) (1:nrow(em))[em$class == x]))
     colnames(em_combo) <- classes
     
+    if(nrow(em_combo) > 1){
+      # shuffle
+      em_combo <- em_combo[sample(1:nrow(em_combo), size = nrow(em_combo)),]
+      
+      # preferred: unique set with not reuse of samples:
+      em_combo_unique <- as.data.frame(apply(em_combo, MARGIN = 2, function(x) unique(x)[1:n_em_cl]))
+      
+      # put unique set atop and remove from rest
+      em_combo <- rbind(em_combo_unique, em_combo[-match(do.call(paste, em_combo_unique), do.call(paste, em_combo)),])
+    }
+    if(is.null(n_models)){
+      n_models <- nrow(em_combo)
+    }
+    if(n_models > nrow(em_combo)){
+      warning(paste0("'n_models' cannot be larger than the maximum of possible endmember combinations in 'em'. Setting 'n_models' to ", nrow(em_combo), "."))
+      n_models <- nrow(em_combo)
+    }
+    
+    # final selection based on n_models, always including the preferred unique sets atop
+    em_combo <- em_combo[1:n_models,]
+    
     # run SMA per combo
-    .vMessage(paste0("Unmixing imagery by applying MESMA on endmember combinations derived from 'em' using '", method, "'..."))
+    .vMessage(paste0("Unmixing imagery by applying MESMA on ", n_models , " endmember combinations sampled from 'em' using '", method, "'..."))
     probs_models <- apply(em_combo, MARGIN = 1, function(em_sel){
       em_model <- em[as.numeric(em_sel),]
       em_model$class <- NULL

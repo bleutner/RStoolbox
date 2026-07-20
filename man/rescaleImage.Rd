@@ -49,5 +49,5 @@ lsat2_unity <- rescaleImage(lsat2, ymin = 0, ymax = 1)
 lsat2_unity
 }
 \seealso{
-\link[=histMatch]{histMatch}
+\link{histMatch}
 }
