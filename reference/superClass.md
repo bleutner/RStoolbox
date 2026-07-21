@@ -247,10 +247,10 @@ plot(train, add = TRUE, col =  colors[train$class], pch = 19)
 ## Fit classifier (splitting training into 70\% training data, 30\% validation data)
 SC       <- superClass(rlogo, trainData = train, responseCol = "class",
 model = "rf", tuneLength = 1, trainPartition = 0.7)
-#> 13:35:19 | Begin sampling training data
-#> 13:35:19 | Starting to fit model
-#> 13:35:19 | Starting spatial predict
-#> 13:35:19 | Begin validation
+#> 14:58:01 | Begin sampling training data
+#> 14:58:01 | Starting to fit model
+#> 14:58:01 | Starting spatial predict
+#> 14:58:01 | Begin validation
 #> ******************** Model summary ********************
 #> Random Forest 
 #> 
