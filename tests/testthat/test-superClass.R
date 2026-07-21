@@ -179,6 +179,7 @@ test_that("sampling option", {
     expect(!any(is.na(values(sc$map))), "Found na value on valid superClass while testing sampling methods")
   }
   
+  skip_on_cran()
   expect_warning(superClass(rlogo, trainData = train, responseCol = "class",
                                model = "rf", tuneLength = 1, trainPartition = 0.7, sampling = "smote"), "Not enough observations.*to perform SMOTE")
   
