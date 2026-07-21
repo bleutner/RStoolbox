@@ -118,8 +118,9 @@ ggR <- function(img, layer = 1, maxpixels = 500000,  alpha = 1, hue = 1, sat = 0
   dimImg <- dim(xfort)
 
   df <- lapply(names(xfort), function(layer) {
-    df <- data.frame(extract(xfort[[layer]], seq_along(values(xfort[[layer]])), xy = TRUE),
-                        layerName = factor(layer, levels = names(xfort)))
+#    df <- data.frame(extract(xfort[[layer]], seq_along(values(xfort[[layer]])), xy = TRUE),
+#                        layerName = factor(layer, levels = names(xfort)))
+    df <- as.data.frame(xfort[[layer]], xy=TRUE, layerName=factor(layer, levels = names(xfort)))
     colnames(df) <- c("x", "y", "value", "layerName")
     df
   })
