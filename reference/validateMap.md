@@ -67,9 +67,9 @@ val   <- poly[-splitIn,]
 
 ## Classify (deliberately poorly)
 sc <- superClass(lsat, trainData = train, responseCol = "class", nSamples = 50, model = "mlc")
-#> 13:29:22 | Begin sampling training data
-#> 13:29:22 | Starting to fit model
-#> 13:29:22 | Starting spatial predict
+#> 13:35:22 | Begin sampling training data
+#> 13:35:22 | Starting to fit model
+#> 13:35:22 | Starting spatial predict
 #> ******************** Model summary ********************
 #> Maximum Likelihood Classification 
 #> 

@@ -15,7 +15,9 @@ classification and graphical display. `RStoolbox` builds upon the
 even on smaller workstations.
 
 Find out more on the [`RStoolbox`
-webpage](https://bleutner.github.io/RStoolbox/).
+webpage](https://bleutner.github.io/RStoolbox/) or in our [`RStoolbox`
+paper published in Methods in Ecology and
+Evolution](https://doi.org/10.1111/2041-210X.14451).
 
 ## Installation
 
@@ -89,7 +91,6 @@ ggRGB(lsat, r = 3, g = 2, b=1, stretch = "lin") +
 
 ``` r
 
-
 # fit random forest (splitting training into 70\% training data, 30\% validation data)
 sc <- superClass(lsat, trainData = train, responseCol = "class",
                  model = "rf", tuneLength = 1, trainPartition = 0.7)
@@ -147,7 +148,7 @@ probs <- mesma(img = lsat, em = em)
 plot(probs)
 ```
 
-![](https://i.imgur.com/OqZVYc2.png)
+![](https://i.imgur.com/jNFfrn9.png)
 
 Instead, one can define multiple endmembers per class to conduct a
 Multiple Endmember Spectral Mixture Analysis (MESMA):
@@ -156,7 +157,6 @@ Multiple Endmember Spectral Mixture Analysis (MESMA):
 
 library(RStoolbox)
 library(terra)
-
 
 # to perform a MESMA, use multiple endmembers per class, differntiating them
 # by a column named 'class':
@@ -170,9 +170,12 @@ probs <- mesma(img = lsat, em = em)
 plot(probs)
 ```
 
-![](https://i.imgur.com/0PQGZa2.png)
+![](https://i.imgur.com/f2b7cvn.png)
 
 ``` r
+
+library(RStoolbox)
+library(terra)
 
 # MESMA can also be performed on more than two endmember classes:
 em <- rbind(
@@ -186,7 +189,7 @@ probs <- mesma(img = lsat, em = em)
 plot(probs)
 ```
 
-![](https://i.imgur.com/a7QACjl.png)
+![](https://i.imgur.com/H6WDAMP.png)
 
 ### Example 3: Cloud Masking
 
@@ -258,4 +261,4 @@ ggRGB(lsat_sref, r = 3, g = 2, b = 1, stretch = "lin")
 
 ![](https://i.imgur.com/IEi9own.png)
 
-^(Created on 2024-04-19 with [reprex v2.1.0](https://reprex.tidyverse.org))
+^(Created on 2026-07-21 with [reprex v2.1.1](https://reprex.tidyverse.org))

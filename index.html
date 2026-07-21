@@ -51,7 +51,7 @@
 </div>
 <p><a href="https://github.com/bleutner/RStoolbox/actions/workflows/rcmdcheck.yaml" class="external-link"><img src="https://github.com/bleutner/RStoolbox/actions/workflows/rcmdcheck.yaml/badge.svg" alt="CI"></a> <a href="https://CRAN.R-project.org/package=RStoolbox" class="external-link"><img src="https://www.r-pkg.org/badges/version/RStoolbox" alt="CRAN version"></a> <a href="https://app.codecov.io/gh/bleutner/RStoolbox" class="external-link"><img src="https://codecov.io/gh/bleutner/RStoolbox/branch/master/graph/badge.svg" alt="codecov"></a> <a href="https://cranlogs.r-pkg.org/badges/grand-total/RStoolbox" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/RStoolbox" alt="Downloads"></a> <a href="https://stackoverflow.com/questions/tagged/RStoolbox" class="external-link"><img src="https://img.shields.io/stackexchange/stackoverflow/t/RStoolbox?logo=stackoverflow&amp;label=Questions" alt="StackOverflow"></a></p>
 <p><code>RStoolbox</code> is an R package providing a wide range of tools for your every-day remote sensing processing needs. The available tool-set covers many aspects from data import, pre-processing, data analysis, image classification and graphical display. <code>RStoolbox</code> builds upon the <code>terra</code> package, which makes it suitable for processing large data-sets even on smaller workstations.</p>
-<p>Find out more on the <a href="https://bleutner.github.io/RStoolbox/"><code>RStoolbox</code> webpage</a>.</p>
+<p>Find out more on the <a href="https://bleutner.github.io/RStoolbox/"><code>RStoolbox</code> webpage</a> or in our <a href="https://doi.org/10.1111/2041-210X.14451" class="external-link"><code>RStoolbox</code> paper published in Methods in Ecology and Evolution</a>.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -100,8 +100,7 @@
 <span><span class="co">#&gt; replace the existing one.</span></span></code></pre></div>
 <p><img src="https://i.imgur.com/s071ieD.png"><!-- --></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co"># fit random forest (splitting training into 70\% training data, 30\% validation data)</span></span>
+<code class="sourceCode R"><span><span class="co"># fit random forest (splitting training into 70\% training data, 30\% validation data)</span></span>
 <span><span class="va">sc</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/superClass.html">superClass</a></span><span class="op">(</span><span class="va">lsat</span>, trainData <span class="op">=</span> <span class="va">train</span>, responseCol <span class="op">=</span> <span class="st">"class"</span>,</span>
 <span>                 model <span class="op">=</span> <span class="st">"rf"</span>, tuneLength <span class="op">=</span> <span class="fl">1</span>, trainPartition <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
 <span></span>
@@ -147,12 +146,11 @@
 <span><span class="co"># umix the lsat image</span></span>
 <span><span class="va">probs</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mesma.html">mesma</a></span><span class="op">(</span>img <span class="op">=</span> <span class="va">lsat</span>, em <span class="op">=</span> <span class="va">em</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">probs</span><span class="op">)</span></span></code></pre></div>
-<p><img src="https://i.imgur.com/OqZVYc2.png"><!-- --></p>
+<p><img src="https://i.imgur.com/jNFfrn9.png"><!-- --></p>
 <p>Instead, one can define multiple endmembers per class to conduct a Multiple Endmember Spectral Mixture Analysis (MESMA):</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bleutner.github.io/RStoolbox/">RStoolbox</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
-<span></span>
 <span></span>
 <span><span class="co"># to perform a MESMA, use multiple endmembers per class, differntiating them</span></span>
 <span><span class="co"># by a column named 'class':</span></span>
@@ -164,9 +162,12 @@
 <span><span class="co"># unmix the lsat image</span></span>
 <span><span class="va">probs</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mesma.html">mesma</a></span><span class="op">(</span>img <span class="op">=</span> <span class="va">lsat</span>, em <span class="op">=</span> <span class="va">em</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">probs</span><span class="op">)</span></span></code></pre></div>
-<p><img src="https://i.imgur.com/0PQGZa2.png"><!-- --></p>
+<p><img src="https://i.imgur.com/f2b7cvn.png"><!-- --></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># MESMA can also be performed on more than two endmember classes:</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bleutner.github.io/RStoolbox/">RStoolbox</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># MESMA can also be performed on more than two endmember classes:</span></span>
 <span><span class="va">em</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">lsat</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4155</span>, <span class="fl">17018</span>, <span class="fl">53134</span>, <span class="fl">69487</span>, <span class="fl">83704</span><span class="op">)</span><span class="op">]</span>, class <span class="op">=</span> <span class="st">"forest"</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">lsat</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">22742</span>, <span class="fl">25946</span>, <span class="fl">38617</span>, <span class="fl">59632</span>, <span class="fl">67313</span><span class="op">)</span><span class="op">]</span>, class <span class="op">=</span> <span class="st">"water"</span><span class="op">)</span>,</span>
@@ -176,7 +177,7 @@
 <span><span class="co"># unmix the lsat image</span></span>
 <span><span class="va">probs</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mesma.html">mesma</a></span><span class="op">(</span>img <span class="op">=</span> <span class="va">lsat</span>, em <span class="op">=</span> <span class="va">em</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">probs</span><span class="op">)</span></span></code></pre></div>
-<p><img src="https://i.imgur.com/a7QACjl.png"><!-- --></p>
+<p><img src="https://i.imgur.com/H6WDAMP.png"><!-- --></p>
 </div>
 <div class="section level3">
 <h3 id="example-3-cloud-masking">Example 3: Cloud Masking<a class="anchor" aria-label="anchor" href="#example-3-cloud-masking"></a>
@@ -231,7 +232,7 @@
 <span><span class="co"># plot result</span></span>
 <span><span class="fu"><a href="reference/ggRGB.html">ggRGB</a></span><span class="op">(</span><span class="va">lsat_sref</span>, r <span class="op">=</span> <span class="fl">3</span>, g <span class="op">=</span> <span class="fl">2</span>, b <span class="op">=</span> <span class="fl">1</span>, stretch <span class="op">=</span> <span class="st">"lin"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="https://i.imgur.com/IEi9own.png"><!-- --></p>
-<p><sup>Created on 2024-04-19 with <a href="https://reprex.tidyverse.org" class="external-link">reprex v2.1.0</a></sup></p>
+<p><sup>Created on 2026-07-21 with <a href="https://reprex.tidyverse.org" class="external-link">reprex v2.1.1</a></sup></p>
 </div>
 </div>
 </div>

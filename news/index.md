@@ -2,19 +2,21 @@
 
 ## RStoolbox 1.0.2.3
 
-Updated mesma()
+Update of mesma()
 
 ### Changes:
 
 - [`mesma()`](https://bleutner.github.io/RStoolbox/reference/mesma.md)
-  now computes all possible combinations of endmembers in `em`, than
+  now computes all possible combinations of endmembers in `em`, then
   uses all of them unless a lower number of endmember combinations is
   set through argument `n_models`. `n_models` can now be set to a number
   as large as the maximum number of possible endmember combinations in
   `em` or less.
   [`mesma()`](https://bleutner.github.io/RStoolbox/reference/mesma.md)
   always uses those combinations where the number of unique endmembers
-  used is maximal first.
+  used is maximal first. [Details regarding this change can be found
+  here (blog
+  post)](https://jakob.schwalb-willmann.de/blog/recent-updates-to-mesma-in-rstoolbox/).
 
 ## RStoolbox 1.0.2
 
