@@ -2,8 +2,10 @@ context("oneHotEncode")
 library(terra)
 r <- rast(vals = c(1,2,0,1,NA,-1), ncol = 2, nrow = 3)
 
-result_with_na <- structure(c(1L, 0L, 0L, 1L, NA, 0L, 0L, 1L, 0L, 0L, NA, 0L), .Dim = c(6L, 2L), .Dimnames = list(NULL, c("c_1", "c_2")))
-result_without_na <- result_without_na_bgNA <- structure(c(1L, 0L, 0L, 1L, 0L, 0L, 1L, 0L, 0L, 0L, 0L, 0L), .Dim = c(6L, 2L), .Dimnames = list(NULL, c("c_1", "c_2")))
+#result_with_na <- structure(c(1L, 0L, 0L, 1L, NA, 0L, 0L, 1L, 0L, 0L, NA, 0L), .Dim = c(6L, 2L), .Dimnames = list(NULL, c("c_1", "c_2")))
+result_with_na <- cbind(c_1 = c(1L, 0L, 0L, 1L, NA, 0L), c_2 = c(0L, 1L, 0L, 0L, NA, 0L))
+#result_without_na <- result_without_na_bgNA <- structure(c(1L, 0L, 0L, 1L, 0L, 0L, 1L, 0L, 0L, 0L, 0L, 0L), .Dim = c(6L, 2L), .Dimnames = list(NULL, c("c_1", "c_2")))
+result_without_na <- result_without_na_bgNA <- cbind(c_1 = c(1L, 0L, 0L, 1L, 0L, 0L), c_2 = c(1L, 0L, 0L, 0L, 0L, 0L))
 result_without_na_bgNA[result_without_na_bgNA == 0] <- NA
 
 test_that("oneHotEncode raster input", {
