@@ -166,10 +166,10 @@ ggR(ndvi, geom_raster = TRUE) +
 ## Convert DNs to reflectance (required to calculate EVI and EVI2)
 mtlFile  <- system.file("external/landsat/LT52240631988227CUB02_MTL.txt", package="RStoolbox")
 lsat_ref <- radCor(lsat, mtlFile, method = "apref")
-#> 14:57:58 | Bands to convert to reflectance: B1_dn, B2_dn, B3_dn, B4_dn, B5_dn, B7_dn
-#> 14:57:58 | Thermal bands to convert to brightness temperature: B6_dn
-#> 14:57:58 | Processing thermal band(s)
-#> 14:57:58 | Processing radiance / reflectance
+#> 10:19:20 | Bands to convert to reflectance: B1_dn, B2_dn, B3_dn, B4_dn, B5_dn, B7_dn
+#> 10:19:20 | Thermal bands to convert to brightness temperature: B6_dn
+#> 10:19:20 | Processing thermal band(s)
+#> 10:19:20 | Processing radiance / reflectance
 
 SI <- spectralIndices(lsat_ref, red = "B3_tre", nir = "B4_tre")
 plot(SI)

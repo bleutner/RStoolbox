@@ -103,15 +103,15 @@ metaData <- readMeta(metaData)
 
 ## Minnaert correction, solar angles from metaData
 lsat_minnaert <- topCor(lsat, dem = srtm, metaData = metaData, method = "minnaert")
-#> 14:58:02 | Calculate slope and aspect
-#> 14:58:02 | Calculate illumination map
-#> 14:58:02 | Correct imagery
-#> 14:58:03 | Estimate coefficients
+#> 10:19:25 | Calculate slope and aspect
+#> 10:19:25 | Calculate illumination map
+#> 10:19:25 | Correct imagery
+#> 10:19:25 | Estimate coefficients
 
 ## C correction, solar angles provided manually
 lsat_C <- topCor(lsat, dem = srtm, solarAngles = c(1.081533, 0.7023922), method = "C")
-#> 14:58:03 | Calculate slope and aspect
-#> 14:58:03 | Calculate illumination map
-#> 14:58:03 | Correct imagery
-#> 14:58:03 | Estimate coefficients
+#> 10:19:25 | Calculate slope and aspect
+#> 10:19:25 | Calculate illumination map
+#> 10:19:25 | Correct imagery
+#> 10:19:26 | Estimate coefficients
 ```
